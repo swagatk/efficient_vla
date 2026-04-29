@@ -59,6 +59,18 @@ if [[ ! -f "$WEEK2_ENTRYPOINT" ]]; then
   exit 1
 fi
 
+restore_power_settings() {
+  # Always attempt restore; do not fail the script during cleanup.
+  set +e
+  powerprofilesctl set balanced
+  gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'suspend'
+}
+
+trap restore_power_settings EXIT
+
+powerprofilesctl set performance
+gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'
+
 export MUJOCO_GL="${MUJOCO_GL:-egl}"
 export PYOPENGL_PLATFORM="${PYOPENGL_PLATFORM:-egl}"
 export LIBERO_CONFIG_PATH="${LIBERO_CONFIG_PATH:-$HOME/.libero}"
