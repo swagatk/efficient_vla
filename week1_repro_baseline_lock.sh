@@ -21,7 +21,7 @@ MODEL_ID="${MODEL_ID:-HuggingFaceVLA/smolvla_libero}"
 TASK_SUITE="${TASK_SUITE:-libero_10}"
 TASK_SPLIT="${TASK_SPLIT:-LIBERO-10 official split}"
 N_EPISODES="${N_EPISODES:-10}"
-EPISODE_HORIZON="${EPISODE_HORIZON:-300}"
+EPISODE_HORIZON="${EPISODE_HORIZON:-520}"
 BATCH_SIZE="${BATCH_SIZE:-1}"
 OBSERVATION_HEIGHT="${OBSERVATION_HEIGHT:-256}"
 OBSERVATION_WIDTH="${OBSERVATION_WIDTH:-256}"
@@ -127,6 +127,7 @@ SUMMARY_CSV="$CONSOLIDATED_DIR/week1_run_summary.csv"
 TASK_SUMMARY_CSV="$CONSOLIDATED_DIR/week1_task_success_summary.csv"
 echo "seed,success_rate,peak_vram_gb,avg_step_latency_ms,e2e_loop_rate_hz,wall_time_sec,exit_code,run_dir,task_success_rates" > "$SUMMARY_CSV"
 echo "seed,task_group,task_id,task_success_rate" > "$TASK_SUMMARY_CSV"
+echo "seed,task_group,task_id,task_success_rate,episode_horizon" > "$TASK_SUMMARY_CSV"
 
 read -r -a EXTRA_ARGS_ARRAY <<< "$EXTRA_EVAL_ARGS"
 
@@ -143,11 +144,11 @@ if [[ "$USE_EVAL_SEED_FLAG" == "1" ]]; then
       fi
       ;;
     eval.seed|seed|none)
-      RESOLVED_SEED_FLAG_MODE="$SEED_FLAG_MODE"
+        echo "$SEED,$SUCCESS_RATE,$PEAK_VRAM_GB,$AVG_STEP_LATENCY_MS,$E2E_LOOP_RATE_HZ,$WALL_SEC,$EXIT_CODE,$RUN_DIR,$EPISODE_HORIZON,$TASK_SUCCESS_RATES" >> "$SUMMARY_CSV"
       ;;
     *)
       echo "ERROR: invalid SEED_FLAG_MODE=$SEED_FLAG_MODE (use auto|eval.seed|seed|none)" >&2
-      exit 1
+          f.write(f"{seed},{group},{task_id},{rate_text},{episode_horizon}\n")
       ;;
   esac
 fi
