@@ -1,52 +1,52 @@
 [
     {
-        "image_name": "sample_0_LIVING_ROOM_SCENE5_put_the_white_mug_on_the_left_plate_and_put_the_yellow_and_white_mug_on_the_right_plate.png",
-        "original_instruction": "put the white mug on the left plate and put the yellow and white mug on the right plate",
-        "groundingdino_instruction": "put the [white mug, box: 149 106 208 158] on the left plate and put the [yellow and white mug, box: 148 105 208 158] on the right plate"
+        "image_name": "sample_0_LIVING_ROOM_SCENE2_put_both_the_cream_cheese_box_and_the_butter_in_the_basket.png",
+        "original_instruction": "put both the cream cheese box and the butter in the basket",
+        "groundingdino_instruction": "put both the [cream cheese box, box: 10 136 44 186] and the [butter, box: 70 155 98 206] in the basket"
     },
     {
-        "image_name": "sample_1_KITCHEN_SCENE6_put_the_yellow_and_white_mug_in_the_microwave_and_close_it.png",
-        "original_instruction": "put the yellow and white mug in the microwave and close it",
-        "groundingdino_instruction": "put the [yellow and white mug, box: 100 121 154 170] in the microwave and close it"
-    },
-    {
-        "image_name": "sample_2_LIVING_ROOM_SCENE6_put_the_white_mug_on_the_plate_and_put_the_chocolate_pudding_to_the_right_of_the_plate.png",
+        "image_name": "sample_1_LIVING_ROOM_SCENE6_put_the_white_mug_on_the_plate_and_put_the_chocolate_pudding_to_the_right_of_the_plate.png",
         "original_instruction": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
-        "groundingdino_instruction": "put the [white mug, box: 36 91 89 143] on the plate and put the [chocolate pudding, box: 80 0 178 130] to the right of the plate"
+        "groundingdino_instruction": "put the [white mug, box: 46 96 98 146] on the plate and put the [chocolate pudding, box: 82 187 150 256] to the right of the plate"
+    },
+    {
+        "image_name": "sample_2_LIVING_ROOM_SCENE1_put_both_the_alphabet_soup_and_the_cream_cheese_box_in_the_basket.png",
+        "original_instruction": "put both the alphabet soup and the cream cheese box in the basket",
+        "groundingdino_instruction": "put both the [alphabet soup, box: 26 166 61 212] and the [cream cheese box, box: 202 96 256 181] in the basket"
     },
     {
         "image_name": "sample_3_LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket.png",
         "original_instruction": "put both the alphabet soup and the tomato sauce in the basket",
-        "groundingdino_instruction": "put both the [alphabet soup, box: 80 0 178 102] and the [tomato sauce, box: 21 189 39 206] in the basket"
+        "groundingdino_instruction": "put both the [alphabet soup, box: 130 122 156 160] and the tomato sauce in the basket"
     },
     {
-        "image_name": "sample_4_LIVING_ROOM_SCENE2_put_both_the_cream_cheese_box_and_the_butter_in_the_basket.png",
-        "original_instruction": "put both the cream cheese box and the butter in the basket",
-        "groundingdino_instruction": "put both the [cream cheese box, box: 68 149 97 200] and the [butter, box: 69 149 96 200] in the basket"
-    },
-    {
-        "image_name": "sample_5_KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it.png",
-        "original_instruction": "put the black bowl in the bottom drawer of the cabinet and close it",
-        "groundingdino_instruction": "put the black bowl in the bottom drawer of the cabinet and close it"
-    },
-    {
-        "image_name": "sample_6_KITCHEN_SCENE8_put_both_moka_pots_on_the_stove.png",
-        "original_instruction": "put both moka pots on the stove",
-        "groundingdino_instruction": "put both [moka pots, box: 192 125 242 175] on the stove"
-    },
-    {
-        "image_name": "sample_7_KITCHEN_SCENE3_turn_on_the_stove_and_put_the_moka_pot_on_it.png",
+        "image_name": "sample_4_KITCHEN_SCENE3_turn_on_the_stove_and_put_the_moka_pot_on_it.png",
         "original_instruction": "turn on the stove and put the moka pot on it",
-        "groundingdino_instruction": "turn on the [stove, box: 159 108 230 182] and put the [moka pot, box: 2 115 123 164] on it"
+        "groundingdino_instruction": "turn on the [stove, box: 0 0 255 87] and put the [moka pot, box: 17 115 138 164] on it"
     },
     {
-        "image_name": "sample_8_LIVING_ROOM_SCENE1_put_both_the_alphabet_soup_and_the_cream_cheese_box_in_the_basket.png",
-        "original_instruction": "put both the alphabet soup and the cream cheese box in the basket",
-        "groundingdino_instruction": "put both the [alphabet soup, box: 11 167 50 217] and the [cream cheese box, box: 196 94 256 181] in the basket"
-    },
-    {
-        "image_name": "sample_9_STUDY_SCENE1_pick_up_the_book_and_place_it_in_the_back_compartment_of_the_caddy.png",
+        "image_name": "sample_5_STUDY_SCENE1_pick_up_the_book_and_place_it_in_the_back_compartment_of_the_caddy.png",
         "original_instruction": "pick up the book and place it in the back compartment of the caddy",
-        "groundingdino_instruction": "pick up the [book, box: 24 83 155 148] and place it in the back compartment of the caddy"
+        "groundingdino_instruction": "pick up the [book, box: 171 112 208 171] and place it in the back compartment of the caddy"
+    },
+    {
+        "image_name": "sample_6_KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it.png",
+        "original_instruction": "put the black bowl in the bottom drawer of the cabinet and close it",
+        "groundingdino_instruction": "put the [black bowl, box: 95 143 135 176] in the bottom drawer of the cabinet and close it"
+    },
+    {
+        "image_name": "sample_7_LIVING_ROOM_SCENE5_put_the_white_mug_on_the_left_plate_and_put_the_yellow_and_white_mug_on_the_right_plate.png",
+        "original_instruction": "put the white mug on the left plate and put the yellow and white mug on the right plate",
+        "groundingdino_instruction": "put the [white mug, box: 143 109 203 162] on the left plate and put the [yellow and white mug, box: 39 95 92 145] on the right plate"
+    },
+    {
+        "image_name": "sample_8_KITCHEN_SCENE6_put_the_yellow_and_white_mug_in_the_microwave_and_close_it.png",
+        "original_instruction": "put the yellow and white mug in the microwave and close it",
+        "groundingdino_instruction": "put the [yellow and white mug, box: 102 117 151 161] in the microwave and close it"
+    },
+    {
+        "image_name": "sample_9_KITCHEN_SCENE8_put_both_moka_pots_on_the_stove.png",
+        "original_instruction": "put both moka pots on the stove",
+        "groundingdino_instruction": "put both [moka pots, boxes: 119 139 172 190, 179 119 227 165] on the stove"
     }
 ]

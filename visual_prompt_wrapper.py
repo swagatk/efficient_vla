@@ -9,6 +9,15 @@ try:
 except ImportError:
     print("Warning: GroundingDINO not found. Please install groundingdino-py.")
 
+try:
+    from fastsam import FastSAM
+except ImportError as e:
+    try:
+        from ultralytics import FastSAM
+    except ImportError:
+        print(f"Warning: FastSAM import failed: {e}. FastSAM requires the 'ultralytics' package. Please run: pip install ultralytics")
+        FastSAM = None
+
 class VisualPromptingWrapper:
     def __init__(self, use_image_box=True, use_text_hint=True, device="cuda"):
         self.use_image_box = use_image_box
@@ -18,8 +27,9 @@ class VisualPromptingWrapper:
         # 1. Initialize Grounding Model (GroundingDINO)
         # Point to the exact path in your GIT/efficient_vla folder where weights are downloaded
         base_dir = os.path.expanduser("~/GIT/efficient_vla")
+        weights_dir = os.path.expanduser("~/model_weights")
         config_path = os.path.join(base_dir, "GroundingDINO_SwinT_OGC.py")
-        weights_path = os.path.join(base_dir, "groundingdino_swint_ogc.pth")
+        weights_path = os.path.join(weights_dir, "groundingdino_swint_ogc.pth")
         
         if os.path.exists(config_path) and os.path.exists(weights_path):
             try:
@@ -32,12 +42,54 @@ class VisualPromptingWrapper:
             print(f"Warning: {config_path} or {weights_path} not found. Ensure weights are downloaded.")
             self.model = None
 
-    def get_grounding_box_for_target(self, image_rgb: np.ndarray, target: str):
+        if FastSAM:
+            fastsam_weights_path = os.path.join(weights_dir, "FastSAM-x.pt")
+
+            # Check for different weight namings
+            possible_weights = ["FastSAM-x.pt", "fastsam-x.pt", "FastSAM-s.pt", "fastsam-s.pt"]
+            for pw in possible_weights:
+                p = os.path.join(weights_dir, pw)
+                if os.path.exists(p):
+                    fastsam_weights_path = p
+                    break
+            
+            # Automatically download weights if they are missing
+            if not os.path.exists(fastsam_weights_path):
+                print(f"[FastSAM Init] Downloading weights to {fastsam_weights_path}...")
+                try:
+                    os.makedirs(weights_dir, exist_ok=True)
+                    import urllib.request
+                    urllib.request.urlretrieve("https://github.com/ultralytics/assets/releases/download/v0.0.0/FastSAM-x.pt", fastsam_weights_path)
+                    print("[FastSAM Init] Download successful.")
+                except Exception as e:
+                    print(f"[FastSAM Init] Failed to download FastSAM weights: {e}")
+
+            if os.path.exists(fastsam_weights_path):
+                try:
+                    print(f"[FastSAM Init] Loading model from {fastsam_weights_path}...")
+                    self.fastsam_model = FastSAM(fastsam_weights_path)
+                    print("[FastSAM Init] Model loaded successfully.")
+                except Exception as e:
+                    print(f"[FastSAM Init] Error loading FastSAM: {e}")
+                    import traceback
+                    traceback.print_exc()
+                    self.fastsam_model = None
+            else:
+                print(f"[FastSAM Init] Warning: {fastsam_weights_path} not found. FastSAM will not be used.")
+                self.fastsam_model = None
+        else:
+            print("[FastSAM Init] FastSAM library is not imported. Skipping FastSAM initialization.")
+            self.fastsam_model = None
+            
+        self._fastsam_warned = False
+
+    def get_grounding_box_for_target(self, image_rgb: np.ndarray, target: str, return_all: bool = False):
         """
         Query GroundingDINO for a bounding box of a specific target object.
+        Can return all detected boxes or only the one with the highest confidence.
         """
         if self.model is None:
-            return None  # Fallback
+            return [] if return_all else None
 
         query = target.lower() + "."
 
@@ -45,72 +97,259 @@ class VisualPromptingWrapper:
             outputs = self.model.predict_with_caption(
                 image=image_rgb,
                 caption=query,
-                box_threshold=0.3,
-                text_threshold=0.25
+                box_threshold=0.4,
+                text_threshold=0.3
             )
             
             if len(outputs) == 2:
                 detections, phrases = outputs
                 if len(detections) == 0:
-                    return None
-                best_idx = detections.confidence.argmax()
-                x1, y1, x2, y2 = detections.xyxy[best_idx]
+                    return [] if return_all else None
+                
+                xyxy = detections.xyxy
+                conf = detections.confidence
+                if hasattr(xyxy, 'cpu'):
+                    xyxy = xyxy.cpu().numpy()
+                    conf = conf.cpu().numpy() if hasattr(conf, 'cpu') else conf
+                
+                # Sort by confidence descending
+                sorted_indices = np.argsort(-conf)
+                all_boxes = xyxy[sorted_indices].astype(int).tolist()
+
+                if not return_all:
+                    return all_boxes[0]
+                return all_boxes
             else:
+                # Handle older groundingdino API format
                 boxes, logits, phrases = outputs
                 if len(boxes) == 0:
-                    return None # 3. Fallback mode: Grounding failed
+                    return [] if return_all else None
 
-                # Return the highest confidence box. 
-                # Note: The output format from the Model wrapper is typically cxcywh in relative coords [0, 1].
-                # We need to convert to absolute [x1, y1, x2, y2].
-                best_idx = logits.argmax()
                 h, w = image_rgb.shape[:2]
-                best_box = boxes[best_idx].cpu().numpy() if hasattr(boxes, 'cpu') else boxes[best_idx]
+                all_boxes = []
                 
-                cx, cy, bw, bh = best_box
-                x1 = int((cx - bw / 2) * w)
-                y1 = int((cy - bh / 2) * h)
-                x2 = int((cx + bw / 2) * w)
-                y2 = int((cy + bh / 2) * h)
-            
-            return [int(x1), int(y1), int(x2), int(y2)]
+                conf = logits.cpu().numpy() if hasattr(logits, 'cpu') else logits
+                sorted_indices = np.argsort(-conf)
+                
+                for idx in sorted_indices:
+                    box = boxes[idx]
+                    cx, cy, bw, bh = box.cpu().numpy() if hasattr(box, 'cpu') else box
+                    x1 = int((cx - bw / 2) * w)
+                    y1 = int((cy - bh / 2) * h)
+                    x2 = int((cx + bw / 2) * w)
+                    y2 = int((cy + bh / 2) * h)
+                    all_boxes.append([x1, y1, x2, y2])
+
+                if not return_all:
+                    return all_boxes[0]
+                return all_boxes
             
         except Exception as e:
             print(f"GroundingDINO prediction error: {e}")
-            return None
+            return [] if return_all else None
+
+    def get_all_fastsam_boxes(self, image_rgb: np.ndarray, target: str = None):
+        """
+        Query FastSAM for all detected object bounding boxes ("everything" mode or text prompted).
+        """
+        if self.fastsam_model is None:
+            return []
+        try:
+            # Convert to PIL Image so YOLO strictly treats the input as RGB (it assumes numpy arrays are BGR)
+            image_pil = Image.fromarray(image_rgb)
+            
+            kwargs = {
+                "device": self.device,
+                "retina_masks": True,
+                "imgsz": 1024,
+                "conf": 0.9,
+                "iou": 0.9,
+                "verbose": False
+            }
+            if target:
+                kwargs["texts"] = target.lower()
+
+            everything_results = self.fastsam_model(image_pil, **kwargs)
+            if not everything_results:
+                print("[FastSAM] No objects detected (empty results).")
+                return []
+            
+            # The result from FastSAM is a list of ultralytics.yolo.engine.results.Results
+            # We take the first one for our single image.
+            result = everything_results[0]
+            if result.boxes is None or len(result.boxes) == 0:
+                target_str = f" for '{target}'" if target else ""
+                print(f"[FastSAM] No objects detected{target_str} (no boxes).")
+                return []
+
+            boxes_tensor = result.boxes.xyxy
+            conf_tensor = result.boxes.conf
+            
+            boxes_np = boxes_tensor.cpu().numpy()
+            conf_np = conf_tensor.cpu().numpy()
+            
+            # Sort FastSAM boxes by confidence descending
+            sorted_indices = np.argsort(-conf_np)
+            boxes_list = boxes_np[sorted_indices].astype(int).tolist()
+
+            target_str = f" for '{target}'" if target else ""
+            print(f"[FastSAM] Detected {len(boxes_list)} total objects{target_str}.")
+            return boxes_list
+
+        except Exception as e:
+            print(f"FastSAM prediction error: {e}")
+            return []
+
+    def calculate_overlap_metrics(self, box1, box2):
+        """Calculates Intersection over Union (IoU) and Intersection over Area of Box 2 (IoA)."""
+        x1 = max(box1[0], box2[0])
+        y1 = max(box1[1], box2[1])
+        x2 = min(box1[2], box2[2])
+        y2 = min(box1[3], box2[3])
+
+        inter_area = max(0, x2 - x1) * max(0, y2 - y1)
+        
+        box1_area = (box1[2] - box1[0]) * (box1[3] - box1[1])
+        box2_area = (box2[2] - box2[0]) * (box2[3] - box2[1])
+        
+        union_area = box1_area + box2_area - inter_area
+        
+        iou = inter_area / union_area if union_area > 0 else 0
+        
+        # Calculate how much of box2 is contained within box1 (Intersection over Area of box 2)
+        ioa2 = inter_area / box2_area if box2_area > 0 else 0
+        return iou, ioa2
+
+    def fuse_boxes(self, dino_boxes, fastsam_boxes, expected_count, global_used_boxes=None, iou_threshold=0.3):
+        """
+        Fuses detections from DINO and FastSAM using a constrained union-merge strategy,
+        while preventing reassignment of boxes already used by other targets.
+        """
+        if global_used_boxes is None:
+            global_used_boxes = []
+
+        if not dino_boxes and not fastsam_boxes:
+            return []
+
+        final_boxes = []
+        used_fastsam_indices = set()
+
+        # Filter out boxes that are already assigned to previous targets
+        def is_used(box):
+            for g_box in global_used_boxes:
+                iou, ioa = self.calculate_overlap_metrics(box, g_box)
+                if iou > 0.5 or ioa > 0.8:
+                    return True
+            return False
+
+        valid_dino_boxes = [b for b in dino_boxes if not is_used(b)]
+        valid_fastsam_boxes = [b for b in fastsam_boxes if not is_used(b)]
+
+        # Step 1: Match valid DINO boxes with best-overlapping valid FastSAM boxes
+        if valid_dino_boxes:
+            for d_box in valid_dino_boxes:
+                best_iou = -1
+                best_fs_idx = -1
+                for i, fs_box in enumerate(valid_fastsam_boxes):
+                    if i in used_fastsam_indices:
+                        continue
+                    iou, ioa_fastsam = self.calculate_overlap_metrics(d_box, fs_box)
+                    
+                    # If standard IoU matches OR FastSAM is mostly contained inside a sloppy DINO box
+                    if iou > best_iou or ioa_fastsam > 0.8:
+                        best_iou = iou
+                        best_fs_idx = i
+
+                if best_fs_idx != -1 and (best_iou > iou_threshold or ioa_fastsam > 0.8):
+                    # Match found, prefer the FastSAM box for its tighter boundary
+                    final_boxes.append(valid_fastsam_boxes[best_fs_idx])
+                    used_fastsam_indices.add(best_fs_idx)
+                else:
+                    # No good overlap, keep the DINO box
+                    final_boxes.append(d_box)
+        
+        # Step 2: If we still need more boxes, add remaining high-confidence FastSAM boxes
+        if len(final_boxes) < expected_count:
+            for i, fs_box in enumerate(valid_fastsam_boxes):
+                if i not in used_fastsam_indices:
+                    final_boxes.append(fs_box)
+                    if len(final_boxes) >= expected_count:
+                        break
+        
+        # Step 3: Ensure we don't exceed the expected count
+        return final_boxes[:expected_count]
 
     def apply_prompts(self, observation: dict):
         """
-        Intercepts the observation from the environment, modifies it, and returns the prompted observation.
+        Intercepts the observation, runs DINO and FastSAM, fuses the detections,
+        and returns the observation with prompted image and instruction.
         """
         img = observation['image'] # Expected (H, W, 3) numpy array
         instruction = observation['instruction']
         
         targets = self.extract_target_objects(instruction)
-        
-        prompted_img = img.copy() if self.use_image_box else img
+        if not targets:
+            return observation
+
+        from collections import defaultdict
+        grouped_targets = defaultdict(list)
+        for query, replace in targets:
+            grouped_targets[replace].append(query)
+
+        prompted_img = img.copy()
+        debug_img = img.copy()
         new_instruction = instruction
-        
-        for query_target, replace_target in targets:
-            box = self.get_grounding_box_for_target(img, query_target)
-            if box is None:
-                continue
-                
-            x1, y1, x2, y2 = map(int, box)
+        all_fused_boxes = []
+        all_dino_boxes = []
+        all_fastsam_boxes = []
+        global_used_boxes = []
+        prompts_to_apply = {} # Key: replace_target, Value: list of boxes
+
+        for replace_target, queries in grouped_targets.items():
+            query_target = queries[0]
+            expected_count = len(queries)
+
+            dino_boxes = self.get_grounding_box_for_target(img, query_target, return_all=True)
+            fastsam_boxes = self.get_all_fastsam_boxes(img, target=query_target)
+
+            if dino_boxes:
+                all_dino_boxes.extend(dino_boxes)
+            if fastsam_boxes:
+                all_fastsam_boxes.extend(fastsam_boxes)
+
+            fused_boxes = self.fuse_boxes(
+                dino_boxes, fastsam_boxes, expected_count, global_used_boxes=global_used_boxes
+            )
             
-            if self.use_image_box:
-                cv2.rectangle(prompted_img, (x1, y1), (x2, y2), (255, 0, 0), 3) # Red box
-                
-            if self.use_text_hint:
-                # Provide the exact bounding box coordinates instead of a coarse 3x3 grid
-                hint_str = f"[{replace_target}, box: {x1} {y1} {x2} {y2}]"
-                # Replace the exact occurrence of the target in the instruction
-                new_instruction = new_instruction.replace(replace_target, hint_str, 1)
+            if fused_boxes:
+                prompts_to_apply[replace_target] = fused_boxes
+                all_fused_boxes.extend(fused_boxes)
+                global_used_boxes.extend(fused_boxes) # Update global tracker
 
         if self.use_image_box:
-            observation['image'] = prompted_img
+            for box in all_fastsam_boxes:
+                x1, y1, x2, y2 = map(int, box)
+                cv2.rectangle(debug_img, (x1, y1), (x2, y2), (0, 255, 0), 2) # Green for FastSAM
+            for box in all_dino_boxes:
+                x1, y1, x2, y2 = map(int, box)
+                cv2.rectangle(debug_img, (x1, y1), (x2, y2), (255, 0, 0), 2) # Red for DINO
+            for box in all_fused_boxes:
+                x1, y1, x2, y2 = map(int, box)
+                cv2.rectangle(prompted_img, (x1, y1), (x2, y2), (255, 0, 255), 3) # Magenta for Fused
+            print(f"[Visualization] Drew {len(all_fastsam_boxes)} FastSAM (Green), {len(all_dino_boxes)} DINO (Red), and {len(all_fused_boxes)} Fused (Magenta) boxes.")
+        
+        observation['image'] = prompted_img
+        observation['debug_image'] = debug_img
             
         if self.use_text_hint:
+            for replace_target, boxes in prompts_to_apply.items():
+                if not boxes:
+                    continue
+                
+                box_strs = [f"{b[0]} {b[1]} {b[2]} {b[3]}" for b in boxes]
+                hint_keyword = "box" if len(boxes) == 1 else "boxes"
+                hint_str = f"[{replace_target}, {hint_keyword}: {', '.join(box_strs)}]"
+                new_instruction = new_instruction.replace(replace_target, hint_str, 1)
             observation['instruction'] = new_instruction
 
         return observation
@@ -137,8 +376,12 @@ class VisualPromptingWrapper:
         elif "put both" in instruction:
             objects_str = clean_obj(instruction.split("put both ")[1])
             if objects_str.endswith("s"):
-                targets.append((objects_str[:-1], objects_str))
+                singular = objects_str[:-1]
+                # Handle "put both moka pots" -> query "moka pot" twice
+                targets.append((singular, objects_str))
+                targets.append((singular, objects_str))
             else:
+                # Fallback for non-plural, e.g. "put both equipment"
                 targets.append((objects_str, objects_str))
         elif " and put the " in instruction:
             parts = instruction.split(" and put the ")

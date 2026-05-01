@@ -149,6 +149,15 @@ def main(num_samples=10, out_dir=os.path.expanduser("~/GIT/efficient_vla/groundi
         generated_instruction = prompted_obs['instruction']
 
         sanitized_task_name = task_name.replace("/", "_")
+        
+        if 'debug_image' in prompted_obs:
+            debug_img_np = prompted_obs['debug_image']
+            debug_img_pil = Image.fromarray(debug_img_np)
+            debug_filename = f"sample_{i}_{sanitized_task_name}_debug.png"
+            debug_out_path = os.path.join(out_dir, debug_filename)
+            debug_img_pil.save(debug_out_path)
+            print(f"  Saved debug to {debug_out_path}")
+
         filename = f"sample_{i}_{sanitized_task_name}.png"
         out_path = os.path.join(out_dir, filename)
         
