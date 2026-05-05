@@ -1,0 +1,10 @@
+Week 3 Stage-1 Sweep: Aggregate Report
+============================================
+Target success (%): 46.00
+
+-> Freq:  1 | Style:     edge | Mean Success: 47.33% (std 2.31) | Mean Latency: 1369.38ms
+-> Freq:  1 | Style:   filled | Mean Success: 46.33% (std 5.86) | Mean Latency: 1381.52ms
+-> Freq:  1 | Style:     mask | Mean Success: 48.67% (std 4.04) | Mean Latency: 1362.91ms
+-> Freq:  5 | Style:     edge | Mean Success: 47.67% (std 0.58) | Mean Latency: 1380.49ms
+-> Freq:  5 | Style:   filled | Mean Success: 46.33% (std 2.52) | Mean Latency: 1381.69ms
+-> Freq:  5 | Style:     mask | Mean Success: 44.33% (std 2.52) | Mean Latency: 1420.62ms

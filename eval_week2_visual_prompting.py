@@ -19,9 +19,11 @@ class VisualPromptingEnv:
     Environment wrapper that applies visual prompting to observations before the policy sees them.
     """
 
-    def __init__(self, env, wrapper: VisualPromptingWrapper):
+    def __init__(self, env, wrapper: VisualPromptingWrapper, grounding_frequency: int = 1):
         self.env = env
         self.wrapper = wrapper
+        self.grounding_frequency = grounding_frequency
+        self.step_count = 0
         self.observation_space = getattr(env, "observation_space", None)
         self.action_space = getattr(env, "action_space", None)
 
@@ -29,21 +31,24 @@ class VisualPromptingEnv:
         return getattr(self.env, name)
 
     def reset(self, **kwargs):
+        self.step_count = 0
         out = self.env.reset(**kwargs)
         if isinstance(out, tuple) and len(out) == 2:
             obs, info = out
-            return self._apply_prompts(obs), info
-        return self._apply_prompts(out)
+            return self._apply_prompts(obs, update_grounding=True), info
+        return self._apply_prompts(out, update_grounding=True)
 
     def step(self, action):
+        self.step_count += 1
+        update_grounding = (self.step_count % self.grounding_frequency == 0)
         out = self.env.step(action)
         if isinstance(out, tuple) and len(out) == 5:
             obs, reward, terminated, truncated, info = out
-            obs = self._apply_prompts(obs)
+            obs = self._apply_prompts(obs, update_grounding=update_grounding)
             return obs, reward, terminated, truncated, info
         if isinstance(out, tuple) and len(out) == 4:
             obs, reward, done, info = out
-            obs = self._apply_prompts(obs)
+            obs = self._apply_prompts(obs, update_grounding=update_grounding)
             return obs, reward, done, info
         return out
 
@@ -69,13 +74,13 @@ class VisualPromptingEnv:
         ]
 
         for k in preferred_image_keys:
-            if k in obs and isinstance(obs[k], np.ndarray) and obs[k].ndim >= 2:
+            if k in obs and (isinstance(obs[k], np.ndarray) or torch.is_tensor(obs[k])) and obs[k].ndim >= 2:
                 image_key = k
                 break
 
         if image_key is None:
             for k, v in obs.items():
-                if isinstance(v, np.ndarray) and v.ndim >= 2:
+                if (isinstance(v, np.ndarray) or torch.is_tensor(v)) and v.ndim >= 2:
                     image_key = k
                     break
 
@@ -92,33 +97,66 @@ class VisualPromptingEnv:
 
         return image_key, instruction_key
 
-    def _apply_prompts(self, obs: Any) -> Any:
+    def _apply_prompts(self, obs: Any, update_grounding: bool = True) -> Any:
         if not isinstance(obs, dict):
             return obs
-
-        if "image" in obs and "instruction" in obs:
-            try:
-                return self.wrapper.apply_prompts(obs)
-            except Exception as e:
-                print(f"[visual-prompt] prompt application failed (native keys): {e}")
-                return obs
 
         image_key, instruction_key = self._find_image_and_instruction_keys(obs)
         if image_key is None or instruction_key is None:
             return obs
 
+        original_img = obs[image_key]
+        is_tensor = torch.is_tensor(original_img)
+        
+        # 1. Convert to numpy array
+        if is_tensor:
+            img_np = original_img.detach().cpu().numpy()
+        else:
+            img_np = original_img.copy()
+
+        # 2. Handle PyTorch (C, H, W) -> OpenCV (H, W, C)
+        is_chw = False
+        if img_np.ndim == 3 and img_np.shape[0] in [1, 3] and img_np.shape[2] > 3:
+            is_chw = True
+            img_np = np.transpose(img_np, (1, 2, 0))
+
+        # 3. Handle PyTorch float [0, 1] -> OpenCV uint8 [0, 255]
+        original_dtype = img_np.dtype
+        is_float = np.issubdtype(original_dtype, np.floating)
+        if is_float:
+            img_np = (img_np * 255.0).clip(0, 255).astype(np.uint8)
+        else:
+            img_np = img_np.astype(np.uint8)
+
         adapted = {
-            "image": obs[image_key],
+            "image": img_np,
             "instruction": obs[instruction_key],
         }
 
         try:
-            prompted = self.wrapper.apply_prompts(adapted)
-            obs[image_key] = prompted["image"]
+            prompted = self.wrapper.apply_prompts(adapted, update_grounding=update_grounding)
+            prompted_img_np = prompted["image"]
+            
+            # 4. Convert back to original scale/dtype and shape
+            if is_float:
+                prompted_img_np = (prompted_img_np.astype(original_dtype) / 255.0)
+            else:
+                prompted_img_np = prompted_img_np.astype(original_dtype)
+                
+            if is_chw:
+                prompted_img_np = np.transpose(prompted_img_np, (2, 0, 1))
+
+            if is_tensor:
+                obs[image_key] = torch.from_numpy(prompted_img_np).to(original_img.device)
+            else:
+                obs[image_key] = prompted_img_np
+                
             obs[instruction_key] = prompted["instruction"]
             return obs
         except Exception as e:
-            print(f"[visual-prompt] prompt application failed (adapted keys): {e}")
+            print(f"[visual-prompt] prompt application failed: {e}")
+            import traceback
+            traceback.print_exc()
             return obs
 
 
@@ -153,7 +191,7 @@ def ensure_libero_config(dataset_root: str, libero_config_path: str) -> Path:
     return cfg_path
 
 
-def install_env_patch(prompter: VisualPromptingWrapper):
+def install_env_patch(prompter: VisualPromptingWrapper, grounding_frequency: int = 1):
     patched_modules = []
 
     def patch_make(module_name: str):
@@ -169,7 +207,7 @@ def install_env_patch(prompter: VisualPromptingWrapper):
 
         def patched_make(*args, **kwargs):
             env = original_make(*args, **kwargs)
-            return VisualPromptingEnv(env, prompter)
+            return VisualPromptingEnv(env, prompter, grounding_frequency=grounding_frequency)
 
         mod.make = patched_make
         patched_modules.append((mod, original_make))
@@ -325,6 +363,19 @@ def parse_args():
         action="store_true",
         help="Enable text spatial hint appended to instruction",
     )
+    parser.add_argument(
+        "--grounding_frequency",
+        type=int,
+        default=1,
+        help="Run object detection every N steps to save latency",
+    )
+    parser.add_argument(
+        "--box_style",
+        type=str,
+        choices=["edge", "filled", "mask"],
+        default="edge",
+        help="Visual style of the bounding box overlay",
+    )
 
     parser.add_argument(
         "--inprocess",
@@ -367,6 +418,7 @@ def main():
             use_image_box=args.box_overlay,
             use_text_hint=args.text_hint,
             device=args.grounding_device,
+            box_style=args.box_style,
         )
     else:
         prompter = None
@@ -382,7 +434,7 @@ def main():
         return 0
 
     if enable_prompting and args.inprocess:
-        restore_patch = install_env_patch(prompter)
+        restore_patch = install_env_patch(prompter, grounding_frequency=args.grounding_frequency)
         try:
             code = run_lerobot_eval_inprocess(eval_argv)
         finally:

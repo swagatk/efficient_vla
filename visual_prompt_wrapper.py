@@ -4,6 +4,25 @@ import torch
 import os
 from PIL import Image
 
+# --- TEXT HINT CONFIGURATION ---
+# Controls the formatting of the text hints injected into instructions.
+# Options:
+# "highlight" - e.g., "[object, highlighted by the magenta box]"
+# "spatial"   - e.g., "[object, located at the top right]"
+# "both"      - e.g., "[object, highlighted by the magenta box and located at the top right]"
+# "coords"    - e.g., "[object, box: 10 136 44 186]"
+TEXT_HINT_MODE = "both"  # Change this to switch text hint styles
+# -------------------------------
+
+# --- GROUNDING MODEL CONFIGURATION ---
+# Controls which model(s) are used for object grounding.
+# Options:
+# "dino"    - Use only GroundingDINO
+# "fastsam" - Use only FastSAM
+# "both"    - Use both and fuse them
+GROUNDING_MODE = "dino"  # Change this to switch grounding models
+# -------------------------------
+
 try:
     from groundingdino.util.inference import Model
 except ImportError:
@@ -19,67 +38,73 @@ except ImportError as e:
         FastSAM = None
 
 class VisualPromptingWrapper:
-    def __init__(self, use_image_box=True, use_text_hint=True, device="cuda"):
+    def __init__(self, use_image_box=True, use_text_hint=True, device="cuda", box_style="edge"):
         self.use_image_box = use_image_box
         self.use_text_hint = use_text_hint
         self.device = device
+        self.box_style = box_style
+        self._last_dino_boxes = []
+        self._last_fastsam_boxes = []
+        self._last_fused_boxes = []
+        self._last_prompts_to_apply = {}
         
-        # 1. Initialize Grounding Model (GroundingDINO)
         # Point to the exact path in your GIT/efficient_vla folder where weights are downloaded
         base_dir = os.path.expanduser("~/GIT/efficient_vla")
         weights_dir = os.path.expanduser("~/model_weights")
-        config_path = os.path.join(base_dir, "GroundingDINO_SwinT_OGC.py")
-        weights_path = os.path.join(weights_dir, "groundingdino_swint_ogc.pth")
         
-        if os.path.exists(config_path) and os.path.exists(weights_path):
-            try:
-                self.model = Model(model_config_path=config_path, model_checkpoint_path=weights_path, device=self.device)
-                print("GroundingDINO loaded successfully.")
-            except Exception as e:
-                print(f"Error loading GroundingDINO: {e}")
-                self.model = None
-        else:
-            print(f"Warning: {config_path} or {weights_path} not found. Ensure weights are downloaded.")
-            self.model = None
-
-        if FastSAM:
-            fastsam_weights_path = os.path.join(weights_dir, "FastSAM-x.pt")
-
-            # Check for different weight namings
-            possible_weights = ["FastSAM-x.pt", "fastsam-x.pt", "FastSAM-s.pt", "fastsam-s.pt"]
-            for pw in possible_weights:
-                p = os.path.join(weights_dir, pw)
-                if os.path.exists(p):
-                    fastsam_weights_path = p
-                    break
+        # 1. Initialize Grounding Model (GroundingDINO)
+        self.model = None
+        if GROUNDING_MODE in ["dino", "both"]:
+            config_path = os.path.join(base_dir, "GroundingDINO_SwinT_OGC.py")
+            weights_path = os.path.join(weights_dir, "groundingdino_swint_ogc.pth")
             
-            # Automatically download weights if they are missing
-            if not os.path.exists(fastsam_weights_path):
-                print(f"[FastSAM Init] Downloading weights to {fastsam_weights_path}...")
+            if os.path.exists(config_path) and os.path.exists(weights_path):
                 try:
-                    os.makedirs(weights_dir, exist_ok=True)
-                    import urllib.request
-                    urllib.request.urlretrieve("https://github.com/ultralytics/assets/releases/download/v0.0.0/FastSAM-x.pt", fastsam_weights_path)
-                    print("[FastSAM Init] Download successful.")
+                    self.model = Model(model_config_path=config_path, model_checkpoint_path=weights_path, device=self.device)
+                    print("GroundingDINO loaded successfully.")
                 except Exception as e:
-                    print(f"[FastSAM Init] Failed to download FastSAM weights: {e}")
-
-            if os.path.exists(fastsam_weights_path):
-                try:
-                    print(f"[FastSAM Init] Loading model from {fastsam_weights_path}...")
-                    self.fastsam_model = FastSAM(fastsam_weights_path)
-                    print("[FastSAM Init] Model loaded successfully.")
-                except Exception as e:
-                    print(f"[FastSAM Init] Error loading FastSAM: {e}")
-                    import traceback
-                    traceback.print_exc()
-                    self.fastsam_model = None
+                    print(f"Error loading GroundingDINO: {e}")
             else:
-                print(f"[FastSAM Init] Warning: {fastsam_weights_path} not found. FastSAM will not be used.")
-                self.fastsam_model = None
-        else:
-            print("[FastSAM Init] FastSAM library is not imported. Skipping FastSAM initialization.")
-            self.fastsam_model = None
+                print(f"Warning: {config_path} or {weights_path} not found. Ensure weights are downloaded.")
+
+        # 2. Initialize FastSAM
+        self.fastsam_model = None
+        if GROUNDING_MODE in ["fastsam", "both"]:
+            if FastSAM:
+                fastsam_weights_path = os.path.join(weights_dir, "FastSAM-x.pt")
+    
+                # Check for different weight namings
+                possible_weights = ["FastSAM-x.pt", "fastsam-x.pt", "FastSAM-s.pt", "fastsam-s.pt"]
+                for pw in possible_weights:
+                    p = os.path.join(weights_dir, pw)
+                    if os.path.exists(p):
+                        fastsam_weights_path = p
+                        break
+                
+                # Automatically download weights if they are missing
+                if not os.path.exists(fastsam_weights_path):
+                    print(f"[FastSAM Init] Downloading weights to {fastsam_weights_path}...")
+                    try:
+                        os.makedirs(weights_dir, exist_ok=True)
+                        import urllib.request
+                        urllib.request.urlretrieve("https://github.com/ultralytics/assets/releases/download/v0.0.0/FastSAM-x.pt", fastsam_weights_path)
+                        print("[FastSAM Init] Download successful.")
+                    except Exception as e:
+                        print(f"[FastSAM Init] Failed to download FastSAM weights: {e}")
+    
+                if os.path.exists(fastsam_weights_path):
+                    try:
+                        print(f"[FastSAM Init] Loading model from {fastsam_weights_path}...")
+                        self.fastsam_model = FastSAM(fastsam_weights_path)
+                        print("[FastSAM Init] Model loaded successfully.")
+                    except Exception as e:
+                        print(f"[FastSAM Init] Error loading FastSAM: {e}")
+                        import traceback
+                        traceback.print_exc()
+                else:
+                    print(f"[FastSAM Init] Warning: {fastsam_weights_path} not found. FastSAM will not be used.")
+            else:
+                print("[FastSAM Init] FastSAM library is not imported. Skipping FastSAM initialization.")
             
         self._fastsam_warned = False
 
@@ -279,7 +304,34 @@ class VisualPromptingWrapper:
         # Step 3: Ensure we don't exceed the expected count
         return final_boxes[:expected_count]
 
-    def apply_prompts(self, observation: dict):
+    def _get_spatial_hint(self, box, img_w, img_h):
+        """Converts a bounding box into a descriptive spatial string (e.g., 'top right')."""
+        cx = (box[0] + box[2]) / 2
+        cy = (box[1] + box[3]) / 2
+        
+        if cx < img_w / 3:
+            h_pos = "left"
+        elif cx > 2 * img_w / 3:
+            h_pos = "right"
+        else:
+            h_pos = "center"
+            
+        if cy < img_h / 3:
+            v_pos = "top"
+        elif cy > 2 * img_h / 3:
+            v_pos = "bottom"
+        else:
+            v_pos = "middle"
+            
+        if v_pos == "middle" and h_pos == "center":
+            return "in the center"
+        if v_pos == "middle":
+            return f"on the {h_pos}"
+        if h_pos == "center":
+            return f"at the {v_pos}"
+        return f"at the {v_pos} {h_pos}"
+
+    def apply_prompts(self, observation: dict, update_grounding: bool = True):
         """
         Intercepts the observation, runs DINO and FastSAM, fuses the detections,
         and returns the observation with prompted image and instruction.
@@ -305,38 +357,73 @@ class VisualPromptingWrapper:
         global_used_boxes = []
         prompts_to_apply = {} # Key: replace_target, Value: list of boxes
 
-        for replace_target, queries in grouped_targets.items():
-            query_target = queries[0]
-            expected_count = len(queries)
-
-            dino_boxes = self.get_grounding_box_for_target(img, query_target, return_all=True)
-            fastsam_boxes = self.get_all_fastsam_boxes(img, target=query_target)
-
-            if dino_boxes:
-                all_dino_boxes.extend(dino_boxes)
-            if fastsam_boxes:
-                all_fastsam_boxes.extend(fastsam_boxes)
-
-            fused_boxes = self.fuse_boxes(
-                dino_boxes, fastsam_boxes, expected_count, global_used_boxes=global_used_boxes
-            )
+        if update_grounding:
+            for replace_target, queries in grouped_targets.items():
+                query_target = queries[0]
+                expected_count = len(queries)
+    
+                dino_boxes = []
+                if GROUNDING_MODE in ["dino", "both"]:
+                    dino_boxes = self.get_grounding_box_for_target(img, query_target, return_all=True)
+                    if dino_boxes:
+                        all_dino_boxes.extend(dino_boxes)
+    
+                fastsam_boxes = []
+                if GROUNDING_MODE in ["fastsam", "both"]:
+                    fastsam_boxes = self.get_all_fastsam_boxes(img, target=query_target)
+                    if fastsam_boxes:
+                        all_fastsam_boxes.extend(fastsam_boxes)
+    
+                fused_boxes = self.fuse_boxes(
+                    dino_boxes, fastsam_boxes, expected_count, global_used_boxes=global_used_boxes
+                )
+                
+                if fused_boxes:
+                    prompts_to_apply[replace_target] = fused_boxes
+                    all_fused_boxes.extend(fused_boxes)
+                    global_used_boxes.extend(fused_boxes) # Update global tracker
             
-            if fused_boxes:
-                prompts_to_apply[replace_target] = fused_boxes
-                all_fused_boxes.extend(fused_boxes)
-                global_used_boxes.extend(fused_boxes) # Update global tracker
+            self._last_prompts_to_apply = prompts_to_apply
+            self._last_fused_boxes = all_fused_boxes
+            self._last_dino_boxes = all_dino_boxes
+            self._last_fastsam_boxes = all_fastsam_boxes
+        else:
+            # Reuse cached boxes for this step to reduce latency
+            prompts_to_apply = self._last_prompts_to_apply
+            all_fused_boxes = self._last_fused_boxes
+            all_dino_boxes = self._last_dino_boxes
+            all_fastsam_boxes = self._last_fastsam_boxes
 
         if self.use_image_box:
-            for box in all_fastsam_boxes:
-                x1, y1, x2, y2 = map(int, box)
-                cv2.rectangle(debug_img, (x1, y1), (x2, y2), (0, 255, 0), 2) # Green for FastSAM
-            for box in all_dino_boxes:
-                x1, y1, x2, y2 = map(int, box)
-                cv2.rectangle(debug_img, (x1, y1), (x2, y2), (255, 0, 0), 2) # Red for DINO
-            for box in all_fused_boxes:
-                x1, y1, x2, y2 = map(int, box)
-                cv2.rectangle(prompted_img, (x1, y1), (x2, y2), (255, 0, 255), 3) # Magenta for Fused
-            print(f"[Visualization] Drew {len(all_fastsam_boxes)} FastSAM (Green), {len(all_dino_boxes)} DINO (Red), and {len(all_fused_boxes)} Fused (Magenta) boxes.")
+            if self.box_style == "edge":
+                for box in all_fused_boxes:
+                    x1, y1, x2, y2 = map(int, box)
+                    cv2.rectangle(prompted_img, (x1, y1), (x2, y2), (255, 0, 255), 3)
+            elif self.box_style == "filled":
+                overlay = prompted_img.copy()
+                for box in all_fused_boxes:
+                    x1, y1, x2, y2 = map(int, box)
+                    cv2.rectangle(overlay, (x1, y1), (x2, y2), (255, 0, 255), -1)
+                prompted_img = cv2.addWeighted(overlay, 0.4, prompted_img, 0.6, 0)
+            elif self.box_style == "mask":
+                if all_fused_boxes:
+                    mask = np.zeros_like(prompted_img)
+                    for box in all_fused_boxes:
+                        x1, y1, x2, y2 = map(int, box)
+                        cv2.rectangle(mask, (x1, y1), (x2, y2), (255, 255, 255), -1)
+                    # Darken background to 30% intensity
+                    darkened = (prompted_img * 0.3).astype(np.uint8)
+                    np.copyto(prompted_img, darkened, where=(mask == 0))
+            
+            # Always output base debug visualizers
+            if update_grounding:
+                for box in all_fastsam_boxes:
+                    x1, y1, x2, y2 = map(int, box)
+                    cv2.rectangle(debug_img, (x1, y1), (x2, y2), (0, 255, 0), 2)
+                for box in all_dino_boxes:
+                    x1, y1, x2, y2 = map(int, box)
+                    cv2.rectangle(debug_img, (x1, y1), (x2, y2), (255, 0, 0), 2)
+                print(f"[Visualization] Applied {self.box_style} boxes: {len(all_fastsam_boxes)} FastSAM, {len(all_dino_boxes)} DINO, {len(all_fused_boxes)} Fused.")
         
         observation['image'] = prompted_img
         observation['debug_image'] = debug_img
@@ -346,9 +433,27 @@ class VisualPromptingWrapper:
                 if not boxes:
                     continue
                 
-                box_strs = [f"{b[0]} {b[1]} {b[2]} {b[3]}" for b in boxes]
                 hint_keyword = "box" if len(boxes) == 1 else "boxes"
-                hint_str = f"[{replace_target}, {hint_keyword}: {', '.join(box_strs)}]"
+                
+                messages = []
+                
+                if TEXT_HINT_MODE in ["highlight", "both"] and self.use_image_box:
+                    messages.append(f"highlighted by the magenta {hint_keyword}")
+                    
+                if TEXT_HINT_MODE in ["spatial", "both"] or (TEXT_HINT_MODE == "highlight" and not self.use_image_box):
+                    h, w = img.shape[:2]
+                    spatial_strs = [self._get_spatial_hint(b, w, h) for b in boxes]
+                    messages.append(f"located {' and '.join(spatial_strs)}")
+                    
+                if TEXT_HINT_MODE == "coords":
+                    box_strs = [f"{b[0]} {b[1]} {b[2]} {b[3]}" for b in boxes]
+                    messages.append(f"{hint_keyword}: {', '.join(box_strs)}")
+                    
+                if messages:
+                    hint_str = f"[{replace_target}, {' and '.join(messages)}]"
+                else:
+                    hint_str = f"[{replace_target}]"
+                    
                 new_instruction = new_instruction.replace(replace_target, hint_str, 1)
             observation['instruction'] = new_instruction
 

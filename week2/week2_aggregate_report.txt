@@ -1,0 +1,25 @@
+Week 2 Visual Prompting: Aggregate Report
+============================================
+Runs logged: 3
+Target success (%): 46.00
+Mean success (%): 46.0000
+Std success (%): 3.4641
+95% CI half-width: 3.9200
+Delta vs target (%): +0.0000
+
+Per-seed runs:
+  seed=0, success=44.0000, peak_vram_gb=8.346, latency_ms=2062.285136, loop_hz=0.484899, wall_sec=10723.882478, eval_s=10690.267015, eval_ep_s=106.902670, exit=0
+  seed=1, success=44.0000, peak_vram_gb=8.346, latency_ms=2036.805068, loop_hz=0.490965, wall_sec=10591.386915, eval_s=10559.680194, eval_ep_s=105.596802, exit=0
+  seed=2, success=50.0000, peak_vram_gb=8.346, latency_ms=2012.493560, loop_hz=0.496896, wall_sec=10464.959921, eval_s=10432.911011, eval_ep_s=104.329110, exit=0
+
+Per-task success across seeds (%):
+  libero_10:0 -> mean=13.3333, std=15.2753, ci95_half_width=17.2856, seeds=3
+  libero_10:1 -> mean=63.3333, std=11.5470, ci95_half_width=13.0667, seeds=3
+  libero_10:2 -> mean=50.0000, std=20.0000, ci95_half_width=22.6321, seeds=3
+  libero_10:3 -> mean=90.0000, std=10.0000, ci95_half_width=11.3161, seeds=3
+  libero_10:4 -> mean=10.0000, std=10.0000, ci95_half_width=11.3161, seeds=3
+  libero_10:5 -> mean=83.3333, std=5.7735, ci95_half_width=6.5333, seeds=3
+  libero_10:6 -> mean=73.3333, std=20.8167, ci95_half_width=23.5563, seeds=3
+  libero_10:7 -> mean=30.0000, std=0.0000, ci95_half_width=0.0000, seeds=3
+  libero_10:8 -> mean=10.0000, std=10.0000, ci95_half_width=11.3161, seeds=3
+  libero_10:9 -> mean=36.6667, std=11.5470, ci95_half_width=13.0667, seeds=3
