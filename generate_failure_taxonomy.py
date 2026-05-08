@@ -14,11 +14,13 @@ except ImportError:
     exit(1)
 
 try:
-    from openai import OpenAI
-    client = OpenAI() # Assumes OPENAI_API_KEY is set in your environment
+    import google.generativeai as genai
+    import time
+    # Assumes GEMINI_API_KEY is set in your environment
+    genai.configure(api_key=os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY"))
+    client = "gemini"
 except ImportError:
-    print("Please install OpenAI SDK: pip install openai")
-    print("You can also adapt this script to use the google-genai or anthropic SDKs.")
+    print("Please install Google Generative AI SDK: pip install google-generativeai")
     client = None
 
 TAXONOMY_CATEGORIES = [
@@ -76,32 +78,33 @@ def extract_frames_as_base64(video_path, num_frames=8):
     return base64_frames
 
 def query_vlm_for_taxonomy(instruction, base64_frames):
-    """Sends the frames to a VLM (GPT-4o in this case) for classification."""
+    """Sends the frames to Gemini for classification."""
     if client is None:
-        return {"category_id": 5, "category_name": "API_NOT_CONFIGURED", "reasoning": "OpenAI SDK not found."}
+        return {"category_id": 5, "category_name": "API_NOT_CONFIGURED", "reasoning": "Gemini SDK not found."}
         
     prompt = PROMPT_TEMPLATE.format(
         instruction=instruction, 
         categories="\n".join(TAXONOMY_CATEGORIES)
     )
     
-    content_payload = [{"type": "text", "text": prompt}]
+    contents = [prompt]
     for b64 in base64_frames:
-        content_payload.append({
-            "type": "image_url",
-            "image_url": {"url": f"data:image/jpeg;base64,{b64}", "detail": "low"}
+        contents.append({
+            "mime_type": "image/jpeg",
+            "data": base64.b64decode(b64)
         })
         
     try:
-        response = client.chat.completions.create(
-            model="gpt-4o",
-            messages=[{"role": "user", "content": content_payload}],
-            response_format={"type": "json_object"},
-            max_tokens=300,
-            temperature=0.2
+        model = genai.GenerativeModel('gemini-2.5-flash')
+        response = model.generate_content(
+            contents,
+            generation_config=genai.types.GenerationConfig(
+                response_mime_type="application/json",
+                temperature=0.2
+            )
         )
         
-        result_json = response.choices[0].message.content
+        result_json = response.text
         return json.loads(result_json)
     except Exception as e:
         print(f"  [VLM Error] {e}")
@@ -140,19 +143,32 @@ def main():
         eval_output_dir = info_path.parent
         
         for task_info in data.get("per_task", []):
-            task_name = task_info.get("task_id", "unknown")
+            task_id = task_info.get("task_id")
+            task_group = task_info.get("task_group")
+
+            if task_id is None or task_group is None:
+                print(f"  [Warning] Skipping task due to missing 'task_id' or 'task_group' in {info_path.name}")
+                continue
+
+            # Reconstruct the task name used for the video folder, e.g., "libero_10_0"
+            task_name = f"{task_group}_{task_id}"
             successes = task_info.get("metrics", {}).get("successes", [])
             
             for ep_idx, is_success in enumerate(successes):
                 if not is_success:
-                    # Locate the corresponding mp4. 
-                    # Note: You may need to tweak this glob pattern based on how LeRobot names your specific videos.
-                    video_pattern = f"*{task_name}*ep*{ep_idx}*.mp4"
-                    video_candidates = list(eval_output_dir.rglob(video_pattern))
-                    
-                    if not video_candidates:
-                        # Fallback pattern if task_name isn't in video name
-                        video_candidates = list(eval_output_dir.rglob(f"*ep*{ep_idx}*.mp4"))
+                    # Construct the expected path directly, which is more robust for the given directory structure.
+                    video_path = eval_output_dir / "videos" / task_name / f"eval_episode_{ep_idx}.mp4"
+
+                    video_candidates = []
+                    if video_path.is_file():
+                        video_candidates = [video_path]
+                    else:
+                        # Fallback to globbing if the structured path doesn't exist, scoped to the task's video folder.
+                        print(f"  [Warning] Could not find video at expected path: {video_path}. Falling back to glob search.")
+                        task_video_dir = eval_output_dir / "videos" / task_name
+                        if task_video_dir.is_dir():
+                            video_candidates = list(task_video_dir.glob(f"eval_episode_{ep_idx}.mp4")) or \
+                                               list(task_video_dir.glob(f"*ep*{ep_idx}*.mp4"))
                         
                     if video_candidates:
                         video_path = video_candidates[0]
@@ -160,7 +176,9 @@ def main():
                         
                         frames = extract_frames_as_base64(str(video_path))
                         if frames:
-                            instruction = task_name.replace("_", " ") # Approximation of instruction
+                            # Prefer the full language instruction if available in eval_info.json.
+                            # Otherwise, fall back to providing the task ID, which is better than a bad approximation.
+                            instruction = task_info.get("language_instruction") or f"Task ID: {task_name}"
                             classification = query_vlm_for_taxonomy(instruction, frames)
                             
                             taxonomy_results.append({

@@ -1,0 +1,22 @@
+Initializing Lightweight Online RL on cuda...
+[ResidualVLA] Loading frozen base policy from: HuggingFaceVLA/smolvla_libero
+Traceback (most recent call last):
+  File "/home/swagat/GIT/efficient_vla/train_online_rl.py", line 219, in <module>
+    main()
+  File "/home/swagat/GIT/efficient_vla/train_online_rl.py", line 61, in main
+    agent = ResidualVLAPolicy(base_policy_path=base_model_id, device=device)
+  File "/home/swagat/GIT/efficient_vla/rl_residual_agent.py", line 23, in __init__
+    self.base_policy = PreTrainedPolicy.from_pretrained(base_policy_path, device="cpu")
+  File "/home/swagat/lerobot/src/lerobot/policies/pretrained.py", line 107, in from_pretrained
+    instance = cls(config, **kwargs)
+TypeError: SmolVLAPolicy.__init__() got an unexpected keyword argument 'device'
+Traceback (most recent call last):
+  File "/home/swagat/GIT/efficient_vla/train_online_rl.py", line 219, in <module>
+    main()
+  File "/home/swagat/GIT/efficient_vla/train_online_rl.py", line 61, in main
+    agent = ResidualVLAPolicy(base_policy_path=base_model_id, device=device)
+  File "/home/swagat/GIT/efficient_vla/rl_residual_agent.py", line 23, in __init__
+    self.base_policy = PreTrainedPolicy.from_pretrained(base_policy_path, device="cpu")
+  File "/home/swagat/lerobot/src/lerobot/policies/pretrained.py", line 107, in from_pretrained
+    instance = cls(config, **kwargs)
+TypeError: SmolVLAPolicy.__init__() got an unexpected keyword argument 'device'

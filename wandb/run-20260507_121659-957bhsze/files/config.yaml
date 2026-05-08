@@ -1,0 +1,79 @@
+_wandb:
+    value:
+        cli_version: 0.21.4
+        e:
+            bdmbcweb4xkpzsty20sm7fpnizvwhciw:
+                codePath: train_online_rl.py
+                codePathLocal: train_online_rl.py
+                cpu_count: 24
+                cpu_count_logical: 32
+                cudaVersion: "13.1"
+                disk:
+                    /:
+                        total: "620438183936"
+                        used: "168804548608"
+                email: swagat.kumar@gmail.com
+                executable: /home/swagat/anaconda3/envs/lerobot_v040/bin/python
+                git:
+                    commit: 047865cfe73cf8733888a36a1899c22a65908104
+                    remote: https://github.com/swagatk/efficient_vla.git
+                gpu: NVIDIA GeForce RTX 4090 Laptop GPU
+                gpu_count: 1
+                gpu_nvidia:
+                    - architecture: Ada
+                      cudaCores: 9728
+                      memoryTotal: "17171480576"
+                      name: NVIDIA GeForce RTX 4090 Laptop GPU
+                      uuid: GPU-273ab4a6-f80c-167d-371f-2f0629e8959d
+                host: swagat-Alienware-m18-R2
+                memory:
+                    total: "67089784832"
+                os: Linux-6.17.0-22-generic-x86_64-with-glibc2.39
+                program: /home/swagat/GIT/efficient_vla/train_online_rl.py
+                python: CPython 3.10.20
+                root: /home/swagat/GIT/efficient_vla
+                startedAt: "2026-05-07T11:16:59.314071Z"
+                writerId: bdmbcweb4xkpzsty20sm7fpnizvwhciw
+        m: []
+        python_version: 3.10.20
+        t:
+            "1":
+                - 1
+                - 11
+                - 41
+                - 49
+                - 51
+                - 71
+                - 83
+                - 105
+            "2":
+                - 1
+                - 11
+                - 41
+                - 49
+                - 51
+                - 71
+                - 83
+                - 105
+            "3":
+                - 13
+                - 16
+            "4": 3.10.20
+            "5": 0.21.4
+            "6": 4.57.6
+            "8":
+                - 2
+            "12": 0.21.4
+            "13": linux-x86_64
+bc_anchor_coef:
+    value: 0.5
+learning_rate:
+    value: 0.0001
+max_steps:
+    value: 520
+num_episodes:
+    value: 100
+ppo_epochs:
+    value: 4
+task_name:
+    value: libero_10

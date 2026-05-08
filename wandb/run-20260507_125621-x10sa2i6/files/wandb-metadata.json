@@ -1,0 +1,40 @@
+{
+  "os":  "Linux-6.17.0-22-generic-x86_64-with-glibc2.39",
+  "python":  "CPython 3.10.20",
+  "startedAt":  "2026-05-07T11:56:21.989387Z",
+  "program":  "/home/swagat/GIT/efficient_vla/./train_online_rl.py",
+  "codePath":  "train_online_rl.py",
+  "codePathLocal":  "train_online_rl.py",
+  "git":  {
+    "remote":  "https://github.com/swagatk/efficient_vla.git",
+    "commit":  "047865cfe73cf8733888a36a1899c22a65908104"
+  },
+  "email":  "swagat.kumar@gmail.com",
+  "root":  "/home/swagat/GIT/efficient_vla",
+  "host":  "swagat-Alienware-m18-R2",
+  "executable":  "/home/swagat/anaconda3/envs/lerobot_v040/bin/python3",
+  "cpu_count":  24,
+  "cpu_count_logical":  32,
+  "gpu":  "NVIDIA GeForce RTX 4090 Laptop GPU",
+  "gpu_count":  1,
+  "disk":  {
+    "/":  {
+      "total":  "620438183936",
+      "used":  "168804675584"
+    }
+  },
+  "memory":  {
+    "total":  "67089784832"
+  },
+  "gpu_nvidia":  [
+    {
+      "name":  "NVIDIA GeForce RTX 4090 Laptop GPU",
+      "memoryTotal":  "17171480576",
+      "cudaCores":  9728,
+      "architecture":  "Ada",
+      "uuid":  "GPU-273ab4a6-f80c-167d-371f-2f0629e8959d"
+    }
+  ],
+  "cudaVersion":  "13.1",
+  "writerId":  "1pi00cfp1fwklv32at4wfhasdojadpb7"
+}

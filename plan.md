@@ -24,9 +24,9 @@ Deliverable: Baseline report and exact reproducibility config.
 #### Week 2: Visual Prompting Integration (No RL Yet)
 1. Integrate FastSAM or GroundingDINO object grounding.
 2. Implement two prompt encodings:
-1. box-overlay channel on image,
-2. tokenized spatial hint in text prompt.
-3. Add fallback mode when grounding fails.
+    1. box-overlay channel on image,
+    2. tokenized spatial hint in text prompt.
+    3. Add fallback mode when grounding fails.
 
 Deliverable: Stage-1 code with deterministic prompt generation.
 
@@ -56,8 +56,8 @@ Deliverable: RL-ready training loop and failure buckets.
 
 #### Week 5: Lightweight Online RL Prototype
 1. Start with conservative RL:
-1. frozen backbone,
-2. trainable last layers only.
+    1. frozen backbone,
+    2. trainable last layers only.
 2. Add behavior-cloning anchor loss to prevent drift.
 3. Add KL regularization to baseline policy outputs.
 

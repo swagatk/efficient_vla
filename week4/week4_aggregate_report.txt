@@ -1,0 +1,13 @@
+Week 4 Stage-2 Evaluation: Aggregate Report
+============================================
+Runs logged: 3
+Target success (%): 48.67
+Mean success (%): 46.0000
+Std success (%): 2.0000
+95% CI half-width: 2.2632
+Delta vs target (%): -2.6700
+
+Per-seed runs:
+  seed=0, freq=1, style=mask, success=44.0000, peak_vram_gb=8.346, latency_ms=1422.778687, loop_hz=0.702850, exit=0
+  seed=1, freq=1, style=mask, success=46.0000, peak_vram_gb=8.346, latency_ms=1366.043705, loop_hz=0.732041, exit=0
+  seed=2, freq=1, style=mask, success=48.0000, peak_vram_gb=8.346, latency_ms=1368.279184, loop_hz=0.730845, exit=0

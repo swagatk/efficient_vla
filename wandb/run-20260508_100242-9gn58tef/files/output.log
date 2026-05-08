@@ -1,0 +1,64 @@
+Initializing Lightweight Online RL on cuda...
+[ResidualVLA] Loading frozen base policy from: HuggingFaceVLA/smolvla_libero
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+[ResidualVLA] Initializing trainable residual head and critic...
+Loading checkpoint from checkpoints/latest_checkpoint.pt...
+Resuming from episode 21
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+--- Starting Episode 21/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0111, BC Anchor Loss: 0.0006, PPO Loss: -0.0041
+
+--- Starting Episode 22/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0087, BC Anchor Loss: 0.0007, PPO Loss: -0.0046
+
+--- Starting Episode 23/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0110, BC Anchor Loss: 0.0006, PPO Loss: -0.0064
+
+--- Starting Episode 24/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0065, BC Anchor Loss: 0.0006, PPO Loss: -0.0073
+
+--- Starting Episode 25/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0101, BC Anchor Loss: 0.0007, PPO Loss: -0.0024
+Saving checkpoint at episode 25...
+
+--- Starting Episode 26/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0116, BC Anchor Loss: 0.0006, PPO Loss: -0.0091
+
+--- Starting Episode 27/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0088, BC Anchor Loss: 0.0006, PPO Loss: -0.0090
+
+--- Starting Episode 28/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0064, BC Anchor Loss: 0.0009, PPO Loss: -0.0040
+
+--- Starting Episode 29/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0116, BC Anchor Loss: 0.0010, PPO Loss: -0.0062
+
+--- Starting Episode 30/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0064, BC Anchor Loss: 0.0012, PPO Loss: -0.0067
+Saving checkpoint at episode 30...
+
+--- Starting Episode 31/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0074, BC Anchor Loss: 0.0013, PPO Loss: -0.0137
+
+--- Starting Episode 32/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0068, BC Anchor Loss: 0.0014, PPO Loss: -0.0038
+
+--- Starting Episode 33/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0060, BC Anchor Loss: 0.0014, PPO Loss: -0.0102
+
+--- Starting Episode 34/100 ---

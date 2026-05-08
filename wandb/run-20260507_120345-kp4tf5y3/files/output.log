@@ -1,0 +1,64 @@
+Initializing Lightweight Online RL on cuda...
+[ResidualVLA] Loading frozen base policy from: HuggingFaceVLA/smolvla_libero
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+[ResidualVLA] Initializing trainable residual head and critic...
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+--- Starting Episode 1/100 ---
+Traceback (most recent call last):
+  File "/home/swagat/GIT/efficient_vla/train_online_rl.py", line 216, in <module>
+    main()
+  File "/home/swagat/GIT/efficient_vla/train_online_rl.py", line 130, in main
+    final_action, delta_mean, value, log_prob = agent(batch, deterministic=False)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/swagat/GIT/efficient_vla/rl_residual_agent.py", line 67, in forward
+    base_action = self.base_policy.select_action(batch)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 116, in decorate_context
+    return func(*args, **kwargs)
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/modeling_smolvla.py", line 305, in select_action
+    actions = self._get_action_chunk(batch, noise)
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/modeling_smolvla.py", line 263, in _get_action_chunk
+    actions = self.model.sample_actions(images, img_masks, lang_tokens, lang_masks, state, noise=noise)
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/modeling_smolvla.py", line 718, in sample_actions
+    prefix_embs, prefix_pad_masks, prefix_att_masks = self.embed_prefix(
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/modeling_smolvla.py", line 601, in embed_prefix
+    state_emb = self.state_proj(state)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/linear.py", line 125, in forward
+    return F.linear(input, self.weight, self.bias)
+RuntimeError: mat1 and mat2 must have the same dtype, but got Float and BFloat16
+Traceback (most recent call last):
+  File "/home/swagat/GIT/efficient_vla/train_online_rl.py", line 216, in <module>
+    main()
+  File "/home/swagat/GIT/efficient_vla/train_online_rl.py", line 130, in main
+    final_action, delta_mean, value, log_prob = agent(batch, deterministic=False)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/swagat/GIT/efficient_vla/rl_residual_agent.py", line 67, in forward
+    base_action = self.base_policy.select_action(batch)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 116, in decorate_context
+    return func(*args, **kwargs)
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/modeling_smolvla.py", line 305, in select_action
+    actions = self._get_action_chunk(batch, noise)
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/modeling_smolvla.py", line 263, in _get_action_chunk
+    actions = self.model.sample_actions(images, img_masks, lang_tokens, lang_masks, state, noise=noise)
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/modeling_smolvla.py", line 718, in sample_actions
+    prefix_embs, prefix_pad_masks, prefix_att_masks = self.embed_prefix(
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/modeling_smolvla.py", line 601, in embed_prefix
+    state_emb = self.state_proj(state)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/linear.py", line 125, in forward
+    return F.linear(input, self.weight, self.bias)
+RuntimeError: mat1 and mat2 must have the same dtype, but got Float and BFloat16

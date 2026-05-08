@@ -1,0 +1,232 @@
+Initializing Lightweight Online RL on cuda...
+[ResidualVLA] Loading frozen base policy from: HuggingFaceVLA/smolvla_libero
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+[ResidualVLA] Initializing trainable residual head and critic...
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+--- Starting Episode 1/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0592, BC Anchor Loss: 0.0000
+
+--- Starting Episode 2/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0084, BC Anchor Loss: 0.0000
+
+--- Starting Episode 3/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0452, BC Anchor Loss: 0.0000
+
+--- Starting Episode 4/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0313, BC Anchor Loss: 0.0000
+
+--- Starting Episode 5/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0104, BC Anchor Loss: 0.0000
+Saving checkpoint at episode 5...
+
+--- Starting Episode 6/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0091, BC Anchor Loss: 0.0000
+
+--- Starting Episode 7/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0131, BC Anchor Loss: 0.0000
+
+--- Starting Episode 8/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0199, BC Anchor Loss: 0.0000
+
+--- Starting Episode 9/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0107, BC Anchor Loss: 0.0000
+
+--- Starting Episode 10/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0094, BC Anchor Loss: 0.0000
+Saving checkpoint at episode 10...
+
+--- Starting Episode 11/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0098, BC Anchor Loss: 0.0000
+
+--- Starting Episode 12/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0191, BC Anchor Loss: 0.0000
+
+--- Starting Episode 13/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0140, BC Anchor Loss: 0.0000
+
+--- Starting Episode 14/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0079, BC Anchor Loss: 0.0000
+
+--- Starting Episode 15/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0083, BC Anchor Loss: 0.0000
+Saving checkpoint at episode 15...
+
+--- Starting Episode 16/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0171, BC Anchor Loss: 0.0000
+
+--- Starting Episode 17/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0142, BC Anchor Loss: 0.0000
+
+--- Starting Episode 18/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0079, BC Anchor Loss: 0.0000
+
+--- Starting Episode 19/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0090, BC Anchor Loss: 0.0000
+
+--- Starting Episode 20/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0131, BC Anchor Loss: 0.0000
+Saving checkpoint at episode 20...
+
+--- Starting Episode 21/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0211, BC Anchor Loss: 0.0000
+
+--- Starting Episode 22/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0084, BC Anchor Loss: 0.0000
+
+--- Starting Episode 23/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0092, BC Anchor Loss: 0.0000
+
+--- Starting Episode 24/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0157, BC Anchor Loss: 0.0000
+
+--- Starting Episode 25/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0221, BC Anchor Loss: 0.0000
+Saving checkpoint at episode 25...
+
+--- Starting Episode 26/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0104, BC Anchor Loss: 0.0000
+
+--- Starting Episode 27/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0087, BC Anchor Loss: 0.0000
+
+--- Starting Episode 28/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0101, BC Anchor Loss: 0.0000
+
+--- Starting Episode 29/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0184, BC Anchor Loss: 0.0000
+
+--- Starting Episode 30/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0107, BC Anchor Loss: 0.0000
+Saving checkpoint at episode 30...
+
+--- Starting Episode 31/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0090, BC Anchor Loss: 0.0000
+
+--- Starting Episode 32/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0105, BC Anchor Loss: 0.0000
+
+--- Starting Episode 33/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0175, BC Anchor Loss: 0.0000
+
+--- Starting Episode 34/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0156, BC Anchor Loss: 0.0000
+
+--- Starting Episode 35/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0098, BC Anchor Loss: 0.0000
+Saving checkpoint at episode 35...
+
+--- Starting Episode 36/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0088, BC Anchor Loss: 0.0000
+
+--- Starting Episode 37/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0119, BC Anchor Loss: 0.0000
+
+--- Starting Episode 38/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0207, BC Anchor Loss: 0.0000
+
+--- Starting Episode 39/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0165, BC Anchor Loss: 0.0000
+
+--- Starting Episode 40/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0092, BC Anchor Loss: 0.0000
+Saving checkpoint at episode 40...
+
+--- Starting Episode 41/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0088, BC Anchor Loss: 0.0000
+
+--- Starting Episode 42/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0088, BC Anchor Loss: 0.0000
+
+--- Starting Episode 43/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0155, BC Anchor Loss: 0.0000
+
+--- Starting Episode 44/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0218, BC Anchor Loss: 0.0000
+
+--- Starting Episode 45/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0142, BC Anchor Loss: 0.0000
+Saving checkpoint at episode 45...
+
+--- Starting Episode 46/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0088, BC Anchor Loss: 0.0000
+
+--- Starting Episode 47/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0086, BC Anchor Loss: 0.0000
+
+--- Starting Episode 48/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0091, BC Anchor Loss: 0.0000
+
+--- Starting Episode 49/100 ---
+Episode length: 520, Total Reward: -5.20
+Traceback (most recent call last):
+  File "/home/swagat/GIT/efficient_vla/./train_online_rl.py", line 243, in <module>
+    env.close()
+  File "/home/swagat/GIT/efficient_vla/./train_online_rl.py", line 209, in main
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/_tensor.py", line 648, in backward
+    torch.autograd.backward(
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/autograd/__init__.py", line 353, in backward
+    _engine_run_backward(
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/autograd/graph.py", line 824, in _engine_run_backward
+    return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+KeyboardInterrupt
+Traceback (most recent call last):
+  File "/home/swagat/GIT/efficient_vla/./train_online_rl.py", line 243, in <module>
+    env.close()
+  File "/home/swagat/GIT/efficient_vla/./train_online_rl.py", line 209, in main
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/_tensor.py", line 648, in backward
+    torch.autograd.backward(
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/autograd/__init__.py", line 353, in backward
+    _engine_run_backward(
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/autograd/graph.py", line 824, in _engine_run_backward
+    return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+KeyboardInterrupt

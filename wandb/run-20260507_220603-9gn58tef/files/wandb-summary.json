@@ -1,0 +1,1 @@
+{"_wandb":{"runtime":9565},"success":0,"episode_length":520,"_runtime":9565,"_step":19,"value_loss":0.009858358651399612,"bc_anchor_loss":0.0005878712981939316,"_timestamp":1.7781991015092337e+09,"reward":-5.199999999999934,"ppo_loss":-0.0035923004616051912,"episode":20}

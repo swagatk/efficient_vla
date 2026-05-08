@@ -1,0 +1,18 @@
+{"time":"2026-05-07T12:56:22.216638887+01:00","level":"INFO","msg":"stream: starting","core version":"0.21.4"}
+{"time":"2026-05-07T12:56:22.535288892+01:00","level":"INFO","msg":"stream: created new stream","id":"x10sa2i6"}
+{"time":"2026-05-07T12:56:22.535354177+01:00","level":"INFO","msg":"stream: started","id":"x10sa2i6"}
+{"time":"2026-05-07T12:56:22.535463571+01:00","level":"INFO","msg":"writer: started","stream_id":"x10sa2i6"}
+{"time":"2026-05-07T12:56:22.535536568+01:00","level":"INFO","msg":"handler: started","stream_id":"x10sa2i6"}
+{"time":"2026-05-07T12:56:22.535729597+01:00","level":"INFO","msg":"sender: started","stream_id":"x10sa2i6"}
+{"time":"2026-05-07T13:56:38.05096808+01:00","level":"INFO","msg":"api: retrying error","error":"Post \"https://api.wandb.ai/graphql\": dial tcp: lookup api.wandb.ai on 127.0.0.53:53: server misbehaving"}
+{"time":"2026-05-07T13:56:38.465080846+01:00","level":"INFO","msg":"api: retrying error","error":"Post \"https://api.wandb.ai/files/swagatk/efficient_vla_rl/x10sa2i6/file_stream\": dial tcp: lookup api.wandb.ai on 127.0.0.53:53: server misbehaving"}
+{"time":"2026-05-07T14:47:11.538589722+01:00","level":"INFO","msg":"api: retrying error","error":"Post \"https://api.wandb.ai/files/swagatk/efficient_vla_rl/x10sa2i6/file_stream\": dial tcp: lookup api.wandb.ai on 127.0.0.53:53: server misbehaving"}
+{"time":"2026-05-07T14:47:11.53866734+01:00","level":"INFO","msg":"api: retrying error","error":"Post \"https://api.wandb.ai/graphql\": dial tcp: lookup api.wandb.ai on 127.0.0.53:53: server misbehaving"}
+{"time":"2026-05-07T14:47:16.138718503+01:00","level":"INFO","msg":"api: retrying error","error":"Post \"https://api.wandb.ai/graphql\": dial tcp: lookup api.wandb.ai on 127.0.0.53:53: server misbehaving"}
+{"time":"2026-05-07T14:47:16.43444096+01:00","level":"INFO","msg":"api: retrying error","error":"Post \"https://api.wandb.ai/files/swagatk/efficient_vla_rl/x10sa2i6/file_stream\": dial tcp: lookup api.wandb.ai on 127.0.0.53:53: server misbehaving"}
+{"time":"2026-05-07T14:47:24.639382952+01:00","level":"INFO","msg":"api: retrying error","error":"Post \"https://api.wandb.ai/graphql\": dial tcp: lookup api.wandb.ai on 127.0.0.53:53: server misbehaving"}
+{"time":"2026-05-07T15:13:58.790938127+01:00","level":"INFO","msg":"stream: closing","id":"x10sa2i6"}
+{"time":"2026-05-07T15:13:59.336124977+01:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2026-05-07T15:13:59.6425233+01:00","level":"INFO","msg":"handler: closed","stream_id":"x10sa2i6"}
+{"time":"2026-05-07T15:13:59.642670672+01:00","level":"INFO","msg":"sender: closed","stream_id":"x10sa2i6"}
+{"time":"2026-05-07T15:13:59.642697415+01:00","level":"INFO","msg":"stream: closed","id":"x10sa2i6"}

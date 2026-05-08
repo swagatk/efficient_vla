@@ -1,0 +1,851 @@
+Initializing Lightweight Online RL on cuda...
+[ResidualVLA] Loading frozen base policy from: HuggingFaceVLA/smolvla_libero
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+[ResidualVLA] Initializing trainable residual head and critic...
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+--- Starting Episode 1/100 ---
+Memory before agent: 1.259777536 GB
+Memory after agent: 1.307852288 GB
+Memory before agent: 1.308242944 GB
+Memory after agent: 1.346044416 GB
+Memory before agent: 1.346435072 GB
+Memory after agent: 1.385022976 GB
+Memory before agent: 1.385413632 GB
+Memory after agent: 1.424656896 GB
+Memory before agent: 1.425047552 GB
+Memory after agent: 1.462849024 GB
+Memory before agent: 1.46323968 GB
+Memory after agent: 1.501827584 GB
+Memory before agent: 1.50221824 GB
+Memory after agent: 1.540806144 GB
+Memory before agent: 1.5411968 GB
+Memory after agent: 1.578998272 GB
+Memory before agent: 1.579388928 GB
+Memory after agent: 1.617714688 GB
+Memory before agent: 1.618105344 GB
+Memory after agent: 1.656693248 GB
+Memory before agent: 1.657083904 GB
+Memory after agent: 1.696327168 GB
+Memory before agent: 1.696717824 GB
+Memory after agent: 1.734519296 GB
+Memory before agent: 1.734909952 GB
+Memory after agent: 1.773497856 GB
+Memory before agent: 1.773888512 GB
+Memory after agent: 1.812476416 GB
+Memory before agent: 1.812867072 GB
+Memory after agent: 1.850668544 GB
+Memory before agent: 1.8510592 GB
+Memory after agent: 1.88938496 GB
+Memory before agent: 1.889775616 GB
+Memory after agent: 1.92836352 GB
+Memory before agent: 1.928754176 GB
+Memory after agent: 1.96799744 GB
+Memory before agent: 1.968388096 GB
+Memory after agent: 2.006189568 GB
+Memory before agent: 2.006580224 GB
+Memory after agent: 2.045168128 GB
+Memory before agent: 2.045558784 GB
+Memory after agent: 2.084146688 GB
+Memory before agent: 2.084537344 GB
+Memory after agent: 2.122338816 GB
+Memory before agent: 2.122729472 GB
+Memory after agent: 2.161055232 GB
+Memory before agent: 2.161445888 GB
+Memory after agent: 2.200033792 GB
+Memory before agent: 2.200424448 GB
+Memory after agent: 2.239667712 GB
+Memory before agent: 2.240058368 GB
+Memory after agent: 2.27785984 GB
+Memory before agent: 2.278250496 GB
+Memory after agent: 2.3168384 GB
+Memory before agent: 2.317229056 GB
+Memory after agent: 2.35581696 GB
+Memory before agent: 2.356207616 GB
+Memory after agent: 2.394009088 GB
+Memory before agent: 2.394399744 GB
+Memory after agent: 2.432725504 GB
+Memory before agent: 2.43311616 GB
+Memory after agent: 2.471704064 GB
+Memory before agent: 2.47209472 GB
+Memory after agent: 2.511337984 GB
+Memory before agent: 2.51172864 GB
+Memory after agent: 2.549530112 GB
+Memory before agent: 2.549920768 GB
+Memory after agent: 2.588508672 GB
+Memory before agent: 2.588899328 GB
+Memory after agent: 2.627487232 GB
+Memory before agent: 2.627877888 GB
+Memory after agent: 2.66567936 GB
+Memory before agent: 2.666070016 GB
+Memory after agent: 2.704395776 GB
+Memory before agent: 2.704786432 GB
+Memory after agent: 2.743374336 GB
+Memory before agent: 2.743764992 GB
+Memory after agent: 2.783008256 GB
+Memory before agent: 2.783398912 GB
+Memory after agent: 2.821200384 GB
+Memory before agent: 2.82159104 GB
+Memory after agent: 2.860178944 GB
+Memory before agent: 2.8605696 GB
+Memory after agent: 2.899157504 GB
+Memory before agent: 2.89954816 GB
+Memory after agent: 2.937349632 GB
+Memory before agent: 2.937740288 GB
+Memory after agent: 2.976066048 GB
+Memory before agent: 2.976456704 GB
+Memory after agent: 3.015044608 GB
+Memory before agent: 3.015435264 GB
+Memory after agent: 3.054678528 GB
+Memory before agent: 3.055069184 GB
+Memory after agent: 3.092870656 GB
+Memory before agent: 3.093261312 GB
+Memory after agent: 3.131849216 GB
+Memory before agent: 3.132239872 GB
+Memory after agent: 3.170827776 GB
+Memory before agent: 3.171218432 GB
+Memory after agent: 3.209019904 GB
+Memory before agent: 3.20941056 GB
+Memory after agent: 3.24773632 GB
+Memory before agent: 3.248126976 GB
+Memory after agent: 3.28671488 GB
+Memory before agent: 3.287105536 GB
+Memory after agent: 3.3263488 GB
+Memory before agent: 3.326739456 GB
+Memory after agent: 3.364540928 GB
+Memory before agent: 3.364931584 GB
+Memory after agent: 3.403519488 GB
+Memory before agent: 3.403910144 GB
+Memory after agent: 3.442498048 GB
+Memory before agent: 3.442888704 GB
+Memory after agent: 3.480690176 GB
+Memory before agent: 3.481080832 GB
+Memory after agent: 3.519406592 GB
+Memory before agent: 3.519797248 GB
+Memory after agent: 3.558385152 GB
+Memory before agent: 3.558775808 GB
+Memory after agent: 3.598019072 GB
+Memory before agent: 3.598409728 GB
+Memory after agent: 3.6362112 GB
+Memory before agent: 3.636601856 GB
+Memory after agent: 3.67518976 GB
+Memory before agent: 3.675580416 GB
+Memory after agent: 3.71416832 GB
+Memory before agent: 3.714558976 GB
+Memory after agent: 3.752360448 GB
+Memory before agent: 3.752751104 GB
+Memory after agent: 3.791076864 GB
+Memory before agent: 3.79146752 GB
+Memory after agent: 3.830055424 GB
+Memory before agent: 3.83044608 GB
+Memory after agent: 3.869689344 GB
+Memory before agent: 3.87008 GB
+Memory after agent: 3.907881472 GB
+Memory before agent: 3.908272128 GB
+Memory after agent: 3.946860032 GB
+Memory before agent: 3.947250688 GB
+Memory after agent: 3.985838592 GB
+Memory before agent: 3.986229248 GB
+Memory after agent: 4.02403072 GB
+Memory before agent: 4.024421376 GB
+Memory after agent: 4.062747136 GB
+Memory before agent: 4.063137792 GB
+Memory after agent: 4.101725696 GB
+Memory before agent: 4.102116352 GB
+Memory after agent: 4.141359616 GB
+Memory before agent: 4.141750272 GB
+Memory after agent: 4.179551744 GB
+Memory before agent: 4.1799424 GB
+Memory after agent: 4.218530304 GB
+Memory before agent: 4.21892096 GB
+Memory after agent: 4.257508864 GB
+Memory before agent: 4.25789952 GB
+Memory after agent: 4.295700992 GB
+Memory before agent: 4.296091648 GB
+Memory after agent: 4.334417408 GB
+Memory before agent: 4.334808064 GB
+Memory after agent: 4.373395968 GB
+Memory before agent: 4.373786624 GB
+Memory after agent: 4.413029888 GB
+Memory before agent: 4.413420544 GB
+Memory after agent: 4.451222016 GB
+Memory before agent: 4.451612672 GB
+Memory after agent: 4.490200576 GB
+Memory before agent: 4.490591232 GB
+Memory after agent: 4.529179136 GB
+Memory before agent: 4.529569792 GB
+Memory after agent: 4.567371264 GB
+Memory before agent: 4.56776192 GB
+Memory after agent: 4.60608768 GB
+Memory before agent: 4.606478336 GB
+Memory after agent: 4.64506624 GB
+Memory before agent: 4.645456896 GB
+Memory after agent: 4.68470016 GB
+Memory before agent: 4.685090816 GB
+Memory after agent: 4.722892288 GB
+Memory before agent: 4.723282944 GB
+Memory after agent: 4.761870848 GB
+Memory before agent: 4.762261504 GB
+Memory after agent: 4.800849408 GB
+Memory before agent: 4.801240064 GB
+Memory after agent: 4.839041536 GB
+Memory before agent: 4.839432192 GB
+Memory after agent: 4.877757952 GB
+Memory before agent: 4.878148608 GB
+Memory after agent: 4.916736512 GB
+Memory before agent: 4.917127168 GB
+Memory after agent: 4.956370432 GB
+Memory before agent: 4.956761088 GB
+Memory after agent: 4.99456256 GB
+Memory before agent: 4.994953216 GB
+Memory after agent: 5.03354112 GB
+Memory before agent: 5.033931776 GB
+Memory after agent: 5.07251968 GB
+Memory before agent: 5.072910336 GB
+Memory after agent: 5.110711808 GB
+Memory before agent: 5.111102464 GB
+Memory after agent: 5.149428224 GB
+Memory before agent: 5.14981888 GB
+Memory after agent: 5.188406784 GB
+Memory before agent: 5.18879744 GB
+Memory after agent: 5.228040704 GB
+Memory before agent: 5.22843136 GB
+Memory after agent: 5.266232832 GB
+Memory before agent: 5.266623488 GB
+Memory after agent: 5.305211392 GB
+Memory before agent: 5.305602048 GB
+Memory after agent: 5.344189952 GB
+Memory before agent: 5.344580608 GB
+Memory after agent: 5.38238208 GB
+Memory before agent: 5.382772736 GB
+Memory after agent: 5.421098496 GB
+Memory before agent: 5.421489152 GB
+Memory after agent: 5.460077056 GB
+Memory before agent: 5.460467712 GB
+Memory after agent: 5.499710976 GB
+Memory before agent: 5.500101632 GB
+Memory after agent: 5.537903104 GB
+Memory before agent: 5.53829376 GB
+Memory after agent: 5.576881664 GB
+Memory before agent: 5.57727232 GB
+Memory after agent: 5.615860224 GB
+Memory before agent: 5.61625088 GB
+Memory after agent: 5.654052352 GB
+Memory before agent: 5.654443008 GB
+Memory after agent: 5.692768768 GB
+Memory before agent: 5.693159424 GB
+Memory after agent: 5.731747328 GB
+Memory before agent: 5.732137984 GB
+Memory after agent: 5.771381248 GB
+Memory before agent: 5.771771904 GB
+Memory after agent: 5.809573376 GB
+Memory before agent: 5.809964032 GB
+Memory after agent: 5.848551936 GB
+Memory before agent: 5.848942592 GB
+Memory after agent: 5.887530496 GB
+Memory before agent: 5.887921152 GB
+Memory after agent: 5.925722624 GB
+Memory before agent: 5.92611328 GB
+Memory after agent: 5.96443904 GB
+Memory before agent: 5.964829696 GB
+Memory after agent: 6.0034176 GB
+Memory before agent: 6.003808256 GB
+Memory after agent: 6.04305152 GB
+Memory before agent: 6.043442176 GB
+Memory after agent: 6.081243648 GB
+Memory before agent: 6.081634304 GB
+Memory after agent: 6.120222208 GB
+Memory before agent: 6.120612864 GB
+Memory after agent: 6.159200768 GB
+Memory before agent: 6.159591424 GB
+Memory after agent: 6.197392896 GB
+Memory before agent: 6.197783552 GB
+Memory after agent: 6.236109312 GB
+Memory before agent: 6.236499968 GB
+Memory after agent: 6.275087872 GB
+Memory before agent: 6.275478528 GB
+Memory after agent: 6.314721792 GB
+Memory before agent: 6.315112448 GB
+Memory after agent: 6.35291392 GB
+Memory before agent: 6.353304576 GB
+Memory after agent: 6.39189248 GB
+Memory before agent: 6.392283136 GB
+Memory after agent: 6.43087104 GB
+Memory before agent: 6.431261696 GB
+Memory after agent: 6.469063168 GB
+Memory before agent: 6.469453824 GB
+Memory after agent: 6.507779584 GB
+Memory before agent: 6.50817024 GB
+Memory after agent: 6.546758144 GB
+Memory before agent: 6.5471488 GB
+Memory after agent: 6.586392064 GB
+Memory before agent: 6.58678272 GB
+Memory after agent: 6.624584192 GB
+Memory before agent: 6.624974848 GB
+Memory after agent: 6.663562752 GB
+Memory before agent: 6.663953408 GB
+Memory after agent: 6.702541312 GB
+Memory before agent: 6.702931968 GB
+Memory after agent: 6.74073344 GB
+Memory before agent: 6.741124096 GB
+Memory after agent: 6.779449856 GB
+Memory before agent: 6.779840512 GB
+Memory after agent: 6.818428416 GB
+Memory before agent: 6.818819072 GB
+Memory after agent: 6.858062336 GB
+Memory before agent: 6.858452992 GB
+Memory after agent: 6.896254464 GB
+Memory before agent: 6.89664512 GB
+Memory after agent: 6.935233024 GB
+Memory before agent: 6.93562368 GB
+Memory after agent: 6.974211584 GB
+Memory before agent: 6.97460224 GB
+Memory after agent: 7.012403712 GB
+Memory before agent: 7.012794368 GB
+Memory after agent: 7.051120128 GB
+Memory before agent: 7.051510784 GB
+Memory after agent: 7.090098688 GB
+Memory before agent: 7.090489344 GB
+Memory after agent: 7.129732608 GB
+Memory before agent: 7.130123264 GB
+Memory after agent: 7.167924736 GB
+Memory before agent: 7.168315392 GB
+Memory after agent: 7.206903296 GB
+Memory before agent: 7.207293952 GB
+Memory after agent: 7.245881856 GB
+Memory before agent: 7.246272512 GB
+Memory after agent: 7.284073984 GB
+Memory before agent: 7.28446464 GB
+Memory after agent: 7.3227904 GB
+Memory before agent: 7.323181056 GB
+Memory after agent: 7.36176896 GB
+Memory before agent: 7.362159616 GB
+Memory after agent: 7.40140288 GB
+Memory before agent: 7.401793536 GB
+Memory after agent: 7.439595008 GB
+Memory before agent: 7.439985664 GB
+Memory after agent: 7.478573568 GB
+Memory before agent: 7.478964224 GB
+Memory after agent: 7.517552128 GB
+Memory before agent: 7.517942784 GB
+Memory after agent: 7.555744256 GB
+Memory before agent: 7.556134912 GB
+Memory after agent: 7.594460672 GB
+Memory before agent: 7.594851328 GB
+Memory after agent: 7.633439232 GB
+Memory before agent: 7.633829888 GB
+Memory after agent: 7.673073152 GB
+Memory before agent: 7.673463808 GB
+Memory after agent: 7.71126528 GB
+Memory before agent: 7.711655936 GB
+Memory after agent: 7.75024384 GB
+Memory before agent: 7.750634496 GB
+Memory after agent: 7.7892224 GB
+Memory before agent: 7.789613056 GB
+Memory after agent: 7.827414528 GB
+Memory before agent: 7.827805184 GB
+Memory after agent: 7.866130944 GB
+Memory before agent: 7.8665216 GB
+Memory after agent: 7.905109504 GB
+Memory before agent: 7.90550016 GB
+Memory after agent: 7.944743424 GB
+Memory before agent: 7.94513408 GB
+Memory after agent: 7.982935552 GB
+Memory before agent: 7.983326208 GB
+Memory after agent: 8.021914112 GB
+Memory before agent: 8.022304768 GB
+Memory after agent: 8.060892672 GB
+Memory before agent: 8.061283328 GB
+Memory after agent: 8.0990848 GB
+Memory before agent: 8.099475456 GB
+Memory after agent: 8.137801216 GB
+Memory before agent: 8.138191872 GB
+Memory after agent: 8.176779776 GB
+Memory before agent: 8.177170432 GB
+Memory after agent: 8.216413696 GB
+Memory before agent: 8.216804352 GB
+Memory after agent: 8.254605824 GB
+Memory before agent: 8.25499648 GB
+Memory after agent: 8.293584384 GB
+Memory before agent: 8.29397504 GB
+Memory after agent: 8.332562944 GB
+Memory before agent: 8.3329536 GB
+Memory after agent: 8.370755072 GB
+Memory before agent: 8.371145728 GB
+Memory after agent: 8.409471488 GB
+Memory before agent: 8.409862144 GB
+Memory after agent: 8.448450048 GB
+Memory before agent: 8.448840704 GB
+Memory after agent: 8.488083968 GB
+Memory before agent: 8.488474624 GB
+Memory after agent: 8.526276096 GB
+Memory before agent: 8.526666752 GB
+Memory after agent: 8.565254656 GB
+Memory before agent: 8.565645312 GB
+Memory after agent: 8.604233216 GB
+Memory before agent: 8.604623872 GB
+Memory after agent: 8.642425344 GB
+Memory before agent: 8.642816 GB
+Memory after agent: 8.68114176 GB
+Memory before agent: 8.681532416 GB
+Memory after agent: 8.72012032 GB
+Memory before agent: 8.720510976 GB
+Memory after agent: 8.75975424 GB
+Memory before agent: 8.760144896 GB
+Memory after agent: 8.797946368 GB
+Memory before agent: 8.798337024 GB
+Memory after agent: 8.836924928 GB
+Memory before agent: 8.837315584 GB
+Memory after agent: 8.875903488 GB
+Memory before agent: 8.876294144 GB
+Memory after agent: 8.914095616 GB
+Memory before agent: 8.914486272 GB
+Memory after agent: 8.952812032 GB
+Memory before agent: 8.953202688 GB
+Memory after agent: 8.991790592 GB
+Memory before agent: 8.992181248 GB
+Memory after agent: 9.031424512 GB
+Memory before agent: 9.031815168 GB
+Memory after agent: 9.06961664 GB
+Memory before agent: 9.070007296 GB
+Memory after agent: 9.1085952 GB
+Memory before agent: 9.108985856 GB
+Memory after agent: 9.14757376 GB
+Memory before agent: 9.147964416 GB
+Memory after agent: 9.185765888 GB
+Memory before agent: 9.186156544 GB
+Memory after agent: 9.224482304 GB
+Memory before agent: 9.22487296 GB
+Memory after agent: 9.263460864 GB
+Memory before agent: 9.26385152 GB
+Memory after agent: 9.303094784 GB
+Memory before agent: 9.30348544 GB
+Memory after agent: 9.341286912 GB
+Memory before agent: 9.341677568 GB
+Memory after agent: 9.380265472 GB
+Memory before agent: 9.380656128 GB
+Memory after agent: 9.419244032 GB
+Memory before agent: 9.419634688 GB
+Memory after agent: 9.45743616 GB
+Memory before agent: 9.457826816 GB
+Memory after agent: 9.496152576 GB
+Memory before agent: 9.496543232 GB
+Memory after agent: 9.535131136 GB
+Memory before agent: 9.535521792 GB
+Memory after agent: 9.574765056 GB
+Memory before agent: 9.575155712 GB
+Memory after agent: 9.612957184 GB
+Memory before agent: 9.61334784 GB
+Memory after agent: 9.651935744 GB
+Memory before agent: 9.6523264 GB
+Memory after agent: 9.690914304 GB
+Memory before agent: 9.69130496 GB
+Memory after agent: 9.729106432 GB
+Memory before agent: 9.729497088 GB
+Memory after agent: 9.767822848 GB
+Memory before agent: 9.768213504 GB
+Memory after agent: 9.806801408 GB
+Memory before agent: 9.807192064 GB
+Memory after agent: 9.846435328 GB
+Memory before agent: 9.846825984 GB
+Memory after agent: 9.884627456 GB
+Memory before agent: 9.885018112 GB
+Memory after agent: 9.923606016 GB
+Memory before agent: 9.923996672 GB
+Memory after agent: 9.962584576 GB
+Memory before agent: 9.962975232 GB
+Memory after agent: 10.000776704 GB
+Memory before agent: 10.00116736 GB
+Memory after agent: 10.03949312 GB
+Memory before agent: 10.039883776 GB
+Memory after agent: 10.07847168 GB
+Memory before agent: 10.078862336 GB
+Memory after agent: 10.1181056 GB
+Memory before agent: 10.118496256 GB
+Memory after agent: 10.156297728 GB
+Memory before agent: 10.156688384 GB
+Memory after agent: 10.195276288 GB
+Memory before agent: 10.195666944 GB
+Memory after agent: 10.234254848 GB
+Memory before agent: 10.234645504 GB
+Memory after agent: 10.272446976 GB
+Memory before agent: 10.272837632 GB
+Memory after agent: 10.311163392 GB
+Memory before agent: 10.311554048 GB
+Memory after agent: 10.350141952 GB
+Memory before agent: 10.350532608 GB
+Memory after agent: 10.389775872 GB
+Memory before agent: 10.390166528 GB
+Memory after agent: 10.427968 GB
+Memory before agent: 10.428358656 GB
+Memory after agent: 10.46694656 GB
+Memory before agent: 10.467337216 GB
+Memory after agent: 10.50592512 GB
+Memory before agent: 10.506315776 GB
+Memory after agent: 10.544117248 GB
+Memory before agent: 10.544507904 GB
+Memory after agent: 10.582833664 GB
+Memory before agent: 10.58322432 GB
+Memory after agent: 10.621812224 GB
+Memory before agent: 10.62220288 GB
+Memory after agent: 10.661446144 GB
+Memory before agent: 10.6618368 GB
+Memory after agent: 10.699638272 GB
+Memory before agent: 10.700028928 GB
+Memory after agent: 10.738616832 GB
+Memory before agent: 10.739007488 GB
+Memory after agent: 10.777595392 GB
+Memory before agent: 10.777986048 GB
+Memory after agent: 10.81578752 GB
+Memory before agent: 10.816178176 GB
+Memory after agent: 10.854503936 GB
+Memory before agent: 10.854894592 GB
+Memory after agent: 10.893482496 GB
+Memory before agent: 10.893873152 GB
+Memory after agent: 10.933116416 GB
+Memory before agent: 10.933507072 GB
+Memory after agent: 10.971308544 GB
+Memory before agent: 10.9716992 GB
+Memory after agent: 11.010287104 GB
+Memory before agent: 11.01067776 GB
+Memory after agent: 11.049265664 GB
+Memory before agent: 11.04965632 GB
+Memory after agent: 11.087457792 GB
+Memory before agent: 11.087848448 GB
+Memory after agent: 11.126174208 GB
+Memory before agent: 11.126564864 GB
+Memory after agent: 11.165152768 GB
+Memory before agent: 11.165543424 GB
+Memory after agent: 11.204786688 GB
+Memory before agent: 11.205177344 GB
+Memory after agent: 11.242978816 GB
+Memory before agent: 11.243369472 GB
+Memory after agent: 11.281957376 GB
+Memory before agent: 11.282348032 GB
+Memory after agent: 11.320935936 GB
+Memory before agent: 11.321326592 GB
+Memory after agent: 11.359128064 GB
+Memory before agent: 11.35951872 GB
+Memory after agent: 11.39784448 GB
+Memory before agent: 11.398235136 GB
+Memory after agent: 11.43682304 GB
+Memory before agent: 11.437213696 GB
+Memory after agent: 11.47645696 GB
+Memory before agent: 11.476847616 GB
+Memory after agent: 11.514649088 GB
+Memory before agent: 11.515039744 GB
+Memory after agent: 11.553627648 GB
+Memory before agent: 11.554018304 GB
+Memory after agent: 11.592606208 GB
+Memory before agent: 11.592996864 GB
+Memory after agent: 11.630798336 GB
+Memory before agent: 11.631188992 GB
+Memory after agent: 11.669514752 GB
+Memory before agent: 11.669905408 GB
+Memory after agent: 11.708493312 GB
+Memory before agent: 11.708883968 GB
+Memory after agent: 11.748127232 GB
+Memory before agent: 11.748517888 GB
+Memory after agent: 11.78631936 GB
+Memory before agent: 11.786710016 GB
+Memory after agent: 11.82529792 GB
+Memory before agent: 11.825688576 GB
+Memory after agent: 11.86427648 GB
+Memory before agent: 11.864667136 GB
+Memory after agent: 11.902468608 GB
+Memory before agent: 11.902859264 GB
+Memory after agent: 11.941185024 GB
+Memory before agent: 11.94157568 GB
+Memory after agent: 11.980163584 GB
+Memory before agent: 11.98055424 GB
+Memory after agent: 12.019797504 GB
+Memory before agent: 12.02018816 GB
+Memory after agent: 12.057989632 GB
+Memory before agent: 12.058380288 GB
+Memory after agent: 12.096968192 GB
+Memory before agent: 12.097358848 GB
+Memory after agent: 12.135946752 GB
+Memory before agent: 12.136337408 GB
+Memory after agent: 12.17413888 GB
+Memory before agent: 12.174529536 GB
+Memory after agent: 12.212855296 GB
+Memory before agent: 12.213245952 GB
+Memory after agent: 12.251833856 GB
+Memory before agent: 12.252224512 GB
+Memory after agent: 12.291467776 GB
+Memory before agent: 12.291858432 GB
+Memory after agent: 12.329659904 GB
+Memory before agent: 12.33005056 GB
+Memory after agent: 12.368638464 GB
+Memory before agent: 12.36902912 GB
+Memory after agent: 12.407617024 GB
+Memory before agent: 12.40800768 GB
+Memory after agent: 12.445809152 GB
+Memory before agent: 12.446199808 GB
+Memory after agent: 12.484525568 GB
+Memory before agent: 12.484916224 GB
+Memory after agent: 12.523504128 GB
+Memory before agent: 12.523894784 GB
+Memory after agent: 12.563138048 GB
+Memory before agent: 12.563528704 GB
+Memory after agent: 12.601330176 GB
+Memory before agent: 12.601720832 GB
+Memory after agent: 12.640308736 GB
+Memory before agent: 12.640699392 GB
+Memory after agent: 12.679287296 GB
+Memory before agent: 12.679677952 GB
+Memory after agent: 12.717479424 GB
+Memory before agent: 12.71787008 GB
+Memory after agent: 12.75619584 GB
+Memory before agent: 12.756586496 GB
+Memory after agent: 12.7951744 GB
+Memory before agent: 12.795565056 GB
+Memory after agent: 12.83480832 GB
+Memory before agent: 12.835198976 GB
+Memory after agent: 12.873000448 GB
+Memory before agent: 12.873391104 GB
+Memory after agent: 12.911979008 GB
+Memory before agent: 12.912369664 GB
+Memory after agent: 12.950957568 GB
+Memory before agent: 12.951348224 GB
+Memory after agent: 12.989149696 GB
+Memory before agent: 12.989540352 GB
+Memory after agent: 13.027866112 GB
+Memory before agent: 13.028256768 GB
+Memory after agent: 13.066844672 GB
+Memory before agent: 13.067235328 GB
+Memory after agent: 13.106478592 GB
+Memory before agent: 13.106869248 GB
+Memory after agent: 13.14467072 GB
+Memory before agent: 13.145061376 GB
+Memory after agent: 13.18364928 GB
+Memory before agent: 13.184039936 GB
+Memory after agent: 13.22262784 GB
+Memory before agent: 13.223018496 GB
+Memory after agent: 13.260819968 GB
+Memory before agent: 13.261210624 GB
+Memory after agent: 13.299536384 GB
+Memory before agent: 13.29992704 GB
+Memory after agent: 13.338514944 GB
+Memory before agent: 13.3389056 GB
+Memory after agent: 13.378148864 GB
+Memory before agent: 13.37853952 GB
+Memory after agent: 13.416340992 GB
+Memory before agent: 13.416731648 GB
+Memory after agent: 13.455319552 GB
+Memory before agent: 13.455710208 GB
+Memory after agent: 13.494298112 GB
+Memory before agent: 13.494688768 GB
+Memory after agent: 13.53249024 GB
+Memory before agent: 13.532880896 GB
+Memory after agent: 13.571206656 GB
+Memory before agent: 13.571597312 GB
+Memory after agent: 13.610185216 GB
+Memory before agent: 13.610575872 GB
+Memory after agent: 13.649819136 GB
+Memory before agent: 13.650209792 GB
+Memory after agent: 13.688011264 GB
+Memory before agent: 13.68840192 GB
+Memory after agent: 13.726989824 GB
+Memory before agent: 13.72738048 GB
+Memory after agent: 13.765968384 GB
+Memory before agent: 13.76635904 GB
+Memory after agent: 13.804160512 GB
+Memory before agent: 13.804551168 GB
+Memory after agent: 13.842876928 GB
+Memory before agent: 13.843267584 GB
+Memory after agent: 13.881855488 GB
+Memory before agent: 13.882246144 GB
+Memory after agent: 13.921489408 GB
+Memory before agent: 13.921880064 GB
+Memory after agent: 13.959681536 GB
+Memory before agent: 13.960072192 GB
+Memory after agent: 13.998660096 GB
+Memory before agent: 13.999050752 GB
+Memory after agent: 14.037638656 GB
+Memory before agent: 14.038029312 GB
+Memory after agent: 14.075830784 GB
+Memory before agent: 14.07622144 GB
+Memory after agent: 14.1145472 GB
+Memory before agent: 14.114937856 GB
+Memory after agent: 14.15352576 GB
+Memory before agent: 14.153916416 GB
+Memory after agent: 14.19315968 GB
+Memory before agent: 14.193550336 GB
+Memory after agent: 14.231351808 GB
+Memory before agent: 14.231742464 GB
+Memory after agent: 14.270330368 GB
+Memory before agent: 14.270721024 GB
+Memory after agent: 14.309308928 GB
+Memory before agent: 14.309699584 GB
+Memory after agent: 14.347501056 GB
+Memory before agent: 14.347891712 GB
+Memory after agent: 14.386217472 GB
+Memory before agent: 14.386608128 GB
+Memory after agent: 14.425196032 GB
+Memory before agent: 14.425586688 GB
+Memory after agent: 14.464829952 GB
+Memory before agent: 14.465220608 GB
+Memory after agent: 14.50302208 GB
+Memory before agent: 14.503412736 GB
+Memory after agent: 14.54200064 GB
+Memory before agent: 14.542391296 GB
+Memory after agent: 14.5809792 GB
+Memory before agent: 14.581369856 GB
+Memory after agent: 14.619171328 GB
+Memory before agent: 14.619561984 GB
+Memory after agent: 14.657887744 GB
+Memory before agent: 14.6582784 GB
+Memory after agent: 14.696866304 GB
+Memory before agent: 14.69725696 GB
+Memory after agent: 14.736500224 GB
+Memory before agent: 14.73689088 GB
+Memory after agent: 14.774692352 GB
+Memory before agent: 14.775083008 GB
+Memory after agent: 14.813670912 GB
+Memory before agent: 14.814061568 GB
+Memory after agent: 14.852649472 GB
+Memory before agent: 14.853040128 GB
+Memory after agent: 14.8908416 GB
+Memory before agent: 14.891232256 GB
+Memory after agent: 14.929558016 GB
+Memory before agent: 14.929948672 GB
+Memory after agent: 14.968536576 GB
+Memory before agent: 14.968927232 GB
+Memory after agent: 15.008170496 GB
+Memory before agent: 15.008561152 GB
+Memory after agent: 15.046362624 GB
+Memory before agent: 15.04675328 GB
+Memory after agent: 15.085341184 GB
+Memory before agent: 15.08573184 GB
+Memory after agent: 15.124319744 GB
+Memory before agent: 15.1247104 GB
+Memory after agent: 15.162511872 GB
+Memory before agent: 15.162902528 GB
+Memory after agent: 15.201228288 GB
+Memory before agent: 15.201618944 GB
+Memory after agent: 15.240206848 GB
+Memory before agent: 15.240597504 GB
+Memory after agent: 15.279840768 GB
+Memory before agent: 15.280231424 GB
+Memory after agent: 15.318032896 GB
+Memory before agent: 15.318423552 GB
+Memory after agent: 15.357011456 GB
+Memory before agent: 15.357402112 GB
+Traceback (most recent call last):
+  File "/home/swagat/GIT/efficient_vla/train_online_rl.py", line 221, in <module>
+    main()
+  File "/home/swagat/GIT/efficient_vla/train_online_rl.py", line 134, in main
+    final_action, delta_mean, value, log_prob = agent(batch, deterministic=False)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/swagat/GIT/efficient_vla/rl_residual_agent.py", line 67, in forward
+    base_action = self.base_policy.select_action(batch)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 116, in decorate_context
+    return func(*args, **kwargs)
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/modeling_smolvla.py", line 305, in select_action
+    actions = self._get_action_chunk(batch, noise)
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/modeling_smolvla.py", line 263, in _get_action_chunk
+    actions = self.model.sample_actions(images, img_masks, lang_tokens, lang_masks, state, noise=noise)
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/modeling_smolvla.py", line 718, in sample_actions
+    prefix_embs, prefix_pad_masks, prefix_att_masks = self.embed_prefix(
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/modeling_smolvla.py", line 562, in embed_prefix
+    img_emb = self.vlm_with_expert.embed_image(img)
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/smolvlm_with_expert.py", line 184, in embed_image
+    self.get_vlm_model()
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/transformers/utils/generic.py", line 1072, in wrapper
+    outputs = func(self, *args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/transformers/models/smolvlm/modeling_smolvlm.py", line 396, in forward
+    encoder_outputs: BaseModelOutput = self.encoder(
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/transformers/models/smolvlm/modeling_smolvlm.py", line 326, in forward
+    layer_outputs = encoder_layer(
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/transformers/modeling_layers.py", line 94, in __call__
+    return super().__call__(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/transformers/models/smolvlm/modeling_smolvlm.py", line 296, in forward
+    hidden_states = self.mlp(hidden_states)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/transformers/models/smolvlm/modeling_smolvlm.py", line 263, in forward
+    hidden_states = self.activation_fn(hidden_states)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/transformers/activations.py", line 51, in forward
+    return self.act(input)
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 20.00 MiB. GPU 0 has a total capacity of 15.57 GiB of which 5.19 MiB is free. Including non-PyTorch memory, this process has 15.55 GiB memory in use. Of the allocated memory 14.32 GiB is allocated by PyTorch, and 23.53 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+Traceback (most recent call last):
+  File "/home/swagat/GIT/efficient_vla/train_online_rl.py", line 221, in <module>
+    main()
+  File "/home/swagat/GIT/efficient_vla/train_online_rl.py", line 134, in main
+    final_action, delta_mean, value, log_prob = agent(batch, deterministic=False)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/swagat/GIT/efficient_vla/rl_residual_agent.py", line 67, in forward
+    base_action = self.base_policy.select_action(batch)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 116, in decorate_context
+    return func(*args, **kwargs)
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/modeling_smolvla.py", line 305, in select_action
+    actions = self._get_action_chunk(batch, noise)
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/modeling_smolvla.py", line 263, in _get_action_chunk
+    actions = self.model.sample_actions(images, img_masks, lang_tokens, lang_masks, state, noise=noise)
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/modeling_smolvla.py", line 718, in sample_actions
+    prefix_embs, prefix_pad_masks, prefix_att_masks = self.embed_prefix(
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/modeling_smolvla.py", line 562, in embed_prefix
+    img_emb = self.vlm_with_expert.embed_image(img)
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/smolvlm_with_expert.py", line 184, in embed_image
+    self.get_vlm_model()
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/transformers/utils/generic.py", line 1072, in wrapper
+    outputs = func(self, *args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/transformers/models/smolvlm/modeling_smolvlm.py", line 396, in forward
+    encoder_outputs: BaseModelOutput = self.encoder(
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/transformers/models/smolvlm/modeling_smolvlm.py", line 326, in forward
+    layer_outputs = encoder_layer(
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/transformers/modeling_layers.py", line 94, in __call__
+    return super().__call__(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/transformers/models/smolvlm/modeling_smolvlm.py", line 296, in forward
+    hidden_states = self.mlp(hidden_states)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/transformers/models/smolvlm/modeling_smolvlm.py", line 263, in forward
+    hidden_states = self.activation_fn(hidden_states)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/transformers/activations.py", line 51, in forward
+    return self.act(input)
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 20.00 MiB. GPU 0 has a total capacity of 15.57 GiB of which 5.19 MiB is free. Including non-PyTorch memory, this process has 15.55 GiB memory in use. Of the allocated memory 14.32 GiB is allocated by PyTorch, and 23.53 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)

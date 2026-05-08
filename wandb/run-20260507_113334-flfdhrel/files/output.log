@@ -1,0 +1,18 @@
+Initializing Lightweight Online RL on cuda...
+[ResidualVLA] Loading frozen base policy from: HuggingFaceVLA/smolvla_libero
+Traceback (most recent call last):
+  File "/home/swagat/GIT/efficient_vla/./train_online_rl.py", line 187, in <module>
+    main()
+  File "/home/swagat/GIT/efficient_vla/./train_online_rl.py", line 53, in main
+    agent = ResidualVLAPolicy(base_policy_path=base_model_id, device=device)
+  File "/home/swagat/GIT/efficient_vla/rl_residual_agent.py", line 20, in __init__
+    self.base_policy = make_policy(base_policy_path, device=device)
+TypeError: make_policy() got an unexpected keyword argument 'device'
+Traceback (most recent call last):
+  File "/home/swagat/GIT/efficient_vla/./train_online_rl.py", line 187, in <module>
+    main()
+  File "/home/swagat/GIT/efficient_vla/./train_online_rl.py", line 53, in main
+    agent = ResidualVLAPolicy(base_policy_path=base_model_id, device=device)
+  File "/home/swagat/GIT/efficient_vla/rl_residual_agent.py", line 20, in __init__
+    self.base_policy = make_policy(base_policy_path, device=device)
+TypeError: make_policy() got an unexpected keyword argument 'device'

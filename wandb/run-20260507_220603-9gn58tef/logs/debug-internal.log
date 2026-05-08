@@ -1,0 +1,16 @@
+{"time":"2026-05-07T22:06:03.867580956+01:00","level":"INFO","msg":"stream: starting","core version":"0.21.4"}
+{"time":"2026-05-07T22:06:09.275017641+01:00","level":"INFO","msg":"stream: created new stream","id":"9gn58tef"}
+{"time":"2026-05-07T22:06:09.275075971+01:00","level":"INFO","msg":"stream: started","id":"9gn58tef"}
+{"time":"2026-05-07T22:06:09.275106351+01:00","level":"INFO","msg":"writer: started","stream_id":"9gn58tef"}
+{"time":"2026-05-07T22:06:09.27522145+01:00","level":"INFO","msg":"sender: started","stream_id":"9gn58tef"}
+{"time":"2026-05-07T22:06:09.275304082+01:00","level":"INFO","msg":"handler: started","stream_id":"9gn58tef"}
+{"time":"2026-05-08T00:11:08.079086966+01:00","level":"INFO","msg":"api: retrying error","error":"Post \"https://api.wandb.ai/graphql\": read tcp 192.168.0.204:42260->34.8.250.101:443: read: connection reset by peer"}
+{"time":"2026-05-08T07:40:27.52518812+01:00","level":"INFO","msg":"api: retrying error","error":"Post \"https://api.wandb.ai/files/swagatk/efficient_vla_rl/9gn58tef/file_stream\": dial tcp: lookup api.wandb.ai on 127.0.0.53:53: server misbehaving"}
+{"time":"2026-05-08T07:40:30.00768802+01:00","level":"INFO","msg":"api: retrying error","error":"Post \"https://api.wandb.ai/files/swagatk/efficient_vla_rl/9gn58tef/file_stream\": dial tcp: lookup api.wandb.ai on 127.0.0.53:53: server misbehaving"}
+{"time":"2026-05-08T07:40:34.136768864+01:00","level":"INFO","msg":"api: retrying error","error":"Post \"https://api.wandb.ai/files/swagatk/efficient_vla_rl/9gn58tef/file_stream\": dial tcp: lookup api.wandb.ai on 127.0.0.53:53: server misbehaving"}
+{"time":"2026-05-08T07:40:55.84269977+01:00","level":"INFO","msg":"api: retrying error","error":"Post \"https://api.wandb.ai/graphql\": read tcp 192.168.0.204:50680->34.8.250.101:443: read: connection reset by peer"}
+{"time":"2026-05-08T07:41:00.401436327+01:00","level":"INFO","msg":"stream: closing","id":"9gn58tef"}
+{"time":"2026-05-08T07:41:01.345844272+01:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2026-05-08T07:41:02.164893495+01:00","level":"INFO","msg":"handler: closed","stream_id":"9gn58tef"}
+{"time":"2026-05-08T07:41:02.164936066+01:00","level":"INFO","msg":"sender: closed","stream_id":"9gn58tef"}
+{"time":"2026-05-08T07:41:02.164950178+01:00","level":"INFO","msg":"stream: closed","id":"9gn58tef"}

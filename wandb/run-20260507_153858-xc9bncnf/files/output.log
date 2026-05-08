@@ -1,0 +1,94 @@
+Initializing Lightweight Online RL on cuda...
+[ResidualVLA] Loading frozen base policy from: HuggingFaceVLA/smolvla_libero
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+[ResidualVLA] Initializing trainable residual head and critic...
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+--- Starting Episode 1/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0002, BC Anchor Loss: 0.0000, PPO Loss: -0.0093
+
+--- Starting Episode 2/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0047, BC Anchor Loss: 0.0000, PPO Loss: -0.0082
+
+--- Starting Episode 3/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0026, BC Anchor Loss: 0.0001, PPO Loss: -0.0080
+
+--- Starting Episode 4/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0068, BC Anchor Loss: 0.0001, PPO Loss: -0.0122
+
+--- Starting Episode 5/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0080, BC Anchor Loss: 0.0001, PPO Loss: -0.0040
+Saving checkpoint at episode 5...
+
+--- Starting Episode 6/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0066, BC Anchor Loss: 0.0002, PPO Loss: -0.0039
+
+--- Starting Episode 7/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0074, BC Anchor Loss: 0.0001, PPO Loss: -0.0083
+
+--- Starting Episode 8/100 ---
+Episode length: 520, Total Reward: -5.20
+Traceback (most recent call last):
+  File "/home/swagat/GIT/efficient_vla/./train_online_rl.py", line 252, in <module>
+    main()
+  File "/home/swagat/GIT/efficient_vla/./train_online_rl.py", line 190, in main
+    _, delta_mean, value, _, _ = agent(b, deterministic=True)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/swagat/GIT/efficient_vla/rl_residual_agent.py", line 79, in forward
+    base_action = self.base_policy.select_action(batch)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 116, in decorate_context
+    return func(*args, **kwargs)
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/modeling_smolvla.py", line 305, in select_action
+    actions = self._get_action_chunk(batch, noise)
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/modeling_smolvla.py", line 263, in _get_action_chunk
+    actions = self.model.sample_actions(images, img_masks, lang_tokens, lang_masks, state, noise=noise)
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/modeling_smolvla.py", line 739, in sample_actions
+    v_t = self.denoise_step(
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/modeling_smolvla.py", line 771, in denoise_step
+    outputs_embeds, _ = self.vlm_with_expert.forward(
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/smolvlm_with_expert.py", line 445, in forward
+    att_outputs, past_key_values = self.forward_cross_attn_layer(
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/smolvlm_with_expert.py", line 373, in forward_cross_attn_layer
+    expert_query_states = apply_rope(expert_query_state, expert_position_id)
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/smolvlm_with_expert.py", line 43, in apply_rope
+    sin = torch.sin(radians)  # .to(dtype=dtype)
+KeyboardInterrupt
+Traceback (most recent call last):
+  File "/home/swagat/GIT/efficient_vla/./train_online_rl.py", line 252, in <module>
+    main()
+  File "/home/swagat/GIT/efficient_vla/./train_online_rl.py", line 190, in main
+    _, delta_mean, value, _, _ = agent(b, deterministic=True)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/swagat/GIT/efficient_vla/rl_residual_agent.py", line 79, in forward
+    base_action = self.base_policy.select_action(batch)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 116, in decorate_context
+    return func(*args, **kwargs)
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/modeling_smolvla.py", line 305, in select_action
+    actions = self._get_action_chunk(batch, noise)
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/modeling_smolvla.py", line 263, in _get_action_chunk
+    actions = self.model.sample_actions(images, img_masks, lang_tokens, lang_masks, state, noise=noise)
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/modeling_smolvla.py", line 739, in sample_actions
+    v_t = self.denoise_step(
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/modeling_smolvla.py", line 771, in denoise_step
+    outputs_embeds, _ = self.vlm_with_expert.forward(
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/smolvlm_with_expert.py", line 445, in forward
+    att_outputs, past_key_values = self.forward_cross_attn_layer(
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/smolvlm_with_expert.py", line 373, in forward_cross_attn_layer
+    expert_query_states = apply_rope(expert_query_state, expert_position_id)
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/smolvlm_with_expert.py", line 43, in apply_rope
+    sin = torch.sin(radians)  # .to(dtype=dtype)
+KeyboardInterrupt

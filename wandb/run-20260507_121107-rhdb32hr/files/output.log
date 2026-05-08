@@ -1,0 +1,124 @@
+Initializing Lightweight Online RL on cuda...
+[ResidualVLA] Loading frozen base policy from: HuggingFaceVLA/smolvla_libero
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+[ResidualVLA] Initializing trainable residual head and critic...
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+--- Starting Episode 1/100 ---
+Traceback (most recent call last):
+  File "/home/swagat/GIT/efficient_vla/train_online_rl.py", line 219, in <module>
+    main()
+  File "/home/swagat/GIT/efficient_vla/train_online_rl.py", line 133, in main
+    final_action, delta_mean, value, log_prob = agent(batch, deterministic=False)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/swagat/GIT/efficient_vla/rl_residual_agent.py", line 67, in forward
+    base_action = self.base_policy.select_action(batch)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 116, in decorate_context
+    return func(*args, **kwargs)
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/modeling_smolvla.py", line 305, in select_action
+    actions = self._get_action_chunk(batch, noise)
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/modeling_smolvla.py", line 263, in _get_action_chunk
+    actions = self.model.sample_actions(images, img_masks, lang_tokens, lang_masks, state, noise=noise)
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/modeling_smolvla.py", line 718, in sample_actions
+    prefix_embs, prefix_pad_masks, prefix_att_masks = self.embed_prefix(
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/modeling_smolvla.py", line 562, in embed_prefix
+    img_emb = self.vlm_with_expert.embed_image(img)
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/smolvlm_with_expert.py", line 184, in embed_image
+    self.get_vlm_model()
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/transformers/utils/generic.py", line 1072, in wrapper
+    outputs = func(self, *args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/transformers/models/smolvlm/modeling_smolvlm.py", line 396, in forward
+    encoder_outputs: BaseModelOutput = self.encoder(
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/transformers/models/smolvlm/modeling_smolvlm.py", line 326, in forward
+    layer_outputs = encoder_layer(
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/transformers/modeling_layers.py", line 94, in __call__
+    return super().__call__(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/transformers/models/smolvlm/modeling_smolvlm.py", line 296, in forward
+    hidden_states = self.mlp(hidden_states)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/transformers/models/smolvlm/modeling_smolvlm.py", line 263, in forward
+    hidden_states = self.activation_fn(hidden_states)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/transformers/activations.py", line 51, in forward
+    return self.act(input)
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 20.00 MiB. GPU 0 has a total capacity of 15.57 GiB of which 5.25 MiB is free. Including non-PyTorch memory, this process has 15.55 GiB memory in use. Of the allocated memory 14.32 GiB is allocated by PyTorch, and 23.53 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+Traceback (most recent call last):
+  File "/home/swagat/GIT/efficient_vla/train_online_rl.py", line 219, in <module>
+    main()
+  File "/home/swagat/GIT/efficient_vla/train_online_rl.py", line 133, in main
+    final_action, delta_mean, value, log_prob = agent(batch, deterministic=False)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/swagat/GIT/efficient_vla/rl_residual_agent.py", line 67, in forward
+    base_action = self.base_policy.select_action(batch)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 116, in decorate_context
+    return func(*args, **kwargs)
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/modeling_smolvla.py", line 305, in select_action
+    actions = self._get_action_chunk(batch, noise)
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/modeling_smolvla.py", line 263, in _get_action_chunk
+    actions = self.model.sample_actions(images, img_masks, lang_tokens, lang_masks, state, noise=noise)
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/modeling_smolvla.py", line 718, in sample_actions
+    prefix_embs, prefix_pad_masks, prefix_att_masks = self.embed_prefix(
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/modeling_smolvla.py", line 562, in embed_prefix
+    img_emb = self.vlm_with_expert.embed_image(img)
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/smolvlm_with_expert.py", line 184, in embed_image
+    self.get_vlm_model()
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/transformers/utils/generic.py", line 1072, in wrapper
+    outputs = func(self, *args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/transformers/models/smolvlm/modeling_smolvlm.py", line 396, in forward
+    encoder_outputs: BaseModelOutput = self.encoder(
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/transformers/models/smolvlm/modeling_smolvlm.py", line 326, in forward
+    layer_outputs = encoder_layer(
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/transformers/modeling_layers.py", line 94, in __call__
+    return super().__call__(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/transformers/models/smolvlm/modeling_smolvlm.py", line 296, in forward
+    hidden_states = self.mlp(hidden_states)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/transformers/models/smolvlm/modeling_smolvlm.py", line 263, in forward
+    hidden_states = self.activation_fn(hidden_states)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/transformers/activations.py", line 51, in forward
+    return self.act(input)
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 20.00 MiB. GPU 0 has a total capacity of 15.57 GiB of which 5.25 MiB is free. Including non-PyTorch memory, this process has 15.55 GiB memory in use. Of the allocated memory 14.32 GiB is allocated by PyTorch, and 23.53 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)

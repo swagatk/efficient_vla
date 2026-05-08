@@ -1,0 +1,152 @@
+Initializing Lightweight Online RL on cuda...
+[ResidualVLA] Loading frozen base policy from: HuggingFaceVLA/smolvla_libero
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+[ResidualVLA] Initializing trainable residual head and critic...
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+--- Starting Episode 1/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0082, BC Anchor Loss: 0.0000, PPO Loss: -0.0082
+
+--- Starting Episode 2/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0060, BC Anchor Loss: 0.0000, PPO Loss: -0.0029
+
+--- Starting Episode 3/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0059, BC Anchor Loss: 0.0000, PPO Loss: -0.0031
+
+--- Starting Episode 4/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0063, BC Anchor Loss: 0.0000, PPO Loss: -0.0021
+
+--- Starting Episode 5/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0061, BC Anchor Loss: 0.0000, PPO Loss: -0.0007
+Saving checkpoint at episode 5...
+
+--- Starting Episode 6/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0060, BC Anchor Loss: 0.0000, PPO Loss: -0.0016
+
+--- Starting Episode 7/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0068, BC Anchor Loss: 0.0001, PPO Loss: -0.0098
+
+--- Starting Episode 8/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0093, BC Anchor Loss: 0.0001, PPO Loss: -0.0069
+
+--- Starting Episode 9/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0086, BC Anchor Loss: 0.0002, PPO Loss: -0.0100
+
+--- Starting Episode 10/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0093, BC Anchor Loss: 0.0002, PPO Loss: -0.0047
+Saving checkpoint at episode 10...
+
+--- Starting Episode 11/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0080, BC Anchor Loss: 0.0003, PPO Loss: -0.0075
+
+--- Starting Episode 12/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0088, BC Anchor Loss: 0.0005, PPO Loss: -0.0063
+
+--- Starting Episode 13/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0094, BC Anchor Loss: 0.0004, PPO Loss: -0.0094
+
+--- Starting Episode 14/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0078, BC Anchor Loss: 0.0004, PPO Loss: -0.0094
+
+--- Starting Episode 15/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0068, BC Anchor Loss: 0.0003, PPO Loss: -0.0123
+Saving checkpoint at episode 15...
+
+--- Starting Episode 16/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0085, BC Anchor Loss: 0.0004, PPO Loss: -0.0105
+
+--- Starting Episode 17/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0093, BC Anchor Loss: 0.0005, PPO Loss: -0.0119
+
+--- Starting Episode 18/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0067, BC Anchor Loss: 0.0006, PPO Loss: -0.0048
+
+--- Starting Episode 19/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0073, BC Anchor Loss: 0.0006, PPO Loss: -0.0058
+
+--- Starting Episode 20/100 ---
+Episode length: 520, Total Reward: -5.20
+Update complete. Value Loss: 0.0099, BC Anchor Loss: 0.0006, PPO Loss: -0.0036
+Saving checkpoint at episode 20...
+
+--- Starting Episode 21/100 ---
+Traceback (most recent call last):
+  File "/home/swagat/GIT/efficient_vla/./train_online_rl.py", line 260, in <module>
+    main()
+  File "/home/swagat/GIT/efficient_vla/./train_online_rl.py", line 152, in main
+    final_action, delta_mean, value, log_prob, delta_action = agent(batch, deterministic=False)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/swagat/GIT/efficient_vla/rl_residual_agent.py", line 79, in forward
+    base_action = self.base_policy.select_action(batch)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 116, in decorate_context
+    return func(*args, **kwargs)
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/modeling_smolvla.py", line 305, in select_action
+    actions = self._get_action_chunk(batch, noise)
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/modeling_smolvla.py", line 263, in _get_action_chunk
+    actions = self.model.sample_actions(images, img_masks, lang_tokens, lang_masks, state, noise=noise)
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/modeling_smolvla.py", line 739, in sample_actions
+    v_t = self.denoise_step(
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/modeling_smolvla.py", line 771, in denoise_step
+    outputs_embeds, _ = self.vlm_with_expert.forward(
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/smolvlm_with_expert.py", line 445, in forward
+    att_outputs, past_key_values = self.forward_cross_attn_layer(
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/smolvlm_with_expert.py", line 375, in forward_cross_attn_layer
+    att_output = attention_interface(
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/smolvlm_with_expert.py", line 541, in eager_attention_forward
+    probs = nn.functional.softmax(masked_att_weights, dim=-1)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/functional.py", line 2140, in softmax
+    ret = input.softmax(dim)
+KeyboardInterrupt
+Traceback (most recent call last):
+  File "/home/swagat/GIT/efficient_vla/./train_online_rl.py", line 260, in <module>
+    main()
+  File "/home/swagat/GIT/efficient_vla/./train_online_rl.py", line 152, in main
+    final_action, delta_mean, value, log_prob, delta_action = agent(batch, deterministic=False)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/swagat/GIT/efficient_vla/rl_residual_agent.py", line 79, in forward
+    base_action = self.base_policy.select_action(batch)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 116, in decorate_context
+    return func(*args, **kwargs)
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/modeling_smolvla.py", line 305, in select_action
+    actions = self._get_action_chunk(batch, noise)
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/modeling_smolvla.py", line 263, in _get_action_chunk
+    actions = self.model.sample_actions(images, img_masks, lang_tokens, lang_masks, state, noise=noise)
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/modeling_smolvla.py", line 739, in sample_actions
+    v_t = self.denoise_step(
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/modeling_smolvla.py", line 771, in denoise_step
+    outputs_embeds, _ = self.vlm_with_expert.forward(
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/smolvlm_with_expert.py", line 445, in forward
+    att_outputs, past_key_values = self.forward_cross_attn_layer(
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/smolvlm_with_expert.py", line 375, in forward_cross_attn_layer
+    att_output = attention_interface(
+  File "/home/swagat/lerobot/src/lerobot/policies/smolvla/smolvlm_with_expert.py", line 541, in eager_attention_forward
+    probs = nn.functional.softmax(masked_att_weights, dim=-1)
+  File "/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/torch/nn/functional.py", line 2140, in softmax
+    ret = input.softmax(dim)
+KeyboardInterrupt
