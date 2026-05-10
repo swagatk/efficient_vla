@@ -9,6 +9,7 @@ from typing import Any, Dict, Optional, Tuple
 
 import numpy as np
 import torch
+import signal
 import yaml
 
 from visual_prompt_wrapper import VisualPromptingWrapper
@@ -403,6 +404,9 @@ def parse_args():
 
 
 def main():
+    # Force OS-level immediate termination on Ctrl+C to prevent Python loops from swallowing it
+    signal.signal(signal.SIGINT, signal.SIG_DFL)
+
     args = parse_args()
 
     os.environ["DATASET_ROOT"] = os.path.expanduser(args.dataset_root)

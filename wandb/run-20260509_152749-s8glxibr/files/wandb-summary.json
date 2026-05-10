@@ -1,0 +1,1 @@
+{"reward":-8.720565802270876,"_timestamp":1.7783475205986116e+09,"_step":99,"episode":100,"bc_anchor_loss":0.19614078826976544,"_wandb":{"runtime":10650},"_runtime":10650,"ppo_loss":0.1560378476525798,"episode_length":520,"success":0,"value_loss":0.02319319602666479,"entropy":2.9953488075371943}

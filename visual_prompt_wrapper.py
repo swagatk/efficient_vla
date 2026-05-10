@@ -122,8 +122,8 @@ class VisualPromptingWrapper:
             outputs = self.model.predict_with_caption(
                 image=image_rgb,
                 caption=query,
-                box_threshold=0.4,
-                text_threshold=0.3
+                box_threshold=0.25,
+                text_threshold=0.25
             )
             
             if len(outputs) == 2:

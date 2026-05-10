@@ -4,6 +4,7 @@ import gc
 import shutil
 import json
 import warnings
+import signal
 from PIL import Image, ImageDraw, ImageFont
 import numpy as np
 import torch
@@ -103,6 +104,9 @@ def get_initial_observation(benchmark, task_name):
 
 
 def main(num_samples=10, out_dir=os.path.expanduser("~/GIT/efficient_vla/groundingdino_text_hint_samples")):
+    # Ensure Ctrl+C kills the script immediately
+    signal.signal(signal.SIGINT, signal.SIG_DFL)
+
     if VisualPromptingWrapper is None or libero_pkg is None:
         print("Aborting: `libero` or `visual_prompt_wrapper` is not available.")
         return

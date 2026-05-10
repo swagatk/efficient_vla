@@ -1,0 +1,353 @@
+Initializing Lightweight Online RL on cuda...
+[ResidualVLA] Loading frozen base policy from: HuggingFaceVLA/smolvla_libero
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+[ResidualVLA] Initializing trainable residual head and critic...
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+--- Starting Episode 1/100 ---
+Episode length: 520, Total Reward: -8.25
+
+--- Starting Episode 2/100 ---
+Episode length: 520, Total Reward: -10.74
+
+--- Starting Episode 3/100 ---
+Episode length: 520, Total Reward: -4.65
+
+--- Starting Episode 4/100 ---
+Episode length: 520, Total Reward: -8.64
+Update complete. Value Loss: 0.0074, BC Anchor Loss: 0.0000, PPO Loss: 0.0039, Entropy: -25.0672
+
+--- Starting Episode 5/100 ---
+Episode length: 520, Total Reward: -7.67
+Saving checkpoint at episode 5...
+
+--- Starting Episode 6/100 ---
+Episode length: 520, Total Reward: -6.02
+
+--- Starting Episode 7/100 ---
+Episode length: 520, Total Reward: -7.66
+
+--- Starting Episode 8/100 ---
+Episode length: 520, Total Reward: -8.81
+Update complete. Value Loss: 0.0058, BC Anchor Loss: 0.0000, PPO Loss: 0.0013, Entropy: -25.0673
+
+--- Starting Episode 9/100 ---
+Episode length: 520, Total Reward: -7.54
+
+--- Starting Episode 10/100 ---
+Episode length: 520, Total Reward: -11.09
+Saving checkpoint at episode 10...
+
+--- Starting Episode 11/100 ---
+Episode length: 520, Total Reward: -5.60
+
+--- Starting Episode 12/100 ---
+Episode length: 520, Total Reward: -7.11
+Update complete. Value Loss: 0.0298, BC Anchor Loss: 0.0002, PPO Loss: 0.3286, Entropy: -25.0672
+
+--- Starting Episode 13/100 ---
+Episode length: 520, Total Reward: -7.51
+
+--- Starting Episode 14/100 ---
+Episode length: 520, Total Reward: -7.32
+
+--- Starting Episode 15/100 ---
+Episode length: 520, Total Reward: -6.42
+Saving checkpoint at episode 15...
+
+--- Starting Episode 16/100 ---
+Episode length: 520, Total Reward: -8.18
+Update complete. Value Loss: 0.0169, BC Anchor Loss: 0.0001, PPO Loss: 0.3037, Entropy: -25.0672
+
+--- Starting Episode 17/100 ---
+Episode length: 520, Total Reward: -7.17
+
+--- Starting Episode 18/100 ---
+Episode length: 520, Total Reward: -7.73
+
+--- Starting Episode 19/100 ---
+Episode length: 520, Total Reward: -7.11
+
+--- Starting Episode 20/100 ---
+Episode length: 520, Total Reward: -5.77
+Update complete. Value Loss: 0.0291, BC Anchor Loss: 0.0004, PPO Loss: 0.1326, Entropy: -25.0672
+Saving checkpoint at episode 20...
+
+--- Starting Episode 21/100 ---
+Episode length: 520, Total Reward: -7.62
+
+--- Starting Episode 22/100 ---
+Episode length: 520, Total Reward: -8.20
+
+--- Starting Episode 23/100 ---
+Episode length: 520, Total Reward: -6.45
+
+--- Starting Episode 24/100 ---
+Episode length: 520, Total Reward: -8.06
+Update complete. Value Loss: 0.0316, BC Anchor Loss: 0.0010, PPO Loss: 0.2318, Entropy: -25.0672
+
+--- Starting Episode 25/100 ---
+Episode length: 520, Total Reward: -6.08
+Saving checkpoint at episode 25...
+
+--- Starting Episode 26/100 ---
+Episode length: 520, Total Reward: -8.89
+
+--- Starting Episode 27/100 ---
+Episode length: 520, Total Reward: -7.73
+
+--- Starting Episode 28/100 ---
+Episode length: 520, Total Reward: -5.12
+Update complete. Value Loss: 0.0719, BC Anchor Loss: 0.0012, PPO Loss: 0.1832, Entropy: -25.0672
+
+--- Starting Episode 29/100 ---
+Episode length: 520, Total Reward: -10.68
+
+--- Starting Episode 30/100 ---
+Episode length: 520, Total Reward: -7.72
+Saving checkpoint at episode 30...
+
+--- Starting Episode 31/100 ---
+Episode length: 520, Total Reward: -9.49
+
+--- Starting Episode 32/100 ---
+Episode length: 520, Total Reward: -6.33
+Update complete. Value Loss: 0.0435, BC Anchor Loss: 0.0016, PPO Loss: 0.2469, Entropy: -25.0672
+
+--- Starting Episode 33/100 ---
+Episode length: 520, Total Reward: -7.69
+
+--- Starting Episode 34/100 ---
+Episode length: 520, Total Reward: -6.52
+
+--- Starting Episode 35/100 ---
+Episode length: 520, Total Reward: -8.32
+Saving checkpoint at episode 35...
+
+--- Starting Episode 36/100 ---
+Episode length: 520, Total Reward: -8.03
+Update complete. Value Loss: 0.0293, BC Anchor Loss: 0.0022, PPO Loss: 0.1468, Entropy: -25.0672
+
+--- Starting Episode 37/100 ---
+Episode length: 520, Total Reward: -8.42
+
+--- Starting Episode 38/100 ---
+Episode length: 520, Total Reward: -5.75
+
+--- Starting Episode 39/100 ---
+Episode length: 520, Total Reward: -6.01
+
+--- Starting Episode 40/100 ---
+Episode length: 520, Total Reward: -8.35
+Update complete. Value Loss: 0.0424, BC Anchor Loss: 0.0025, PPO Loss: 0.3024, Entropy: -25.0672
+Saving checkpoint at episode 40...
+
+--- Starting Episode 41/100 ---
+Episode length: 520, Total Reward: -5.22
+
+--- Starting Episode 42/100 ---
+Episode length: 520, Total Reward: -7.69
+
+--- Starting Episode 43/100 ---
+Episode length: 520, Total Reward: -6.37
+
+--- Starting Episode 44/100 ---
+Episode length: 520, Total Reward: -7.61
+Update complete. Value Loss: 0.0229, BC Anchor Loss: 0.0034, PPO Loss: 0.1934, Entropy: -25.0672
+
+--- Starting Episode 45/100 ---
+Episode length: 520, Total Reward: -7.54
+Saving checkpoint at episode 45...
+
+--- Starting Episode 46/100 ---
+Episode length: 520, Total Reward: -7.39
+
+--- Starting Episode 47/100 ---
+Episode length: 520, Total Reward: -8.33
+
+--- Starting Episode 48/100 ---
+Episode length: 520, Total Reward: -5.45
+Update complete. Value Loss: 0.0346, BC Anchor Loss: 0.0040, PPO Loss: 0.2935, Entropy: -25.0672
+
+--- Starting Episode 49/100 ---
+Episode length: 520, Total Reward: -8.41
+
+--- Starting Episode 50/100 ---
+Episode length: 520, Total Reward: -6.57
+Saving checkpoint at episode 50...
+
+--- Starting Episode 51/100 ---
+Episode length: 520, Total Reward: -9.20
+
+--- Starting Episode 52/100 ---
+Episode length: 520, Total Reward: -7.99
+Update complete. Value Loss: 0.0700, BC Anchor Loss: 0.0052, PPO Loss: 0.2314, Entropy: -25.0672
+
+--- Starting Episode 53/100 ---
+Episode length: 520, Total Reward: -6.11
+
+--- Starting Episode 54/100 ---
+Episode length: 520, Total Reward: -7.84
+
+--- Starting Episode 55/100 ---
+Episode length: 520, Total Reward: -6.69
+Saving checkpoint at episode 55...
+
+--- Starting Episode 56/100 ---
+Episode length: 520, Total Reward: -8.29
+Update complete. Value Loss: 0.0549, BC Anchor Loss: 0.0068, PPO Loss: 0.2698, Entropy: -25.0672
+
+--- Starting Episode 57/100 ---
+Episode length: 520, Total Reward: -8.30
+
+--- Starting Episode 58/100 ---
+Episode length: 520, Total Reward: -8.46
+
+--- Starting Episode 59/100 ---
+Episode length: 520, Total Reward: -6.92
+
+--- Starting Episode 60/100 ---
+Episode length: 520, Total Reward: -10.50
+Update complete. Value Loss: 0.0540, BC Anchor Loss: 0.0082, PPO Loss: 0.6187, Entropy: -25.0672
+Saving checkpoint at episode 60...
+
+--- Starting Episode 61/100 ---
+Episode length: 520, Total Reward: -8.00
+
+--- Starting Episode 62/100 ---
+Episode length: 520, Total Reward: -4.96
+
+--- Starting Episode 63/100 ---
+Episode length: 520, Total Reward: -8.78
+
+--- Starting Episode 64/100 ---
+Episode length: 520, Total Reward: -7.24
+Update complete. Value Loss: 0.0374, BC Anchor Loss: 0.0074, PPO Loss: 0.2243, Entropy: -25.0672
+
+--- Starting Episode 65/100 ---
+Episode length: 520, Total Reward: -5.96
+Saving checkpoint at episode 65...
+
+--- Starting Episode 66/100 ---
+Episode length: 520, Total Reward: -9.10
+
+--- Starting Episode 67/100 ---
+Episode length: 520, Total Reward: -6.30
+
+--- Starting Episode 68/100 ---
+Episode length: 520, Total Reward: -7.90
+Update complete. Value Loss: 0.0393, BC Anchor Loss: 0.0075, PPO Loss: 0.6173, Entropy: -25.0672
+
+--- Starting Episode 69/100 ---
+Episode length: 520, Total Reward: -7.22
+
+--- Starting Episode 70/100 ---
+Episode length: 520, Total Reward: -6.46
+Saving checkpoint at episode 70...
+
+--- Starting Episode 71/100 ---
+Episode length: 520, Total Reward: -5.54
+
+--- Starting Episode 72/100 ---
+Episode length: 520, Total Reward: -6.47
+Update complete. Value Loss: 0.0355, BC Anchor Loss: 0.0082, PPO Loss: 0.2232, Entropy: -25.0672
+
+--- Starting Episode 73/100 ---
+Episode length: 520, Total Reward: -6.99
+
+--- Starting Episode 74/100 ---
+Episode length: 520, Total Reward: -7.60
+
+--- Starting Episode 75/100 ---
+Episode length: 520, Total Reward: -5.62
+Saving checkpoint at episode 75...
+
+--- Starting Episode 76/100 ---
+Episode length: 520, Total Reward: -7.89
+Update complete. Value Loss: 0.0323, BC Anchor Loss: 0.0090, PPO Loss: 0.6493, Entropy: -25.0672
+
+--- Starting Episode 77/100 ---
+Episode length: 520, Total Reward: -8.17
+
+--- Starting Episode 78/100 ---
+Episode length: 520, Total Reward: -9.54
+
+--- Starting Episode 79/100 ---
+Episode length: 520, Total Reward: -7.55
+
+--- Starting Episode 80/100 ---
+Episode length: 520, Total Reward: -10.60
+Update complete. Value Loss: 0.0485, BC Anchor Loss: 0.0093, PPO Loss: 0.2530, Entropy: -25.0672
+Saving checkpoint at episode 80...
+
+--- Starting Episode 81/100 ---
+Episode length: 520, Total Reward: -10.24
+
+--- Starting Episode 82/100 ---
+Episode length: 520, Total Reward: -10.11
+
+--- Starting Episode 83/100 ---
+Episode length: 520, Total Reward: -6.57
+
+--- Starting Episode 84/100 ---
+Episode length: 520, Total Reward: -10.70
+Update complete. Value Loss: 0.0466, BC Anchor Loss: 0.0110, PPO Loss: 0.2776, Entropy: -25.0671
+
+--- Starting Episode 85/100 ---
+Episode length: 520, Total Reward: -6.59
+Saving checkpoint at episode 85...
+
+--- Starting Episode 86/100 ---
+Episode length: 520, Total Reward: -7.80
+
+--- Starting Episode 87/100 ---
+Episode length: 520, Total Reward: -6.65
+
+--- Starting Episode 88/100 ---
+Episode length: 520, Total Reward: -7.79
+Update complete. Value Loss: 0.0329, BC Anchor Loss: 0.0127, PPO Loss: 0.1855, Entropy: -25.0670
+
+--- Starting Episode 89/100 ---
+Episode length: 520, Total Reward: -10.54
+
+--- Starting Episode 90/100 ---
+Episode length: 520, Total Reward: -9.98
+Saving checkpoint at episode 90...
+
+--- Starting Episode 91/100 ---
+Episode length: 520, Total Reward: -5.88
+
+--- Starting Episode 92/100 ---
+Episode length: 520, Total Reward: -5.85
+Update complete. Value Loss: 0.0384, BC Anchor Loss: 0.0140, PPO Loss: 0.1213, Entropy: -25.0670
+
+--- Starting Episode 93/100 ---
+Episode length: 520, Total Reward: -8.21
+
+--- Starting Episode 94/100 ---
+Episode length: 520, Total Reward: -8.76
+
+--- Starting Episode 95/100 ---
+Episode length: 520, Total Reward: -8.32
+Saving checkpoint at episode 95...
+
+--- Starting Episode 96/100 ---
+Episode length: 520, Total Reward: -5.12
+Update complete. Value Loss: 0.0256, BC Anchor Loss: 0.0129, PPO Loss: 0.2348, Entropy: -25.0670
+
+--- Starting Episode 97/100 ---
+Episode length: 520, Total Reward: -7.31
+
+--- Starting Episode 98/100 ---
+Episode length: 520, Total Reward: -7.16
+
+--- Starting Episode 99/100 ---
+Episode length: 520, Total Reward: -8.22
+
+--- Starting Episode 100/100 ---
+Episode length: 520, Total Reward: -8.04
+Update complete. Value Loss: 0.0345, BC Anchor Loss: 0.0140, PPO Loss: 0.1105, Entropy: -25.0670
+Saving checkpoint at episode 100...
+[*] Closing environment...
+[*] Finalizing WandB (this may take a moment to upload logs)...

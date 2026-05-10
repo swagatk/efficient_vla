@@ -1,0 +1,94 @@
+Initializing Lightweight Online RL on cuda...
+[ResidualVLA] Loading frozen base policy from: HuggingFaceVLA/smolvla_libero
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+[ResidualVLA] Initializing trainable residual head and critic...
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+--- Starting Episode 1/100 ---
+Episode length: 520, Total Reward: -9.24
+
+--- Starting Episode 2/100 ---
+Episode length: 520, Total Reward: -6.64
+
+--- Starting Episode 3/100 ---
+Episode length: 520, Total Reward: -10.21
+
+--- Starting Episode 4/100 ---
+Episode length: 520, Total Reward: -7.57
+Update complete. Value Loss: 0.0203, BC Anchor Loss: 0.0927, PPO Loss: 118.3751
+
+--- Starting Episode 5/100 ---
+Episode length: 520, Total Reward: -9.76
+Saving checkpoint at episode 5...
+
+--- Starting Episode 6/100 ---
+Episode length: 520, Total Reward: -8.30
+
+--- Starting Episode 7/100 ---
+Episode length: 520, Total Reward: -9.38
+
+--- Starting Episode 8/100 ---
+Episode length: 520, Total Reward: -9.79
+Update complete. Value Loss: 0.0516, BC Anchor Loss: 0.0325, PPO Loss: 0.3340
+
+--- Starting Episode 9/100 ---
+Episode length: 520, Total Reward: -7.30
+
+--- Starting Episode 10/100 ---
+Episode length: 520, Total Reward: -7.57
+Saving checkpoint at episode 10...
+
+--- Starting Episode 11/100 ---
+Episode length: 520, Total Reward: -8.21
+
+--- Starting Episode 12/100 ---
+Episode length: 520, Total Reward: -9.90
+Update complete. Value Loss: 0.0392, BC Anchor Loss: 0.2603, PPO Loss: 0.3401
+
+--- Starting Episode 13/100 ---
+Episode length: 520, Total Reward: -6.02
+
+--- Starting Episode 14/100 ---
+Episode length: 520, Total Reward: -8.03
+
+--- Starting Episode 15/100 ---
+Episode length: 520, Total Reward: -9.19
+Saving checkpoint at episode 15...
+
+--- Starting Episode 16/100 ---
+Episode length: 520, Total Reward: -6.32
+Update complete. Value Loss: 0.0431, BC Anchor Loss: 0.2575, PPO Loss: 1.6551
+
+--- Starting Episode 17/100 ---
+Episode length: 520, Total Reward: -7.53
+
+--- Starting Episode 18/100 ---
+Episode length: 520, Total Reward: -7.99
+
+--- Starting Episode 19/100 ---
+Episode length: 520, Total Reward: -9.05
+
+--- Starting Episode 20/100 ---
+Episode length: 520, Total Reward: -10.26
+Update complete. Value Loss: 0.0396, BC Anchor Loss: 0.4218, PPO Loss: 0.3460
+Saving checkpoint at episode 20...
+
+--- Starting Episode 21/100 ---
+Episode length: 520, Total Reward: -7.45
+
+--- Starting Episode 22/100 ---
+Episode length: 520, Total Reward: -10.21
+
+--- Starting Episode 23/100 ---
+Episode length: 520, Total Reward: -10.51
+
+--- Starting Episode 24/100 ---
+Episode length: 520, Total Reward: -9.83
+Update complete. Value Loss: 0.0559, BC Anchor Loss: 0.1076, PPO Loss: 0.2112
+
+--- Starting Episode 25/100 ---
+Episode length: 520, Total Reward: -6.42
+Saving checkpoint at episode 25...
+
+--- Starting Episode 26/100 ---

@@ -1,0 +1,22 @@
+Initializing Lightweight Online RL on cuda...
+[ResidualVLA] Loading frozen base policy from: HuggingFaceVLA/smolvla_libero
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+[ResidualVLA] Initializing trainable residual head and critic...
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+--- Starting Episode 1/100 ---
+Episode length: 520, Total Reward: -8.59
+
+--- Starting Episode 2/100 ---
+Episode length: 520, Total Reward: -6.69
+
+--- Starting Episode 3/100 ---
+Episode length: 520, Total Reward: -11.25
+
+--- Starting Episode 4/100 ---
+Episode length: 520, Total Reward: -6.74
+
+[!] Training stopped due to error: Trying to backward through the graph a second time (or directly access saved tensors after they have already been freed). Saved intermediate values of the graph are freed when you call .backward() or autograd.grad(). Specify retain_graph=True if you need to backward through the graph a second time or if you need to access saved tensors after calling backward.
+[*] Closing environment...
+[*] Finalizing WandB (this may take a moment to upload logs)...

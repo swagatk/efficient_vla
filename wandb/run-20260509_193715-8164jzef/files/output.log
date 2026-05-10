@@ -1,0 +1,14 @@
+Initializing Lightweight Online RL on cuda...
+[ResidualVLA] Loading frozen base policy from: HuggingFaceVLA/smolvla_libero
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+[ResidualVLA] Initializing trainable residual head and critic...
+Loading checkpoint from checkpoints_task_0/latest_checkpoint_task_0.pt...
+Resuming from episode 16
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+--- Starting Episode 16/100 ---
+Episode length: 520, Total Reward: -8.07
+Update complete. Value Loss: 0.0462, BC Anchor Loss: 0.0136, PPO Loss: 7.2988, Entropy: -6.1504
+
+--- Starting Episode 17/100 ---
