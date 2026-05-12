@@ -77,6 +77,8 @@ class SACResidualVLAPolicy(nn.Module):
         # Zero-initialize the final layers to start near 0 residual
         nn.init.zeros_(self.actor_mean.weight)
         nn.init.zeros_(self.actor_mean.bias)
+        nn.init.zeros_(self.actor_log_std.weight)
+        nn.init.constant_(self.actor_log_std.bias, -2.0) # Start with a small std dev so behavior doesn't immediately explode
 
         self.to(device)
 

@@ -3,6 +3,7 @@ import os
 import argparse
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 import torch.optim as optim
 import numpy as np
 import wandb
@@ -22,6 +23,7 @@ from libero.libero.envs import OffScreenRenderEnv
 
 from sac_residual_agent import SACResidualVLAPolicy
 from visual_prompt_wrapper import VisualPromptingWrapper
+from linux_inhibit import LinuxInhibit
 
 class ReplayBuffer:
     def __init__(self, capacity):
@@ -70,7 +72,8 @@ def main():
     lr = 1e-4
     gamma = 0.99
     tau = 0.005
-    alpha = 0.2
+    # Alpha controls entropy weight. 0.2 is often too high for robotic continuous control. 0.01-0.05 is more standard.
+    alpha = 0.05
     batch_size = 64
     buffer_size = 50000
     updates_per_step = 1
@@ -80,10 +83,11 @@ def main():
 
     wandb.init(project="efficient_vla_rl", name="sac_residual_online_rl", config=vars(args))
 
-    agent = SACResidualVLAPolicy(base_model_id, device=device)
+    # Boosted residual scale so the actor can actually alter the trajectory meaningfully to find success
+    agent = SACResidualVLAPolicy(base_model_id, device=device, residual_scale=0.1)
     
     # Target networks
-    target_agent = SACResidualVLAPolicy(base_model_id, device=device)
+    target_agent = SACResidualVLAPolicy(base_model_id, device=device, residual_scale=0.1)
     target_agent.load_state_dict(agent.state_dict())
     for param in target_agent.parameters():
         param.requires_grad = False
@@ -115,6 +119,9 @@ def main():
         step = 0
         done = False
         
+        episode_actor_loss = []
+        episode_critic_loss = []
+        
         while not done and step < max_steps:
             current_instruction = task.language
             img_agent = obs["agentview_image"][::-1, :, :].copy()
@@ -125,14 +132,38 @@ def main():
             img_tensor = torch.from_numpy(img_agent).to(torch.bfloat16).permute(2, 0, 1).unsqueeze(0).to(device) / 255.0
             state_tensor = torch.from_numpy(np.concatenate([obs["robot0_joint_pos"], obs["robot0_gripper_qpos"][0:1]])).to(torch.bfloat16).unsqueeze(0).to(device)
             
-            # Simple tokenization mock for base policy forward if needed
-            batch_obs = {'observation.images.image': img_tensor, 'observation.state': state_tensor}
+            img_wrist = obs["robot0_eye_in_hand_image"][::-1, :, :].copy()
+            img_tensor_wrist = torch.from_numpy(img_wrist).to(torch.bfloat16).permute(2, 0, 1).unsqueeze(0).to(device) / 255.0
+
+            # Tokenization mock for base policy forward if needed
+            processor = agent.base_policy.model.vlm_with_expert.processor
+            text_out = processor(text=current_instruction, return_tensors='pt')
+            
+            batch_obs = {
+                'observation.images.image': img_tensor,
+                'observation.images.image2': img_tensor_wrist,
+                'observation.state': state_tensor,
+                'observation.language.tokens': text_out['input_ids'].to(device),
+                'observation.language.attention_mask': text_out['attention_mask'].to(device).bool(),
+                'language_instruction': [current_instruction]
+            }
             
             if global_step < start_steps:
-                _, _, delta_action, _, _ = agent.sample_action(agent.extract_features(batch_obs))
-                final_action, _, _, _, _ = agent(batch_obs, deterministic=False)
+                # Completely uniformly random delta actions during warmup
+                action_dim = 7 # Typically 7 for Libero (6 joint + 1 gripper)
+                delta_action = (torch.rand((1, action_dim), device=device) * 2 - 1).to(torch.float32)
+                with torch.no_grad():
+                    with torch.autocast(device_type='cuda', dtype=torch.bfloat16):
+                        final_action, base_action, _, _, _ = agent(batch_obs, deterministic=False)
+                        
+                        # Replace the agent's internal delta with pure uniform random
+                        scaled_delta_action = agent.residual_scale * delta_action.to(device)
+                        final_action = base_action + scaled_delta_action
+                        final_action = torch.clamp(final_action, min=-1.0, max=1.0)
             else:
-                final_action, _, delta_action, _, _ = agent(batch_obs, deterministic=False)
+                with torch.no_grad():
+                    with torch.autocast(device_type='cuda', dtype=torch.bfloat16):
+                        final_action, _, delta_action, _, _ = agent(batch_obs, deterministic=False)
 
             action_np = final_action.detach().cpu().numpy()[0]
             next_obs, reward, done, info = env.step(action_np)
@@ -150,12 +181,15 @@ def main():
             next_state_tensor = torch.from_numpy(np.concatenate([next_obs["robot0_joint_pos"], next_obs["robot0_gripper_qpos"][0:1]])).to(torch.float32).unsqueeze(0).to(device)
             next_batch_obs = {'observation.images.image': next_img_tensor, 'observation.state': next_state_tensor}
 
-            # Store to buffer (use detach.cpu to save VRAM)
+            # Store to buffer as uint8 natively to drastically cut down RAM usage (OOM prevention)
+            img_uint8 = torch.from_numpy(img_agent.copy()).permute(2, 0, 1).unsqueeze(0)
+            next_img_uint8 = torch.from_numpy(next_img_agent.copy()).permute(2, 0, 1).unsqueeze(0)
+
             replay_buffer.push(
-                {'observation.images.image': img_tensor.detach().cpu(), 'observation.state': state_tensor.detach().cpu()},
+                {'observation.images.image': img_uint8, 'observation.state': state_tensor.detach().cpu()},
                 delta_action.detach().cpu()[0],
                 reward,
-                {'observation.images.image': next_img_tensor.detach().cpu(), 'observation.state': next_state_tensor.detach().cpu()},
+                {'observation.images.image': next_img_uint8, 'observation.state': next_state_tensor.detach().cpu()},
                 done
             )
 
@@ -198,11 +232,26 @@ def main():
                     actor_optimizer.zero_grad()
                     actor_loss.backward()
                     actor_optimizer.step()
+                    
+                    episode_critic_loss.append(critic_loss.item())
+                    episode_actor_loss.append(actor_loss.item())
 
                     soft_update(target_agent, agent, tau)
         
         print(f"Ep {episode}: Reward: {episode_reward:.2f}, Steps: {step}")
-        wandb.log({"episode": episode, "reward": episode_reward, "success": int(step_success), "steps": step})
+        
+        log_dict = {
+            "episode": episode, 
+            "reward": episode_reward, 
+            "success": int(step_success), 
+            "steps": step
+        }
+        if len(episode_critic_loss) > 0:
+            log_dict["critic_loss"] = np.mean(episode_critic_loss)
+            log_dict["actor_loss"] = np.mean(episode_actor_loss)
+            
+        wandb.log(log_dict)
 
 if __name__ == "__main__":
-    main()
+    with LinuxInhibit(reason="SAC Online RL"):
+        main()

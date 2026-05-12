@@ -1,2 +1,4 @@
 /__pycache__
 /plan.txt
+checkpoints*/
+wandb/
