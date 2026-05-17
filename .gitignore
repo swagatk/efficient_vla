@@ -2,3 +2,6 @@
 /plan.txt
 checkpoints*/
 wandb/
+output/
+logs/
+

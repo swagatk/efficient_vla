@@ -1,0 +1,28 @@
+/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/pydantic/_internal/_generate_schema.py:2249: UnsupportedFieldAttributeWarning: The 'repr' attribute with value False was provided to the `Field()` function, which has no effect in the context it was used. 'repr' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/pydantic/_internal/_generate_schema.py:2249: UnsupportedFieldAttributeWarning: The 'frozen' attribute with value True was provided to the `Field()` function, which has no effect in the context it was used. 'frozen' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+/home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/timm/models/layers/__init__.py:49: DeprecationWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", DeprecationWarning)
+--- Power Lock Active: SAC Online RL ---
+--- Power profile set to 'performance' (was 'balanced') ---
+[SACResidualVLA] Loading frozen base policy from: HuggingFaceVLA/smolvla_libero
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+[SACResidualVLA] Initializing trainable residual actor and critics...
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[eval] loaded checkpoint: /home/swagat/GIT/efficient_vla/outputs/sac_3seed/task_3/seed_0/checkpoints_task_3/latest_checkpoint.pt
+[eval] checkpoint episode: 99
+[eval] Ep 0: success=1 reward=1.00 steps=329
+[eval] Ep 1: success=1 reward=1.00 steps=363
+[eval] Ep 2: success=0 reward=0.00 steps=520
+[eval] Ep 3: success=1 reward=1.00 steps=324
+[eval] Ep 4: success=1 reward=1.00 steps=353
+[eval] Ep 5: success=0 reward=0.00 steps=520
+[eval] Ep 6: success=0 reward=0.00 steps=520
+[eval] Ep 7: success=1 reward=1.00 steps=318
+[eval] Ep 8: success=1 reward=1.00 steps=343
+[eval] Ep 9: success=0 reward=0.00 steps=520
+[eval] success_rate=0.6000 (6/10) mean_reward=0.600 mean_steps=411.0
+--- Power Lock Released ---
+--- Power profile restored to 'balanced' ---

@@ -100,7 +100,8 @@ class SACResidualVLAPolicy(nn.Module):
         std = torch.exp(log_std)
         
         if deterministic:
-            delta_action = mean
+            # Keep deterministic inference on the same bounded action manifold as stochastic training.
+            delta_action = torch.tanh(mean)
             log_prob = None
         else:
             normal = torch.distributions.Normal(mean, std)

@@ -3,6 +3,9 @@ import os
 import atexit # Not strictly needed if using
 import signal
 
+
+DEVNULL = subprocess.DEVNULL
+
 class LinuxInhibit:
     def __init__(self, reason="RL Training"):
         self.reason = reason
@@ -35,7 +38,13 @@ class LinuxInhibit:
             "sleep", "infinity"
         ]
         try:
-            self.process = subprocess.Popen(command)
+            # Detach stdio so caller-side pipes (e.g., tee) are never held open.
+            self.process = subprocess.Popen(
+                command,
+                stdin=DEVNULL,
+                stdout=DEVNULL,
+                stderr=DEVNULL,
+            )
             print(f"--- Power Lock Active: {self.reason} ---")
         except FileNotFoundError:
             self.process = None
@@ -87,7 +96,13 @@ class LinuxInhibit:
             fi
             powerprofilesctl set {self.orig_profile} 2>/dev/null
             """
-            self.watchdog = subprocess.Popen(["bash", "-c", watchdog_script], start_new_session=True)
+            self.watchdog = subprocess.Popen(
+                ["bash", "-c", watchdog_script],
+                start_new_session=True,
+                stdin=DEVNULL,
+                stdout=DEVNULL,
+                stderr=DEVNULL,
+            )
         except Exception as e:
             print(f"Could not set power profile: {e}")
             
