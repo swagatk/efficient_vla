@@ -181,6 +181,7 @@ def save_trainable_checkpoint(
     replay_state_dict=None,
     target_state_dict=None,
     alpha_state_dict=None,
+    success_history=None,
 ):
     payload = {
         "episode": int(episode),
@@ -199,6 +200,8 @@ def save_trainable_checkpoint(
         payload["target_state_dict"] = target_state_dict
     if alpha_state_dict is not None:
         payload["alpha_state_dict"] = alpha_state_dict
+    if success_history is not None:
+        payload["success_history"] = success_history
 
     os.makedirs(os.path.dirname(checkpoint_path), exist_ok=True)
     torch.save(payload, checkpoint_path)
@@ -215,6 +218,7 @@ def save_checkpoint_bundle(
     replay_state_dict=None,
     target_state_dict=None,
     alpha_state_dict=None,
+    success_history=None,
 ):
     latest_path = os.path.join(checkpoint_dir, "latest_checkpoint.pt")
     ep_path = os.path.join(checkpoint_dir, f"checkpoint_ep_{int(episode):04d}.pt")
@@ -230,6 +234,7 @@ def save_checkpoint_bundle(
         replay_state_dict=replay_state_dict,
         target_state_dict=target_state_dict,
         alpha_state_dict=alpha_state_dict,
+        success_history=success_history,
     )
     save_trainable_checkpoint(
         checkpoint_path=ep_path,
@@ -242,6 +247,7 @@ def save_checkpoint_bundle(
         replay_state_dict=replay_state_dict,
         target_state_dict=target_state_dict,
         alpha_state_dict=alpha_state_dict,
+        success_history=success_history,
     )
     print(f"[ckpt] saved: {latest_path}")
     print(f"[ckpt] saved: {ep_path}")
@@ -279,6 +285,11 @@ def extract_features_with_encoders(batch, vision_encoder, state_encoder):
     img = img.float() if img.dtype != torch.float32 else img
     if img.max() > 1.0:
         img = img / 255.0
+        
+    import torchvision.transforms as T
+    normalize = T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+    img = normalize(img)
+    
     state = batch.get("observation.state").float()
     features = vision_encoder(img)
     state_features = state_encoder(state)
@@ -720,7 +731,7 @@ def main():
 
                 while not done and step < max_steps:
                     current_instruction = task.language
-                    raw_obs, _, _ = build_policy_batch_from_obs(
+                    raw_obs, img_agent, state_tensor = build_policy_batch_from_obs(
                         obs,
                         current_instruction,
                         device,
@@ -731,9 +742,15 @@ def main():
                     policy_obs["task"] = [current_instruction]
                     batch_obs = preprocessor(policy_obs)
 
+                    img_uint8 = torch.from_numpy(img_agent.copy()).permute(2, 0, 1).unsqueeze(0).to(device)
+                    residual_batch = {
+                        "observation.images.image": img_uint8,
+                        "observation.state": state_tensor,
+                    }
+
                     with torch.no_grad():
                         with torch.autocast(device_type='cuda', dtype=torch.bfloat16):
-                            final_action, _, _, _, _ = agent(batch_obs, deterministic=True)
+                            final_action, _, _, _, _ = agent(batch_obs, residual_batch=residual_batch, deterministic=True)
 
                     env_action = postprocessor(final_action)
                     next_obs, reward, env_done, info = env.step(env_action.detach().cpu().numpy()[0])
@@ -783,6 +800,7 @@ def main():
     global_step = 0
     wandb_run_id = args.wandb_run_id
     resumed_from_checkpoint = False
+    initial_success_history = []
 
     action_dim = int(agent.action_dim)
     target_entropy = args.target_entropy if args.target_entropy is not None else -float(action_dim)
@@ -814,6 +832,8 @@ def main():
                 f"[train] restored replay: buffer={len(replay_buffer.buffer)} "
                 f"success_buffer={len(replay_buffer.success_buffer)}"
             )
+            
+        initial_success_history = ckpt.get("success_history", [])
 
         target_state = ckpt.get("target_state_dict", None)
         if isinstance(target_state, dict):
@@ -923,7 +943,7 @@ def main():
             save_wandb_run_id_to_checkpoint_dir(checkpoint_dir, wandb_run_id)
 
         last_episode_seen = start_episode - 1
-        success_history = []
+        success_history = list(initial_success_history)
         
         for episode in range(start_episode, num_episodes):
             if stop_requested:
@@ -963,13 +983,19 @@ def main():
                 policy_obs["task"] = [current_instruction]
                 batch_obs = preprocessor(policy_obs)
 
+                img_uint8 = torch.from_numpy(img_agent.copy()).permute(2, 0, 1).unsqueeze(0).to(device)
+                residual_batch = {
+                    "observation.images.image": img_uint8,
+                    "observation.state": state_tensor,
+                }
+
                 if global_step < start_steps:
                     # Completely uniformly random delta actions during warmup
                     action_dim = 7 # Typically 7 for Libero (6 joint + 1 gripper)
                     delta_action = (torch.rand((1, action_dim), device=device) * 2 - 1).to(torch.float32)
                     with torch.no_grad():
                         with torch.autocast(device_type='cuda', dtype=torch.bfloat16):
-                            final_action, base_action, _, _, _ = agent(batch_obs, deterministic=False)
+                            final_action, base_action, _, _, _ = agent(batch_obs, residual_batch=residual_batch, deterministic=False)
 
                             # Replace the agent's internal delta with pure uniform random
                             scaled_delta_action = agent.residual_scale * delta_action.to(device)
@@ -978,7 +1004,7 @@ def main():
                 else:
                     with torch.no_grad():
                         with torch.autocast(device_type='cuda', dtype=torch.bfloat16):
-                            final_action, _, delta_action, _, _ = agent(batch_obs, deterministic=False)
+                            final_action, _, delta_action, _, _ = agent(batch_obs, residual_batch=residual_batch, deterministic=False)
 
                 env_action = postprocessor(final_action)
                 action_np = env_action.detach().cpu().numpy()[0]
@@ -1096,9 +1122,8 @@ def main():
                         q2_new = agent.q2(torch.cat([features.detach(), action_new], dim=-1))
                         q_new = torch.min(q1_new, q2_new)
 
-                        # Penalize the actual residual magnitude applied to the env (after residual scaling).
-                        scaled_action_new = agent.residual_scale * action_new
-                        action_l2_penalty = args.action_l2_penalty_coef * (scaled_action_new ** 2).sum(dim=-1).mean()
+                        # Penalize the residual magnitude directly before scaling, to provide a strong enough gradient.
+                        action_l2_penalty = args.action_l2_penalty_coef * (action_new ** 2).sum(dim=-1).mean()
                         actor_loss = (alpha_value * log_prob_new - q_new).mean() + action_l2_penalty
 
                         actor_optimizer.zero_grad()
@@ -1184,6 +1209,7 @@ def main():
                     ),
                     target_state_dict=target_state_dict,
                     alpha_state_dict=alpha_state_dict,
+                    success_history=success_history,
                 )
 
         # Ensure latest state is always persisted at the end of training.
@@ -1215,6 +1241,7 @@ def main():
             ),
             target_state_dict=target_state_dict,
             alpha_state_dict=alpha_state_dict,
+            success_history=success_history,
         )
 
     except KeyboardInterrupt:
@@ -1248,6 +1275,7 @@ def main():
             ),
             target_state_dict=target_state_dict,
             alpha_state_dict=alpha_state_dict,
+            success_history=locals().get("success_history", []),
         )
         if getattr(wandb, "run", None) is not None:
             wandb.finish(exit_code=130)

@@ -73,42 +73,55 @@ GNOME_BATTERY_SLEEP_DISABLE="${GNOME_BATTERY_SLEEP_DISABLE:-1}"
 GNOME_BATTERY_SLEEP_SETTINGS_APPLIED=0
 ORIG_GNOME_BATTERY_SLEEP_TYPE=""
 ORIG_GNOME_BATTERY_SLEEP_TIMEOUT=""
+ORIG_POWER_PROFILE=""
+POWER_PROFILE_SETTINGS_APPLIED=0
 
-apply_gnome_battery_sleep_guard() {
-  if [[ "$GNOME_BATTERY_SLEEP_DISABLE" != "1" ]]; then
-    return
+apply_system_power_overrides() {
+  if [[ "$GNOME_BATTERY_SLEEP_DISABLE" == "1" ]]; then
+    if command -v gsettings >/dev/null 2>&1; then
+      ORIG_GNOME_BATTERY_SLEEP_TYPE="$(gsettings get org.gnome.settings-daemon.plugins.power sleep-inactive-battery-type 2>/dev/null || true)"
+      ORIG_GNOME_BATTERY_SLEEP_TIMEOUT="$(gsettings get org.gnome.settings-daemon.plugins.power sleep-inactive-battery-timeout 2>/dev/null || true)"
+
+      if [[ -n "$ORIG_GNOME_BATTERY_SLEEP_TYPE" && -n "$ORIG_GNOME_BATTERY_SLEEP_TIMEOUT" ]]; then
+        if gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-battery-type 'nothing' 2>/dev/null && \
+           gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-battery-timeout 0 2>/dev/null; then
+          GNOME_BATTERY_SLEEP_SETTINGS_APPLIED=1
+          echo "[runner] GNOME battery idle suspend disabled for this run."
+        else
+          echo "[runner] failed to set GNOME battery suspend override; continuing without it."
+        fi
+      fi
+    else
+      echo "[runner] gsettings not found; skipping GNOME battery suspend override."
+    fi
   fi
 
-  if ! command -v gsettings >/dev/null 2>&1; then
-    echo "[runner] gsettings not found; skipping GNOME battery suspend override."
-    return
-  fi
-
-  ORIG_GNOME_BATTERY_SLEEP_TYPE="$(gsettings get org.gnome.settings-daemon.plugins.power sleep-inactive-battery-type 2>/dev/null || true)"
-  ORIG_GNOME_BATTERY_SLEEP_TIMEOUT="$(gsettings get org.gnome.settings-daemon.plugins.power sleep-inactive-battery-timeout 2>/dev/null || true)"
-
-  if [[ -z "$ORIG_GNOME_BATTERY_SLEEP_TYPE" || -z "$ORIG_GNOME_BATTERY_SLEEP_TIMEOUT" ]]; then
-    echo "[runner] could not read GNOME battery suspend settings; skipping override."
-    return
-  fi
-
-  if gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-battery-type 'nothing' 2>/dev/null && \
-     gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-battery-timeout 0 2>/dev/null; then
-    GNOME_BATTERY_SLEEP_SETTINGS_APPLIED=1
-    echo "[runner] GNOME battery idle suspend disabled for this run."
+  if command -v powerprofilesctl >/dev/null 2>&1; then
+    ORIG_POWER_PROFILE="$(powerprofilesctl get 2>/dev/null || true)"
+    if [[ -n "$ORIG_POWER_PROFILE" ]]; then
+      if powerprofilesctl set performance 2>/dev/null; then
+        POWER_PROFILE_SETTINGS_APPLIED=1
+        echo "[runner] Power profile set to 'performance' for this run."
+      else
+        echo "[runner] failed to set power profile to 'performance'; continuing without it."
+      fi
+    fi
   else
-    echo "[runner] failed to set GNOME battery suspend override; continuing without it."
+    echo "[runner] powerprofilesctl not found; skipping power profile management."
   fi
 }
 
-restore_gnome_battery_sleep_guard() {
-  if (( GNOME_BATTERY_SLEEP_SETTINGS_APPLIED != 1 )); then
-    return
+restore_system_power_overrides() {
+  if (( GNOME_BATTERY_SLEEP_SETTINGS_APPLIED == 1 )); then
+    gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-battery-type "$ORIG_GNOME_BATTERY_SLEEP_TYPE" 2>/dev/null || true
+    gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-battery-timeout "$ORIG_GNOME_BATTERY_SLEEP_TIMEOUT" 2>/dev/null || true
+    echo "[runner] GNOME battery idle suspend settings restored."
   fi
 
-  gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-battery-type "$ORIG_GNOME_BATTERY_SLEEP_TYPE" 2>/dev/null || true
-  gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-battery-timeout "$ORIG_GNOME_BATTERY_SLEEP_TIMEOUT" 2>/dev/null || true
-  echo "[runner] GNOME battery idle suspend settings restored."
+  if (( POWER_PROFILE_SETTINGS_APPLIED == 1 )); then
+    powerprofilesctl set "$ORIG_POWER_PROFILE" 2>/dev/null || true
+    echo "[runner] Power profile restored to '$ORIG_POWER_PROFILE'."
+  fi
 }
 
 CONSOLIDATED_CSV="$OUTPUT_ROOT/consolidated_sac_vs_week1_task_${TASK_ID}.csv"
@@ -171,9 +184,9 @@ on_interrupt() {
 }
 
 trap on_interrupt INT TERM
-trap restore_gnome_battery_sleep_guard EXIT
+trap restore_system_power_overrides EXIT
 
-apply_gnome_battery_sleep_guard
+apply_system_power_overrides
 acquire_runner_lock
 
 run_and_tee() {

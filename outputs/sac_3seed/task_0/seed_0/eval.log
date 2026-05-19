@@ -6,23 +6,24 @@
   warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", DeprecationWarning)
 --- Power Lock Active: SAC Online RL ---
 --- Power profile set to 'performance' (was 'performance') ---
+[preset] Applied hard-task SAC preset.
 [SACResidualVLA] Loading frozen base policy from: HuggingFaceVLA/smolvla_libero
 Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
 `torch_dtype` is deprecated! Use `dtype` instead!
 [SACResidualVLA] Initializing trainable residual actor and critics...
 [info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-[eval] loaded checkpoint: /home/swagat/GIT/efficient_vla/outputs/sac_3seed/task_3/seed_2/checkpoints_task_3/latest_checkpoint.pt
+[eval] loaded checkpoint: /home/swagat/GIT/efficient_vla/outputs/sac_3seed/task_0/seed_0/checkpoints_task_0/latest_checkpoint.pt
 [eval] checkpoint episode: 99
-[eval] Ep 0: success=1 reward=1.00 steps=355
-[eval] Ep 1: success=1 reward=1.00 steps=356
-[eval] Ep 2: success=1 reward=1.00 steps=354
-[eval] Ep 3: success=1 reward=1.00 steps=369
-[eval] Ep 4: success=1 reward=1.00 steps=510
-[eval] Ep 5: success=1 reward=1.00 steps=416
-[eval] Ep 6: success=1 reward=1.00 steps=490
-[eval] Ep 7: success=1 reward=1.00 steps=328
-[eval] Ep 8: success=1 reward=1.00 steps=424
-[eval] Ep 9: success=1 reward=1.00 steps=452
-[eval] success_rate=1.0000 (10/10) mean_reward=1.000 mean_steps=405.4
+[eval] Ep 0: success=0 reward=0.00 steps=520
+[eval] Ep 1: success=0 reward=0.00 steps=520
+[eval] Ep 2: success=0 reward=0.00 steps=520
+[eval] Ep 3: success=0 reward=0.00 steps=520
+[eval] Ep 4: success=0 reward=0.00 steps=520
+[eval] Ep 5: success=0 reward=0.00 steps=520
+[eval] Ep 6: success=0 reward=0.00 steps=520
+[eval] Ep 7: success=0 reward=0.00 steps=520
+[eval] Ep 8: success=0 reward=0.00 steps=520
+[eval] Ep 9: success=0 reward=0.00 steps=520
+[eval] success_rate=0.0000 (0/10) mean_reward=0.000 mean_steps=520.0
 --- Power Lock Released ---
 --- Power profile restored to 'performance' ---

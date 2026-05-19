@@ -1,0 +1,2 @@
+seed,task_id,train_episodes,eval_episodes,train_mean_success_rate,eval_success_rate,eval_mean_reward,eval_mean_steps,checkpoint_path,seed_output_dir,week1_reference_csv
+0,0,100,10,0.010,0.0000,0.000,520.0,/home/swagat/GIT/efficient_vla/outputs/sac_3seed/task_0/seed_0/checkpoints_task_0/latest_checkpoint.pt,/home/swagat/GIT/efficient_vla/outputs/sac_3seed/task_0/seed_0,/home/swagat/GIT/efficient_vla/week1_baseline_failures.csv

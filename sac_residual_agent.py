@@ -86,6 +86,11 @@ class SACResidualVLAPolicy(nn.Module):
         img = batch.get('observation.images.image', batch.get('observation.image'))
         img = img.float() if img.dtype != torch.float32 else img
         if img.max() > 1.0: img = img / 255.0
+        
+        import torchvision.transforms as T
+        normalize = T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+        img = normalize(img)
+
         state = batch.get('observation.state').float()
 
         features = self.vision_encoder(img)
@@ -115,11 +120,12 @@ class SACResidualVLAPolicy(nn.Module):
             
         return delta_action, log_prob, mean
 
-    def forward(self, batch, deterministic=False):
+    def forward(self, batch, residual_batch=None, deterministic=False):
         with torch.no_grad():
             base_action = self.base_policy.select_action(batch)
             
-        fused_features = self.extract_features(batch)
+        target_batch = residual_batch if residual_batch is not None else batch
+        fused_features = self.extract_features(target_batch)
         delta_action, log_prob, mean = self.sample_action(fused_features, deterministic)
         
         scaled_delta_action = self.residual_scale * delta_action

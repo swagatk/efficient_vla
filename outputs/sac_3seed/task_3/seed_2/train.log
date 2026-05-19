@@ -5,14 +5,14 @@
 /home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/timm/models/layers/__init__.py:49: DeprecationWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
   warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", DeprecationWarning)
 --- Power Lock Active: SAC Online RL ---
---- Power profile set to 'performance' (was 'balanced') ---
+--- Power profile set to 'performance' (was 'performance') ---
 [SACResidualVLA] Loading frozen base policy from: HuggingFaceVLA/smolvla_libero
 Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
 `torch_dtype` is deprecated! Use `dtype` instead!
 [SACResidualVLA] Initializing trainable residual actor and critics...
 [info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 [preflight] skipped because --resume_training is enabled
-[wandb] using run_id=otmmv4ch
+[wandb] using run_id=ix1hmps0
 [wandb] project=efficient_vla_rl group=sac_task_3 name=sac_task3_seed2
 wandb: Currently logged in as: swagatk to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
 /home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/wandb/analytics/sentry.py:263: DeprecationWarning: The `Scope.user` setter is deprecated in favor of `Scope.set_user()`.
@@ -21,255 +21,255 @@ wandb: creating run
 /home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/wandb/analytics/sentry.py:263: DeprecationWarning: The `Scope.user` setter is deprecated in favor of `Scope.set_user()`.
   self.scope.user = {"email": email}
 wandb: Tracking run with wandb version 0.21.4
-wandb: Run data is saved locally in /home/swagat/GIT/efficient_vla/wandb/run-20260517_103051-otmmv4ch
+wandb: Run data is saved locally in /home/swagat/GIT/efficient_vla/wandb/run-20260518_104114-ix1hmps0
 wandb: Run `wandb offline` to turn off syncing.
 wandb: Syncing run sac_task3_seed2
 wandb: ⭐️ View project at https://wandb.ai/swagatk/efficient_vla_rl
-wandb: 🚀 View run at https://wandb.ai/swagatk/efficient_vla_rl/runs/otmmv4ch
-Ep 0: Reward: 17.21, Steps: 380
+wandb: 🚀 View run at https://wandb.ai/swagatk/efficient_vla_rl/runs/ix1hmps0
+Ep 0: Reward: 16.26, Steps: 475
 [progress] seed=2 [------------------------] ep=1/100 success_mean20=1.000 success_mean=1.000
-Ep 1: Reward: 17.07, Steps: 394
+Ep 1: Reward: 17.27, Steps: 374
 [progress] seed=2 [------------------------] ep=2/100 success_mean20=1.000 success_mean=1.000
-Ep 2: Reward: 17.03, Steps: 398
+Ep 2: Reward: 16.95, Steps: 406
 [progress] seed=2 [#-----------------------] ep=3/100 success_mean20=1.000 success_mean=1.000
-Ep 3: Reward: 16.39, Steps: 462
+Ep 3: Reward: 16.94, Steps: 407
 [progress] seed=2 [#-----------------------] ep=4/100 success_mean20=1.000 success_mean=1.000
-Ep 4: Reward: 16.85, Steps: 416
-[progress] seed=2 [#-----------------------] ep=5/100 success_mean20=1.000 success_mean=1.000
+Ep 4: Reward: -5.20, Steps: 520
+[progress] seed=2 [#-----------------------] ep=5/100 success_mean20=0.800 success_mean=0.800
 [ckpt] saved: /home/swagat/GIT/efficient_vla/outputs/sac_3seed/task_3/seed_2/checkpoints_task_3/latest_checkpoint.pt
 [ckpt] saved: /home/swagat/GIT/efficient_vla/outputs/sac_3seed/task_3/seed_2/checkpoints_task_3/checkpoint_ep_0004.pt
-Ep 5: Reward: 16.67, Steps: 434
-[progress] seed=2 [#-----------------------] ep=6/100 success_mean20=1.000 success_mean=1.000
-Ep 6: Reward: -5.20, Steps: 520
+Ep 5: Reward: 16.69, Steps: 432
+[progress] seed=2 [#-----------------------] ep=6/100 success_mean20=0.833 success_mean=0.833
+Ep 6: Reward: 16.76, Steps: 425
 [progress] seed=2 [##----------------------] ep=7/100 success_mean20=0.857 success_mean=0.857
-Ep 7: Reward: 17.41, Steps: 360
+Ep 7: Reward: 16.97, Steps: 404
 [progress] seed=2 [##----------------------] ep=8/100 success_mean20=0.875 success_mean=0.875
-Ep 8: Reward: 17.33, Steps: 368
+Ep 8: Reward: 17.06, Steps: 395
 [progress] seed=2 [##----------------------] ep=9/100 success_mean20=0.889 success_mean=0.889
 Ep 9: Reward: -5.20, Steps: 520
 [progress] seed=2 [##----------------------] ep=10/100 success_mean20=0.800 success_mean=0.800
 [ckpt] saved: /home/swagat/GIT/efficient_vla/outputs/sac_3seed/task_3/seed_2/checkpoints_task_3/latest_checkpoint.pt
 [ckpt] saved: /home/swagat/GIT/efficient_vla/outputs/sac_3seed/task_3/seed_2/checkpoints_task_3/checkpoint_ep_0009.pt
-Ep 10: Reward: 16.10, Steps: 491
+Ep 10: Reward: 17.10, Steps: 391
 [progress] seed=2 [###---------------------] ep=11/100 success_mean20=0.818 success_mean=0.818
-Ep 11: Reward: -5.20, Steps: 520
-[progress] seed=2 [###---------------------] ep=12/100 success_mean20=0.750 success_mean=0.750
-Ep 12: Reward: 17.40, Steps: 361
-[progress] seed=2 [###---------------------] ep=13/100 success_mean20=0.769 success_mean=0.769
-Ep 13: Reward: -5.20, Steps: 520
-[progress] seed=2 [###---------------------] ep=14/100 success_mean20=0.714 success_mean=0.714
-Ep 14: Reward: 16.45, Steps: 456
-[progress] seed=2 [####--------------------] ep=15/100 success_mean20=0.733 success_mean=0.733
+Ep 11: Reward: 16.16, Steps: 485
+[progress] seed=2 [###---------------------] ep=12/100 success_mean20=0.833 success_mean=0.833
+Ep 12: Reward: 17.04, Steps: 397
+[progress] seed=2 [###---------------------] ep=13/100 success_mean20=0.846 success_mean=0.846
+Ep 13: Reward: 17.56, Steps: 345
+[progress] seed=2 [###---------------------] ep=14/100 success_mean20=0.857 success_mean=0.857
+Ep 14: Reward: 17.61, Steps: 340
+[progress] seed=2 [####--------------------] ep=15/100 success_mean20=0.867 success_mean=0.867
 [ckpt] saved: /home/swagat/GIT/efficient_vla/outputs/sac_3seed/task_3/seed_2/checkpoints_task_3/latest_checkpoint.pt
 [ckpt] saved: /home/swagat/GIT/efficient_vla/outputs/sac_3seed/task_3/seed_2/checkpoints_task_3/checkpoint_ep_0014.pt
-Ep 15: Reward: 17.98, Steps: 303
-[progress] seed=2 [####--------------------] ep=16/100 success_mean20=0.750 success_mean=0.750
-Ep 16: Reward: -5.20, Steps: 520
-[progress] seed=2 [####--------------------] ep=17/100 success_mean20=0.706 success_mean=0.706
-Ep 17: Reward: 16.24, Steps: 477
-[progress] seed=2 [####--------------------] ep=18/100 success_mean20=0.722 success_mean=0.722
-Ep 18: Reward: 17.03, Steps: 398
-[progress] seed=2 [#####-------------------] ep=19/100 success_mean20=0.737 success_mean=0.737
-Ep 19: Reward: 16.94, Steps: 407
-[progress] seed=2 [#####-------------------] ep=20/100 success_mean20=0.750 success_mean=0.750
+Ep 15: Reward: 17.16, Steps: 385
+[progress] seed=2 [####--------------------] ep=16/100 success_mean20=0.875 success_mean=0.875
+Ep 16: Reward: 15.83, Steps: 518
+[progress] seed=2 [####--------------------] ep=17/100 success_mean20=0.882 success_mean=0.882
+Ep 17: Reward: 17.18, Steps: 383
+[progress] seed=2 [####--------------------] ep=18/100 success_mean20=0.889 success_mean=0.889
+Ep 18: Reward: 17.55, Steps: 346
+[progress] seed=2 [#####-------------------] ep=19/100 success_mean20=0.895 success_mean=0.895
+Ep 19: Reward: -5.20, Steps: 520
+[progress] seed=2 [#####-------------------] ep=20/100 success_mean20=0.850 success_mean=0.850
 [ckpt] saved: /home/swagat/GIT/efficient_vla/outputs/sac_3seed/task_3/seed_2/checkpoints_task_3/latest_checkpoint.pt
 [ckpt] saved: /home/swagat/GIT/efficient_vla/outputs/sac_3seed/task_3/seed_2/checkpoints_task_3/checkpoint_ep_0019.pt
-Ep 20: Reward: 15.84, Steps: 517
-[progress] seed=2 [#####-------------------] ep=21/100 success_mean20=0.750 success_mean=0.762
-Ep 21: Reward: -5.20, Steps: 520
-[progress] seed=2 [#####-------------------] ep=22/100 success_mean20=0.700 success_mean=0.727
-Ep 22: Reward: 17.04, Steps: 397
-[progress] seed=2 [######------------------] ep=23/100 success_mean20=0.700 success_mean=0.739
-Ep 23: Reward: 16.69, Steps: 432
-[progress] seed=2 [######------------------] ep=24/100 success_mean20=0.700 success_mean=0.750
-Ep 24: Reward: 17.07, Steps: 394
-[progress] seed=2 [######------------------] ep=25/100 success_mean20=0.700 success_mean=0.760
+Ep 20: Reward: 17.22, Steps: 379
+[progress] seed=2 [#####-------------------] ep=21/100 success_mean20=0.850 success_mean=0.857
+Ep 21: Reward: 17.08, Steps: 393
+[progress] seed=2 [#####-------------------] ep=22/100 success_mean20=0.850 success_mean=0.864
+Ep 22: Reward: 17.69, Steps: 332
+[progress] seed=2 [######------------------] ep=23/100 success_mean20=0.850 success_mean=0.870
+Ep 23: Reward: 17.24, Steps: 377
+[progress] seed=2 [######------------------] ep=24/100 success_mean20=0.850 success_mean=0.875
+Ep 24: Reward: 17.61, Steps: 340
+[progress] seed=2 [######------------------] ep=25/100 success_mean20=0.900 success_mean=0.880
 [ckpt] saved: /home/swagat/GIT/efficient_vla/outputs/sac_3seed/task_3/seed_2/checkpoints_task_3/latest_checkpoint.pt
 [ckpt] saved: /home/swagat/GIT/efficient_vla/outputs/sac_3seed/task_3/seed_2/checkpoints_task_3/checkpoint_ep_0024.pt
-Ep 25: Reward: 17.01, Steps: 400
-[progress] seed=2 [######------------------] ep=26/100 success_mean20=0.700 success_mean=0.769
-Ep 26: Reward: 16.72, Steps: 429
-[progress] seed=2 [######------------------] ep=27/100 success_mean20=0.750 success_mean=0.778
-Ep 27: Reward: 15.85, Steps: 516
-[progress] seed=2 [#######-----------------] ep=28/100 success_mean20=0.750 success_mean=0.786
-Ep 28: Reward: 16.42, Steps: 459
-[progress] seed=2 [#######-----------------] ep=29/100 success_mean20=0.750 success_mean=0.793
-Ep 29: Reward: 17.47, Steps: 354
-[progress] seed=2 [#######-----------------] ep=30/100 success_mean20=0.800 success_mean=0.800
+Ep 25: Reward: 16.32, Steps: 469
+[progress] seed=2 [######------------------] ep=26/100 success_mean20=0.900 success_mean=0.885
+Ep 26: Reward: 16.19, Steps: 482
+[progress] seed=2 [######------------------] ep=27/100 success_mean20=0.900 success_mean=0.889
+Ep 27: Reward: -5.20, Steps: 520
+[progress] seed=2 [#######-----------------] ep=28/100 success_mean20=0.850 success_mean=0.857
+Ep 28: Reward: 17.27, Steps: 374
+[progress] seed=2 [#######-----------------] ep=29/100 success_mean20=0.850 success_mean=0.862
+Ep 29: Reward: 16.25, Steps: 476
+[progress] seed=2 [#######-----------------] ep=30/100 success_mean20=0.900 success_mean=0.867
 [ckpt] saved: /home/swagat/GIT/efficient_vla/outputs/sac_3seed/task_3/seed_2/checkpoints_task_3/latest_checkpoint.pt
 [ckpt] saved: /home/swagat/GIT/efficient_vla/outputs/sac_3seed/task_3/seed_2/checkpoints_task_3/checkpoint_ep_0029.pt
-Ep 30: Reward: 17.11, Steps: 390
-[progress] seed=2 [#######-----------------] ep=31/100 success_mean20=0.800 success_mean=0.806
-Ep 31: Reward: 17.15, Steps: 386
-[progress] seed=2 [########----------------] ep=32/100 success_mean20=0.850 success_mean=0.812
-Ep 32: Reward: 16.04, Steps: 497
-[progress] seed=2 [########----------------] ep=33/100 success_mean20=0.850 success_mean=0.818
-Ep 33: Reward: 17.67, Steps: 334
-[progress] seed=2 [########----------------] ep=34/100 success_mean20=0.900 success_mean=0.824
-Ep 34: Reward: 17.52, Steps: 349
-[progress] seed=2 [########----------------] ep=35/100 success_mean20=0.900 success_mean=0.829
+Ep 30: Reward: 16.23, Steps: 478
+[progress] seed=2 [#######-----------------] ep=31/100 success_mean20=0.900 success_mean=0.871
+Ep 31: Reward: 17.51, Steps: 350
+[progress] seed=2 [########----------------] ep=32/100 success_mean20=0.900 success_mean=0.875
+Ep 32: Reward: -5.20, Steps: 520
+[progress] seed=2 [########----------------] ep=33/100 success_mean20=0.850 success_mean=0.848
+Ep 33: Reward: 17.21, Steps: 380
+[progress] seed=2 [########----------------] ep=34/100 success_mean20=0.850 success_mean=0.853
+Ep 34: Reward: 17.17, Steps: 384
+[progress] seed=2 [########----------------] ep=35/100 success_mean20=0.850 success_mean=0.857
 [ckpt] saved: /home/swagat/GIT/efficient_vla/outputs/sac_3seed/task_3/seed_2/checkpoints_task_3/latest_checkpoint.pt
 [ckpt] saved: /home/swagat/GIT/efficient_vla/outputs/sac_3seed/task_3/seed_2/checkpoints_task_3/checkpoint_ep_0034.pt
 Ep 35: Reward: -5.20, Steps: 520
-[progress] seed=2 [#########---------------] ep=36/100 success_mean20=0.850 success_mean=0.806
-Ep 36: Reward: 17.36, Steps: 365
-[progress] seed=2 [#########---------------] ep=37/100 success_mean20=0.900 success_mean=0.811
-Ep 37: Reward: 16.92, Steps: 409
-[progress] seed=2 [#########---------------] ep=38/100 success_mean20=0.900 success_mean=0.816
+[progress] seed=2 [#########---------------] ep=36/100 success_mean20=0.800 success_mean=0.833
+Ep 36: Reward: 17.02, Steps: 399
+[progress] seed=2 [#########---------------] ep=37/100 success_mean20=0.800 success_mean=0.838
+Ep 37: Reward: 16.21, Steps: 480
+[progress] seed=2 [#########---------------] ep=38/100 success_mean20=0.800 success_mean=0.842
 Ep 38: Reward: -5.20, Steps: 520
-[progress] seed=2 [#########---------------] ep=39/100 success_mean20=0.850 success_mean=0.795
-Ep 39: Reward: 16.42, Steps: 459
-[progress] seed=2 [##########--------------] ep=40/100 success_mean20=0.850 success_mean=0.800
+[progress] seed=2 [#########---------------] ep=39/100 success_mean20=0.750 success_mean=0.821
+Ep 39: Reward: 16.05, Steps: 496
+[progress] seed=2 [##########--------------] ep=40/100 success_mean20=0.800 success_mean=0.825
 [ckpt] saved: /home/swagat/GIT/efficient_vla/outputs/sac_3seed/task_3/seed_2/checkpoints_task_3/latest_checkpoint.pt
 [ckpt] saved: /home/swagat/GIT/efficient_vla/outputs/sac_3seed/task_3/seed_2/checkpoints_task_3/checkpoint_ep_0039.pt
-Ep 40: Reward: 17.71, Steps: 330
-[progress] seed=2 [##########--------------] ep=41/100 success_mean20=0.850 success_mean=0.805
-Ep 41: Reward: 16.93, Steps: 408
-[progress] seed=2 [##########--------------] ep=42/100 success_mean20=0.900 success_mean=0.810
-Ep 42: Reward: 17.36, Steps: 365
-[progress] seed=2 [##########--------------] ep=43/100 success_mean20=0.900 success_mean=0.814
-Ep 43: Reward: 16.56, Steps: 445
-[progress] seed=2 [###########-------------] ep=44/100 success_mean20=0.900 success_mean=0.818
-Ep 44: Reward: 17.12, Steps: 389
-[progress] seed=2 [###########-------------] ep=45/100 success_mean20=0.900 success_mean=0.822
+Ep 40: Reward: 17.00, Steps: 401
+[progress] seed=2 [##########--------------] ep=41/100 success_mean20=0.800 success_mean=0.829
+Ep 41: Reward: -5.20, Steps: 520
+[progress] seed=2 [##########--------------] ep=42/100 success_mean20=0.750 success_mean=0.810
+Ep 42: Reward: 17.03, Steps: 398
+[progress] seed=2 [##########--------------] ep=43/100 success_mean20=0.750 success_mean=0.814
+Ep 43: Reward: -5.20, Steps: 520
+[progress] seed=2 [###########-------------] ep=44/100 success_mean20=0.700 success_mean=0.795
+Ep 44: Reward: -5.20, Steps: 520
+[progress] seed=2 [###########-------------] ep=45/100 success_mean20=0.650 success_mean=0.778
 [ckpt] saved: /home/swagat/GIT/efficient_vla/outputs/sac_3seed/task_3/seed_2/checkpoints_task_3/latest_checkpoint.pt
 [ckpt] saved: /home/swagat/GIT/efficient_vla/outputs/sac_3seed/task_3/seed_2/checkpoints_task_3/checkpoint_ep_0044.pt
-Ep 45: Reward: -5.20, Steps: 520
-[progress] seed=2 [###########-------------] ep=46/100 success_mean20=0.850 success_mean=0.804
+Ep 45: Reward: 16.50, Steps: 451
+[progress] seed=2 [###########-------------] ep=46/100 success_mean20=0.650 success_mean=0.783
 Ep 46: Reward: -5.20, Steps: 520
-[progress] seed=2 [###########-------------] ep=47/100 success_mean20=0.800 success_mean=0.787
-Ep 47: Reward: 16.12, Steps: 489
-[progress] seed=2 [############------------] ep=48/100 success_mean20=0.800 success_mean=0.792
-Ep 48: Reward: 16.13, Steps: 488
-[progress] seed=2 [############------------] ep=49/100 success_mean20=0.800 success_mean=0.796
-Ep 49: Reward: 17.85, Steps: 316
-[progress] seed=2 [############------------] ep=50/100 success_mean20=0.800 success_mean=0.800
+[progress] seed=2 [###########-------------] ep=47/100 success_mean20=0.600 success_mean=0.766
+Ep 47: Reward: 16.86, Steps: 415
+[progress] seed=2 [############------------] ep=48/100 success_mean20=0.650 success_mean=0.771
+Ep 48: Reward: 17.01, Steps: 400
+[progress] seed=2 [############------------] ep=49/100 success_mean20=0.650 success_mean=0.776
+Ep 49: Reward: 16.19, Steps: 482
+[progress] seed=2 [############------------] ep=50/100 success_mean20=0.650 success_mean=0.780
 [ckpt] saved: /home/swagat/GIT/efficient_vla/outputs/sac_3seed/task_3/seed_2/checkpoints_task_3/latest_checkpoint.pt
 [ckpt] saved: /home/swagat/GIT/efficient_vla/outputs/sac_3seed/task_3/seed_2/checkpoints_task_3/checkpoint_ep_0049.pt
-Ep 50: Reward: 17.07, Steps: 394
-[progress] seed=2 [############------------] ep=51/100 success_mean20=0.800 success_mean=0.804
-Ep 51: Reward: 17.03, Steps: 398
-[progress] seed=2 [############------------] ep=52/100 success_mean20=0.800 success_mean=0.808
-Ep 52: Reward: 17.41, Steps: 360
-[progress] seed=2 [#############-----------] ep=53/100 success_mean20=0.800 success_mean=0.811
-Ep 53: Reward: -5.20, Steps: 520
-[progress] seed=2 [#############-----------] ep=54/100 success_mean20=0.750 success_mean=0.796
-Ep 54: Reward: -5.20, Steps: 520
-[progress] seed=2 [#############-----------] ep=55/100 success_mean20=0.700 success_mean=0.782
+Ep 50: Reward: 17.11, Steps: 390
+[progress] seed=2 [############------------] ep=51/100 success_mean20=0.650 success_mean=0.784
+Ep 51: Reward: 16.15, Steps: 486
+[progress] seed=2 [############------------] ep=52/100 success_mean20=0.650 success_mean=0.788
+Ep 52: Reward: 16.97, Steps: 404
+[progress] seed=2 [#############-----------] ep=53/100 success_mean20=0.700 success_mean=0.792
+Ep 53: Reward: 15.89, Steps: 512
+[progress] seed=2 [#############-----------] ep=54/100 success_mean20=0.700 success_mean=0.796
+Ep 54: Reward: 16.25, Steps: 476
+[progress] seed=2 [#############-----------] ep=55/100 success_mean20=0.700 success_mean=0.800
 [ckpt] saved: /home/swagat/GIT/efficient_vla/outputs/sac_3seed/task_3/seed_2/checkpoints_task_3/latest_checkpoint.pt
 [ckpt] saved: /home/swagat/GIT/efficient_vla/outputs/sac_3seed/task_3/seed_2/checkpoints_task_3/checkpoint_ep_0054.pt
-Ep 55: Reward: 17.30, Steps: 371
-[progress] seed=2 [#############-----------] ep=56/100 success_mean20=0.750 success_mean=0.786
-Ep 56: Reward: -5.20, Steps: 520
-[progress] seed=2 [##############----------] ep=57/100 success_mean20=0.700 success_mean=0.772
-Ep 57: Reward: 17.29, Steps: 372
-[progress] seed=2 [##############----------] ep=58/100 success_mean20=0.700 success_mean=0.776
-Ep 58: Reward: 16.30, Steps: 471
-[progress] seed=2 [##############----------] ep=59/100 success_mean20=0.750 success_mean=0.780
-Ep 59: Reward: 17.60, Steps: 341
-[progress] seed=2 [##############----------] ep=60/100 success_mean20=0.750 success_mean=0.783
+Ep 55: Reward: 17.56, Steps: 345
+[progress] seed=2 [#############-----------] ep=56/100 success_mean20=0.750 success_mean=0.804
+Ep 56: Reward: 16.58, Steps: 443
+[progress] seed=2 [##############----------] ep=57/100 success_mean20=0.750 success_mean=0.807
+Ep 57: Reward: 16.00, Steps: 501
+[progress] seed=2 [##############----------] ep=58/100 success_mean20=0.750 success_mean=0.810
+Ep 58: Reward: 16.70, Steps: 431
+[progress] seed=2 [##############----------] ep=59/100 success_mean20=0.800 success_mean=0.814
+Ep 59: Reward: -5.20, Steps: 520
+[progress] seed=2 [##############----------] ep=60/100 success_mean20=0.750 success_mean=0.800
 [ckpt] saved: /home/swagat/GIT/efficient_vla/outputs/sac_3seed/task_3/seed_2/checkpoints_task_3/latest_checkpoint.pt
 [ckpt] saved: /home/swagat/GIT/efficient_vla/outputs/sac_3seed/task_3/seed_2/checkpoints_task_3/checkpoint_ep_0059.pt
-Ep 60: Reward: 17.01, Steps: 400
-[progress] seed=2 [###############---------] ep=61/100 success_mean20=0.750 success_mean=0.787
-Ep 61: Reward: 17.06, Steps: 395
-[progress] seed=2 [###############---------] ep=62/100 success_mean20=0.750 success_mean=0.790
-Ep 62: Reward: 17.34, Steps: 367
+Ep 60: Reward: 16.66, Steps: 435
+[progress] seed=2 [###############---------] ep=61/100 success_mean20=0.750 success_mean=0.803
+Ep 61: Reward: 17.11, Steps: 390
+[progress] seed=2 [###############---------] ep=62/100 success_mean20=0.800 success_mean=0.806
+Ep 62: Reward: -5.20, Steps: 520
 [progress] seed=2 [###############---------] ep=63/100 success_mean20=0.750 success_mean=0.794
-Ep 63: Reward: 17.14, Steps: 387
-[progress] seed=2 [###############---------] ep=64/100 success_mean20=0.750 success_mean=0.797
-Ep 64: Reward: 16.49, Steps: 452
-[progress] seed=2 [################--------] ep=65/100 success_mean20=0.750 success_mean=0.800
+Ep 63: Reward: 16.58, Steps: 443
+[progress] seed=2 [###############---------] ep=64/100 success_mean20=0.800 success_mean=0.797
+Ep 64: Reward: 16.65, Steps: 436
+[progress] seed=2 [################--------] ep=65/100 success_mean20=0.850 success_mean=0.800
 [ckpt] saved: /home/swagat/GIT/efficient_vla/outputs/sac_3seed/task_3/seed_2/checkpoints_task_3/latest_checkpoint.pt
 [ckpt] saved: /home/swagat/GIT/efficient_vla/outputs/sac_3seed/task_3/seed_2/checkpoints_task_3/checkpoint_ep_0064.pt
-Ep 65: Reward: 16.19, Steps: 482
-[progress] seed=2 [################--------] ep=66/100 success_mean20=0.800 success_mean=0.803
-Ep 66: Reward: 16.88, Steps: 413
-[progress] seed=2 [################--------] ep=67/100 success_mean20=0.850 success_mean=0.806
-Ep 67: Reward: 16.84, Steps: 417
-[progress] seed=2 [################--------] ep=68/100 success_mean20=0.850 success_mean=0.809
-Ep 68: Reward: 16.95, Steps: 406
-[progress] seed=2 [#################-------] ep=69/100 success_mean20=0.850 success_mean=0.812
-Ep 69: Reward: 17.20, Steps: 381
-[progress] seed=2 [#################-------] ep=70/100 success_mean20=0.850 success_mean=0.814
+Ep 65: Reward: 16.66, Steps: 435
+[progress] seed=2 [################--------] ep=66/100 success_mean20=0.850 success_mean=0.803
+Ep 66: Reward: 16.82, Steps: 419
+[progress] seed=2 [################--------] ep=67/100 success_mean20=0.900 success_mean=0.806
+Ep 67: Reward: 17.31, Steps: 370
+[progress] seed=2 [################--------] ep=68/100 success_mean20=0.900 success_mean=0.809
+Ep 68: Reward: 17.12, Steps: 389
+[progress] seed=2 [#################-------] ep=69/100 success_mean20=0.900 success_mean=0.812
+Ep 69: Reward: 16.07, Steps: 494
+[progress] seed=2 [#################-------] ep=70/100 success_mean20=0.900 success_mean=0.814
 [ckpt] saved: /home/swagat/GIT/efficient_vla/outputs/sac_3seed/task_3/seed_2/checkpoints_task_3/latest_checkpoint.pt
 [ckpt] saved: /home/swagat/GIT/efficient_vla/outputs/sac_3seed/task_3/seed_2/checkpoints_task_3/checkpoint_ep_0069.pt
-Ep 70: Reward: -5.20, Steps: 520
-[progress] seed=2 [#################-------] ep=71/100 success_mean20=0.800 success_mean=0.803
-Ep 71: Reward: 16.96, Steps: 405
-[progress] seed=2 [#################-------] ep=72/100 success_mean20=0.800 success_mean=0.806
+Ep 70: Reward: 16.85, Steps: 416
+[progress] seed=2 [#################-------] ep=71/100 success_mean20=0.900 success_mean=0.817
+Ep 71: Reward: 16.61, Steps: 440
+[progress] seed=2 [#################-------] ep=72/100 success_mean20=0.900 success_mean=0.819
 Ep 72: Reward: -5.20, Steps: 520
-[progress] seed=2 [##################------] ep=73/100 success_mean20=0.750 success_mean=0.795
-Ep 73: Reward: 16.74, Steps: 427
-[progress] seed=2 [##################------] ep=74/100 success_mean20=0.800 success_mean=0.797
-Ep 74: Reward: 17.02, Steps: 399
-[progress] seed=2 [##################------] ep=75/100 success_mean20=0.850 success_mean=0.800
+[progress] seed=2 [##################------] ep=73/100 success_mean20=0.850 success_mean=0.808
+Ep 73: Reward: 17.13, Steps: 388
+[progress] seed=2 [##################------] ep=74/100 success_mean20=0.850 success_mean=0.811
+Ep 74: Reward: 16.24, Steps: 477
+[progress] seed=2 [##################------] ep=75/100 success_mean20=0.850 success_mean=0.813
 [ckpt] saved: /home/swagat/GIT/efficient_vla/outputs/sac_3seed/task_3/seed_2/checkpoints_task_3/latest_checkpoint.pt
 [ckpt] saved: /home/swagat/GIT/efficient_vla/outputs/sac_3seed/task_3/seed_2/checkpoints_task_3/checkpoint_ep_0074.pt
-Ep 75: Reward: 16.63, Steps: 438
-[progress] seed=2 [##################------] ep=76/100 success_mean20=0.850 success_mean=0.803
-Ep 76: Reward: 16.93, Steps: 408
-[progress] seed=2 [##################------] ep=77/100 success_mean20=0.900 success_mean=0.805
-Ep 77: Reward: 17.38, Steps: 363
-[progress] seed=2 [###################-----] ep=78/100 success_mean20=0.900 success_mean=0.808
-Ep 78: Reward: 16.68, Steps: 433
-[progress] seed=2 [###################-----] ep=79/100 success_mean20=0.900 success_mean=0.810
-Ep 79: Reward: 17.03, Steps: 398
-[progress] seed=2 [###################-----] ep=80/100 success_mean20=0.900 success_mean=0.812
+Ep 75: Reward: 17.36, Steps: 365
+[progress] seed=2 [##################------] ep=76/100 success_mean20=0.850 success_mean=0.816
+Ep 76: Reward: 16.97, Steps: 404
+[progress] seed=2 [##################------] ep=77/100 success_mean20=0.850 success_mean=0.818
+Ep 77: Reward: 17.30, Steps: 371
+[progress] seed=2 [###################-----] ep=78/100 success_mean20=0.850 success_mean=0.821
+Ep 78: Reward: -5.20, Steps: 520
+[progress] seed=2 [###################-----] ep=79/100 success_mean20=0.800 success_mean=0.810
+Ep 79: Reward: 17.75, Steps: 326
+[progress] seed=2 [###################-----] ep=80/100 success_mean20=0.850 success_mean=0.812
 [ckpt] saved: /home/swagat/GIT/efficient_vla/outputs/sac_3seed/task_3/seed_2/checkpoints_task_3/latest_checkpoint.pt
 [ckpt] saved: /home/swagat/GIT/efficient_vla/outputs/sac_3seed/task_3/seed_2/checkpoints_task_3/checkpoint_ep_0079.pt
-Ep 80: Reward: 16.40, Steps: 461
-[progress] seed=2 [###################-----] ep=81/100 success_mean20=0.900 success_mean=0.815
-Ep 81: Reward: 16.64, Steps: 437
-[progress] seed=2 [####################----] ep=82/100 success_mean20=0.900 success_mean=0.817
-Ep 82: Reward: -5.20, Steps: 520
+Ep 80: Reward: -5.20, Steps: 520
+[progress] seed=2 [###################-----] ep=81/100 success_mean20=0.800 success_mean=0.802
+Ep 81: Reward: 17.11, Steps: 390
+[progress] seed=2 [####################----] ep=82/100 success_mean20=0.800 success_mean=0.805
+Ep 82: Reward: 16.88, Steps: 413
 [progress] seed=2 [####################----] ep=83/100 success_mean20=0.850 success_mean=0.807
-Ep 83: Reward: 17.26, Steps: 375
+Ep 83: Reward: 16.63, Steps: 438
 [progress] seed=2 [####################----] ep=84/100 success_mean20=0.850 success_mean=0.810
-Ep 84: Reward: -5.20, Steps: 520
-[progress] seed=2 [####################----] ep=85/100 success_mean20=0.800 success_mean=0.800
+Ep 84: Reward: 17.35, Steps: 366
+[progress] seed=2 [####################----] ep=85/100 success_mean20=0.850 success_mean=0.812
 [ckpt] saved: /home/swagat/GIT/efficient_vla/outputs/sac_3seed/task_3/seed_2/checkpoints_task_3/latest_checkpoint.pt
 [ckpt] saved: /home/swagat/GIT/efficient_vla/outputs/sac_3seed/task_3/seed_2/checkpoints_task_3/checkpoint_ep_0084.pt
-Ep 85: Reward: 17.74, Steps: 327
-[progress] seed=2 [#####################---] ep=86/100 success_mean20=0.800 success_mean=0.802
-Ep 86: Reward: 16.83, Steps: 418
-[progress] seed=2 [#####################---] ep=87/100 success_mean20=0.800 success_mean=0.805
-Ep 87: Reward: 17.01, Steps: 400
-[progress] seed=2 [#####################---] ep=88/100 success_mean20=0.800 success_mean=0.807
-Ep 88: Reward: 17.06, Steps: 395
-[progress] seed=2 [#####################---] ep=89/100 success_mean20=0.800 success_mean=0.809
-Ep 89: Reward: 17.23, Steps: 378
-[progress] seed=2 [######################--] ep=90/100 success_mean20=0.800 success_mean=0.811
+Ep 85: Reward: 15.87, Steps: 514
+[progress] seed=2 [#####################---] ep=86/100 success_mean20=0.850 success_mean=0.814
+Ep 86: Reward: 17.36, Steps: 365
+[progress] seed=2 [#####################---] ep=87/100 success_mean20=0.850 success_mean=0.816
+Ep 87: Reward: 16.11, Steps: 490
+[progress] seed=2 [#####################---] ep=88/100 success_mean20=0.850 success_mean=0.818
+Ep 88: Reward: 16.44, Steps: 457
+[progress] seed=2 [#####################---] ep=89/100 success_mean20=0.850 success_mean=0.820
+Ep 89: Reward: 17.35, Steps: 366
+[progress] seed=2 [######################--] ep=90/100 success_mean20=0.850 success_mean=0.822
 [ckpt] saved: /home/swagat/GIT/efficient_vla/outputs/sac_3seed/task_3/seed_2/checkpoints_task_3/latest_checkpoint.pt
 [ckpt] saved: /home/swagat/GIT/efficient_vla/outputs/sac_3seed/task_3/seed_2/checkpoints_task_3/checkpoint_ep_0089.pt
-Ep 90: Reward: 17.67, Steps: 334
-[progress] seed=2 [######################--] ep=91/100 success_mean20=0.850 success_mean=0.813
-Ep 91: Reward: 17.26, Steps: 375
-[progress] seed=2 [######################--] ep=92/100 success_mean20=0.850 success_mean=0.815
-Ep 92: Reward: -5.20, Steps: 520
-[progress] seed=2 [######################--] ep=93/100 success_mean20=0.850 success_mean=0.806
-Ep 93: Reward: 16.85, Steps: 416
-[progress] seed=2 [#######################-] ep=94/100 success_mean20=0.850 success_mean=0.809
-Ep 94: Reward: 16.50, Steps: 451
-[progress] seed=2 [#######################-] ep=95/100 success_mean20=0.850 success_mean=0.811
+Ep 90: Reward: 17.46, Steps: 355
+[progress] seed=2 [######################--] ep=91/100 success_mean20=0.850 success_mean=0.824
+Ep 91: Reward: 17.73, Steps: 328
+[progress] seed=2 [######################--] ep=92/100 success_mean20=0.850 success_mean=0.826
+Ep 92: Reward: 16.44, Steps: 457
+[progress] seed=2 [######################--] ep=93/100 success_mean20=0.900 success_mean=0.828
+Ep 93: Reward: 16.71, Steps: 430
+[progress] seed=2 [#######################-] ep=94/100 success_mean20=0.900 success_mean=0.830
+Ep 94: Reward: 16.95, Steps: 406
+[progress] seed=2 [#######################-] ep=95/100 success_mean20=0.900 success_mean=0.832
 [ckpt] saved: /home/swagat/GIT/efficient_vla/outputs/sac_3seed/task_3/seed_2/checkpoints_task_3/latest_checkpoint.pt
 [ckpt] saved: /home/swagat/GIT/efficient_vla/outputs/sac_3seed/task_3/seed_2/checkpoints_task_3/checkpoint_ep_0094.pt
-Ep 95: Reward: 17.81, Steps: 320
-[progress] seed=2 [#######################-] ep=96/100 success_mean20=0.850 success_mean=0.812
-Ep 96: Reward: 17.16, Steps: 385
-[progress] seed=2 [#######################-] ep=97/100 success_mean20=0.850 success_mean=0.814
-Ep 97: Reward: -5.20, Steps: 520
-[progress] seed=2 [########################] ep=98/100 success_mean20=0.800 success_mean=0.806
-Ep 98: Reward: 17.88, Steps: 313
-[progress] seed=2 [########################] ep=99/100 success_mean20=0.800 success_mean=0.808
-Ep 99: Reward: 17.05, Steps: 396
-[progress] seed=2 [########################] ep=100/100 success_mean20=0.800 success_mean=0.810
+Ep 95: Reward: 16.62, Steps: 439
+[progress] seed=2 [#######################-] ep=96/100 success_mean20=0.900 success_mean=0.833
+Ep 96: Reward: 17.42, Steps: 359
+[progress] seed=2 [#######################-] ep=97/100 success_mean20=0.900 success_mean=0.835
+Ep 97: Reward: 16.70, Steps: 431
+[progress] seed=2 [########################] ep=98/100 success_mean20=0.900 success_mean=0.837
+Ep 98: Reward: 18.01, Steps: 300
+[progress] seed=2 [########################] ep=99/100 success_mean20=0.950 success_mean=0.838
+Ep 99: Reward: 17.00, Steps: 401
+[progress] seed=2 [########################] ep=100/100 success_mean20=0.950 success_mean=0.840
 [ckpt] saved: /home/swagat/GIT/efficient_vla/outputs/sac_3seed/task_3/seed_2/checkpoints_task_3/latest_checkpoint.pt
 [ckpt] saved: /home/swagat/GIT/efficient_vla/outputs/sac_3seed/task_3/seed_2/checkpoints_task_3/checkpoint_ep_0099.pt
 [ckpt] saved: /home/swagat/GIT/efficient_vla/outputs/sac_3seed/task_3/seed_2/checkpoints_task_3/latest_checkpoint.pt
 [ckpt] saved: /home/swagat/GIT/efficient_vla/outputs/sac_3seed/task_3/seed_2/checkpoints_task_3/checkpoint_ep_0099.pt
 --- Power Lock Released ---
---- Power profile restored to 'balanced' ---
+--- Power profile restored to 'performance' ---
 [1;34mwandb[0m: 
 [1;34mwandb[0m: 🚀 View run [33msac_task3_seed2[0m at: [34m[0m
-[1;34mwandb[0m: Find logs at: [1;35mwandb/run-20260517_103051-otmmv4ch/logs[0m
+[1;34mwandb[0m: Find logs at: [1;35mwandb/run-20260518_104114-ix1hmps0/logs[0m

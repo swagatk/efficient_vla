@@ -5,7 +5,7 @@
 /home/swagat/anaconda3/envs/lerobot_v040/lib/python3.10/site-packages/timm/models/layers/__init__.py:49: DeprecationWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
   warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", DeprecationWarning)
 --- Power Lock Active: SAC Online RL ---
---- Power profile set to 'performance' (was 'balanced') ---
+--- Power profile set to 'performance' (was 'performance') ---
 [SACResidualVLA] Loading frozen base policy from: HuggingFaceVLA/smolvla_libero
 Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
 `torch_dtype` is deprecated! Use `dtype` instead!
@@ -13,16 +13,16 @@ Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
 [info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 [eval] loaded checkpoint: /home/swagat/GIT/efficient_vla/outputs/sac_3seed/task_3/seed_0/checkpoints_task_3/latest_checkpoint.pt
 [eval] checkpoint episode: 99
-[eval] Ep 0: success=1 reward=1.00 steps=329
-[eval] Ep 1: success=1 reward=1.00 steps=363
-[eval] Ep 2: success=0 reward=0.00 steps=520
-[eval] Ep 3: success=1 reward=1.00 steps=324
-[eval] Ep 4: success=1 reward=1.00 steps=353
-[eval] Ep 5: success=0 reward=0.00 steps=520
+[eval] Ep 0: success=0 reward=0.00 steps=520
+[eval] Ep 1: success=1 reward=1.00 steps=385
+[eval] Ep 2: success=1 reward=1.00 steps=438
+[eval] Ep 3: success=1 reward=1.00 steps=382
+[eval] Ep 4: success=1 reward=1.00 steps=334
+[eval] Ep 5: success=1 reward=1.00 steps=360
 [eval] Ep 6: success=0 reward=0.00 steps=520
-[eval] Ep 7: success=1 reward=1.00 steps=318
-[eval] Ep 8: success=1 reward=1.00 steps=343
-[eval] Ep 9: success=0 reward=0.00 steps=520
-[eval] success_rate=0.6000 (6/10) mean_reward=0.600 mean_steps=411.0
+[eval] Ep 7: success=1 reward=1.00 steps=463
+[eval] Ep 8: success=1 reward=1.00 steps=337
+[eval] Ep 9: success=1 reward=1.00 steps=355
+[eval] success_rate=0.8000 (8/10) mean_reward=0.800 mean_steps=409.4
 --- Power Lock Released ---
---- Power profile restored to 'balanced' ---
+--- Power profile restored to 'performance' ---
