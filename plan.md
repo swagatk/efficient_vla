@@ -1,6 +1,3 @@
-I’ll use your academic-researcher framework and now convert the selected idea into a concrete 12-week execution plan plus a paper-ready ablation table template you can run directly.
-
-Read skill [academic-researcher](file:///home/swagat/GIT/github_skill_expts/.github/skills/academic-researcher/SKILL.md?vscodeLinkType%3Dskill)
 
 ### Week-by-Week Experimental Plan (12 Weeks)
 Project: Self-Correcting Edge VLA (SmolVLA + Visual Prompting + Lightweight Online RL)

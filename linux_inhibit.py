@@ -60,8 +60,19 @@ class LinuxInhibit:
         self._set_profile("performance")
         print("--- Power profile set to 'performance' after resume ---")
 
+    def _handle_terminate(self, sig, frame):
+        print(f"\n--- Interrupt signal ({sig}) received. Cleaning up... ---")
+        # Restore hooks so KeyboardInterrupt propagates cleanly
+        self._restore_signal_hooks()
+        if sig == signal.SIGINT:
+            raise KeyboardInterrupt
+        else:
+            raise SystemExit(1)
+
     def _install_signal_hooks(self):
         for handled_signal, handler in (
+            (signal.SIGINT, self._handle_terminate),
+            (signal.SIGTERM, self._handle_terminate),
             (signal.SIGTSTP, self._handle_stop),
             (signal.SIGCONT, self._handle_continue),
         ):

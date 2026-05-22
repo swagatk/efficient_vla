@@ -1,0 +1,2 @@
+* If you want, next I can add a training-time auxiliary anchor loss that keeps diffusion predictions close to base-policy actions early in training and decays over epochs; that usually stabilizes early hybrid learning.
+

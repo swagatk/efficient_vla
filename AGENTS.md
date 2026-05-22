@@ -8,13 +8,16 @@ This repository is an experiment log and code workspace for improving SmolVLA on
 - Week 2 added GroundingDINO visual boxes and text hints for evaluation and observed degradation.
 - Week 3 swept visual-prompt hyperparameters and selected the best wrapper settings.
 - Week 4 shifted focus to lightweight online RL with a residual policy instead of further prompt-wrapper optimization.
+- Week 5 tried residual RL training using PPO and SAC. Results in `week5/` folder show SAC did not provide any improvement over baseline SmolVLA performance.
+- Week 6 involves trying and training a Hybrid diffusion model. This work is currently in progress.
 
-Read [plan.md](plan.md) first for the intended 12-week roadmap. Use the weekly summary folders (`week1/`, `week2/`, `week3/`, `week4/`) as result artifacts, not as source code.
+Read [plan.md](plan.md) first for the intended 12-week roadmap. Use the weekly summary folders (`week1/`, `week2/`, `week3/`, `week4/`, `week5/`, `week6/`) as result artifacts, not as source code.
 
 ## Key Entry Points
 
-- [train_online_rl.py](train_online_rl.py): main residual RL training loop on one LIBERO task (`--task_id 0-9`).
-- [rl_residual_agent.py](rl_residual_agent.py): frozen SmolVLA plus trainable residual actor and critic.
+- [train_online_ppo.py](train_online_ppo.py) / [train_online_sac.py](train_online_sac.py): main residual RL training loops using PPO and SAC respectively (`--task_id 0-9`).
+- [train_hybrid_diffusion.py](train_hybrid_diffusion.py): training loop for the Hybrid Diffusion model (Week 6 in progress).
+- [rl_residual_agent.py](rl_residual_agent.py) / [hybrid_diffusion_agent.py](hybrid_diffusion_agent.py): agent architectures containing the frozen SmolVLA plus trainable components.
 - [visual_prompt_wrapper.py](visual_prompt_wrapper.py): GroundingDINO and FastSAM overlay plus text-hint injection.
 - [eval_week2_visual_prompting.py](eval_week2_visual_prompting.py): evaluation wrapper that injects visual prompting into LeRobot eval.
 - [week1_repro_baseline_lock.sh](week1_repro_baseline_lock.sh): baseline reproduction script.

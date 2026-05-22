@@ -422,13 +422,13 @@ def main(inhibitor=None):
     
                 wandb.log({
                     "episode": episode + 1,
-                    "reward": episode_reward,
+                    "episodic reward": episode_reward,
                     "episode_length": step,
                     "value_loss": ep_value_loss,
                     "bc_anchor_loss": ep_bc_loss,
                     "ppo_loss": ep_ppo_loss,
                     "entropy": ep_entropy,
-                    "success": 1.0 if episode_success else 0.0,
+                    "success rate": 1.0 if episode_success else 0.0,
                     "delta_action_norm": float(np.mean(episode_delta_norms)) if episode_delta_norms else 0.0,
                     "scaled_delta_action_norm": float(np.mean(episode_scaled_delta_norms)) if episode_scaled_delta_norms else 0.0,
                     "action_drift_norm": float(np.mean(episode_action_drift_norms)) if episode_action_drift_norms else 0.0,
@@ -437,9 +437,9 @@ def main(inhibitor=None):
                 # Log just the environment metrics when an update doesn't occur
                 wandb.log({
                     "episode": episode + 1,
-                    "reward": episode_reward,
+                    "episodic reward": episode_reward,
                     "episode_length": step,
-                    "success": 1.0 if episode_success else 0.0,
+                    "success rate": 1.0 if episode_success else 0.0,
                     "delta_action_norm": float(np.mean(episode_delta_norms)) if episode_delta_norms else 0.0,
                     "scaled_delta_action_norm": float(np.mean(episode_scaled_delta_norms)) if episode_scaled_delta_norms else 0.0,
                     "action_drift_norm": float(np.mean(episode_action_drift_norms)) if episode_action_drift_norms else 0.0,
