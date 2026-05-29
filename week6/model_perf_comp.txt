@@ -1,0 +1,93 @@
+Base Model
+Eval Complete | Overall Success Rate: 0.57
+wandb: 
+wandb: Run history:
+wandb:                         epoch ▁
+wandb:             eval/success rate ▁
+wandb:       eval_task/task_0_reward ▁
+wandb: eval_task/task_0_success_rate ▁
+wandb:       eval_task/task_1_reward ▁
+wandb: eval_task/task_1_success_rate ▁
+wandb:       eval_task/task_3_reward ▁
+wandb: eval_task/task_3_success_rate ▁
+wandb: 
+wandb: Run summary:
+wandb:                         epoch 20
+wandb:             eval/success rate 0.56667
+wandb:       eval_task/task_0_reward 0.25
+wandb: eval_task/task_0_success_rate 0.25
+wandb:       eval_task/task_1_reward 0.5
+wandb: eval_task/task_1_success_rate 0.5
+wandb:       eval_task/task_3_reward 0.95
+wandb: eval_task/task_3_success_rate 0.95
+
+---------------------------------------------
+Mixed Model
+
+Eval Complete | Overall Success Rate: 0.23
+                         epoch 20
+wandb:             eval/success rate 0.23333
+wandb:       eval_task/task_0_reward 0
+wandb: eval_task/task_0_success_rate 0
+wandb:       eval_task/task_1_reward 0.05
+wandb: eval_task/task_1_success_rate 0.05
+wandb:       eval_task/task_3_reward 0.65
+wandb: eval_task/task_3_success_rate 0.65
+
+--------------------------------------------
+Pure Hybrid Model 
+Eval Complete | Overall Success Rate: 0.00
+
+
+wandb: 
+wandb: Run summary:
+wandb:                         epoch 20
+wandb:             eval/success rate 0
+wandb:       eval_task/task_0_reward 0
+wandb: eval_task/task_0_success_rate 0
+wandb:       eval_task/task_1_reward 0
+wandb: eval_task/task_1_success_rate 0
+wandb:       eval_task/task_3_reward 0
+wandb: eval_task/task_3_success_rate 0
+wandb: 
+
+-------------------------
+Hybrid with all safety/debug on
+
+Run summary:
+wandb:                         epoch 20
+wandb:             eval/success rate 0.18333
+wandb:       eval_task/task_0_reward 0
+wandb: eval_task/task_0_success_rate 0
+wandb:       eval_task/task_1_reward 0
+wandb: eval_task/task_1_success_rate 0
+wandb:       eval_task/task_3_reward 0.55
+wandb: eval_task/task_3_success_rate 0.55
+
+---------------------------
+Mixed with all safety/debug features
+
+ Run summary:
+wandb:                         epoch 20
+wandb:             eval/success rate 0.23333
+wandb:       eval_task/task_0_reward 0
+wandb: eval_task/task_0_success_rate 0
+wandb:       eval_task/task_1_reward 0
+wandb: eval_task/task_1_success_rate 0
+wandb:       eval_task/task_3_reward 0.7
+wandb: eval_task/task_3_success_rate 0.7
+
+--------------------------------
+Residual with safety/debug features
+
+Eval Complete | Overall Success Rate: 0.28:wandb
+
+Run summary:
+wandb:                         epoch 20
+wandb:             eval/success rate 0.28333
+wandb:       eval_task/task_0_reward 0
+wandb: eval_task/task_0_success_rate 0
+wandb:       eval_task/task_1_reward 0.1
+wandb: eval_task/task_1_success_rate 0.1
+wandb:       eval_task/task_3_reward 0.75
+wandb: eval_task/task_3_success_rate 0.75

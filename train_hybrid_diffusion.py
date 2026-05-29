@@ -170,7 +170,11 @@ def evaluate_in_environment(
     postprocessor=None,
     policy_mode="hybrid",
     hybrid_mix=0.0,
+    residual_alpha=0.1,
     diffusion_steps=10,
+    eval_replan_each_step=False,
+    eval_log_action_stats_every=0,
+    eval_action_clip=1.0,
 ):
     """Run an evaluation loop in the LIBERO environment to measure true success rate."""
     if not has_libero:
@@ -255,6 +259,10 @@ def evaluate_in_environment(
                                 action_np = base_action[0].detach().cpu().to(torch.float32).numpy()
                                 action_np = np.clip(action_np, -1.0, 1.0)
                         else:
+                            if eval_replan_each_step:
+                                pending_chunk = None
+                                chunk_idx = 0
+
                             if pending_chunk is None or chunk_idx >= pending_chunk.shape[1]:
                                 pending_chunk = model.select_action(
                                     batch,
@@ -266,16 +274,76 @@ def evaluate_in_environment(
                             hybrid_action = pending_chunk[:, chunk_idx, :]
                             chunk_idx += 1
 
+                            # Keep normalized policy-space actions bounded before postprocessing.
+                            hybrid_action = torch.clamp(hybrid_action, -eval_action_clip, eval_action_clip)
+
                             if policy_mode == "mixed":
                                 base_action = model.base_policy.select_action(batch)
                                 blended_action = (1.0 - hybrid_mix) * base_action + hybrid_mix * hybrid_action
+                                blended_action = torch.clamp(blended_action, -eval_action_clip, eval_action_clip)
+
+                                if eval_log_action_stats_every > 0 and (step % eval_log_action_stats_every == 0):
+                                    def _stats(x):
+                                        x = x.detach().to(torch.float32)
+                                        return {
+                                            "min": float(x.min().item()),
+                                            "max": float(x.max().item()),
+                                            "mean": float(x.mean().item()),
+                                            "std": float(x.std(unbiased=False).item()),
+                                        }
+                                    base_stats = _stats(base_action)
+                                    hybrid_stats = _stats(hybrid_action)
+                                    blend_stats = _stats(blended_action)
+                                    print(
+                                        f"[Eval Action Stats][task={task_id} ep={ep+1} step={step}] "
+                                        f"base(min={base_stats['min']:.3f}, max={base_stats['max']:.3f}, mean={base_stats['mean']:.3f}, std={base_stats['std']:.3f}) "
+                                        f"hybrid(min={hybrid_stats['min']:.3f}, max={hybrid_stats['max']:.3f}, mean={hybrid_stats['mean']:.3f}, std={hybrid_stats['std']:.3f}) "
+                                        f"blend(min={blend_stats['min']:.3f}, max={blend_stats['max']:.3f}, mean={blend_stats['mean']:.3f}, std={blend_stats['std']:.3f})"
+                                    )
+
                                 if postprocessor is not None:
                                     env_action = postprocessor(blended_action)
                                     action_np = env_action.detach().cpu().to(torch.float32).numpy()[0]
                                 else:
                                     action_np = blended_action[0].detach().cpu().to(torch.float32).numpy()
                                     action_np = np.clip(action_np, -1.0, 1.0)
+                            elif policy_mode == "residual":
+                                base_action = model.base_policy.select_action(batch)
+                                residual_action = base_action + residual_alpha * hybrid_action
+                                residual_action = torch.clamp(residual_action, -eval_action_clip, eval_action_clip)
+
+                                if eval_log_action_stats_every > 0 and (step % eval_log_action_stats_every == 0):
+                                    def _stats(x):
+                                        x = x.detach().to(torch.float32)
+                                        return {
+                                            "min": float(x.min().item()),
+                                            "max": float(x.max().item()),
+                                            "mean": float(x.mean().item()),
+                                            "std": float(x.std(unbiased=False).item()),
+                                        }
+                                    base_stats = _stats(base_action)
+                                    hybrid_stats = _stats(hybrid_action)
+                                    residual_stats = _stats(residual_action)
+                                    print(
+                                        f"[Eval Action Stats][task={task_id} ep={ep+1} step={step}] "
+                                        f"base(min={base_stats['min']:.3f}, max={base_stats['max']:.3f}, mean={base_stats['mean']:.3f}, std={base_stats['std']:.3f}) "
+                                        f"hybrid(min={hybrid_stats['min']:.3f}, max={hybrid_stats['max']:.3f}, mean={hybrid_stats['mean']:.3f}, std={hybrid_stats['std']:.3f}) "
+                                        f"residual(min={residual_stats['min']:.3f}, max={residual_stats['max']:.3f}, mean={residual_stats['mean']:.3f}, std={residual_stats['std']:.3f})"
+                                    )
+
+                                if postprocessor is not None:
+                                    env_action = postprocessor(residual_action)
+                                    action_np = env_action.detach().cpu().to(torch.float32).numpy()[0]
+                                else:
+                                    action_np = residual_action[0].detach().cpu().to(torch.float32).numpy()
+                                    action_np = np.clip(action_np, -1.0, 1.0)
                             else:
+                                if eval_log_action_stats_every > 0 and (step % eval_log_action_stats_every == 0):
+                                    h = hybrid_action.detach().to(torch.float32)
+                                    print(
+                                        f"[Eval Action Stats][task={task_id} ep={ep+1} step={step}] "
+                                        f"hybrid(min={h.min().item():.3f}, max={h.max().item():.3f}, mean={h.mean().item():.3f}, std={h.std(unbiased=False).item():.3f})"
+                                    )
                                 if postprocessor is not None:
                                     env_action = postprocessor(hybrid_action)
                                     action_np = env_action.detach().cpu().to(torch.float32).numpy()[0]
@@ -561,6 +629,30 @@ def train():
     parser.add_argument("--wandb_project", type=str, default="hybrid_diffusion_vla", help="W&B project name")
     parser.add_argument("--vis_freq", type=int, default=5, help="Epoch frequency to visualize diffusion trajectories")
     parser.add_argument("--eval_episodes", type=int, default=2, help="Number of evaluation episodes per task")
+    parser.add_argument(
+        "--eval_only",
+        action="store_true",
+        help="Skip training and run evaluation only (base/hybrid/mixed) using an existing checkpoint.",
+    )
+    parser.add_argument(
+        "--eval_checkpoint_path",
+        type=str,
+        default=None,
+        help="Optional checkpoint path for eval-only or resume. Defaults to out_dir/latest_checkpoint.pt when available.",
+    )
+    parser.add_argument(
+        "--eval_wandb_run_id",
+        type=str,
+        default=None,
+        help="Optional WandB run id used in eval-only mode. If set, eval-only logs resume into the same run id.",
+    )
+    parser.add_argument(
+        "--eval_wandb_resume",
+        type=str,
+        default="allow",
+        choices=["allow", "must", "never", "auto"],
+        help="WandB resume policy used with --eval_wandb_run_id in eval-only mode.",
+    )
     parser.add_argument("--preflight_baseline_check", action="store_true", help="Run frozen-base policy baseline evaluation before training")
     parser.add_argument("--preflight_episodes", type=int, default=3, help="Episodes per task for preflight baseline evaluation")
     parser.add_argument(
@@ -592,8 +684,8 @@ def train():
         "--eval_policy_mode",
         type=str,
         default="hybrid",
-        choices=["base", "hybrid", "mixed"],
-        help="Policy used during eval: base SmolVLA, hybrid diffusion-only, or blended mixed mode.",
+        choices=["base", "hybrid", "mixed", "residual"],
+        help="Policy used during eval: base SmolVLA, hybrid diffusion-only, blended mixed mode, or residual mode.",
     )
     parser.add_argument(
         "--eval_hybrid_mix",
@@ -607,6 +699,29 @@ def train():
         default=10,
         help="Number of diffusion integration steps used during eval chunk generation.",
     )
+    parser.add_argument(
+        "--eval_residual_alpha",
+        type=float,
+        default=0.1,
+        help="When --eval_policy_mode=residual, scale factor for hybrid residual added to base action.",
+    )
+    parser.add_argument(
+        "--eval_replan_each_step",
+        action="store_true",
+        help="If set, regenerate a fresh diffusion action chunk every env step during eval.",
+    )
+    parser.add_argument(
+        "--eval_log_action_stats_every",
+        type=int,
+        default=0,
+        help="If >0, print action min/max/mean/std every N eval steps (0 disables).",
+    )
+    parser.add_argument(
+        "--eval_action_clip",
+        type=float,
+        default=1.0,
+        help="Clamp hybrid/mixed normalized actions to [-clip, clip] before postprocessor.",
+    )
     
     args = parser.parse_args()
     args.eval_task_ids = parse_task_id_tokens(args.eval_task_ids)
@@ -617,6 +732,12 @@ def train():
         parser.error("--eval_hybrid_mix must be in [0, 1].")
     if args.eval_diffusion_steps < 1:
         parser.error("--eval_diffusion_steps must be >= 1.")
+    if args.eval_residual_alpha < 0.0:
+        parser.error("--eval_residual_alpha must be >= 0.")
+    if args.eval_log_action_stats_every < 0:
+        parser.error("--eval_log_action_stats_every must be >= 0.")
+    if args.eval_action_clip <= 0.0:
+        parser.error("--eval_action_clip must be > 0.")
     
     os.makedirs(args.out_dir, exist_ok=True)
     
@@ -625,11 +746,17 @@ def train():
     checkpoint = None
     latest_ckpt_path = os.path.join(args.out_dir, "latest_checkpoint.pt")
     
-    if os.path.exists(latest_ckpt_path):
-        checkpoint = torch.load(latest_ckpt_path, map_location=args.device)
-        run_id = checkpoint.get('wandb_run_id', run_id)
+    checkpoint_path = args.eval_checkpoint_path or latest_ckpt_path
+    if os.path.exists(checkpoint_path):
+        checkpoint = torch.load(checkpoint_path, map_location=args.device)
         start_epoch = checkpoint.get('epoch', 0)
-        print(f"Found checkpoint! Resuming run {run_id} from epoch {start_epoch}...")
+        if not args.eval_only:
+            run_id = checkpoint.get('wandb_run_id', run_id)
+            print(f"Found checkpoint! Resuming run {run_id} from epoch {start_epoch}...")
+        else:
+            print(f"Found checkpoint for eval-only: {checkpoint_path} (epoch {start_epoch}).")
+    elif args.eval_checkpoint_path is not None:
+        parser.error(f"--eval_checkpoint_path was provided but file does not exist: {args.eval_checkpoint_path}")
 
     print("Initializing Hybrid Diffusion Agent...")
     model = HybridFrozenBrainDiffusionHands(
@@ -642,8 +769,10 @@ def train():
         device=args.device
     )
     
-    if checkpoint is not None:
+    if checkpoint is not None and "model_state_dict" in checkpoint:
         model.load_trainable_state_dict(checkpoint['model_state_dict'])
+    elif args.eval_only and args.eval_policy_mode in ("hybrid", "mixed", "residual"):
+        parser.error("--eval_only with --eval_policy_mode hybrid/mixed/residual requires a checkpoint with model_state_dict.")
 
     preprocessor = None
     postprocessor = None
@@ -685,6 +814,42 @@ def train():
                     "W&B and training will not start."
                 )
                 return
+
+    if args.eval_only:
+        eval_wandb_kwargs = {
+            "project": args.wandb_project,
+            "config": vars(args),
+            "job_type": "eval_only",
+        }
+        if args.eval_wandb_run_id is not None:
+            eval_wandb_kwargs["id"] = args.eval_wandb_run_id
+            eval_wandb_kwargs["resume"] = args.eval_wandb_resume
+        wandb.init(**eval_wandb_kwargs)
+        eval_step = int(getattr(wandb.run, "step", 0) or 0)
+        if preflight_result is not None:
+            log_preflight_metrics(preflight_result, step=eval_step)
+
+        evaluate_in_environment(
+            model,
+            args.device,
+            start_epoch,
+            tasks=args.eval_task_ids,
+            num_episodes=args.eval_episodes,
+            global_step=eval_step,
+            image_flip_mode=args.image_flip_mode,
+            preprocessor=preprocessor,
+            postprocessor=postprocessor,
+            policy_mode=args.eval_policy_mode,
+            hybrid_mix=args.eval_hybrid_mix,
+            residual_alpha=args.eval_residual_alpha,
+            diffusion_steps=args.eval_diffusion_steps,
+            eval_replan_each_step=args.eval_replan_each_step,
+            eval_log_action_stats_every=args.eval_log_action_stats_every,
+            eval_action_clip=args.eval_action_clip,
+        )
+        wandb.finish()
+        print("Eval-only complete.")
+        return
 
     wandb.init(project=args.wandb_project, id=run_id, resume="allow", config=vars(args))
     wandb_resume_step = int(getattr(wandb.run, "step", 0) or 0)
@@ -806,7 +971,11 @@ def train():
                 postprocessor=postprocessor,
                 policy_mode=args.eval_policy_mode,
                 hybrid_mix=args.eval_hybrid_mix,
+                residual_alpha=args.eval_residual_alpha,
                 diffusion_steps=args.eval_diffusion_steps,
+                eval_replan_each_step=args.eval_replan_each_step,
+                eval_log_action_stats_every=args.eval_log_action_stats_every,
+                eval_action_clip=args.eval_action_clip,
             )
             
     wandb.finish()
