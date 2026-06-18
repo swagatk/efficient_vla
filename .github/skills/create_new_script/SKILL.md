@@ -315,3 +315,11 @@ done
 aggregate_results
 
 [[ "$INTERRUPTED" -eq 0 ]] || exit 130
+```
+
+## Notes
+
+- Keep per-unit outputs isolated (`unit/seed/repeat` directories) to avoid collisions.
+- Prefer append-only logs and deterministic marker files for robust recovery.
+- Never make power-restore failures fatal during cleanup.
+- If you must background a child process and still track log writer failures separately, avoid relying on a single `wait` status from a `tee` pipeline. Use a FIFO or explicit process tracking for child and logger to avoid misattributing failures.

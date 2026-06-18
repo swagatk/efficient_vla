@@ -13,6 +13,7 @@ import signal
 import yaml
 
 from visual_prompt_wrapper import VisualPromptingWrapper
+from linux_inhibit import LinuxInhibit
 
 
 class VisualPromptingEnv:
@@ -455,4 +456,5 @@ def main():
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    with LinuxInhibit(reason="Eval Visual Prompting"):
+        raise SystemExit(main())

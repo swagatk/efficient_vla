@@ -118,7 +118,8 @@ class HybridFrozenBrainDiffusionHands(nn.Module):
         except NameError:
             print("SmolVLAPolicy not found. Make sure LeRobot is installed with SmolVLAPolicy support.")
             
-        self.base_policy.to(torch.bfloat16)
+        # Keep base policy in fp32 to avoid dtype mismatch with SmolVLA action-noise path.
+        self.base_policy.to(torch.float32)
         self.base_policy.to(self.device)
         self.base_policy.eval()
         
@@ -140,6 +141,86 @@ class HybridFrozenBrainDiffusionHands(nn.Module):
         self.diffusion_head.to(self.device)
         print(f"[HybridDiffusion] Attached highly specialized Diffusion Head with condition dim {cond_dim}.")
 
+    def _normalize_text_batch(self, raw_text):
+        if raw_text is None:
+            return None
+
+        # Tensor payloads can either be token ids or encoded strings from a custom collate.
+        if isinstance(raw_text, torch.Tensor):
+            if raw_text.dtype in (torch.int32, torch.int64, torch.long):
+                return raw_text
+            if raw_text.ndim == 0:
+                return [str(raw_text.item())]
+            return [str(x) for x in raw_text.tolist()]
+
+        if isinstance(raw_text, str):
+            return [raw_text]
+
+        if not isinstance(raw_text, (list, tuple)):
+            return [str(raw_text)]
+
+        normalized = []
+        for item in raw_text:
+            if isinstance(item, tuple) and len(item) > 0:
+                item = item[0]
+            normalized.append(str(item))
+        return normalized
+
+    def _prepare_language_tensors(self, batch):
+        # Fast path: language is already tokenized.
+        if "observation.language.tokens" in batch:
+            lang_tokens = batch["observation.language.tokens"]
+            if not isinstance(lang_tokens, torch.Tensor):
+                lang_tokens = torch.as_tensor(lang_tokens)
+            lang_tokens = lang_tokens.to(self.device)
+
+            lang_masks = batch.get("observation.language.attention_mask", None)
+            if lang_masks is None:
+                lang_masks = torch.ones_like(lang_tokens, dtype=torch.bool)
+            elif not isinstance(lang_masks, torch.Tensor):
+                lang_masks = torch.as_tensor(lang_masks)
+            lang_masks = lang_masks.to(self.device).bool()
+
+            batch["observation.language.tokens"] = lang_tokens
+            batch["observation.language.attention_mask"] = lang_masks
+            return lang_tokens, lang_masks
+
+        # Try common string containers used by this repo/dataset stack.
+        text_candidates = [
+            batch.get("task", None),
+            batch.get("language_instruction", None),
+            batch.get("observation.language_instruction", None),
+            batch.get("instruction", None),
+        ]
+        texts = None
+        for candidate in text_candidates:
+            texts = self._normalize_text_batch(candidate)
+            if texts is not None:
+                break
+
+        if texts is None:
+            # Last resort: scan keys for any language/instruction field.
+            for key, value in batch.items():
+                if "language" in key or "instruction" in key or key == "task":
+                    texts = self._normalize_text_batch(value)
+                    if texts is not None:
+                        break
+
+        if texts is None:
+            raise ValueError(
+                f"No language tokens or text field found in batch keys: {list(batch.keys())}"
+            )
+
+        processor = self.base_policy.model.vlm_with_expert.processor
+        text_out = processor(text=texts, return_tensors="pt", padding=True, truncation=True)
+        lang_tokens = text_out["input_ids"].to(self.device)
+        lang_masks = text_out["attention_mask"].to(self.device).bool()
+
+        # Cache tokenized values so subsequent calls in the same step reuse them.
+        batch["observation.language.tokens"] = lang_tokens
+        batch["observation.language.attention_mask"] = lang_masks
+        return lang_tokens, lang_masks
+
     def extract_semantic_features(self, batch):
         """
         Uses the frozen SmolVLA backbone purely as a semantic feature extractor.
@@ -150,38 +231,9 @@ class HybridFrozenBrainDiffusionHands(nn.Module):
             # Prepare inputs just like SmolVLA forward pass
             images, img_masks = self.base_policy.prepare_images(batch)
             state = self.base_policy.prepare_state(batch)
-            
-            # Handle language extraction dynamically if strings are provided instead of pre-tokenized tensors
-            if "observation.language_instruction" in batch:
-                lang_tokens = batch["observation.language_instruction"]
-                lang_masks = torch.ones_like(lang_tokens, dtype=torch.bool)
-            elif "observation.language.tokens" in batch:
-                lang_tokens = batch["observation.language.tokens"]
-                lang_masks = batch.get("observation.language.attention_mask", torch.ones_like(lang_tokens, dtype=torch.bool))
-            else:
-                # Find task strings
-                texts = batch.get("task", None)
-                if texts is None:
-                    for k in batch:
-                        if "language" in k or "instruction" in k:
-                            texts = batch[k]
-                            break
-                if texts is None:
-                    raise ValueError("No language or task string found in batch keys.")
-                    
-                if not isinstance(texts, (list, tuple)):
-                    if hasattr(texts, "tolist"):
-                        texts = texts.tolist()
-                    else:
-                        texts = [texts]
-                
-                # Some datasets yield 1-tuples per item, unpack them
-                texts = [t[0] if isinstance(t, tuple) else t for t in texts]
-                
-                processor = vla_model.vlm_with_expert.processor
-                text_out = processor(text=texts, return_tensors='pt', padding=True, truncation=True)
-                lang_tokens = text_out['input_ids'].to(self.device)
-                lang_masks = text_out['attention_mask'].to(self.device).bool()
+
+            # Ensure language exists in tokenized form for downstream SmolVLA calls.
+            lang_tokens, lang_masks = self._prepare_language_tensors(batch)
             
             # 1. Get prefix embeddings (images + language + state)
             prefix_embs, prefix_pad_masks, prefix_att_masks = vla_model.embed_prefix(
@@ -228,29 +280,74 @@ class HybridFrozenBrainDiffusionHands(nn.Module):
             
         return pooled_semantics.float() # Convert to float32 for diffusion head
         
-    def compute_loss(self, batch, gt_actions):
+    def compute_loss(
+        self,
+        batch,
+        gt_actions,
+        residual_target=False,
+        delta_l2_weight=0.0,
+        return_metrics=False,
+    ):
         """
         Train ONLY the new Diffusion head.
+
+        When residual_target=True, train on action deltas relative to the frozen
+        base policy: delta = gt_actions - base_action.
         """
         semantics = self.extract_semantic_features(batch)
+
+        if residual_target:
+            with torch.no_grad():
+                self._prepare_language_tensors(batch)
+                use_cuda_autocast = str(self.device).startswith("cuda")
+                with torch.autocast(device_type="cuda", dtype=torch.bfloat16, enabled=use_cuda_autocast):
+                    base_action = self.base_policy.select_action(batch)
+                base_action = base_action.to(torch.float32)
+            if base_action.ndim == 2:
+                base_action = base_action.unsqueeze(1)
+            if base_action.shape[1] == 1 and gt_actions.shape[1] > 1:
+                base_action = base_action.expand(-1, gt_actions.shape[1], -1)
+            target_actions = gt_actions - base_action
+        else:
+            target_actions = gt_actions
         
         B = gt_actions.shape[0]
         device = gt_actions.device
         
         # Sample random noise & timesteps for Conditional Flow Matching / DDPM
-        noise = torch.randn_like(gt_actions)
+        noise = torch.randn_like(target_actions)
         timesteps = torch.rand((B,), device=device) # continuous [0, 1]
         
         # Flow Matching style interpolation
-        # x_t = t * gt_actions + (1 - t) * noise
+        # x_t = t * target_actions + (1 - t) * noise
         t_expand = timesteps[:, None, None]
-        x_t = t_expand * gt_actions + (1 - t_expand) * noise
-        target_velocity = gt_actions - noise
+        x_t = t_expand * target_actions + (1 - t_expand) * noise
+        target_velocity = target_actions - noise
         
         # Predict velocity
         pred_velocity = self.diffusion_head(x_t, timesteps, semantics)
-        
-        return F.mse_loss(pred_velocity, target_velocity)
+
+        flow_loss = F.mse_loss(pred_velocity, target_velocity)
+        total_loss = flow_loss
+        delta_l2_loss = torch.tensor(0.0, device=device)
+
+        if residual_target and delta_l2_weight > 0.0:
+            # Reconstruct predicted clean delta from flow velocity parameterization.
+            pred_delta = x_t + (1.0 - t_expand) * pred_velocity
+            delta_l2_loss = pred_delta.square().mean()
+            total_loss = total_loss + float(delta_l2_weight) * delta_l2_loss
+
+        if return_metrics:
+            metrics = {
+                "flow_loss": float(flow_loss.detach().item()),
+                "delta_l2_loss": float(delta_l2_loss.detach().item()),
+                "target_action_abs_mean": float(target_actions.detach().abs().mean().item()),
+            }
+            if residual_target:
+                metrics["base_action_abs_mean"] = float(base_action.detach().abs().mean().item())
+            return total_loss, metrics
+
+        return total_loss
 
     def select_action(self, batch, steps=10, return_intermediates=False):
         """

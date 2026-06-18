@@ -6,6 +6,9 @@ import base64
 import csv
 import argparse
 from pathlib import Path
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from linux_inhibit import LinuxInhibit
 
 try:
     import cv2
@@ -204,4 +207,5 @@ def main():
         print(f"\nSaved taxonomy report to {args.output_csv}")
 
 if __name__ == "__main__":
-    main()
+    with LinuxInhibit(reason="Generating Taxonomy"):
+        main()

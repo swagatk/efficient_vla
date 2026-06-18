@@ -304,55 +304,55 @@ PY
   done
 done
 
-  $PYTHON_BIN - "$OUTPUT_ROOT" "$SUMMARY_CSV" <<'PY'
-  import csv
-  import sys
-  from pathlib import Path
+$PYTHON_BIN - "$OUTPUT_ROOT" "$SUMMARY_CSV" <<'PY'
+import csv
+import sys
+from pathlib import Path
 
-  output_root = Path(sys.argv[1])
-  summary_csv = Path(sys.argv[2])
+output_root = Path(sys.argv[1])
+summary_csv = Path(sys.argv[2])
 
-  rows = []
-  for row_file in sorted(output_root.rglob("result_row.csv")):
+rows = []
+for row_file in sorted(output_root.rglob("result_row.csv")):
     try:
-      with row_file.open() as f:
-        reader = csv.DictReader(f)
-        for row in reader:
-          rows.append(row)
+        with row_file.open() as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                rows.append(row)
     except Exception:
-      continue
+        continue
 
-  def _key(r):
+def _key(r):
     alpha = r.get("alpha", "")
     repeat = r.get("repeat", "")
     try:
-      alpha_f = float(alpha)
+        alpha_f = float(alpha)
     except Exception:
-      alpha_f = 1e9
+        alpha_f = 1e9
     try:
-      repeat_i = int(repeat)
+        repeat_i = int(repeat)
     except Exception:
-      repeat_i = 1_000_000
+        repeat_i = 1_000_000
     return (alpha_f, repeat_i)
 
-  rows.sort(key=_key)
+rows.sort(key=_key)
 
-  with summary_csv.open("w", newline="") as f:
+with summary_csv.open("w", newline="") as f:
     writer = csv.writer(f)
     writer.writerow(["alpha", "repeat", "overall_success", "task_success_rates", "exit_code", "log_file", "run_dir"])
     for r in rows:
-      writer.writerow([
-        r.get("alpha", "NA"),
-        r.get("repeat", "NA"),
-        r.get("overall_success", "NA"),
-        r.get("task_success_rates", "NA"),
-        r.get("exit_code", "NA"),
-        r.get("log_file", "NA"),
-        r.get("run_dir", "NA"),
-      ])
+        writer.writerow([
+            r.get("alpha", "NA"),
+            r.get("repeat", "NA"),
+            r.get("overall_success", "NA"),
+            r.get("task_success_rates", "NA"),
+            r.get("exit_code", "NA"),
+            r.get("log_file", "NA"),
+            r.get("run_dir", "NA"),
+        ])
 
-  print(f"Wrote summary rows: {len(rows)} to {summary_csv}")
-  PY
+print(f"Wrote summary rows: {len(rows)} to {summary_csv}")
+PY
 
 $PYTHON_BIN - "$SUMMARY_CSV" "$AGG_SUMMARY_CSV" "$REPORT_TXT" <<'PY'
 import csv

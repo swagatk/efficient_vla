@@ -1,0 +1,19 @@
+Week 7 Residual Alpha Sweep Report
+=================================
+Rows evaluated: 15
+Valid rows (exit=0 and parseable score): 15
+
+Best alpha (by median, then mean): 0.02
+Best mean overall success: 0.300000
+Best std overall success: 0.050000
+Best median overall success: 0.300000
+Best 95% CI half-width (mean): 0.056580
+Best 95% CI (mean): [0.243420, 0.356580]
+Valid repeats for best alpha: 3
+
+Ranking (desc median, then mean):
+  alpha=0.02 median=0.300000 mean=0.300000 std=0.050000 ci95=[0.243420, 0.356580] n=3
+  alpha=0.05 median=0.280000 mean=0.293333 std=0.023094 ci95=[0.267200, 0.319467] n=3
+  alpha=0.1 median=0.270000 mean=0.273333 std=0.005774 ci95=[0.266800, 0.279867] n=3
+  alpha=0.2 median=0.230000 mean=0.210000 std=0.072111 ci95=[0.128399, 0.291601] n=3
+  alpha=0.3 median=0.220000 mean=0.223333 std=0.025166 ci95=[0.194855, 0.251811] n=3

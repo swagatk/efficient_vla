@@ -19,6 +19,7 @@ import matplotlib.pyplot as plt
 import random
 from typing import Iterable
 import re
+from pathlib import Path
 
 from hybrid_diffusion_agent import HybridFrozenBrainDiffusionHands
 from linux_inhibit import LinuxInhibit
@@ -653,6 +654,25 @@ def train():
         choices=["allow", "must", "never", "auto"],
         help="WandB resume policy used with --eval_wandb_run_id in eval-only mode.",
     )
+    parser.add_argument(
+        "--wandb_run_id",
+        type=str,
+        default=None,
+        help="Optional WandB run id for training mode. Useful for external resume orchestration.",
+    )
+    parser.add_argument(
+        "--wandb_resume",
+        type=str,
+        default="allow",
+        choices=["allow", "must", "never", "auto"],
+        help="WandB resume policy used with --wandb_run_id in training mode.",
+    )
+    parser.add_argument(
+        "--wandb_run_id_file",
+        type=str,
+        default=None,
+        help="If set, writes the actual WandB run id used in training mode to this file.",
+    )
     parser.add_argument("--preflight_baseline_check", action="store_true", help="Run frozen-base policy baseline evaluation before training")
     parser.add_argument("--preflight_episodes", type=int, default=3, help="Episodes per task for preflight baseline evaluation")
     parser.add_argument(
@@ -722,6 +742,17 @@ def train():
         default=1.0,
         help="Clamp hybrid/mixed normalized actions to [-clip, clip] before postprocessor.",
     )
+    parser.add_argument(
+        "--residual_target",
+        action="store_true",
+        help="Train diffusion head on residual deltas (dataset action minus frozen base action).",
+    )
+    parser.add_argument(
+        "--delta_l2_weight",
+        type=float,
+        default=0.0,
+        help="Optional L2 regularization weight on predicted residual magnitude during residual-target training.",
+    )
     
     args = parser.parse_args()
     args.eval_task_ids = parse_task_id_tokens(args.eval_task_ids)
@@ -738,6 +769,8 @@ def train():
         parser.error("--eval_log_action_stats_every must be >= 0.")
     if args.eval_action_clip <= 0.0:
         parser.error("--eval_action_clip must be > 0.")
+    if args.delta_l2_weight < 0.0:
+        parser.error("--delta_l2_weight must be >= 0.")
     
     os.makedirs(args.out_dir, exist_ok=True)
     
@@ -757,6 +790,9 @@ def train():
             print(f"Found checkpoint for eval-only: {checkpoint_path} (epoch {start_epoch}).")
     elif args.eval_checkpoint_path is not None:
         parser.error(f"--eval_checkpoint_path was provided but file does not exist: {args.eval_checkpoint_path}")
+
+    if not args.eval_only and args.wandb_run_id is not None:
+        run_id = args.wandb_run_id
 
     print("Initializing Hybrid Diffusion Agent...")
     model = HybridFrozenBrainDiffusionHands(
@@ -851,7 +887,13 @@ def train():
         print("Eval-only complete.")
         return
 
-    wandb.init(project=args.wandb_project, id=run_id, resume="allow", config=vars(args))
+    wandb.init(project=args.wandb_project, id=run_id, resume=args.wandb_resume, config=vars(args))
+    active_run_id = str(getattr(wandb.run, "id", run_id))
+    run_id = active_run_id
+    if args.wandb_run_id_file is not None:
+        run_id_path = Path(args.wandb_run_id_file)
+        run_id_path.parent.mkdir(parents=True, exist_ok=True)
+        run_id_path.write_text(f"{active_run_id}\n", encoding="utf-8")
     wandb_resume_step = int(getattr(wandb.run, "step", 0) or 0)
     if preflight_result is not None:
         log_preflight_metrics(preflight_result, step=wandb_resume_step)
@@ -891,6 +933,8 @@ def train():
     if global_step != checkpoint_step:
         print(f"[W&B] Resuming from run step {wandb_resume_step} (checkpoint-derived step was {checkpoint_step}).")
     print("Starting Training Loop...")
+    if args.residual_target:
+        print(f"[Train] Residual-target mode enabled (delta_l2_weight={args.delta_l2_weight}).")
     for epoch in range(start_epoch, args.epochs):
         model.diffusion_head.train()
         epoch_loss = 0.0
@@ -903,9 +947,9 @@ def train():
                     # Keep action targets in fp32 for stable diffusion loss.
                     if k == "action":
                         batch[k] = v.to(dtype=torch.float32, device=args.device)
-                    # Cast remaining floats to bfloat16 to match the frozen backbone.
+                    # Keep remaining floats in fp32 to avoid mixed-dtype matmul failures.
                     elif v.is_floating_point():
-                        batch[k] = v.to(dtype=torch.bfloat16, device=args.device)
+                        batch[k] = v.to(dtype=torch.float32, device=args.device)
                     else:
                         batch[k] = v.to(device=args.device)
             
@@ -919,7 +963,13 @@ def train():
             
             # Forward pass: Extract semantic features from the frozen VLA, 
             # then compute flow matching distance vs target velocity
-            loss = model.compute_loss(batch, gt_actions)
+            loss, loss_metrics = model.compute_loss(
+                batch,
+                gt_actions,
+                residual_target=args.residual_target,
+                delta_l2_weight=args.delta_l2_weight,
+                return_metrics=True,
+            )
             
             loss.backward()
             torch.nn.utils.clip_grad_norm_(model.diffusion_head.parameters(), 1.0)
@@ -928,7 +978,17 @@ def train():
             epoch_loss += loss.item()
             global_step += 1
             
-            wandb.log({"train/loss": loss.item(), "train/lr": scheduler.get_last_lr()[0]}, step=global_step)
+            wandb_payload = {
+                "train/loss": loss.item(),
+                "train/lr": scheduler.get_last_lr()[0],
+                "train/flow_loss": loss_metrics["flow_loss"],
+                "train/target_action_abs_mean": loss_metrics["target_action_abs_mean"],
+            }
+            if args.residual_target:
+                wandb_payload["train/delta_l2_loss"] = loss_metrics["delta_l2_loss"]
+                if "base_action_abs_mean" in loss_metrics:
+                    wandb_payload["train/base_action_abs_mean"] = loss_metrics["base_action_abs_mean"]
+            wandb.log(wandb_payload, step=global_step)
             pbar.set_postfix({"loss": f"{loss.item():.4f}"})
             
         scheduler.step()
