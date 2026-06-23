@@ -164,13 +164,11 @@ def run_baseline_rollout(task_id, seed, num_episodes=10, max_steps=400):
             # Step environment
             next_obs, reward, done_env, info = env.step(action_np)
 
-            step_success = info.get("success", False)
-            if hasattr(step_success, 'item'):
-                step_success = step_success.item()
-            elif isinstance(step_success, list) or isinstance(step_success, np.ndarray):
-                step_success = bool(step_success[0])
-            else:
-                step_success = bool(step_success)
+            step_success = False
+            if hasattr(env, "check_success") and env.check_success():
+                step_success = True
+            elif isinstance(info, dict) and info.get("success", False):
+                step_success = True
 
             if step_success:
                 trajectory["success"] = True
