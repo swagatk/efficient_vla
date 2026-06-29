@@ -38,7 +38,7 @@ def analyze_h5_file(filepath):
             
             # Class distribution
             unique, counts = np.unique(labels, return_counts=True)
-            class_dist = dict(zip(unique, counts))
+            class_dist = {int(k): int(v) for k, v in zip(unique, counts)}
             
             # Check for data consistency
             observations = h5["observations"]
@@ -219,8 +219,12 @@ def evaluate_dataset_quality(data_dir, output_dir=None):
         results = {
             "file_results": file_results,
             "task_summary": task_summary,
-            "overall_stats": overall_stats,
-            "overall_balance": overall_balance
+            "overall_stats": {
+                "total_samples": int(overall_stats["total_samples"]),
+                "class_distribution": {int(k): int(v) for k, v in overall_stats["class_distribution"].items()},
+                "file_errors": int(overall_stats["file_errors"])
+            },
+            "overall_balance": float(overall_balance)
         }
         
         results_file = output_path / "dataset_quality_report.json"

@@ -80,6 +80,10 @@ def run_baseline_rollout(task_id, seed, num_episodes=10, max_steps=400):
     policy = SmolVLAPolicy.from_pretrained(policy_name).to(torch.bfloat16).to(device)
     policy.eval()
 
+    from lerobot.policies.factory import make_pre_post_processors
+    from lerobot.envs.utils import preprocess_observation
+    preprocessor, postprocessor = make_pre_post_processors(policy.config, policy_name)
+
     # Get task name from task_id
     try:
         task = TASK_SUITE.get_task(task_id)
@@ -133,29 +137,27 @@ def run_baseline_rollout(task_id, seed, num_episodes=10, max_steps=400):
         while not done and step < max_steps:
             img_agent = obs["agentview_image"][::-1, ::-1, :].copy()
             img_wrist = obs["robot0_eye_in_hand_image"][::-1, ::-1, :].copy()
-
-            img_tensor = torch.from_numpy(img_agent).to(torch.bfloat16).permute(2, 0, 1).unsqueeze(0).to(device) / 255.0
-            img_tensor_wrist = torch.from_numpy(img_wrist).to(torch.bfloat16).permute(2, 0, 1).unsqueeze(0).to(device) / 255.0
-
+            
             state_np = np.concatenate([obs["robot0_eef_pos"], quat2axisangle(obs["robot0_eef_quat"]), obs["robot0_gripper_qpos"]])
-            state_tensor = torch.from_numpy(state_np).to(torch.bfloat16).unsqueeze(0).to(device)
-
-            text_out = processor(text=instruction, return_tensors='pt')
-
-            batch_obs = {
-                'observation.images.image': img_tensor,
-                'observation.images.image2': img_tensor_wrist,
-                'observation.state': state_tensor,
-                'observation.language.tokens': text_out['input_ids'].to(device),
-                'observation.language.attention_mask': text_out['attention_mask'].to(device).bool(),
-                'language_instruction': [instruction]
+            
+            raw_obs = {
+                "pixels": {
+                    "image": img_agent,
+                    "image2": img_wrist,
+                },
+                "agent_pos": state_np.astype(np.float32),
             }
+            
+            policy_obs = preprocess_observation(raw_obs)
+            policy_obs["task"] = [instruction]
+            batch_obs = preprocessor(policy_obs)
 
             with torch.no_grad():
                 with torch.autocast(device_type="cuda", dtype=torch.bfloat16):
                     action = policy.select_action(batch_obs)
 
-            action_np = action.detach().cpu().to(torch.float32).numpy()[0]
+            env_action = postprocessor(action)
+            action_np = env_action.detach().cpu().to(torch.float32).numpy()[0]
 
             # Store raw observation dict and action
             trajectory["observations"].append(obs)

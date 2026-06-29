@@ -10,13 +10,18 @@ python collect_failure_data.py --run_all --num_episodes 10
 
 # Or run for a single task and seed for testing
 python collect_failure_data.py --task_id 0 --seed 0 --num_episodes 5
+
+# or use the shell script
+bash run_phase1_baselines.sh 
 ```
+
+
 
 This will create files in `Gated_Residual_strategy/data/`:
 - `failure_dataset_task{task_id}_seed{seed}.h5` - HDF5 files with observations, actions, and labels
 - `logs_task{task_id}_seed{seed}.json` - Detailed per-step logs
 
-## Phase 2: Dataset Quality Evaluation
+### Dataset Quality Evaluation
 
 After collecting the data, evaluate its quality:
 
@@ -25,7 +30,7 @@ After collecting the data, evaluate its quality:
 python eval_phase1_dataset.py --data_dir ./data --output_dir ./dataset_analysis
 
 # Or use the shell script
-bash run_dataset_evaluation.sh
+DATA_DIR=./outputs/run_20260624_232108 bash run_dataset_evaluation.sh
 ```
 
 This will generate:
@@ -33,13 +38,13 @@ This will generate:
 - `class_distribution.png` - Visualization of class balance
 - Console output with quality assessment
 
-## Phase 3: Train the Failure-Risk Gate
+## Phase 2: Train the Failure-Risk Gate
 
 Once you have a quality dataset, train the failure-risk gate:
 
 ```bash
 # Execute the Phase 2 training across multiple seeds
-bash run_phase2_train_gate.sh
+DATA_DIR=./outputs/run_20260624_232108 bash run_phase2_train_gate.sh
 ```
 
 This will:
@@ -47,7 +52,7 @@ This will:
 2. Log results to Weights & Biases
 3. Save model checkpoints
 
-## Phase 4: Evaluate Results
+### Evaluate Results
 
 Finally, evaluate the trained gate:
 

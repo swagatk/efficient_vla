@@ -1,223 +1,414 @@
+#!/usr/bin/env python3
 """
-Phase 1: Enhanced Evaluation Script for Gated Residual Strategy
+Phase 4: Gated Residual Strategy Evaluation Harness
 
-This script provides a robust evaluation harness with:
-- Full LIBERO-10 eval parity (3 seeds)
-- Consistent success extraction and preprocessing
-- Per-step success/failure logging
-- Confidence intervals and statistical analysis
-
-Usage:
-    python eval_gated_baseline.py --task_id 0 --seed 0
-    python eval_gated_baseline.py --task_id all --seed all
+This script performs full LIBERO-10 evaluation (multi-seed, multi-episode)
+for both the baseline SmolVLA policy and the Gated Residual Corrector policy.
 """
 
 import argparse
 import json
 import os
+import sys
+import random
 import numpy as np
-import pandas as pd
+import torch
+import torch.nn as nn
 from pathlib import Path
 from datetime import datetime
-import sys
 
+# Patch torch.load for PyTorch 2.6+ compatibility
+_original_torch_load = torch.load
+def _patched_torch_load(*args, **kwargs):
+    if "weights_only" not in kwargs:
+        kwargs["weights_only"] = False
+    return _original_torch_load(*args, **kwargs)
+torch.load = _patched_torch_load
+
+# Add project root to python path
 project_root = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(project_root))
+
 from linux_inhibit import LinuxInhibit
+import libero.libero as libero_pkg
+from libero.libero.benchmark import get_benchmark_dict
+from libero.libero.envs import OffScreenRenderEnv
+from lerobot.policies.smolvla.modeling_smolvla import SmolVLAPolicy
+from lerobot.policies.factory import make_pre_post_processors
+from lerobot.envs.utils import preprocess_observation
+from robosuite.utils.transform_utils import quat2axisangle
 
-# Import your evaluation components
-# from lerobot.common.datasets.lerobot_dataset import LeRobotDataset
-# from eval_week2_visual_prompting import evaluate_task
+# Redefine architectures locally to avoid import path complexities
+class LightweightFailureGate(nn.Module):
+    def __init__(self, state_dim=8):
+        super().__init__()
+        def create_cnn():
+            return nn.Sequential(
+                nn.Conv2d(3, 16, kernel_size=3, stride=2, padding=1), nn.ReLU(),
+                nn.Conv2d(16, 32, kernel_size=3, stride=2, padding=1), nn.ReLU(),
+                nn.Conv2d(32, 64, kernel_size=3, stride=2, padding=1), nn.ReLU(),
+                nn.AdaptiveAvgPool2d((1, 1)),
+                nn.Flatten()
+            )
+        self.img1_cnn = create_cnn()
+        self.img2_cnn = create_cnn()
+        self.state_mlp = nn.Sequential(
+            nn.Linear(state_dim, 32),
+            nn.ReLU(),
+            nn.Linear(32, 32),
+            nn.ReLU()
+        )
+        self.fusion = nn.Sequential(
+            nn.Linear(160, 64),
+            nn.ReLU(),
+            nn.Dropout(0.2),
+            nn.Linear(64, 1)
+        )
 
-def evaluate_task_baseline(task_id, seed, num_episodes=10):
+    def forward(self, img1, img2, state):
+        x1 = self.img1_cnn(img1)
+        x2 = self.img2_cnn(img2)
+        xs = self.state_mlp(state)
+        x = torch.cat([x1, x2, xs], dim=1)
+        return self.fusion(x)
+
+class LightweightResidualCorrector(nn.Module):
+    def __init__(self, state_dim=8, action_dim=7):
+        super().__init__()
+        def create_cnn():
+            return nn.Sequential(
+                nn.Conv2d(3, 16, kernel_size=3, stride=2, padding=1), nn.ReLU(),
+                nn.Conv2d(16, 32, kernel_size=3, stride=2, padding=1), nn.ReLU(),
+                nn.Conv2d(32, 64, kernel_size=3, stride=2, padding=1), nn.ReLU(),
+                nn.AdaptiveAvgPool2d((1, 1)),
+                nn.Flatten()
+            )
+        self.img1_cnn = create_cnn()
+        self.img2_cnn = create_cnn()
+        self.state_mlp = nn.Sequential(
+            nn.Linear(state_dim, 32),
+            nn.ReLU(),
+            nn.Linear(32, 32),
+            nn.ReLU()
+        )
+        self.fusion = nn.Sequential(
+            nn.Linear(160, 64),
+            nn.ReLU(),
+            nn.Dropout(0.2),
+            nn.Linear(64, action_dim)
+        )
+
+    def forward(self, img1, img2, state):
+        x1 = self.img1_cnn(img1)
+        x2 = self.img2_cnn(img2)
+        xs = self.state_mlp(state)
+        x = torch.cat([x1, x2, xs], dim=1)
+        return self.fusion(x)
+
+def get_libero_dummy_action():
+    return [0, 0, 0, 0, 0, 0, -1]
+
+def evaluate_task(task_id, seed, base_policy, preprocessor, postprocessor, 
+                  gate_model=None, corrector_model=None, 
+                  threshold=0.5, alpha=0.5, num_episodes=10, max_steps=400, device="cuda"):
     """
-    Evaluates the baseline SmolVLA policy on a single task and seed.
+    Evaluates policy on a single LIBERO task. Blends corrector output when gate triggers.
+    """
+    benchmark_dict = get_benchmark_dict()
+    benchmark = benchmark_dict["libero_10"]()
     
-    Returns:
-        dict: Evaluation results including:
-            - success_rate: float
-            - num_successful: int
-            - num_total: int
-            - avg_steps_to_success: float
-            - per_episode_success: list
-    """
+    try:
+        task = benchmark.get_task(task_id)
+        task_name = task.name
+    except IndexError:
+        print(f"Error: Invalid task_id {task_id}.")
+        return {}
+
+    print(f"\n--- Starting Evaluation: Task '{task_name}' (ID: {task_id}), Seed: {seed} ---")
+    if gate_model and corrector_model:
+        print(f"Gating Active (Threshold: {threshold}, Alpha: {alpha})")
+    else:
+        print("Running Baseline SmolVLA (No Gating/Corrector)")
+
+    # Seed all sources
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+
+    benchmark_root = os.path.dirname(libero_pkg.__file__)
+    bddl_file_path = os.path.join(benchmark_root, "bddl_files", task.problem_folder, task.bddl_file)
+
+    env = OffScreenRenderEnv(
+        bddl_file_name=bddl_file_path,
+        camera_heights=256,
+        camera_widths=256,
+    )
+
     results = {
         "task_id": task_id,
+        "task_name": task_name,
         "seed": seed,
         "num_episodes": num_episodes,
         "num_successful": 0,
-        "num_total": num_episodes,
         "avg_steps_to_success": 0.0,
-        "per_episode_success": [],
+        "intervention_rate": 0.0,
         "episode_details": []
     }
-    
-    successful_episodes = []
+
     total_steps_successful = 0
-    
+    total_steps_run = 0
+    total_interventions = 0
+
+    init_states = benchmark.get_task_init_states(task_id)
+
     for ep in range(num_episodes):
-        # TODO: Implement actual evaluation logic
-        # success, steps = run_evaluation_episode(task_id, seed, ep)
-        
-        # Placeholder logic
-        success = np.random.rand() > 0.3  # Simulate ~70% success rate
-        steps = np.random.randint(20, 50) if success else np.random.randint(20, 50)
-        
-        results["per_episode_success"].append(success)
+        print(f"Episode {ep + 1}/{num_episodes}...")
+        env.reset()
+        if init_states is not None and len(init_states) > ep:
+            env.set_init_state(init_states[ep])
+        obs = env.reset()
+
+        # Warmup
+        for _ in range(10):
+            obs, _, _, _ = env.step(get_libero_dummy_action())
+
+        instruction = task.language
+        if hasattr(base_policy, 'reset'):
+            base_policy.reset()
+
+        done = False
+        step = 0
+        ep_success = False
+        ep_interventions = 0
+
+        while not done and step < max_steps:
+            img_agent = obs["agentview_image"][::-1, ::-1, :].copy()
+            img_wrist = obs["robot0_eye_in_hand_image"][::-1, ::-1, :].copy()
+            state_np = np.concatenate([obs["robot0_eef_pos"], quat2axisangle(obs["robot0_eef_quat"]), obs["robot0_gripper_qpos"]])
+            
+            # 1. Forward through Base SmolVLA Policy
+            raw_obs = {
+                "pixels": {
+                    "image": img_agent,
+                    "image2": img_wrist,
+                },
+                "agent_pos": state_np.astype(np.float32),
+            }
+            policy_obs = preprocess_observation(raw_obs)
+            policy_obs["task"] = [instruction]
+            batch_obs = preprocessor(policy_obs)
+
+            with torch.no_grad():
+                with torch.autocast(device_type="cuda", dtype=torch.bfloat16):
+                    base_action_tensor = base_policy.select_action(batch_obs)
+            
+            env_action = postprocessor(base_action_tensor)
+            action_np = env_action.detach().cpu().to(torch.float32).numpy()[0]
+
+            # 2. Check risk gate if loaded
+            triggered = False
+            if gate_model is not None and corrector_model is not None:
+                img1_tensor = torch.from_numpy(img_agent).float().permute(2, 0, 1).unsqueeze(0).to(device) / 255.0
+                img2_tensor = torch.from_numpy(img_wrist).float().permute(2, 0, 1).unsqueeze(0).to(device) / 255.0
+                state_tensor = torch.from_numpy(state_np).float().unsqueeze(0).to(device)
+
+                with torch.no_grad():
+                    gate_logits = gate_model(img1_tensor, img2_tensor, state_tensor)
+                    gate_prob = torch.sigmoid(gate_logits).item()
+
+                if gate_prob > threshold:
+                    triggered = True
+                    ep_interventions += 1
+                    total_interventions += 1
+                    
+                    # 3. Predict correction
+                    with torch.no_grad():
+                        corr_action_tensor = corrector_model(img1_tensor, img2_tensor, state_tensor)
+                        corr_action_np = corr_action_tensor.cpu().numpy()[0]
+                    
+                    # Blend base action and corrective action
+                    action_np = (1.0 - alpha) * action_np + alpha * corr_action_np
+
+            # Step environment
+            next_obs, reward, done_env, info = env.step(action_np)
+
+            step_success = False
+            if hasattr(env, "check_success") and env.check_success():
+                step_success = True
+            elif isinstance(info, dict) and info.get("success", False):
+                step_success = True
+
+            if step_success:
+                ep_success = True
+                done = True
+            elif done_env:
+                done = True
+
+            obs = next_obs
+            step += 1
+
+        print(f"  Episode finished. Steps: {step} | Success: {ep_success} | Interventions: {ep_interventions}")
+        total_steps_run += step
+        if ep_success:
+            results["num_successful"] += 1
+            total_steps_successful += step
+
         results["episode_details"].append({
             "episode": ep,
-            "success": success,
-            "steps": steps
+            "success": ep_success,
+            "steps": step,
+            "interventions": ep_interventions
         })
-        
-        if success:
-            results["num_successful"] += 1
-            total_steps_successful += steps
+
+    env.close()
     
+    results["success_rate"] = results["num_successful"] / num_episodes
     if results["num_successful"] > 0:
         results["avg_steps_to_success"] = total_steps_successful / results["num_successful"]
+    results["intervention_rate"] = total_interventions / total_steps_run if total_steps_run > 0 else 0.0
     
-    results["success_rate"] = results["num_successful"] / results["num_total"]
-    
+    print(f"Task Results: Success Rate = {results['success_rate']:.2%}, Avg Steps = {results['avg_steps_to_success']:.1f}, Intervention Rate = {results['intervention_rate']:.2%}")
     return results
 
 def calculate_confidence_interval(success_rates, confidence=0.95):
-    """
-    Calculates confidence intervals for success rates.
-    
-    Args:
-        success_rates: List of success rates
-        confidence: Confidence level (default 0.95)
-    
-    Returns:
-        tuple: (mean, ci_lower, ci_upper)
-    """
     if len(success_rates) < 2:
         return np.mean(success_rates), 0.0, 0.0
-    
     mean = np.mean(success_rates)
-    n = len(success_rates)
     std = np.std(success_rates, ddof=1)
-    t_val = 1.96  # Approximation for 95% CI with large n
-    
-    margin = t_val * (std / np.sqrt(n))
-    return mean, mean - margin, mean + margin
+    # 95% confidence interval multiplier (approximate)
+    margin = 1.96 * (std / np.sqrt(len(success_rates)))
+    return mean, max(0.0, mean - margin), min(1.0, mean + margin)
 
-def run_full_evaluation(task_ids=None, seeds=None, output_dir="Gated_Residual_strategy/eval_results"):
-    """
-    Runs full evaluation across specified tasks and seeds.
+def main():
+    parser = argparse.ArgumentParser(description="Evaluate SmolVLA Gated Residual Strategy")
+    parser.add_argument("--task_id", type=int, default=None, help="Evaluate a single task (0-9)")
+    parser.add_argument("--seed", type=int, default=None, help="Evaluate a single seed (0-2)")
+    parser.add_argument("--run_all", action="store_true", help="Evaluate all 10 tasks and 3 seeds")
+    parser.add_argument("--gate_dir", type=str, default=None, help="Path to Phase 2 training outputs directory (loads corresponding seed checkpoint)")
+    parser.add_argument("--corrector_dir", type=str, default=None, help="Path to Phase 3 training outputs directory (loads corresponding seed checkpoint)")
+    parser.add_argument("--threshold", type=float, default=0.5, help="Gating confidence threshold")
+    parser.add_argument("--alpha", type=float, default=0.5, help="Residual interpolation scaling factor")
+    parser.add_argument("--num_episodes", type=int, default=10, help="Episodes per task-seed run")
+    parser.add_argument("--max_steps", type=int, default=400, help="Max steps per episode")
+    parser.add_argument("--output_dir", type=str, default="Gated_Residual_strategy/eval_results", help="Directory to save evaluation reports")
     
-    Args:
-        task_ids: List of task IDs (default: all 0-9)
-        seeds: List of seeds (default: 0, 1, 2)
-        output_dir: Output directory for results
-    """
-    if task_ids is None:
-        task_ids = list(range(10))
-    if seeds is None:
-        seeds = [0, 1, 2]
-    
-    os.makedirs(output_dir, exist_ok=True)
-    
-    all_results = []
+    args = parser.parse_args()
+
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    os.makedirs(args.output_dir, exist_ok=True)
+
+    # 1. Load Base Policy once
+    print("Loading baseline SmolVLA policy...")
+    policy_name = "HuggingFaceVLA/smolvla_libero"
+    base_policy = SmolVLAPolicy.from_pretrained(policy_name).to(torch.bfloat16).to(device)
+    base_policy.eval()
+    preprocessor, postprocessor = make_pre_post_processors(base_policy.config, policy_name)
+
+    # Define tasks and seeds to run
+    task_ids = list(range(10)) if (args.run_all or args.task_id is None) else [args.task_id]
+    seeds = [0, 1, 2] if (args.run_all or args.seed is None) else [args.seed]
+
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    
-    for task_id in task_ids:
-        task_results = {
-            "task_id": task_id,
-            "task_name": f"LIBERO_{task_id}",
-            "seed_results": []
-        }
+    all_runs = []
+
+    for seed in seeds:
+        # Load Gate and Corrector checkpoints matching the evaluation seed if available
+        # Note: mapping eval seeds [0, 1, 2] to training seeds [42, 123, 999]
+        train_seed_map = {0: 42, 1: 123, 2: 999}
+        train_seed = train_seed_map.get(seed, 42)
         
-        for seed in seeds:
-            print(f"Evaluating Task {task_id}, Seed {seed}")
-            eval_result = evaluate_task_baseline(task_id, seed)
-            task_results["seed_results"].append(eval_result)
-            all_results.append(eval_result)
-        
-        # Calculate task-level statistics
-        success_rates = [sr["success_rate"] for sr in task_results["seed_results"]]
-        mean_rate, ci_lower, ci_upper = calculate_confidence_interval(success_rates)
-        
-        task_results["mean_success_rate"] = mean_rate
-        task_results["ci_95_lower"] = ci_lower
-        task_results["ci_95_upper"] = ci_upper
-        
-        all_results.append(task_results)
-    
-    # Save individual task results
-    for task_result in all_results:
-        if "task_id" in task_result and "seed_results" in task_result:
-            # This is a task-level summary
-            filename = f"task_{task_result['task_id']}_results_{timestamp}.json"
-            output_path = os.path.join(output_dir, filename)
-            
-            with open(output_path, 'w') as f:
-                json.dump(task_result, f, indent=2)
-            print(f"Saved task {task_result['task_id']} results to {output_path}")
-    
-    # Save aggregate results
-    aggregate_results = []
+        gate_model = None
+        corrector_model = None
+
+        if args.gate_dir:
+            gate_path = Path(args.gate_dir) / f"unit_train_seed_{train_seed}" / "best_model.pth"
+            if gate_path.exists():
+                print(f"Loading Failure Gate from {gate_path}")
+                # Failure Gate uses state_dim=8
+                gate_model = LightweightFailureGate(state_dim=8).to(device)
+                gate_model.load_state_dict(torch.load(gate_path, map_location=device))
+                gate_model.eval()
+            else:
+                print(f"[Warning] Failure Gate checkpoint not found: {gate_path}")
+
+        if args.corrector_dir:
+            corrector_path = Path(args.corrector_dir) / f"unit_train_seed_{train_seed}" / "best_model.pth"
+            if corrector_path.exists():
+                print(f"Loading Residual Corrector from {corrector_path}")
+                # Corrector uses state_dim=8, action_dim=7
+                corrector_model = LightweightResidualCorrector(state_dim=8, action_dim=7).to(device)
+                corrector_model.load_state_dict(torch.load(corrector_path, map_location=device))
+                corrector_model.eval()
+            else:
+                print(f"[Warning] Residual Corrector checkpoint not found: {corrector_path}")
+
+        for task_id in task_ids:
+            run_result = evaluate_task(
+                task_id=task_id,
+                seed=seed,
+                base_policy=base_policy,
+                preprocessor=preprocessor,
+                postprocessor=postprocessor,
+                gate_model=gate_model,
+                corrector_model=corrector_model,
+                threshold=args.threshold,
+                alpha=args.alpha,
+                num_episodes=args.num_episodes,
+                max_steps=args.max_steps,
+                device=device
+            )
+            all_runs.append(run_result)
+
+    # 2. Compile and save results
     task_success_rates = []
+    task_summaries = {}
     
-    for task_result in all_results:
-        if "task_id" in task_result and "seed_results" in task_result:
-            task_success_rates.append(task_result["mean_success_rate"])
-    
+    # Group runs by task to calculate task-level stats
+    for task_id in task_ids:
+        task_runs = [r for r in all_runs if r["task_id"] == task_id]
+        if not task_runs:
+            continue
+        rates = [r["success_rate"] for r in task_runs]
+        mean, ci_lower, ci_upper = calculate_confidence_interval(rates)
+        task_success_rates.append(mean)
+        
+        task_summaries[str(task_id)] = {
+            "task_name": task_runs[0]["task_name"],
+            "success_rate_mean": mean,
+            "success_rate_ci_95": [ci_lower, ci_upper],
+            "runs": task_runs
+        }
+
     overall_mean, overall_ci_lower, overall_ci_upper = calculate_confidence_interval(task_success_rates)
     
-    aggregate_results = {
+    aggregate_report = {
         "overall_mean_success_rate": overall_mean,
         "ci_95_lower": overall_ci_lower,
         "ci_95_upper": overall_ci_upper,
-        "num_tasks": len(task_success_rates),
-        "num_seeds": len(seeds),
         "timestamp": timestamp,
-        "task_details": all_results
+        "config": {
+            "gate_dir": args.gate_dir,
+            "corrector_dir": args.corrector_dir,
+            "threshold": args.threshold,
+            "alpha": args.alpha,
+            "num_episodes": args.num_episodes,
+            "max_steps": args.max_steps
+        },
+        "tasks": task_summaries
     }
-    
-    aggregate_path = os.path.join(output_dir, f"aggregate_results_{timestamp}.json")
-    with open(aggregate_path, 'w') as f:
-        json.dump(aggregate_results, f, indent=2)
-    print(f"Saved aggregate results to {aggregate_path}")
-    
-    # Print summary
-    print("\n" + "="*60)
-    print("EVALUATION SUMMARY")
-    print("="*60)
-    print(f"Overall Mean Success Rate: {overall_mean:.2%}")
-    print(f"95% CI: [{overall_ci_lower:.2%}, {overall_ci_upper:.2%}]")
-    print(f"Tasks Evaluated: {len(task_success_rates)}")
-    print(f"Seeds per Task: {len(seeds)}")
-    print("="*60)
-    
-    return aggregate_results
 
-def main():
-    parser = argparse.ArgumentParser(description="Enhanced evaluation script for Gated Residual Strategy")
-    parser.add_argument("--task_id", type=int, default=None, help="Single task ID (0-9)")
-    parser.add_argument("--seed", type=int, default=None, help="Single seed")
-    parser.add_argument("--task_ids", type=int, nargs="+", default=None, help="List of task IDs")
-    parser.add_argument("--seeds", type=int, nargs="+", default=None, help="List of seeds")
-    parser.add_argument("--output_dir", type=str, default="Gated_Residual_strategy/eval_results", help="Output directory")
-    parser.add_argument("--run_all", action="store_true", help="Run all tasks and seeds")
-    
-    args = parser.parse_args()
-    
-    if args.run_all:
-        task_ids = list(range(10))
-        seeds = [0, 1, 2]
-    else:
-        task_ids = [args.task_id] if args.task_id is not None else args.task_ids
-        seeds = [args.seed] if args.seed is not None else args.seeds
-    
-    if task_ids is None:
-        task_ids = list(range(10))
-    if seeds is None:
-        seeds = [0, 1, 2]
-    
-    run_full_evaluation(task_ids=task_ids, seeds=seeds, output_dir=args.output_dir)
+    report_path = os.path.join(args.output_dir, f"evaluation_report_{timestamp}.json")
+    with open(report_path, "w") as f:
+        json.dump(aggregate_report, f, indent=2)
+
+    print("\n" + "="*60)
+    print("EVALUATION COMPLETED SUCCESSFULLY")
+    print("="*60)
+    print(f"Overall Success Rate: {overall_mean:.2%}")
+    print(f"95% Confidence Interval: [{overall_ci_lower:.2%}, {overall_ci_upper:.2%}]")
+    print(f"Detailed results saved to: {report_path}")
+    print("="*60)
 
 if __name__ == "__main__":
-    with LinuxInhibit(reason="Evaluating Gated Baseline"):
+    with LinuxInhibit(reason="Gated Residual Evaluation"):
         main()
