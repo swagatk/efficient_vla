@@ -10,6 +10,7 @@ WANDB_PROJECT="${WANDB_PROJECT:-gated_residual_phase3}"
 WANDB_RESUME_POLICY="${WANDB_RESUME_POLICY:-allow}"
 PYTHON_BIN="${PYTHON_BIN:-python3}"
 USE_POWER_HARDENING="${USE_POWER_HARDENING:-1}"
+TRAIN_MODE="${TRAIN_MODE:-absolute}"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DATA_DIR="${DATA_DIR:-$SCRIPT_DIR/data}"
@@ -168,6 +169,7 @@ for i in "${!SEEDS[@]}"; do
     --output_dir "$UNIT_DIR"
     --seed "$SEED"
     --epochs 15
+    --train_mode "$TRAIN_MODE"
     --wandb_project "$WANDB_PROJECT"
     --wandb_resume "$WANDB_RESUME_POLICY"
   )

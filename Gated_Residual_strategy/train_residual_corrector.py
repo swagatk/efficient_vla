@@ -21,7 +21,7 @@ import wandb
 from robosuite.utils.transform_utils import quat2axisangle
 
 class CorrectorDataset(Dataset):
-    def __init__(self, data_dir, split="train", val_ratio=0.15, target_label=0):
+    def __init__(self, data_dir, split="train", val_ratio=0.15, target_label=0, train_mode="absolute"):
         """
         Lazy-loading HDF5 dataset for Phase 3 Gated Residual Corrector training.
         Filters for steps matching target_label (default 0: successful trajectories).
@@ -32,6 +32,7 @@ class CorrectorDataset(Dataset):
             
         self.index_map = []
         self.target_label = target_label
+        self.train_mode = train_mode
         
         for f_idx, f_path in enumerate(self.file_paths):
             try:
@@ -58,7 +59,7 @@ class CorrectorDataset(Dataset):
                 print(f"Failed to read {f_path}: {e}")
                 
         self.open_files = {}
-        print(f"[{split.upper()}] Dataset initialized with {len(self.index_map)} samples (target_label={target_label}).")
+        print(f"[{split.upper()}] Dataset initialized with {len(self.index_map)} samples (target_label={target_label}, train_mode={train_mode}).")
 
     def __len__(self):
         return len(self.index_map)
@@ -90,7 +91,19 @@ class CorrectorDataset(Dataset):
         
         # Read and prepare action target
         action_np = h5["actions"][i]
-        action = torch.from_numpy(action_np).float()
+        
+        if self.train_mode == "delta":
+            if "observations/base_actions" in h5:
+                base_action_np = h5["observations/base_actions"][i]
+            elif "observations" in h5 and "base_actions" in h5["observations"]:
+                base_action_np = h5["observations"]["base_actions"][i]
+            else:
+                base_action_np = action_np
+            target_np = action_np - base_action_np
+        else:
+            target_np = action_np
+            
+        action = torch.from_numpy(target_np).float()
         
         return img1, img2, state, action
 
@@ -158,6 +171,7 @@ def main():
     parser.add_argument("--lr", type=float, default=1e-3)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--target_label", type=int, default=0, help="Label to train on (0: success trajectories)")
+    parser.add_argument("--train_mode", type=str, choices=["absolute", "delta"], default="absolute", help="Training mode (absolute actions or delta actions)")
     parser.add_argument("--wandb_project", type=str, default="gated_residual_phase3")
     parser.add_argument("--wandb_run_id", type=str, default=None)
     parser.add_argument("--wandb_resume", type=str, default="allow")
@@ -169,7 +183,7 @@ def main():
     os.makedirs(args.output_dir, exist_ok=True)
     
     # Initialize Dataset
-    test_dataset = CorrectorDataset(args.data_dir, split="train", val_ratio=0.15, target_label=args.target_label)
+    test_dataset = CorrectorDataset(args.data_dir, split="train", val_ratio=0.15, target_label=args.target_label, train_mode=args.train_mode)
     if len(test_dataset) == 0:
         print("Dataset is empty. Exiting.")
         return
@@ -180,7 +194,7 @@ def main():
     print(f"Inferred Proprioceptive State Dimension: {state_dim}, Action Dimension: {action_dim}")
 
     train_dataset = test_dataset
-    val_dataset = CorrectorDataset(args.data_dir, split="val", val_ratio=0.15, target_label=args.target_label)
+    val_dataset = CorrectorDataset(args.data_dir, split="val", val_ratio=0.15, target_label=args.target_label, train_mode=args.train_mode)
     
     train_loader = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True, num_workers=4, pin_memory=True)
     val_loader = DataLoader(val_dataset, batch_size=args.batch_size, shuffle=False, num_workers=4, pin_memory=True)

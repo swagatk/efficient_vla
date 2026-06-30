@@ -12,6 +12,7 @@ ALPHA="${ALPHA:-0.5}"
 NUM_EPISODES="${NUM_EPISODES:-10}"
 PYTHON_BIN="${PYTHON_BIN:-python3}"
 USE_POWER_HARDENING="${USE_POWER_HARDENING:-1}"
+INFERENCE_MODE="${INFERENCE_MODE:-absolute}"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 OUTPUT_DIR="${OUTPUT_DIR:-$SCRIPT_DIR/outputs/phase4_eval_results_$(date +%Y%m%d_%H%M%S)}"
@@ -218,6 +219,7 @@ for seed in "${SEEDS[@]}"; do
       --threshold "$THRESHOLD"
       --alpha "$ALPHA"
       --num_episodes "$NUM_EPISODES"
+      --inference_mode "$INFERENCE_MODE"
       --output_dir "$UNIT_DIR"
     )
     if [[ -n "$GATE_DIR" ]]; then

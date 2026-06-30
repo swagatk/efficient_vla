@@ -110,7 +110,8 @@ def get_libero_dummy_action():
 
 def evaluate_task(task_id, seed, base_policy, preprocessor, postprocessor, 
                   gate_model=None, corrector_model=None, 
-                  threshold=0.5, alpha=0.5, num_episodes=10, max_steps=400, device="cuda"):
+                  threshold=0.5, alpha=0.5, num_episodes=10, max_steps=400, device="cuda",
+                  inference_mode="absolute"):
     """
     Evaluates policy on a single LIBERO task. Blends corrector output when gate triggers.
     """
@@ -126,7 +127,7 @@ def evaluate_task(task_id, seed, base_policy, preprocessor, postprocessor,
 
     print(f"\n--- Starting Evaluation: Task '{task_name}' (ID: {task_id}), Seed: {seed} ---")
     if gate_model and corrector_model:
-        print(f"Gating Active (Threshold: {threshold}, Alpha: {alpha})")
+        print(f"Gating Active (Threshold: {threshold}, Alpha: {alpha}, Mode: {inference_mode})")
     else:
         print("Running Baseline SmolVLA (No Gating/Corrector)")
 
@@ -227,7 +228,10 @@ def evaluate_task(task_id, seed, base_policy, preprocessor, postprocessor,
                         corr_action_np = corr_action_tensor.cpu().numpy()[0]
                     
                     # Blend base action and corrective action
-                    action_np = (1.0 - alpha) * action_np + alpha * corr_action_np
+                    if inference_mode == "absolute":
+                        action_np = (1.0 - alpha) * action_np + alpha * corr_action_np
+                    elif inference_mode == "delta":
+                        action_np = action_np + alpha * corr_action_np
 
             # Step environment
             next_obs, reward, done_env, info = env.step(action_np)
@@ -290,6 +294,7 @@ def main():
     parser.add_argument("--alpha", type=float, default=0.5, help="Residual interpolation scaling factor")
     parser.add_argument("--num_episodes", type=int, default=10, help="Episodes per task-seed run")
     parser.add_argument("--max_steps", type=int, default=400, help="Max steps per episode")
+    parser.add_argument("--inference_mode", type=str, choices=["absolute", "delta"], default="absolute", help="Inference action blending mode")
     parser.add_argument("--output_dir", type=str, default="Gated_Residual_strategy/eval_results", help="Directory to save evaluation reports")
     
     args = parser.parse_args()
@@ -355,7 +360,8 @@ def main():
                 alpha=args.alpha,
                 num_episodes=args.num_episodes,
                 max_steps=args.max_steps,
-                device=device
+                device=device,
+                inference_mode=args.inference_mode
             )
             all_runs.append(run_result)
 
@@ -392,7 +398,8 @@ def main():
             "threshold": args.threshold,
             "alpha": args.alpha,
             "num_episodes": args.num_episodes,
-            "max_steps": args.max_steps
+            "max_steps": args.max_steps,
+            "inference_mode": args.inference_mode
         },
         "tasks": task_summaries
     }
