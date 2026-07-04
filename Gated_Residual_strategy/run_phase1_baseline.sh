@@ -10,13 +10,14 @@ PYTHON_BIN="${PYTHON_BIN:-python3}"
 USE_POWER_HARDENING="${USE_POWER_HARDENING:-1}"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-OUTPUT_ROOT="${OUTPUT_ROOT:-$SCRIPT_DIR/outputs/run_$(date +%Y%m%d_%H%M%S)}"
+OUTPUT_ROOT="${OUTPUT_ROOT:-$SCRIPT_DIR/outputs/phase1_run_$(date +%Y%m%d_%H%M%S)}"
 mkdir -p "$OUTPUT_ROOT"
 PROGRESS_LOG="$OUTPUT_ROOT/progress.log"
 
 ORIG_POWER_PROFILE=""
 ORIG_SLEEP_MODE=""
 OS_NAME="$(uname -s)"
+PID=""
 
 INTERRUPTED=0
 START_TS=$(date +%s)
@@ -62,6 +63,12 @@ apply_power_hardening() {
 }
 
 restore_power_hardening() {
+  # Terminate background child process first if running
+  if [[ -n "${PID:-}" ]] && kill -0 "$PID" 2>/dev/null; then
+    kill "$PID" 2>/dev/null || true
+    wait "$PID" 2>/dev/null || true
+  fi
+
   [[ "$USE_POWER_HARDENING" == "1" ]] || return 0
   if [[ "$OS_NAME" == "Darwin" ]]; then
     if [[ -n "$ORIG_SLEEP_MODE" ]] && command -v pmset >/dev/null 2>&1; then
@@ -134,14 +141,18 @@ root = Path(sys.argv[1])
 all_successes = []
 
 # Read all individual evaluation result files to aggregate success booleans
-for p in root.rglob("task_*_results_*.json"):
+for p in root.rglob("evaluation_report_*.json"):
     try:
         with p.open() as f:
             data = json.load(f)
-            if 'seed_results' in data:
-                for sr in data['seed_results']:
-                    if 'per_episode_success' in sr:
-                        all_successes.extend(sr['per_episode_success'])
+            if 'tasks' in data:
+                for task_id, task_data in data['tasks'].items():
+                    if 'runs' in task_data:
+                        for run in task_data['runs']:
+                            if 'episode_details' in run:
+                                for ep in run['episode_details']:
+                                    if 'success' in ep:
+                                        all_successes.append(ep['success'])
     except Exception:
         pass
 

@@ -24,9 +24,9 @@ class FailureDataset(Dataset):
         """
         Lazy-loading HDF5 dataset for Phase 1 failure trajectories.
         """
-        self.file_paths = sorted(list(Path(data_dir).rglob("*.h5")))
+        self.file_paths = sorted(list(Path(data_dir).rglob("*.h5")) + list(Path(data_dir).rglob("*.hdf5")))
         if not self.file_paths:
-            raise ValueError(f"No .h5 files found in {data_dir}")
+            raise ValueError(f"No .h5 or .hdf5 files found in {data_dir}")
             
         self.index_map = []
         

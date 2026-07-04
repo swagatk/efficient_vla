@@ -22,6 +22,14 @@ from collections import defaultdict, Counter
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+def get_task_name(task_id):
+    try:
+        from libero.libero import benchmark
+        b = benchmark.get_benchmark_dict()['libero_10']()
+        return b.tasks[int(task_id)].name
+    except Exception:
+        return f"task_{task_id}"
+
 def analyze_h5_file(filepath):
     """Analyze a single HDF5 file for data quality."""
     try:
@@ -77,16 +85,22 @@ def analyze_log_file(filepath):
         episode_outcomes = []
         step_outcomes = []
         
-        for episode in data.get("episodes", []):
+        if isinstance(data, list):
+            episodes_list = data
+        else:
+            episodes_list = data.get("episodes", [])
+            
+        for episode in episodes_list:
             episode_outcomes.append(episode.get("success", False))
             for step in episode.get("steps", []):
-                step_outcomes.append(step.get("failure", 0))
+                if isinstance(step, dict):
+                    step_outcomes.append(step.get("failure", 0))
                 
         return {
             "n_episodes": len(episode_outcomes),
-            "episode_success_rate": np.mean(episode_outcomes),
+            "episode_success_rate": np.mean(episode_outcomes) if episode_outcomes else 0.0,
             "n_steps": len(step_outcomes),
-            "step_failure_rate": np.mean(step_outcomes)
+            "step_failure_rate": np.mean(step_outcomes) if step_outcomes else 0.0
         }
     except Exception as e:
         return {"error": str(e)}
@@ -102,6 +116,89 @@ def evaluate_dataset_quality(data_dir, output_dir=None):
     log_files = list(data_path.rglob("logs_task*_seed*.json"))
     
     print(f"Found {len(h5_files)} HDF5 files and {len(log_files)} log files")
+    
+    # Analyze log files to compute baseline model success rates
+    print("\n=== BASELINE MODEL ACCURACY ANALYSIS ===")
+    task_runs = defaultdict(dict)
+    task_episode_counts = defaultdict(dict)
+    
+    overall_successful_episodes = 0
+    overall_total_episodes = 0
+    
+    for log_file in log_files:
+        filename = log_file.name
+        parts = filename.replace("logs_", "").replace(".json", "").split("_")
+        task_id = parts[0].replace("task", "")
+        seed = parts[1].replace("seed", "")
+        
+        log_result = analyze_log_file(log_file)
+        if "error" in log_result:
+            print(f"❌ Failed to parse log {filename}: {log_result['error']}")
+            continue
+            
+        success_rate = log_result["episode_success_rate"]
+        n_episodes = log_result["n_episodes"]
+        n_successes = int(round(success_rate * n_episodes))
+        
+        task_runs[task_id][seed] = success_rate
+        task_episode_counts[task_id][seed] = (n_successes, n_episodes)
+        
+        overall_successful_episodes += n_successes
+        overall_total_episodes += n_episodes
+        
+    csv_rows = []
+    headers = ["task_id", "task_name", "seed_0_success_rate", "seed_1_success_rate", "seed_2_success_rate", "task_mean_success_rate"]
+    
+    sorted_task_ids = sorted(list(task_runs.keys()), key=lambda x: int(x))
+    
+    for tid in sorted_task_ids:
+        tname = get_task_name(tid)
+        
+        r0 = task_runs[tid].get("0", None)
+        r1 = task_runs[tid].get("1", None)
+        r2 = task_runs[tid].get("2", None)
+        
+        s0_str = f"{r0:.2%}" if r0 is not None else "N/A"
+        s1_str = f"{r1:.2%}" if r1 is not None else "N/A"
+        s2_str = f"{r2:.2%}" if r2 is not None else "N/A"
+        
+        seed_successes = []
+        seed_episodes = []
+        for seed_val in ["0", "1", "2"]:
+            if seed_val in task_episode_counts[tid]:
+                succ, ep = task_episode_counts[tid][seed_val]
+                seed_successes.append(succ)
+                seed_episodes.append(ep)
+                
+        if seed_episodes and sum(seed_episodes) > 0:
+            mean_rate = sum(seed_successes) / sum(seed_episodes)
+            mean_str = f"{mean_rate:.2%}"
+        else:
+            mean_rate = 0.0
+            mean_str = "N/A"
+            
+        csv_rows.append({
+            "task_id": tid,
+            "task_name": tname,
+            "seed_0_success_rate": s0_str,
+            "seed_1_success_rate": s1_str,
+            "seed_2_success_rate": s2_str,
+            "task_mean_success_rate": mean_str
+        })
+        
+        print(f"Task {tid} ({tname}): Mean Success Rate = {mean_str} (Seed 0: {s0_str}, Seed 1: {s1_str}, Seed 2: {s2_str})")
+        
+    overall_mean_rate = overall_successful_episodes / overall_total_episodes if overall_total_episodes > 0 else 0.0
+    print(f"\nOverall Baseline Success Rate: {overall_mean_rate:.2%} ({overall_successful_episodes}/{overall_total_episodes} episodes)")
+    
+    csv_rows.append({
+        "task_id": "overall",
+        "task_name": "All Tasks Combined",
+        "seed_0_success_rate": "-",
+        "seed_1_success_rate": "-",
+        "seed_2_success_rate": "-",
+        "task_mean_success_rate": f"{overall_mean_rate:.2%}"
+    })
     
     if not h5_files:
         raise ValueError("No HDF5 files found in the data directory")
@@ -224,7 +321,14 @@ def evaluate_dataset_quality(data_dir, output_dir=None):
                 "class_distribution": {int(k): int(v) for k, v in overall_stats["class_distribution"].items()},
                 "file_errors": int(overall_stats["file_errors"])
             },
-            "overall_balance": float(overall_balance)
+            "overall_balance": float(overall_balance),
+            "baseline_accuracy": {
+                "overall_success_rate": float(overall_mean_rate),
+                "task_success_rates": {
+                    tid: float(sum(task_episode_counts[tid][s][0] for s in task_episode_counts[tid]) / sum(task_episode_counts[tid][s][1] for s in task_episode_counts[tid]))
+                    for tid in sorted_task_ids if sum(task_episode_counts[tid][s][1] for s in task_episode_counts[tid]) > 0
+                }
+            }
         }
         
         results_file = output_path / "dataset_quality_report.json"
@@ -232,6 +336,16 @@ def evaluate_dataset_quality(data_dir, output_dir=None):
             json.dump(results, f, indent=2)
             
         print(f"\nDetailed report saved to {results_file}")
+        
+        # Save baseline accuracy CSV
+        import csv
+        csv_file = output_path / "baseline_accuracy.csv"
+        with open(csv_file, "w", newline="") as f:
+            writer = csv.DictWriter(f, fieldnames=headers)
+            writer.writeheader()
+            for row in csv_rows:
+                writer.writerow(row)
+        print(f"Baseline model accuracy CSV saved to {csv_file}")
         
         # Create a simple visualization
         if len(overall_stats["class_distribution"]) >= 2:

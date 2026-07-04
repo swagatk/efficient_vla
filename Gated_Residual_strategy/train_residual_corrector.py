@@ -24,37 +24,54 @@ class CorrectorDataset(Dataset):
     def __init__(self, data_dir, split="train", val_ratio=0.15, target_label=0, train_mode="absolute"):
         """
         Lazy-loading HDF5 dataset for Phase 3 Gated Residual Corrector training.
-        Filters for steps matching target_label (default 0: successful trajectories).
+        Supports both flat rollout files (Option B) and nested demo files (Option A).
         """
-        self.file_paths = sorted(list(Path(data_dir).rglob("*.h5")))
+        self.file_paths = sorted(list(Path(data_dir).rglob("*.h5")) + list(Path(data_dir).rglob("*.hdf5")))
         if not self.file_paths:
-            raise ValueError(f"No .h5 files found in {data_dir}")
+            raise ValueError(f"No .h5 or .hdf5 files found in {data_dir}")
             
         self.index_map = []
         self.target_label = target_label
         self.train_mode = train_mode
+        self.is_nested = {}
         
         for f_idx, f_path in enumerate(self.file_paths):
             try:
                 with h5py.File(f_path, 'r') as h5:
-                    if "labels" not in h5:
-                        continue
-                    labels = h5["labels"][:]
-                    n = len(labels)
-                    
-                    # Filter indices matching the target label
-                    valid_indices = [idx for idx in range(n) if labels[idx] == self.target_label]
-                    n_valid = len(valid_indices)
-                    if n_valid == 0:
-                        continue
-                        
-                    val_size = int(n_valid * val_ratio)
-                    train_size = n_valid - val_size
-                    
-                    selected_indices = valid_indices[:train_size] if split == "train" else valid_indices[train_size:]
-                    
-                    for i in selected_indices:
-                        self.index_map.append((f_idx, i))
+                    if "labels" in h5:
+                        self.is_nested[f_idx] = False
+                        labels = h5["labels"][:]
+                        n = len(labels)
+                        valid_indices = [idx for idx in range(n) if labels[idx] == self.target_label]
+                        n_valid = len(valid_indices)
+                        if n_valid == 0:
+                            continue
+                            
+                        val_size = int(n_valid * val_ratio)
+                        train_size = n_valid - val_size
+                        selected_indices = valid_indices[:train_size] if split == "train" else valid_indices[train_size:]
+                        for i in selected_indices:
+                            self.index_map.append((f_idx, None, i))
+                    elif "data" in h5:
+                        self.is_nested[f_idx] = True
+                        if self.target_label == 0:
+                            demo_keys = sorted(list(h5["data"].keys()))
+                            temp_indices = []
+                            for dk in demo_keys:
+                                n_steps = h5[f"data/{dk}/actions"].shape[0]
+                                for step_idx in range(n_steps):
+                                    temp_indices.append((dk, step_idx))
+                                    
+                            n_valid = len(temp_indices)
+                            if n_valid == 0:
+                                continue
+                            val_size = int(n_valid * val_ratio)
+                            train_size = n_valid - val_size
+                            selected_indices = temp_indices[:train_size] if split == "train" else temp_indices[train_size:]
+                            for dk, step_idx in selected_indices:
+                                self.index_map.append((f_idx, dk, step_idx))
+                    else:
+                        print(f"Skipping {f_path}: Unknown format.")
             except Exception as e:
                 print(f"Failed to read {f_path}: {e}")
                 
@@ -65,44 +82,75 @@ class CorrectorDataset(Dataset):
         return len(self.index_map)
         
     def __getitem__(self, idx):
-        f_idx, i = self.index_map[idx]
+        f_idx, demo_key, i = self.index_map[idx]
         
         if f_idx not in self.open_files:
             self.open_files[f_idx] = h5py.File(self.file_paths[f_idx], 'r')
             
         h5 = self.open_files[f_idx]
         
-        # Read and prepare image tensors
-        raw_img1 = h5["observations"]["agentview_image"][i]
-        img1_np = raw_img1[::-1, ::-1, :].copy()
-        img1 = torch.from_numpy(img1_np).float().permute(2, 0, 1) / 255.0
-        
-        raw_img2 = h5["observations"]["robot0_eye_in_hand_image"][i]
-        img2_np = raw_img2[::-1, ::-1, :].copy()
-        img2 = torch.from_numpy(img2_np).float().permute(2, 0, 1) / 255.0
-        
-        # Read and prepare proprioceptive state
-        eef_pos = h5["observations"]["robot0_eef_pos"][i]
-        eef_quat = h5["observations"]["robot0_eef_quat"][i]
-        gripper_qpos = h5["observations"]["robot0_gripper_qpos"][i]
-        
-        state_np = np.concatenate([eef_pos, quat2axisangle(eef_quat), gripper_qpos])
-        state = torch.from_numpy(state_np).float()
-        
-        # Read and prepare action target
-        action_np = h5["actions"][i]
-        
-        if self.train_mode == "delta":
-            if "observations/base_actions" in h5:
-                base_action_np = h5["observations/base_actions"][i]
-            elif "observations" in h5 and "base_actions" in h5["observations"]:
-                base_action_np = h5["observations"]["base_actions"][i]
-            else:
-                base_action_np = action_np
-            target_np = action_np - base_action_np
-        else:
-            target_np = action_np
+        if demo_key is not None:
+            demo_group = h5[f"data/{demo_key}"]
             
+            # Read and prepare image tensors
+            raw_img1 = demo_group["obs"]["agentview_rgb"][i]
+            img1_np = raw_img1[::-1, ::-1, :].copy()
+            img1 = torch.from_numpy(img1_np).float().permute(2, 0, 1) / 255.0
+            
+            raw_img2 = demo_group["obs"]["eye_in_hand_rgb"][i]
+            img2_np = raw_img2[::-1, ::-1, :].copy()
+            img2 = torch.from_numpy(img2_np).float().permute(2, 0, 1) / 255.0
+            
+            # Read and prepare proprioceptive state (orientations are already axis-angles)
+            ee_pos = demo_group["obs"]["ee_pos"][i]
+            ee_ori = demo_group["obs"]["ee_ori"][i]
+            gripper_states = demo_group["obs"]["gripper_states"][i]
+            state_np = np.concatenate([ee_pos, ee_ori, gripper_states])
+            state = torch.from_numpy(state_np).float()
+            
+            # Read and prepare action target
+            action_np = demo_group["actions"][i]
+            
+            if self.train_mode == "delta":
+                if "obs/base_actions" in demo_group:
+                    base_action_np = demo_group["obs/base_actions"][i]
+                else:
+                    base_action_np = action_np
+                target_np = action_np - base_action_np
+            else:
+                target_np = action_np
+        else:
+            # Read and prepare image tensors
+            raw_img1 = h5["observations"]["agentview_image"][i]
+            img1_np = raw_img1[::-1, ::-1, :].copy()
+            img1 = torch.from_numpy(img1_np).float().permute(2, 0, 1) / 255.0
+            
+            raw_img2 = h5["observations"]["robot0_eye_in_hand_image"][i]
+            img2_np = raw_img2[::-1, ::-1, :].copy()
+            img2 = torch.from_numpy(img2_np).float().permute(2, 0, 1) / 255.0
+            
+            # Read and prepare proprioceptive state
+            eef_pos = h5["observations"]["robot0_eef_pos"][i]
+            eef_quat = h5["observations"]["robot0_eef_quat"][i]
+            gripper_qpos = h5["observations"]["robot0_gripper_qpos"][i]
+            
+            state_np = np.concatenate([eef_pos, quat2axisangle(eef_quat), gripper_qpos])
+            state = torch.from_numpy(state_np).float()
+            
+            # Read and prepare action target
+            action_np = h5["actions"][i]
+            
+            if self.train_mode == "delta":
+                if "observations/base_actions" in h5:
+                    base_action_np = h5["observations/base_actions"][i]
+                elif "observations" in h5 and "base_actions" in h5["observations"]:
+                    base_action_np = h5["observations"]["base_actions"][i]
+                else:
+                    base_action_np = action_np
+                target_np = action_np - base_action_np
+            else:
+                target_np = action_np
+                
         action = torch.from_numpy(target_np).float()
         
         return img1, img2, state, action

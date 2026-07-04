@@ -4,7 +4,7 @@
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DATA_DIR="${DATA_DIR:-$SCRIPT_DIR/data}"
-OUTPUT_DIR="${OUTPUT_DIR:-$SCRIPT_DIR/dataset_analysis_$(date +%Y%m%d_%H%M%S)}"
+OUTPUT_DIR="${OUTPUT_DIR:-$SCRIPT_DIR/outputs/dataset_analysis_$(date +%Y%m%d_%H%M%S)}"
 
 echo "Evaluating Phase 1 dataset quality..."
 echo "Data directory: $DATA_DIR"

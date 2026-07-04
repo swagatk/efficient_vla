@@ -24,6 +24,7 @@ START_TS=$(date +%s)
 ORIG_POWER_PROFILE=""
 ORIG_SLEEP_MODE=""
 OS_NAME="$(uname -s)"
+PID=""
 
 if [[ "$RESUME" != "1" && -d "$OUTPUT_ROOT" ]]; then
   echo "[warn] OUTPUT_ROOT exists and RESUME=0; clearing stale markers" | tee -a "$PROGRESS_LOG"
@@ -67,6 +68,12 @@ apply_power_hardening() {
 }
 
 restore_power_hardening() {
+  # Terminate background child process first if running
+  if [[ -n "${PID:-}" ]] && kill -0 "$PID" 2>/dev/null; then
+    kill "$PID" 2>/dev/null || true
+    wait "$PID" 2>/dev/null || true
+  fi
+
   [[ "$USE_POWER_HARDENING" == "1" ]] || return 0
   if [[ "$OS_NAME" == "Darwin" ]]; then
     if [[ -n "$ORIG_SLEEP_MODE" ]] && command -v pmset >/dev/null 2>&1; then

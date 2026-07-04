@@ -157,6 +157,11 @@ Run the integrated policy (SmolVLA base + Failure Gate + Residual Corrector) in 
     INFERENCE_MODE=absolute CORRECTOR_DIR=./outputs/phase3_train_absolute bash run_phase4_eval.sh
     ```
 
+    To resume the run from where it was interrupted, use the following command:
+    ```
+    INFERENCE_MODE=delta CORRECTOR_DIR=./outputs/phase3_train_20260703_125714 OUTPUT_DIR=/home/swagat/GIT/efficient_vla/Gated_Residual_strategy/outputs/phase4_eval_results_20260703_131626 bash run_phase4_eval.sh
+    ```
+
 ---
 
 ## Troubleshooting & Key Settings
