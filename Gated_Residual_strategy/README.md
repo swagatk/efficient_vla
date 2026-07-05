@@ -86,8 +86,8 @@ Train the action corrector model on successful nominal rollout steps (`target_la
   bash run_phase3_train_corrector.sh
   ```
 
-* **Option A vs Option B Configurations:**
-  * **Option A (Demonstration-Anchored Deltas):** Trains the corrector to output the delta relative to human demonstrations ($\Delta a = a_{\text{expert}} - a_{\text{base}}$):
+* **Training Modes (Delta Action vs Absolute Action):**
+  * **Delta Action Training (Demonstration-Anchored Corrector):** Trains the corrector to output the delta relative to human demonstrations ($\Delta a = a_{\text{expert}} - a_{\text{base}}$). Requires precomputing baseline actions first using `precompute_base_actions.py`.
     ```bash
     # Command-line Flag:
     python train_residual_corrector.py --train_mode delta --data_dir <expert_datasets_dir> --output_dir ./outputs/phase3_train_delta
@@ -95,15 +95,7 @@ Train the action corrector model on successful nominal rollout steps (`target_la
     # Bash Orchestrator:
     TRAIN_MODE=delta DATA_DIR=<expert_datasets_dir> bash run_phase3_train_corrector.sh
     ```
-  * **Option B (Self-Imitation Rollout Deltas):** Trains the corrector to output the delta on rollout datasets (evaluates to $\Delta a = 0$ on successful segments):
-    ```bash
-    # Command-line Flag:
-    python train_residual_corrector.py --train_mode delta --data_dir ./outputs/run_20260624_232108 --output_dir ./outputs/phase3_train_self_imitation
-
-    # Bash Orchestrator:
-    TRAIN_MODE=delta DATA_DIR=./outputs/run_20260624_232108 bash run_phase3_train_corrector.sh
-    ```
-  * **Original Baseline (Absolute Action Training):** Trains the corrector to output absolute actions (Default):
+  * **Absolute Action Training (Self-Imitation Corrector):** Trains the corrector to output absolute actions directly. Used when training on rollout datasets to imitate successful trajectories.
     ```bash
     # Command-line Flag:
     python train_residual_corrector.py --train_mode absolute --data_dir ./outputs/run_20260624_232108 --output_dir ./outputs/phase3_train_absolute
@@ -139,8 +131,8 @@ Run the integrated policy (SmolVLA base + Failure Gate + Residual Corrector) in 
   bash run_phase4_eval.sh
   ```
 
-* **Option A vs Option B Blending Configurations:**
-  * **Option A (Delta Blending):** Additive blending of corrector offsets ($\text{action} = \text{action}_{\text{base}} + \alpha \cdot \text{delta}$):
+* **Inference Blending Modes (Delta vs Absolute Blending):**
+  * **Delta Blending (Additive Correction):** Additive blending of corrector offsets ($\text{action} = \text{action}_{\text{base}} + \alpha \cdot \text{delta}$). Used when the corrector was trained in `delta` mode.
     ```bash
     # Command-line Flag:
     python eval_gated_baseline.py --inference_mode delta --corrector_dir ./outputs/phase3_train_delta ...
@@ -148,7 +140,7 @@ Run the integrated policy (SmolVLA base + Failure Gate + Residual Corrector) in 
     # Bash Orchestrator:
     INFERENCE_MODE=delta CORRECTOR_DIR=./outputs/phase3_train_delta bash run_phase4_eval.sh
     ```
-  * **Option B (Absolute Blending):** Interpolative blending of absolute actions (Default):
+  * **Absolute Blending (Interpolated Blending):** Interpolative blending of absolute actions ($\text{action} = (1 - \alpha) \cdot \text{action}_{\text{base}} + \alpha \cdot \text{action}_{\text{corrector}}$). Used when the corrector was trained in `absolute` mode.
     ```bash
     # Command-line Flag:
     python eval_gated_baseline.py --inference_mode absolute --corrector_dir ./outputs/phase3_train_absolute ...

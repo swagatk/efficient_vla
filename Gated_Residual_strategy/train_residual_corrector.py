@@ -24,7 +24,7 @@ class CorrectorDataset(Dataset):
     def __init__(self, data_dir, split="train", val_ratio=0.15, target_label=0, train_mode="absolute"):
         """
         Lazy-loading HDF5 dataset for Phase 3 Gated Residual Corrector training.
-        Supports both flat rollout files (Option B) and nested demo files (Option A).
+        Supports both flat rollout HDF5 files and nested Robomimic/LIBERO demonstration files.
         """
         self.file_paths = sorted(list(Path(data_dir).rglob("*.h5")) + list(Path(data_dir).rglob("*.hdf5")))
         if not self.file_paths:
