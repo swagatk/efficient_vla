@@ -34,6 +34,13 @@ Run SmolVLA baseline to gather HDF5 datasets containing observations, actions, a
   bash run_phase1_baseline.sh
   ```
 
+* **To resume an interrupted execution, use the following command:**
+  ```bash
+  OUTPUT_ROOT=/home/swagat/GIT/efficient_vla/Gated_Residual_strategy/outputs/phase1_run_20260706_233849 \
+  PYTHON_BIN=/home/swagat/anaconda3/envs/lerobot_v040/bin/python \
+  bash run_phase1_baseline.sh
+  ```
+
 #### 2. Evaluate Dataset Quality
 Verify class distribution and dataset consistency before training models.
 * **Python Command:**

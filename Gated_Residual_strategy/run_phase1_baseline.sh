@@ -8,6 +8,7 @@ RESUME="${RESUME:-1}"
 HEARTBEAT_SEC="${HEARTBEAT_SEC:-60}"
 PYTHON_BIN="${PYTHON_BIN:-python3}"
 USE_POWER_HARDENING="${USE_POWER_HARDENING:-1}"
+FAILURE_WINDOW="${FAILURE_WINDOW:-30}"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 OUTPUT_ROOT="${OUTPUT_ROOT:-$SCRIPT_DIR/outputs/phase1_run_$(date +%Y%m%d_%H%M%S)}"
@@ -223,7 +224,7 @@ for UNIT in "${UNITS[@]}"; do
   if [[ "$UNIT" == collect_* ]]; then
     TASK=$(echo "$UNIT" | sed -n 's/.*_t\([0-9]*\)_s.*/\1/p')
     SEED=$(echo "$UNIT" | sed -n 's/.*_s\([0-9]*\)/\1/p')
-    CMD=( env PYTHONUNBUFFERED=1 "$PYTHON_BIN" "-u" "$SCRIPT_DIR/collect_failure_data.py" --task_id "$TASK" --seed "$SEED" --num_episodes 10 --output_dir "$UNIT_DIR" )
+    CMD=( env PYTHONUNBUFFERED=1 "$PYTHON_BIN" "-u" "$SCRIPT_DIR/collect_failure_data.py" --task_id "$TASK" --seed "$SEED" --num_episodes 10 --output_dir "$UNIT_DIR" --failure_window "$FAILURE_WINDOW" )
   else
     TASK=$(echo "$UNIT" | sed -n 's/.*_t\([0-9]*\)_s.*/\1/p')
     SEED=$(echo "$UNIT" | sed -n 's/.*_s\([0-9]*\)/\1/p')

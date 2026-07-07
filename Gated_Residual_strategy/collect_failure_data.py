@@ -190,7 +190,7 @@ def run_baseline_rollout(task_id, seed, num_episodes=10, max_steps=400):
     gc.collect()
     return trajectories
 
-def save_failure_dataset(trajectories, output_path, task_id, seed):
+def save_failure_dataset(trajectories, output_path, task_id, seed, failure_window=30):
     """
     Saves the collected trajectories to an HDF5 file, handling dictionary observations.
     """
@@ -206,6 +206,7 @@ def save_failure_dataset(trajectories, output_path, task_id, seed):
         f["metadata"].attrs["task_id"] = task_id
         f["metadata"].attrs["seed"] = seed
         f["metadata"].attrs["num_trajectories"] = len(trajectories)
+        f["metadata"].attrs["failure_window"] = failure_window
 
         first_obs = trajectories[0]["observations"][0]
         # Filter out any non-numpy array metadata (like strings) from obs
@@ -216,8 +217,12 @@ def save_failure_dataset(trajectories, output_path, task_id, seed):
         successful_trajectories = sum(1 for t in trajectories if t["success"])
 
         for traj in trajectories:
-            step_label = 0 if traj["success"] else 1
-            for obs, action in zip(traj["observations"], traj["actions"]):
+            n_steps = len(traj["observations"])
+            for idx, (obs, action) in enumerate(zip(traj["observations"], traj["actions"])):
+                if traj["success"]:
+                    step_label = 0
+                else:
+                    step_label = 1 if idx >= n_steps - failure_window else 0
                 for k in obs_keys:
                     flat_obs[k].append(obs[k])
                 all_actions.append(action)
@@ -287,6 +292,7 @@ def main():
     parser.add_argument("--num_episodes", type=int, default=10, help="Number of episodes per task/seed")
     parser.add_argument("--output_dir", type=str, default="Gated_Residual_strategy/data", help="Output directory")
     parser.add_argument("--run_all", action="store_true", help="Run all tasks and seeds")
+    parser.add_argument("--failure_window", type=int, default=30, help="Number of final steps in failed trajectories to label as 1 (failure risk)")
     
     args = parser.parse_args()
     
@@ -299,7 +305,7 @@ def main():
 
                 print(f"\nProcessing Task {task_id}, Seed {seed}")
                 trajectories = run_baseline_rollout(task_id, seed, args.num_episodes)
-                save_failure_dataset(trajectories, output_path, task_id, seed)
+                save_failure_dataset(trajectories, output_path, task_id, seed, failure_window=args.failure_window)
                 save_per_step_logs(trajectories, task_id, seed, logs_path)
     else:
         task_id = int(args.task_id)
@@ -308,7 +314,7 @@ def main():
         logs_path = f"{args.output_dir}/logs_task{task_id}_seed{args.seed}.json"
 
         trajectories = run_baseline_rollout(task_id, args.seed, args.num_episodes)
-        save_failure_dataset(trajectories, output_path, task_id, args.seed)
+        save_failure_dataset(trajectories, output_path, task_id, args.seed, failure_window=args.failure_window)
         save_per_step_logs(trajectories, task_id, args.seed, logs_path)
 
 if __name__ == "__main__":

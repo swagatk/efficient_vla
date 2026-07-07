@@ -296,6 +296,8 @@ def main():
     parser.add_argument("--max_steps", type=int, default=400, help="Max steps per episode")
     parser.add_argument("--inference_mode", type=str, choices=["absolute", "delta"], default="absolute", help="Inference action blending mode")
     parser.add_argument("--output_dir", type=str, default="Gated_Residual_strategy/eval_results", help="Directory to save evaluation reports")
+    parser.add_argument("--adaptive_gating", action="store_true", help="Enable task-adaptive gating: only use gate/corrector on specified tasks")
+    parser.add_argument("--active_gating_tasks", type=int, nargs="+", default=[2, 7, 9], help="Task IDs where Gated Residual correction is active")
     
     args = parser.parse_args()
 
@@ -348,14 +350,20 @@ def main():
                 print(f"[Warning] Residual Corrector checkpoint not found: {corrector_path}")
 
         for task_id in task_ids:
+            active_gate = gate_model
+            active_corr = corrector_model
+            if args.adaptive_gating and task_id not in args.active_gating_tasks:
+                active_gate = None
+                active_corr = None
+
             run_result = evaluate_task(
                 task_id=task_id,
                 seed=seed,
                 base_policy=base_policy,
                 preprocessor=preprocessor,
                 postprocessor=postprocessor,
-                gate_model=gate_model,
-                corrector_model=corrector_model,
+                gate_model=active_gate,
+                corrector_model=active_corr,
                 threshold=args.threshold,
                 alpha=args.alpha,
                 num_episodes=args.num_episodes,
@@ -399,7 +407,9 @@ def main():
             "alpha": args.alpha,
             "num_episodes": args.num_episodes,
             "max_steps": args.max_steps,
-            "inference_mode": args.inference_mode
+            "inference_mode": args.inference_mode,
+            "adaptive_gating": args.adaptive_gating,
+            "active_gating_tasks": args.active_gating_tasks
         },
         "tasks": task_summaries
     }

@@ -13,6 +13,8 @@ NUM_EPISODES="${NUM_EPISODES:-10}"
 PYTHON_BIN="${PYTHON_BIN:-python3}"
 USE_POWER_HARDENING="${USE_POWER_HARDENING:-1}"
 INFERENCE_MODE="${INFERENCE_MODE:-absolute}"
+ADAPTIVE_GATING="${ADAPTIVE_GATING:-0}"
+ACTIVE_GATING_TASKS="${ACTIVE_GATING_TASKS:-2 7 9}"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 OUTPUT_DIR="${OUTPUT_DIR:-$SCRIPT_DIR/outputs/phase4_eval_results_$(date +%Y%m%d_%H%M%S)}"
@@ -227,6 +229,9 @@ for seed in "${SEEDS[@]}"; do
     fi
     if [[ -n "$CORRECTOR_DIR" ]]; then
       CMD+=(--corrector_dir "$CORRECTOR_DIR")
+    fi
+    if [[ "$ADAPTIVE_GATING" == "1" ]]; then
+      CMD+=(--adaptive_gating --active_gating_tasks $ACTIVE_GATING_TASKS)
     fi
 
     # Run in foreground to monitor progress
