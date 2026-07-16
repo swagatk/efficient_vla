@@ -22,10 +22,10 @@ from collections import defaultdict, Counter
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-def get_task_name(task_id):
+def get_task_name(task_id, benchmark_name="libero_10"):
     try:
         from libero.libero import benchmark
-        b = benchmark.get_benchmark_dict()['libero_10']()
+        b = benchmark.get_benchmark_dict()[benchmark_name]()
         return b.tasks[int(task_id)].name
     except Exception:
         return f"task_{task_id}"
@@ -105,7 +105,7 @@ def analyze_log_file(filepath):
     except Exception as e:
         return {"error": str(e)}
 
-def evaluate_dataset_quality(data_dir, output_dir=None):
+def evaluate_dataset_quality(data_dir, output_dir=None, benchmark_name="libero_10"):
     """Evaluate the overall quality of the Phase 1 dataset."""
     data_path = Path(data_dir)
     if not data_path.exists():
@@ -152,7 +152,7 @@ def evaluate_dataset_quality(data_dir, output_dir=None):
     sorted_task_ids = sorted(list(task_runs.keys()), key=lambda x: int(x))
     
     for tid in sorted_task_ids:
-        tname = get_task_name(tid)
+        tname = get_task_name(tid, benchmark_name=benchmark_name)
         
         r0 = task_runs[tid].get("0", None)
         r1 = task_runs[tid].get("1", None)
@@ -375,11 +375,13 @@ def main():
                         help="Path to the Phase 1 dataset directory")
     parser.add_argument("--output_dir", type=str, default="Gated_Residual_strategy/dataset_analysis",
                         help="Path to save analysis results")
+    parser.add_argument("--benchmark", type=str, default="libero_10",
+                        help="Libero benchmark name (e.g. libero_10, libero_goal)")
     
     args = parser.parse_args()
     
     try:
-        evaluate_dataset_quality(args.data_dir, args.output_dir)
+        evaluate_dataset_quality(args.data_dir, args.output_dir, benchmark_name=args.benchmark)
     except Exception as e:
         print(f"Error evaluating dataset: {e}")
         return 1

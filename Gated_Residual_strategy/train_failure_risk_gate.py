@@ -20,15 +20,19 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, roc_a
 from robosuite.utils.transform_utils import quat2axisangle
 
 class FailureDataset(Dataset):
-    def __init__(self, data_dir, split="train", val_ratio=0.15):
+    def __init__(self, data_dir, split="train", val_ratio=0.15, task_id=None):
         """
         Lazy-loading HDF5 dataset for Phase 1 failure trajectories.
         """
         self.file_paths = sorted(list(Path(data_dir).rglob("*.h5")) + list(Path(data_dir).rglob("*.hdf5")))
+        if task_id is not None:
+            self.file_paths = [p for p in self.file_paths if f"_t{task_id}_" in p.as_posix()]
         if not self.file_paths:
             raise ValueError(f"No .h5 or .hdf5 files found in {data_dir}")
             
         self.index_map = []
+        self.num_pos = 0
+        self.num_neg = 0
         
         for f_idx, f_path in enumerate(self.file_paths):
             try:
@@ -44,13 +48,17 @@ class FailureDataset(Dataset):
                     start_idx = 0 if split == "train" else train_size
                     end_idx = train_size if split == "train" else n
                     
+                    split_labels = labels[start_idx:end_idx]
+                    self.num_pos += int(np.sum(split_labels == 1))
+                    self.num_neg += int(np.sum(split_labels == 0))
+                    
                     for i in range(start_idx, end_idx):
                         self.index_map.append((f_idx, i))
             except Exception as e:
                 print(f"Failed to read {f_path}: {e}")
                 
         self.open_files = {}
-        print(f"[{split.upper()}] Dataset initialized with {len(self.index_map)} samples.")
+        print(f"[{split.upper()}] Dataset initialized with {len(self.index_map)} samples (neg: {self.num_neg}, pos: {self.num_pos}).")
 
     def __len__(self):
         return len(self.index_map)
@@ -86,22 +94,9 @@ class FailureDataset(Dataset):
 class LightweightFailureGate(nn.Module):
     def __init__(self, state_dim=8):
         """
-        A lightweight multimodal network designed to train quickly and consume little VRAM.
+        Multimodal MLP that processes precomputed SigLIP visual embeddings and proprioceptive state.
         """
         super().__init__()
-        
-        # Simple CNN for processing images
-        def create_cnn():
-            return nn.Sequential(
-                nn.Conv2d(3, 16, kernel_size=3, stride=2, padding=1), nn.ReLU(),
-                nn.Conv2d(16, 32, kernel_size=3, stride=2, padding=1), nn.ReLU(),
-                nn.Conv2d(32, 64, kernel_size=3, stride=2, padding=1), nn.ReLU(),
-                nn.AdaptiveAvgPool2d((1, 1)),
-                nn.Flatten()
-            )
-            
-        self.img1_cnn = create_cnn()
-        self.img2_cnn = create_cnn()
         
         self.state_mlp = nn.Sequential(
             nn.Linear(state_dim, 32),
@@ -110,22 +105,24 @@ class LightweightFailureGate(nn.Module):
             nn.ReLU()
         )
         
-        # Combine features: 64 (img1) + 64 (img2) + 32 (state) = 160
+        # 768 (img1 SigLIP pooler) + 768 (img2 SigLIP pooler) + 32 (state) = 1568
         self.fusion = nn.Sequential(
-            nn.Linear(160, 64),
+            nn.Linear(1568, 512),
             nn.ReLU(),
             nn.Dropout(0.2),
-            nn.Linear(64, 1)  # Outputs logits (unnormalized log probabilities)
+            nn.Linear(512, 256),
+            nn.ReLU(),
+            nn.Linear(256, 128),
+            nn.ReLU(),
+            nn.Linear(128, 1)  # Outputs logits (unnormalized log probabilities)
         )
 
-    def forward(self, img1, img2, state):
-        x1 = self.img1_cnn(img1)
-        x2 = self.img2_cnn(img2)
+    def forward(self, feat1, feat2, state):
         xs = self.state_mlp(state)
-        x = torch.cat([x1, x2, xs], dim=1)
+        x = torch.cat([feat1, feat2, xs], dim=1)
         return self.fusion(x)
 
-def evaluate(model, val_loader, criterion, device):
+def evaluate(model, val_loader, criterion, device, vision_tower):
     model.eval()
     total_loss = 0.0
     all_labels = []
@@ -136,7 +133,19 @@ def evaluate(model, val_loader, criterion, device):
         for img1, img2, state, label in val_loader:
             img1, img2, state, label = img1.to(device), img2.to(device), state.to(device), label.to(device)
             
-            logits = model(img1, img2, state)
+            # 1. Resize and normalize images dynamically
+            img1_224 = torch.nn.functional.interpolate(img1, size=(224, 224), mode="bilinear", align_corners=False)
+            img1_norm = (img1_224 - 0.5) / 0.5
+            
+            img2_224 = torch.nn.functional.interpolate(img2, size=(224, 224), mode="bilinear", align_corners=False)
+            img2_norm = (img2_224 - 0.5) / 0.5
+            
+            # 2. Extract embeddings
+            v_dtype = vision_tower.dtype
+            feat1 = vision_tower(img1_norm.to(dtype=v_dtype)).last_hidden_state.mean(dim=1)
+            feat2 = vision_tower(img2_norm.to(dtype=v_dtype)).last_hidden_state.mean(dim=1)
+            
+            logits = model(feat1.to(torch.float32), feat2.to(torch.float32), state)
             loss = criterion(logits, label)
             
             probs = torch.sigmoid(logits)
@@ -166,6 +175,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--data_dir", type=str, default="Gated_Residual_strategy/data")
     parser.add_argument("--output_dir", type=str, required=True)
+    parser.add_argument("--task_id", type=int, default=None, help="Train specifically on this task ID (0-9)")
     parser.add_argument("--epochs", type=int, default=10)
     parser.add_argument("--batch_size", type=int, default=128)
     parser.add_argument("--lr", type=float, default=1e-3)
@@ -180,8 +190,20 @@ def main():
     np.random.seed(args.seed)
     os.makedirs(args.output_dir, exist_ok=True)
     
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    
+    # 1. Load baseline SmolVLA policy for vision features
+    print("Loading base SmolVLA policy for frozen vision tower...")
+    from lerobot.policies.smolvla.modeling_smolvla import SmolVLAPolicy
+    policy_name = "HuggingFaceVLA/smolvla_libero"
+    base_policy = SmolVLAPolicy.from_pretrained(policy_name).to(device)
+    vision_tower = base_policy.model.vlm_with_expert.get_vlm_model().vision_model
+    vision_tower.eval()
+    for p in vision_tower.parameters():
+        p.requires_grad = False
+    
     # Determine State Dimension dynamically from the first file
-    test_dataset = FailureDataset(args.data_dir, split="train", val_ratio=0.15)
+    test_dataset = FailureDataset(args.data_dir, split="train", val_ratio=0.15, task_id=args.task_id)
     if len(test_dataset) == 0:
         print("Dataset is empty. Exiting.")
         return
@@ -191,15 +213,23 @@ def main():
     print(f"Inferred Proprioceptive State Dimension: {state_dim}")
 
     train_dataset = test_dataset
-    val_dataset = FailureDataset(args.data_dir, split="val", val_ratio=0.15)
+    val_dataset = FailureDataset(args.data_dir, split="val", val_ratio=0.15, task_id=args.task_id)
     
     train_loader = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True, num_workers=4, pin_memory=True)
     val_loader = DataLoader(val_dataset, batch_size=args.batch_size, shuffle=False, num_workers=4, pin_memory=True)
     
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = LightweightFailureGate(state_dim=state_dim).to(device)
     
-    criterion = nn.BCEWithLogitsLoss()
+    n_neg = train_dataset.num_neg
+    n_pos = train_dataset.num_pos
+    if n_pos > 0:
+        pos_weight = torch.tensor([n_neg / n_pos], device=device)
+        criterion = nn.BCEWithLogitsLoss(pos_weight=pos_weight)
+        print(f"BCE pos_weight set to: {pos_weight.item():.4f} (neg: {n_neg}, pos: {n_pos})")
+    else:
+        criterion = nn.BCEWithLogitsLoss()
+        print("Warning: No positive class samples found in train dataset. Using unweighted BCE loss.")
+        
     optimizer = optim.AdamW(model.parameters(), lr=args.lr, weight_decay=1e-4)
     
     # Initialize WandB
@@ -228,8 +258,21 @@ def main():
         for batch_idx, (img1, img2, state, label) in enumerate(train_loader):
             img1, img2, state, label = img1.to(device), img2.to(device), state.to(device), label.to(device)
             
+            # 1. Resize and normalize images dynamically
+            img1_224 = torch.nn.functional.interpolate(img1, size=(224, 224), mode="bilinear", align_corners=False)
+            img1_norm = (img1_224 - 0.5) / 0.5
+            
+            img2_224 = torch.nn.functional.interpolate(img2, size=(224, 224), mode="bilinear", align_corners=False)
+            img2_norm = (img2_224 - 0.5) / 0.5
+            
+            # 2. Extract embeddings
+            with torch.no_grad():
+                v_dtype = vision_tower.dtype
+                feat1 = vision_tower(img1_norm.to(dtype=v_dtype)).last_hidden_state.mean(dim=1)
+                feat2 = vision_tower(img2_norm.to(dtype=v_dtype)).last_hidden_state.mean(dim=1)
+            
             optimizer.zero_grad()
-            logits = model(img1, img2, state)
+            logits = model(feat1.to(torch.float32), feat2.to(torch.float32), state)
             loss = criterion(logits, label)
             
             loss.backward()
@@ -242,7 +285,7 @@ def main():
                 wandb.log({"train/batch_loss": loss.item()})
                 
         # Validation
-        val_metrics = evaluate(model, val_loader, criterion, device)
+        val_metrics = evaluate(model, val_loader, criterion, device, vision_tower)
         val_metrics["train/epoch_loss"] = total_loss / len(train_loader)
         val_metrics["epoch"] = epoch
         

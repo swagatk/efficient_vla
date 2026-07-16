@@ -17,6 +17,7 @@ PROGRESS_LOG="$OUTPUT_ROOT/progress.log"
 
 ORIG_POWER_PROFILE=""
 ORIG_SLEEP_MODE=""
+POWER_RESTORED=0
 OS_NAME="$(uname -s)"
 PID=""
 
@@ -30,17 +31,14 @@ if [[ "$RESUME" != "1" && -d "$OUTPUT_ROOT" ]]; then
 fi
 
 on_interrupt() {
-  if [[ "$INTERRUPTED" -eq 0 ]]; then
-    INTERRUPTED=1
-    echo "[interrupt] graceful stop requested" | tee -a "$PROGRESS_LOG"
-  else
-    echo "[interrupt] second interrupt, force exit" | tee -a "$PROGRESS_LOG"
-    exit 130
-  fi
+  echo "[interrupt] Ctrl+C pressed, cleaning up and exiting..." | tee -a "$PROGRESS_LOG"
+  restore_power_hardening
+  exit 130
 }
 
 on_term() {
-  echo "[term] termination requested, exiting after cleanup" | tee -a "$PROGRESS_LOG"
+  echo "[term] termination requested, cleaning up and exiting..." | tee -a "$PROGRESS_LOG"
+  restore_power_hardening
   exit 143
 }
 
@@ -64,6 +62,14 @@ apply_power_hardening() {
 }
 
 restore_power_hardening() {
+  if [[ "${POWER_RESTORED:-0}" -eq 1 ]]; then
+    return 0
+  fi
+  POWER_RESTORED=1
+
+  # Ignore signals during cleanup to prevent interrupting the restoration process
+  trap "" INT TERM
+
   # Terminate background child process first if running
   if [[ -n "${PID:-}" ]] && kill -0 "$PID" 2>/dev/null; then
     kill "$PID" 2>/dev/null || true

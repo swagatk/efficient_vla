@@ -10,9 +10,11 @@ CORRECTOR_DIR="${CORRECTOR_DIR:-}"
 THRESHOLD="${THRESHOLD:-0.5}"
 ALPHA="${ALPHA:-0.5}"
 NUM_EPISODES="${NUM_EPISODES:-10}"
+HEARTBEAT_SEC="${HEARTBEAT_SEC:-60}"
 PYTHON_BIN="${PYTHON_BIN:-python3}"
 USE_POWER_HARDENING="${USE_POWER_HARDENING:-1}"
 INFERENCE_MODE="${INFERENCE_MODE:-absolute}"
+BENCHMARK="${BENCHMARK:-libero_10}"
 ADAPTIVE_GATING="${ADAPTIVE_GATING:-0}"
 ACTIVE_GATING_TASKS="${ACTIVE_GATING_TASKS:-2 7 9}"
 
@@ -26,7 +28,9 @@ INTERRUPTED=0
 START_TS=$(date +%s)
 ORIG_POWER_PROFILE=""
 ORIG_SLEEP_MODE=""
+POWER_RESTORED=0
 OS_NAME="$(uname -s)"
+PID=""
 
 if [[ "$RESUME" != "1" && -d "$OUTPUT_DIR" ]]; then
   echo "[warn] OUTPUT_DIR exists and RESUME=0; clearing stale markers" | tee -a "$PROGRESS_LOG"
@@ -34,24 +38,21 @@ if [[ "$RESUME" != "1" && -d "$OUTPUT_DIR" ]]; then
 fi
 
 on_interrupt() {
-  if [[ "$INTERRUPTED" -eq 0 ]]; then
-    INTERRUPTED=1
-    echo "[interrupt] graceful stop requested" | tee -a "$PROGRESS_LOG"
-    echo "" | tee -a "$PROGRESS_LOG"
-    echo "====================================================================" | tee -a "$PROGRESS_LOG"
-    echo "EVALUATION INTERRUPTED" | tee -a "$PROGRESS_LOG"
-    echo "====================================================================" | tee -a "$PROGRESS_LOG"
-    echo "To resume this specific evaluation run later, execute:" | tee -a "$PROGRESS_LOG"
-    echo "  OUTPUT_DIR=$OUTPUT_DIR bash run_phase4_eval.sh" | tee -a "$PROGRESS_LOG"
-    echo "====================================================================" | tee -a "$PROGRESS_LOG"
-  else
-    echo "[interrupt] force exit" | tee -a "$PROGRESS_LOG"
-    exit 130
-  fi
+  echo "[interrupt] Ctrl+C pressed, cleaning up and exiting..." | tee -a "$PROGRESS_LOG"
+  echo "" | tee -a "$PROGRESS_LOG"
+  echo "====================================================================" | tee -a "$PROGRESS_LOG"
+  echo "EVALUATION INTERRUPTED" | tee -a "$PROGRESS_LOG"
+  echo "====================================================================" | tee -a "$PROGRESS_LOG"
+  echo "To resume this specific evaluation run later, execute:" | tee -a "$PROGRESS_LOG"
+  echo "  OUTPUT_DIR=$OUTPUT_DIR bash run_phase4_eval.sh" | tee -a "$PROGRESS_LOG"
+  echo "====================================================================" | tee -a "$PROGRESS_LOG"
+  restore_power_hardening
+  exit 130
 }
 
 on_term() {
-  echo "[term] termination requested, exiting" | tee -a "$PROGRESS_LOG"
+  echo "[term] termination requested, cleaning up and exiting..." | tee -a "$PROGRESS_LOG"
+  restore_power_hardening
   exit 143
 }
 
@@ -75,6 +76,20 @@ apply_power_hardening() {
 }
 
 restore_power_hardening() {
+  if [[ "${POWER_RESTORED:-0}" -eq 1 ]]; then
+    return 0
+  fi
+  POWER_RESTORED=1
+
+  # Ignore signals during cleanup to prevent interrupting the restoration process
+  trap "" INT TERM
+
+  # Terminate background child process first if running
+  if [[ -n "${PID:-}" ]] && kill -0 "$PID" 2>/dev/null; then
+    kill "$PID" 2>/dev/null || true
+    wait "$PID" 2>/dev/null || true
+  fi
+
   [[ "$USE_POWER_HARDENING" == "1" ]] || return 0
   if [[ "$OS_NAME" == "Darwin" ]]; then
     if [[ -n "$ORIG_SLEEP_MODE" ]] && command -v pmset >/dev/null 2>&1; then
@@ -185,10 +200,10 @@ print("="*60)
 PY
 }
 
-# We iterate over all 10 tasks and 3 seeds
-TOTAL_TASKS=10
-SEEDS=(0 1 2)
-TOTAL_RUNS=$((TOTAL_TASKS * ${#SEEDS[@]}))
+# We iterate over tasks and seeds
+TASKS=( ${TASKS:-0 1 2 3 4 5 6 7 8 9} )
+SEEDS=( ${SEEDS:-0 1 2} )
+TOTAL_RUNS=$(( ${#TASKS[@]} * ${#SEEDS[@]} ))
 DONE_RUNS=0
 
 echo "Starting Gated Residual Strategy Evaluation..." | tee -a "$PROGRESS_LOG"
@@ -198,7 +213,7 @@ echo "  OUTPUT_DIR=$OUTPUT_DIR bash run_phase4_eval.sh" | tee -a "$PROGRESS_LOG"
 echo "----------------------------------------------------" | tee -a "$PROGRESS_LOG"
 
 for seed in "${SEEDS[@]}"; do
-  for ((task_id=0; task_id<TOTAL_TASKS; task_id++)); do
+  for task_id in "${TASKS[@]}"; do
     [[ "$INTERRUPTED" -eq 0 ]] || break
 
     UNIT="task${task_id}_seed${seed}"
@@ -223,6 +238,7 @@ for seed in "${SEEDS[@]}"; do
       --num_episodes "$NUM_EPISODES"
       --inference_mode "$INFERENCE_MODE"
       --output_dir "$UNIT_DIR"
+      --benchmark "$BENCHMARK"
     )
     if [[ -n "$GATE_DIR" ]]; then
       CMD+=(--gate_dir "$GATE_DIR")
@@ -234,8 +250,16 @@ for seed in "${SEEDS[@]}"; do
       CMD+=(--adaptive_gating --active_gating_tasks $ACTIVE_GATING_TASKS)
     fi
 
-    # Run in foreground to monitor progress
-    if "${CMD[@]}" > >( tee "$UNIT_DIR/run.log" ) 2>&1; then
+    # Run in background to track PID and handle interrupts properly
+    "${CMD[@]}" > >( tee "$UNIT_DIR/run.log" ) 2>&1 &
+    PID=$!
+
+    while kill -0 "$PID" 2>/dev/null; do
+      sleep "$HEARTBEAT_SEC"
+      print_progress "$DONE_RUNS" "$TOTAL_RUNS" "unit=${UNIT} running"
+    done
+
+    if wait "$PID"; then
       touch "$DONE_MARKER"
       RC=0
     else

@@ -42,67 +42,53 @@ from robosuite.utils.transform_utils import quat2axisangle
 class LightweightFailureGate(nn.Module):
     def __init__(self, state_dim=8):
         super().__init__()
-        def create_cnn():
-            return nn.Sequential(
-                nn.Conv2d(3, 16, kernel_size=3, stride=2, padding=1), nn.ReLU(),
-                nn.Conv2d(16, 32, kernel_size=3, stride=2, padding=1), nn.ReLU(),
-                nn.Conv2d(32, 64, kernel_size=3, stride=2, padding=1), nn.ReLU(),
-                nn.AdaptiveAvgPool2d((1, 1)),
-                nn.Flatten()
-            )
-        self.img1_cnn = create_cnn()
-        self.img2_cnn = create_cnn()
         self.state_mlp = nn.Sequential(
             nn.Linear(state_dim, 32),
             nn.ReLU(),
             nn.Linear(32, 32),
             nn.ReLU()
         )
+        # 768 (img1 SigLIP pooler) + 768 (img2 SigLIP pooler) + 32 (state) = 1568
         self.fusion = nn.Sequential(
-            nn.Linear(160, 64),
+            nn.Linear(1568, 512),
             nn.ReLU(),
             nn.Dropout(0.2),
-            nn.Linear(64, 1)
+            nn.Linear(512, 256),
+            nn.ReLU(),
+            nn.Linear(256, 128),
+            nn.ReLU(),
+            nn.Linear(128, 1)
         )
 
-    def forward(self, img1, img2, state):
-        x1 = self.img1_cnn(img1)
-        x2 = self.img2_cnn(img2)
+    def forward(self, feat1, feat2, state):
         xs = self.state_mlp(state)
-        x = torch.cat([x1, x2, xs], dim=1)
+        x = torch.cat([feat1, feat2, xs], dim=1)
         return self.fusion(x)
 
 class LightweightResidualCorrector(nn.Module):
     def __init__(self, state_dim=8, action_dim=7):
         super().__init__()
-        def create_cnn():
-            return nn.Sequential(
-                nn.Conv2d(3, 16, kernel_size=3, stride=2, padding=1), nn.ReLU(),
-                nn.Conv2d(16, 32, kernel_size=3, stride=2, padding=1), nn.ReLU(),
-                nn.Conv2d(32, 64, kernel_size=3, stride=2, padding=1), nn.ReLU(),
-                nn.AdaptiveAvgPool2d((1, 1)),
-                nn.Flatten()
-            )
-        self.img1_cnn = create_cnn()
-        self.img2_cnn = create_cnn()
         self.state_mlp = nn.Sequential(
             nn.Linear(state_dim, 32),
             nn.ReLU(),
             nn.Linear(32, 32),
             nn.ReLU()
         )
+        # 768 (img1 SigLIP pooler) + 768 (img2 SigLIP pooler) + 32 (state) = 1568
         self.fusion = nn.Sequential(
-            nn.Linear(160, 64),
+            nn.Linear(1568, 512),
             nn.ReLU(),
             nn.Dropout(0.2),
-            nn.Linear(64, action_dim)
+            nn.Linear(512, 256),
+            nn.ReLU(),
+            nn.Linear(256, 128),
+            nn.ReLU(),
+            nn.Linear(128, action_dim)
         )
 
-    def forward(self, img1, img2, state):
-        x1 = self.img1_cnn(img1)
-        x2 = self.img2_cnn(img2)
+    def forward(self, feat1, feat2, state):
         xs = self.state_mlp(state)
-        x = torch.cat([x1, x2, xs], dim=1)
+        x = torch.cat([feat1, feat2, xs], dim=1)
         return self.fusion(x)
 
 def get_libero_dummy_action():
@@ -111,12 +97,12 @@ def get_libero_dummy_action():
 def evaluate_task(task_id, seed, base_policy, preprocessor, postprocessor, 
                   gate_model=None, corrector_model=None, 
                   threshold=0.5, alpha=0.5, num_episodes=10, max_steps=400, device="cuda",
-                  inference_mode="absolute"):
+                  inference_mode="absolute", benchmark_name="libero_10"):
     """
     Evaluates policy on a single LIBERO task. Blends corrector output when gate triggers.
     """
     benchmark_dict = get_benchmark_dict()
-    benchmark = benchmark_dict["libero_10"]()
+    benchmark = benchmark_dict[benchmark_name]()
     
     try:
         task = benchmark.get_task(task_id)
@@ -209,12 +195,16 @@ def evaluate_task(task_id, seed, base_policy, preprocessor, postprocessor,
             # 2. Check risk gate if loaded
             triggered = False
             if gate_model is not None and corrector_model is not None:
-                img1_tensor = torch.from_numpy(img_agent).float().permute(2, 0, 1).unsqueeze(0).to(device) / 255.0
-                img2_tensor = torch.from_numpy(img_wrist).float().permute(2, 0, 1).unsqueeze(0).to(device) / 255.0
                 state_tensor = torch.from_numpy(state_np).float().unsqueeze(0).to(device)
 
                 with torch.no_grad():
-                    gate_logits = gate_model(img1_tensor, img2_tensor, state_tensor)
+                    # Extract visual features from policy preprocessed inputs
+                    vision_tower = base_policy.model.vlm_with_expert.get_vlm_model().vision_model
+                    v_dtype = vision_tower.dtype
+                    feat1 = vision_tower(batch_obs["pixels.image"].to(dtype=v_dtype)).last_hidden_state.mean(dim=1)
+                    feat2 = vision_tower(batch_obs["pixels.image2"].to(dtype=v_dtype)).last_hidden_state.mean(dim=1)
+                    
+                    gate_logits = gate_model(feat1.to(torch.float32), feat2.to(torch.float32), state_tensor)
                     gate_prob = torch.sigmoid(gate_logits).item()
 
                 if gate_prob > threshold:
@@ -224,7 +214,7 @@ def evaluate_task(task_id, seed, base_policy, preprocessor, postprocessor,
                     
                     # 3. Predict correction
                     with torch.no_grad():
-                        corr_action_tensor = corrector_model(img1_tensor, img2_tensor, state_tensor)
+                        corr_action_tensor = corrector_model(feat1.to(torch.float32), feat2.to(torch.float32), state_tensor)
                         corr_action_np = corr_action_tensor.cpu().numpy()[0]
                     
                     # Blend base action and corrective action
@@ -298,6 +288,7 @@ def main():
     parser.add_argument("--output_dir", type=str, default="Gated_Residual_strategy/eval_results", help="Directory to save evaluation reports")
     parser.add_argument("--adaptive_gating", action="store_true", help="Enable task-adaptive gating: only use gate/corrector on specified tasks")
     parser.add_argument("--active_gating_tasks", type=int, nargs="+", default=[2, 7, 9], help="Task IDs where Gated Residual correction is active")
+    parser.add_argument("--benchmark", type=str, default="libero_10", help="Libero benchmark name (e.g. libero_10, libero_goal)")
     
     args = parser.parse_args()
 
@@ -324,32 +315,38 @@ def main():
         train_seed_map = {0: 42, 1: 123, 2: 999}
         train_seed = train_seed_map.get(seed, 42)
         
-        gate_model = None
-        corrector_model = None
-
-        if args.gate_dir:
-            gate_path = Path(args.gate_dir) / f"unit_train_seed_{train_seed}" / "best_model.pth"
-            if gate_path.exists():
-                print(f"Loading Failure Gate from {gate_path}")
-                # Failure Gate uses state_dim=8
-                gate_model = LightweightFailureGate(state_dim=8).to(device)
-                gate_model.load_state_dict(torch.load(gate_path, map_location=device))
-                gate_model.eval()
-            else:
-                print(f"[Warning] Failure Gate checkpoint not found: {gate_path}")
-
-        if args.corrector_dir:
-            corrector_path = Path(args.corrector_dir) / f"unit_train_seed_{train_seed}" / "best_model.pth"
-            if corrector_path.exists():
-                print(f"Loading Residual Corrector from {corrector_path}")
-                # Corrector uses state_dim=8, action_dim=7
-                corrector_model = LightweightResidualCorrector(state_dim=8, action_dim=7).to(device)
-                corrector_model.load_state_dict(torch.load(corrector_path, map_location=device))
-                corrector_model.eval()
-            else:
-                print(f"[Warning] Residual Corrector checkpoint not found: {corrector_path}")
-
         for task_id in task_ids:
+            gate_model = None
+            corrector_model = None
+
+            if args.gate_dir:
+                gate_path = Path(args.gate_dir) / f"task_{task_id}" / f"unit_train_seed_{train_seed}" / "best_model.pth"
+                if not gate_path.exists():
+                    gate_path = Path(args.gate_dir) / f"unit_train_seed_{train_seed}" / "best_model.pth"
+                
+                if gate_path.exists():
+                    print(f"Loading Failure Gate from {gate_path}")
+                    # Failure Gate uses state_dim=8
+                    gate_model = LightweightFailureGate(state_dim=8).to(device)
+                    gate_model.load_state_dict(torch.load(gate_path, map_location=device))
+                    gate_model.eval()
+                else:
+                    print(f"[Warning] Failure Gate checkpoint not found: {gate_path}")
+
+            if args.corrector_dir:
+                corrector_path = Path(args.corrector_dir) / f"task_{task_id}" / f"unit_train_seed_{train_seed}" / "best_model.pth"
+                if not corrector_path.exists():
+                    corrector_path = Path(args.corrector_dir) / f"unit_train_seed_{train_seed}" / "best_model.pth"
+                
+                if corrector_path.exists():
+                    print(f"Loading Residual Corrector from {corrector_path}")
+                    # Corrector uses state_dim=8, action_dim=7
+                    corrector_model = LightweightResidualCorrector(state_dim=8, action_dim=7).to(device)
+                    corrector_model.load_state_dict(torch.load(corrector_path, map_location=device))
+                    corrector_model.eval()
+                else:
+                    print(f"[Warning] Residual Corrector checkpoint not found: {corrector_path}")
+
             active_gate = gate_model
             active_corr = corrector_model
             if args.adaptive_gating and task_id not in args.active_gating_tasks:
@@ -369,7 +366,8 @@ def main():
                 num_episodes=args.num_episodes,
                 max_steps=args.max_steps,
                 device=device,
-                inference_mode=args.inference_mode
+                inference_mode=args.inference_mode,
+                benchmark_name=args.benchmark
             )
             all_runs.append(run_result)
 
