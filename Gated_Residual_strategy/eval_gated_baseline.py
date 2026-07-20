@@ -201,8 +201,8 @@ def evaluate_task(task_id, seed, base_policy, preprocessor, postprocessor,
                     # Extract visual features from policy preprocessed inputs
                     vision_tower = base_policy.model.vlm_with_expert.get_vlm_model().vision_model
                     v_dtype = vision_tower.dtype
-                    feat1 = vision_tower(batch_obs["pixels.image"].to(dtype=v_dtype)).last_hidden_state.mean(dim=1)
-                    feat2 = vision_tower(batch_obs["pixels.image2"].to(dtype=v_dtype)).last_hidden_state.mean(dim=1)
+                    feat1 = vision_tower(batch_obs["observation.images.image"].to(dtype=v_dtype)).last_hidden_state.mean(dim=1)
+                    feat2 = vision_tower(batch_obs["observation.images.image2"].to(dtype=v_dtype)).last_hidden_state.mean(dim=1)
                     
                     gate_logits = gate_model(feat1.to(torch.float32), feat2.to(torch.float32), state_tensor)
                     gate_prob = torch.sigmoid(gate_logits).item()

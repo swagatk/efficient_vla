@@ -34,6 +34,20 @@ bash run_phase1_baseline.sh
 - **Task-Specific Models:** Train 10 separate gates for the 10 tasks.
 - **Epochs:** Increase to 20–30 epochs to ensure validation AUC converges (watch out for class imbalance: use weighted BCE loss).
 
+Command to start fresh execution:
+```
+RESUME=0 \ 
+DATA_DIR=outputs/phase1_run_20260715_121907 \ 
+PYTHON_BIN=/home/swagat/anaconda3/envs/lerobot_v040/bin/python \ 
+bash run_phase2_task_specific_gate.sh
+```
+
+Command to resume execution:
+```
+RESUME=1 DATA_DIR=outputs/phase1_run_20260715_121907 OUTPUT_ROOT=outputs/phase2_task_specific_train_20260716_125525 PYTHON_BIN=/home/swagat/anaconda3/envs/lerobot_v040/bin/python bash run_phase2_task_specific_gate.sh
+
+```
+
 ---
 
 ## Phase 3: Train the Corrector
@@ -49,6 +63,18 @@ bash run_phase1_baseline.sh
 - **Options to Try:**
   - **Option 1: Self-Imitation Absolute:** Train task-specific correctors on Phase 1 successful rollout trajectories using `train_mode=absolute`.
   - **Option 2: Demonstration-Anchored Delta (Recommended):** Precompute baseline actions on the Libero-10 human demonstration dataset first using `precompute_base_actions.py`, then train task-specific correctors to predict actions relative to demonstrations using `train_mode=delta`.
+
+Command for absolute mode:
+
+```
+RESUME=0 DATA_DIR=outputs/phase1_run_20260715_121907 TRAIN_MODE=absolute PYTHON_BIN=/home/swagat/anaconda3/envs/lerobot_v040/bin/python bash run_phase3_task_specific_corrector.sh
+```
+
+Command for delta mode:
+
+```
+RESUME=0 DATA_DIR=/home/swagat/libero_dataset/libero_10 TRAIN_MODE=delta PYTHON_BIN=/home/swagat/anaconda3/envs/lerobot_v040/bin/python bash run_phase3_task_specific_corrector.sh
+```
 
 ---
 
@@ -71,6 +97,28 @@ bash run_phase1_baseline.sh
    else:
        final_action = baseline_action
    ```
+Command to run phase 4 in delta mode with adaptive gating
+```
+RESUME=0 ADAPTIVE_GATING=1 ACTIVE_GATING_TASKS="2 7 9" INFERENCE_MODE=delta THRESHOLD=0.5 ALPHA=0.5 GATE_DIR=outputs/phase2_task_specific_train_20260716_125525 CORRECTOR_DIR=outputs/phase3_task_specific_train_20260717_003320 PYTHON_BIN=/home/swagat/anaconda3/envs/lerobot_v040/bin/python bash run_phase4_eval.sh
+```
+To resume interrupted run
+```
+RESUME=1 ADAPTIVE_GATING=1 ACTIVE_GATING_TASKS="2 7 9" INFERENCE_MODE=delta THRESHOLD=0.5 ALPHA=0.5 GATE_DIR=outputs/phase2_task_specific_train_20260716_125525 CORRECTOR_DIR=outputs/phase3_task_specific_train_20260717_003320 OUTPUT_DIR=outputs/phase4_eval_results_20260717_101320 PYTHON_BIN=/home/swagat/anaconda3/envs/lerobot_v040/bin/python bash run_phase4_eval.sh
+```
+command to run in absolute mode with adaptive gating
+```
+RESUME=0 \
+ADAPTIVE_GATING=1 \
+ACTIVE_GATING_TASKS="2 7 9" \
+INFERENCE_MODE=absolute \
+THRESHOLD=0.5 \
+ALPHA=0.5 \
+GATE_DIR=outputs/phase2_task_specific_train_20260716_125525 \
+CORRECTOR_DIR=outputs/phase3_task_specific_train_20260716_210747 \
+PYTHON_BIN=/home/swagat/anaconda3/envs/lerobot_v040/bin/python \
+bash run_phase4_eval.sh
+
+```
 
 ---
 

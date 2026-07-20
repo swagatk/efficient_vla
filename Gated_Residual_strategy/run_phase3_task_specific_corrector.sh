@@ -49,18 +49,38 @@ on_term() {
 
 apply_power_hardening() {
   [[ "$USE_POWER_HARDENING" == "1" ]] || return 0
+  local state_file="$OUTPUT_ROOT/.orig_power_state"
+  
+  if [[ "$RESUME" == "1" && -f "$state_file" ]]; then
+    # Load original values from the state file
+    # shellcheck disable=SC1090
+    source "$state_file"
+  fi
+
   if [[ "$OS_NAME" == "Darwin" ]]; then
     if command -v pmset >/dev/null 2>&1; then
-      ORIG_SLEEP_MODE="$(pmset -g custom | awk '/ sleep / {print $2; exit}' 2>/dev/null || true)"
+      if [[ -z "${ORIG_SLEEP_MODE:-}" ]]; then
+        ORIG_SLEEP_MODE="$(pmset -g custom | awk '/ sleep / {print $2; exit}' 2>/dev/null || true)"
+        echo "ORIG_SLEEP_MODE=\"$ORIG_SLEEP_MODE\"" > "$state_file"
+      fi
       pmset -a sleep 0 2>/dev/null || true
     fi
   else
+    # Initialize state file
+    [[ -f "$state_file" ]] || touch "$state_file"
+    
     if command -v powerprofilesctl >/dev/null 2>&1; then
-      ORIG_POWER_PROFILE="$(powerprofilesctl get 2>/dev/null || true)"
+      if [[ -z "${ORIG_POWER_PROFILE:-}" ]]; then
+        ORIG_POWER_PROFILE="$(powerprofilesctl get 2>/dev/null || true)"
+        echo "ORIG_POWER_PROFILE=\"$ORIG_POWER_PROFILE\"" >> "$state_file"
+      fi
       powerprofilesctl set performance 2>/dev/null || true
     fi
     if command -v gsettings >/dev/null 2>&1; then
-      ORIG_SLEEP_MODE="$(gsettings get org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 2>/dev/null || true)"
+      if [[ -z "${ORIG_SLEEP_MODE:-}" ]]; then
+        ORIG_SLEEP_MODE="$(gsettings get org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 2>/dev/null || true)"
+        echo "ORIG_SLEEP_MODE=\"$ORIG_SLEEP_MODE\"" >> "$state_file"
+      fi
       gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing' 2>/dev/null || true
     fi
   fi
