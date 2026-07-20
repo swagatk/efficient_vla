@@ -10,6 +10,7 @@ WANDB_PROJECT="${WANDB_PROJECT:-gated_residual_phase2_task_specific}"
 WANDB_RESUME_POLICY="${WANDB_RESUME_POLICY:-allow}"
 PYTHON_BIN="${PYTHON_BIN:-/home/swagat/anaconda3/envs/lerobot_v040/bin/python}"
 USE_POWER_HARDENING="${USE_POWER_HARDENING:-1}"
+WINDOW_SIZE="${WINDOW_SIZE:-1}"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DATA_DIR="${DATA_DIR:-$SCRIPT_DIR/outputs/phase1_run_20260706_233849}"
@@ -17,6 +18,17 @@ OUTPUT_ROOT="${OUTPUT_ROOT:-$SCRIPT_DIR/outputs/phase2_task_specific_train_$(dat
 
 mkdir -p "$OUTPUT_ROOT"
 PROGRESS_LOG="$OUTPUT_ROOT/progress.log"
+
+cat << EOF > "$OUTPUT_ROOT/config.json"
+{
+    "window_size": ${WINDOW_SIZE},
+    "data_dir": "${DATA_DIR}",
+    "output_root": "${OUTPUT_ROOT}",
+    "wandb_project": "${WANDB_PROJECT}",
+    "resume": ${RESUME},
+    "python_bin": "${PYTHON_BIN}"
+}
+EOF
 
 INTERRUPTED=0
 START_TS=$(date +%s)
@@ -201,6 +213,7 @@ for seed in "${SEEDS[@]}"; do
       --task_id "$task_id"
       --seed "$seed"
       --epochs 15
+      --window_size "$WINDOW_SIZE"
       --wandb_project "$WANDB_PROJECT"
       --wandb_resume "$WANDB_RESUME_POLICY"
     )

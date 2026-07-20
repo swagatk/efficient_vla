@@ -12,6 +12,7 @@ PYTHON_BIN="${PYTHON_BIN:-/home/swagat/anaconda3/envs/lerobot_v040/bin/python}"
 USE_POWER_HARDENING="${USE_POWER_HARDENING:-1}"
 TRAIN_MODE="${TRAIN_MODE:-absolute}"
 BENCHMARK="${BENCHMARK:-libero_10}"
+L2_PENALTY_WEIGHT="${L2_PENALTY_WEIGHT:-0.001}"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DATA_DIR="${DATA_DIR:-$SCRIPT_DIR/outputs/phase1_run_20260706_233849}"
@@ -19,6 +20,19 @@ OUTPUT_ROOT="${OUTPUT_ROOT:-$SCRIPT_DIR/outputs/phase3_task_specific_train_$(dat
 
 mkdir -p "$OUTPUT_ROOT"
 PROGRESS_LOG="$OUTPUT_ROOT/progress.log"
+
+cat << EOF > "$OUTPUT_ROOT/config.json"
+{
+    "train_mode": "${TRAIN_MODE}",
+    "l2_penalty_weight": ${L2_PENALTY_WEIGHT},
+    "benchmark": "${BENCHMARK}",
+    "data_dir": "${DATA_DIR}",
+    "output_root": "${OUTPUT_ROOT}",
+    "wandb_project": "${WANDB_PROJECT}",
+    "resume": ${RESUME},
+    "python_bin": "${PYTHON_BIN}"
+}
+EOF
 
 INTERRUPTED=0
 START_TS=$(date +%s)
@@ -204,6 +218,7 @@ for seed in "${SEEDS[@]}"; do
       --seed "$seed"
       --epochs 15
       --train_mode "$TRAIN_MODE"
+      --l2_penalty_weight "$L2_PENALTY_WEIGHT"
       --wandb_project "$WANDB_PROJECT"
       --wandb_resume "$WANDB_RESUME_POLICY"
       --benchmark "$BENCHMARK"

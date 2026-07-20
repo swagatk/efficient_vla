@@ -8,6 +8,7 @@ It predicts the probability of failure based on the agent's observation streams.
 import os
 import argparse
 import h5py
+import json
 import numpy as np
 import torch
 import torch.nn as nn
@@ -20,10 +21,12 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, roc_a
 from robosuite.utils.transform_utils import quat2axisangle
 
 class FailureDataset(Dataset):
-    def __init__(self, data_dir, split="train", val_ratio=0.15, task_id=None):
+    def __init__(self, data_dir, split="train", val_ratio=0.15, task_id=None, window_size=1):
         """
         Lazy-loading HDF5 dataset for Phase 1 failure trajectories.
+        Supports single-frame or multi-frame temporal window sampling.
         """
+        self.window_size = max(1, int(window_size))
         self.file_paths = sorted(list(Path(data_dir).rglob("*.h5")) + list(Path(data_dir).rglob("*.hdf5")))
         if task_id is not None:
             self.file_paths = [p for p in self.file_paths if f"_t{task_id}_" in p.as_posix()]
@@ -58,7 +61,7 @@ class FailureDataset(Dataset):
                 print(f"Failed to read {f_path}: {e}")
                 
         self.open_files = {}
-        print(f"[{split.upper()}] Dataset initialized with {len(self.index_map)} samples (neg: {self.num_neg}, pos: {self.num_pos}).")
+        print(f"[{split.upper()}] Dataset initialized with {len(self.index_map)} samples (neg: {self.num_neg}, pos: {self.num_pos}, window_size: {self.window_size}).")
 
     def __len__(self):
         return len(self.index_map)
@@ -71,32 +74,52 @@ class FailureDataset(Dataset):
             
         h5 = self.open_files[f_idx]
         
-        # Read and prepare tensors from native LIBERO observation keys
-        raw_img1 = h5["observations"]["agentview_image"][i]
-        img1_np = raw_img1[::-1, ::-1, :].copy()
-        img1 = torch.from_numpy(img1_np).float().permute(2, 0, 1) / 255.0
-        
-        raw_img2 = h5["observations"]["robot0_eye_in_hand_image"][i]
-        img2_np = raw_img2[::-1, ::-1, :].copy()
-        img2 = torch.from_numpy(img2_np).float().permute(2, 0, 1) / 255.0
-        
-        eef_pos = h5["observations"]["robot0_eef_pos"][i]
-        eef_quat = h5["observations"]["robot0_eef_quat"][i]
-        gripper_qpos = h5["observations"]["robot0_gripper_qpos"][i]
-        
-        state_np = np.concatenate([eef_pos, quat2axisangle(eef_quat), gripper_qpos])
-        state = torch.from_numpy(state_np).float()
-        
+        if self.window_size == 1:
+            raw_img1 = h5["observations"]["agentview_image"][i]
+            img1_np = raw_img1[::-1, ::-1, :].copy()
+            img1 = torch.from_numpy(img1_np).float().permute(2, 0, 1) / 255.0
+            
+            raw_img2 = h5["observations"]["robot0_eye_in_hand_image"][i]
+            img2_np = raw_img2[::-1, ::-1, :].copy()
+            img2 = torch.from_numpy(img2_np).float().permute(2, 0, 1) / 255.0
+            
+            eef_pos = h5["observations"]["robot0_eef_pos"][i]
+            eef_quat = h5["observations"]["robot0_eef_quat"][i]
+            gripper_qpos = h5["observations"]["robot0_gripper_qpos"][i]
+            state_np = np.concatenate([eef_pos, quat2axisangle(eef_quat), gripper_qpos])
+            state = torch.from_numpy(state_np).float()
+        else:
+            # Padding strategy: repeat frame 0 if step_i < 0
+            seq_indices = [max(0, i - k) for k in reversed(range(self.window_size))]
+            img1_list, img2_list, state_list = [], [], []
+            
+            for step_i in seq_indices:
+                r_img1 = h5["observations"]["agentview_image"][step_i]
+                img1_list.append(torch.from_numpy(r_img1[::-1, ::-1, :].copy()).float().permute(2, 0, 1) / 255.0)
+                
+                r_img2 = h5["observations"]["robot0_eye_in_hand_image"][step_i]
+                img2_list.append(torch.from_numpy(r_img2[::-1, ::-1, :].copy()).float().permute(2, 0, 1) / 255.0)
+                
+                eef_pos = h5["observations"]["robot0_eef_pos"][step_i]
+                eef_quat = h5["observations"]["robot0_eef_quat"][step_i]
+                gripper_qpos = h5["observations"]["robot0_gripper_qpos"][step_i]
+                s_np = np.concatenate([eef_pos, quat2axisangle(eef_quat), gripper_qpos])
+                state_list.append(torch.from_numpy(s_np).float())
+                
+            img1 = torch.stack(img1_list, dim=0)   # (W, 3, H, W)
+            img2 = torch.stack(img2_list, dim=0)   # (W, 3, H, W)
+            state = torch.stack(state_list, dim=0) # (W, state_dim)
+            
         label = torch.tensor(h5["labels"][i], dtype=torch.float32).unsqueeze(0)
-        
         return img1, img2, state, label
 
 class LightweightFailureGate(nn.Module):
-    def __init__(self, state_dim=8):
+    def __init__(self, state_dim=8, window_size=1):
         """
         Multimodal MLP that processes precomputed SigLIP visual embeddings and proprioceptive state.
         """
         super().__init__()
+        self.window_size = window_size
         
         self.state_mlp = nn.Sequential(
             nn.Linear(state_dim, 32),
@@ -105,9 +128,10 @@ class LightweightFailureGate(nn.Module):
             nn.ReLU()
         )
         
-        # 768 (img1 SigLIP pooler) + 768 (img2 SigLIP pooler) + 32 (state) = 1568
+        # 768 (img1 SigLIP pooler) + 768 (img2 SigLIP pooler) + 32 (state) per timestep = 1568 * window_size
+        in_dim = 1568 * window_size
         self.fusion = nn.Sequential(
-            nn.Linear(1568, 512),
+            nn.Linear(in_dim, 512),
             nn.ReLU(),
             nn.Dropout(0.2),
             nn.Linear(512, 256),
@@ -118,9 +142,50 @@ class LightweightFailureGate(nn.Module):
         )
 
     def forward(self, feat1, feat2, state):
-        xs = self.state_mlp(state)
-        x = torch.cat([feat1, feat2, xs], dim=1)
+        if state.ndim == 3:  # (B, W, state_dim)
+            B, W, _ = state.shape
+            xs = self.state_mlp(state)              # (B, W, 32)
+            xs_flat = xs.view(B, -1)                # (B, W * 32)
+            feat1_flat = feat1.view(B, -1)          # (B, W * 768)
+            feat2_flat = feat2.view(B, -1)          # (B, W * 768)
+            x = torch.cat([feat1_flat, feat2_flat, xs_flat], dim=1)
+        else:
+            xs = self.state_mlp(state)
+            x = torch.cat([feat1, feat2, xs], dim=1)
         return self.fusion(x)
+
+def extract_features(img1, img2, vision_tower):
+    """
+    Extract SigLIP embeddings for single-frame (B, C, H, W) or temporal-window (B, W, C, H, W) inputs.
+    """
+    v_dtype = vision_tower.dtype
+    if img1.ndim == 5:
+        B, W, C, H, W_img = img1.shape
+        img1_flat = img1.view(B * W, C, H, W_img)
+        img2_flat = img2.view(B * W, C, H, W_img)
+        
+        img1_224 = torch.nn.functional.interpolate(img1_flat, size=(224, 224), mode="bilinear", align_corners=False)
+        img1_norm = (img1_224 - 0.5) / 0.5
+        
+        img2_224 = torch.nn.functional.interpolate(img2_flat, size=(224, 224), mode="bilinear", align_corners=False)
+        img2_norm = (img2_224 - 0.5) / 0.5
+        
+        feat1_flat = vision_tower(img1_norm.to(dtype=v_dtype)).last_hidden_state.mean(dim=1)
+        feat2_flat = vision_tower(img2_norm.to(dtype=v_dtype)).last_hidden_state.mean(dim=1)
+        
+        feat1 = feat1_flat.view(B, W, 768)
+        feat2 = feat2_flat.view(B, W, 768)
+    else:
+        img1_224 = torch.nn.functional.interpolate(img1, size=(224, 224), mode="bilinear", align_corners=False)
+        img1_norm = (img1_224 - 0.5) / 0.5
+        
+        img2_224 = torch.nn.functional.interpolate(img2, size=(224, 224), mode="bilinear", align_corners=False)
+        img2_norm = (img2_224 - 0.5) / 0.5
+        
+        feat1 = vision_tower(img1_norm.to(dtype=v_dtype)).last_hidden_state.mean(dim=1)
+        feat2 = vision_tower(img2_norm.to(dtype=v_dtype)).last_hidden_state.mean(dim=1)
+        
+    return feat1, feat2
 
 def evaluate(model, val_loader, criterion, device, vision_tower):
     model.eval()
@@ -133,18 +198,7 @@ def evaluate(model, val_loader, criterion, device, vision_tower):
         for img1, img2, state, label in val_loader:
             img1, img2, state, label = img1.to(device), img2.to(device), state.to(device), label.to(device)
             
-            # 1. Resize and normalize images dynamically
-            img1_224 = torch.nn.functional.interpolate(img1, size=(224, 224), mode="bilinear", align_corners=False)
-            img1_norm = (img1_224 - 0.5) / 0.5
-            
-            img2_224 = torch.nn.functional.interpolate(img2, size=(224, 224), mode="bilinear", align_corners=False)
-            img2_norm = (img2_224 - 0.5) / 0.5
-            
-            # 2. Extract embeddings
-            v_dtype = vision_tower.dtype
-            feat1 = vision_tower(img1_norm.to(dtype=v_dtype)).last_hidden_state.mean(dim=1)
-            feat2 = vision_tower(img2_norm.to(dtype=v_dtype)).last_hidden_state.mean(dim=1)
-            
+            feat1, feat2 = extract_features(img1, img2, vision_tower)
             logits = model(feat1.to(torch.float32), feat2.to(torch.float32), state)
             loss = criterion(logits, label)
             
@@ -180,6 +234,7 @@ def main():
     parser.add_argument("--batch_size", type=int, default=128)
     parser.add_argument("--lr", type=float, default=1e-3)
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--window_size", type=int, default=1, help="Temporal frame history window size (default: 1)")
     parser.add_argument("--wandb_project", type=str, default="gated_residual_phase2")
     parser.add_argument("--wandb_run_id", type=str, default=None)
     parser.add_argument("--wandb_resume", type=str, default="allow")
@@ -190,6 +245,12 @@ def main():
     np.random.seed(args.seed)
     os.makedirs(args.output_dir, exist_ok=True)
     
+    # Export CLI configuration arguments to config.json
+    config_path = os.path.join(args.output_dir, "config.json")
+    with open(config_path, "w") as f:
+        json.dump(vars(args), f, indent=4)
+    print(f"Saved run configuration to {config_path}")
+
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
     # 1. Load baseline SmolVLA policy for vision features
@@ -203,22 +264,22 @@ def main():
         p.requires_grad = False
     
     # Determine State Dimension dynamically from the first file
-    test_dataset = FailureDataset(args.data_dir, split="train", val_ratio=0.15, task_id=args.task_id)
+    test_dataset = FailureDataset(args.data_dir, split="train", val_ratio=0.15, task_id=args.task_id, window_size=args.window_size)
     if len(test_dataset) == 0:
         print("Dataset is empty. Exiting.")
         return
         
     _, _, sample_state, _ = test_dataset[0]
-    state_dim = sample_state.shape[0]
+    state_dim = sample_state.shape[-1]
     print(f"Inferred Proprioceptive State Dimension: {state_dim}")
 
     train_dataset = test_dataset
-    val_dataset = FailureDataset(args.data_dir, split="val", val_ratio=0.15, task_id=args.task_id)
+    val_dataset = FailureDataset(args.data_dir, split="val", val_ratio=0.15, task_id=args.task_id, window_size=args.window_size)
     
     train_loader = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True, num_workers=4, pin_memory=True)
     val_loader = DataLoader(val_dataset, batch_size=args.batch_size, shuffle=False, num_workers=4, pin_memory=True)
     
-    model = LightweightFailureGate(state_dim=state_dim).to(device)
+    model = LightweightFailureGate(state_dim=state_dim, window_size=args.window_size).to(device)
     
     n_neg = train_dataset.num_neg
     n_pos = train_dataset.num_pos
@@ -250,7 +311,7 @@ def main():
     best_metrics = {}
     val_metrics = {}
     
-    print(f"Starting training on {device}...")
+    print(f"Starting training on {device} (window_size={args.window_size})...")
     for epoch in range(1, args.epochs + 1):
         model.train()
         total_loss = 0.0
@@ -258,18 +319,8 @@ def main():
         for batch_idx, (img1, img2, state, label) in enumerate(train_loader):
             img1, img2, state, label = img1.to(device), img2.to(device), state.to(device), label.to(device)
             
-            # 1. Resize and normalize images dynamically
-            img1_224 = torch.nn.functional.interpolate(img1, size=(224, 224), mode="bilinear", align_corners=False)
-            img1_norm = (img1_224 - 0.5) / 0.5
-            
-            img2_224 = torch.nn.functional.interpolate(img2, size=(224, 224), mode="bilinear", align_corners=False)
-            img2_norm = (img2_224 - 0.5) / 0.5
-            
-            # 2. Extract embeddings
             with torch.no_grad():
-                v_dtype = vision_tower.dtype
-                feat1 = vision_tower(img1_norm.to(dtype=v_dtype)).last_hidden_state.mean(dim=1)
-                feat2 = vision_tower(img2_norm.to(dtype=v_dtype)).last_hidden_state.mean(dim=1)
+                feat1, feat2 = extract_features(img1, img2, vision_tower)
             
             optimizer.zero_grad()
             logits = model(feat1.to(torch.float32), feat2.to(torch.float32), state)

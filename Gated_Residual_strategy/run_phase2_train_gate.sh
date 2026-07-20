@@ -10,6 +10,7 @@ WANDB_PROJECT="${WANDB_PROJECT:-gated_residual_phase2}"
 WANDB_RESUME_POLICY="${WANDB_RESUME_POLICY:-allow}"
 PYTHON_BIN="${PYTHON_BIN:-python3}"
 USE_POWER_HARDENING="${USE_POWER_HARDENING:-1}"
+WINDOW_SIZE="${WINDOW_SIZE:-1}"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DATA_DIR="${DATA_DIR:-$SCRIPT_DIR/data}"
@@ -17,6 +18,17 @@ OUTPUT_ROOT="${OUTPUT_ROOT:-$SCRIPT_DIR/outputs/phase2_train_$(date +%Y%m%d_%H%M
 
 mkdir -p "$OUTPUT_ROOT"
 PROGRESS_LOG="$OUTPUT_ROOT/progress.log"
+
+cat << EOF > "$OUTPUT_ROOT/config.json"
+{
+    "window_size": ${WINDOW_SIZE},
+    "data_dir": "${DATA_DIR}",
+    "output_root": "${OUTPUT_ROOT}",
+    "wandb_project": "${WANDB_PROJECT}",
+    "resume": ${RESUME},
+    "python_bin": "${PYTHON_BIN}"
+}
+EOF
 
 INTERRUPTED=0
 START_TS=$(date +%s)
@@ -201,6 +213,7 @@ for i in "${!SEEDS[@]}"; do
     --output_dir "$UNIT_DIR"
     --seed "$SEED"
     --epochs 15
+    --window_size "$WINDOW_SIZE"
     --wandb_project "$WANDB_PROJECT"
     --wandb_resume "$WANDB_RESUME_POLICY"
   )

@@ -144,3 +144,29 @@ Because SmolVLA baseline success rate is relatively high (42.33%), tasks like Ta
 ### 3. Action Loss Normalization
 Standard actions control both end-effector position/rotation changes (typically very small, e.g., $\pm 0.02$) and the gripper (binary $\pm 1.0$). A simple MSE loss will be heavily dominated by the gripper state, neglecting the position control.
 * **Action:** Weight the loss function or normalize action dimensions during corrector training so position, orientation, and gripper errors contribute more evenly to gradients.
+
+### 4. Strategic Alternatives & Roadmap Beyond Baseline
+
+Based on empirical benchmarks comparing **Online RL (PPO/SAC)**, **Hybrid Diffusion**, and **Gated Residual Strategy**:
+
+1. **Supervised Task-Specific LoRA Adapters (Recommended High-Yield Direction):**
+   * Instead of training external residual heads (which act as adversarial noise if unconstrained), train Low-Rank Adaptation (LoRA) layers on SmolVLA's linear projections fine-tuned on human demonstrations (`libero_10`).
+   * Preserves pre-trained SigLIP visual attention while adapting action distributions directly to task geometry.
+
+2. **Temporal Window Failure Gate (Upgrading Phase 2 Gate):**
+   * Single-frame SigLIP features lack dynamic context (causing lower AUC on tasks like Task 9).
+   * Upgrade `LightweightFailureGate` to process a short temporal window (e.g., past 4 frames) to accurately detect dynamic failure regions (slip, collision, trajectory drift).
+
+3. **Demonstration-Anchored Residual Target with $L_2$ Magnitude Penalty:**
+   * If training residual heads, explicitly target expert deltas ($\Delta a = a_{\text{expert}} - a_{\text{base}}$) with an $L_2$ norm penalty $\|\Delta a\|^2$ to force deltas to zero when baseline action is accurate.
+   * Keep blending weight small ($\alpha \in [0.05, 0.15]$) to prevent action overshooting.
+
+   ```
+   TRAIN_MODE=delta \
+L2_PENALTY_WEIGHT=0.001 \
+DATA_DIR=/home/swagat/libero_dataset/libero_10 \
+PYTHON_BIN=/home/swagat/anaconda3/envs/lerobot_v040/bin/python \
+bash run_phase3_task_specific_corrector.sh
+   ```
+
+

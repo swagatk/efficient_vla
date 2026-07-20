@@ -10,6 +10,7 @@ control actions from observation streams, trained offline on successful segments
 import os
 import argparse
 import h5py
+import json
 import numpy as np
 import torch
 import torch.nn as nn
@@ -243,6 +244,7 @@ def main():
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--target_label", type=int, default=0, help="Label to train on (0: success trajectories)")
     parser.add_argument("--train_mode", type=str, choices=["absolute", "delta"], default="absolute", help="Training mode (absolute actions or delta actions)")
+    parser.add_argument("--l2_penalty_weight", type=float, default=0.001, help="L2 magnitude loss penalty weight on predicted deltas (Option C)")
     parser.add_argument("--wandb_project", type=str, default="gated_residual_phase3")
     parser.add_argument("--wandb_run_id", type=str, default=None)
     parser.add_argument("--wandb_resume", type=str, default="allow")
@@ -254,6 +256,12 @@ def main():
     np.random.seed(args.seed)
     os.makedirs(args.output_dir, exist_ok=True)
     
+    # Save CLI run arguments to config.json
+    config_path = os.path.join(args.output_dir, "config.json")
+    with open(config_path, "w") as f:
+        json.dump(vars(args), f, indent=4)
+    print(f"Saved run configuration to {config_path}")
+
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
     # 1. Load baseline SmolVLA policy for vision features
@@ -305,7 +313,7 @@ def main():
     best_val_loss = float("inf")
     val_metrics = {}
     
-    print(f"Starting training on {device}...")
+    print(f"Starting training on {device} (l2_penalty_weight={args.l2_penalty_weight})...")
     for epoch in range(1, args.epochs + 1):
         model.train()
         total_loss = 0.0
@@ -328,16 +336,22 @@ def main():
             
             optimizer.zero_grad()
             pred_action = model(feat1.to(torch.float32), feat2.to(torch.float32), state)
-            loss = criterion(pred_action, action)
+            mse_loss = criterion(pred_action, action)
             
+            if args.l2_penalty_weight > 0:
+                l2_loss = torch.mean(pred_action ** 2)
+                loss = mse_loss + args.l2_penalty_weight * l2_loss
+            else:
+                loss = mse_loss
+                
             loss.backward()
             optimizer.step()
             
             total_loss += loss.item()
             
             if batch_idx % 50 == 0:
-                print(f"Epoch {epoch}/{args.epochs} | Batch {batch_idx}/{len(train_loader)} | Train MSE Loss: {loss.item():.6f}")
-                wandb.log({"train/batch_loss": loss.item()})
+                print(f"Epoch {epoch}/{args.epochs} | Batch {batch_idx}/{len(train_loader)} | Total Loss: {loss.item():.6f} (MSE: {mse_loss.item():.6f})")
+                wandb.log({"train/batch_loss": loss.item(), "train/mse_loss": mse_loss.item()})
                 
         # Validation
         val_metrics = evaluate(model, val_loader, criterion, device, vision_tower)
@@ -370,3 +384,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
