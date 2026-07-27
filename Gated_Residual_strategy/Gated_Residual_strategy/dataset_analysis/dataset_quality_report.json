@@ -1,0 +1,3140 @@
+{
+  "file_results": {
+    "outputs/phase1_run_20260715_121907/unit_collect_t0_s2/failure_dataset_task0_seed2.h5": {
+      "n_samples": 3886,
+      "class_distribution": {
+        "0": 3616,
+        "1": 270
+      },
+      "img_shapes": {
+        "agentview": [
+          3886,
+          256,
+          256,
+          3
+        ],
+        "eye_in_hand": [
+          3886,
+          256,
+          256,
+          3
+        ]
+      },
+      "state_dims": {
+        "alphabet_soup_1_to_robot0_eef_pos": [
+          3886,
+          3
+        ],
+        "alphabet_soup_1_to_robot0_eef_quat": [
+          3886,
+          4
+        ],
+        "basket_1_to_robot0_eef_pos": [
+          3886,
+          3
+        ],
+        "basket_1_to_robot0_eef_quat": [
+          3886,
+          4
+        ],
+        "butter_1_to_robot0_eef_pos": [
+          3886,
+          3
+        ],
+        "butter_1_to_robot0_eef_quat": [
+          3886,
+          4
+        ],
+        "cream_cheese_1_to_robot0_eef_pos": [
+          3886,
+          3
+        ],
+        "cream_cheese_1_to_robot0_eef_quat": [
+          3886,
+          4
+        ],
+        "ketchup_1_to_robot0_eef_pos": [
+          3886,
+          3
+        ],
+        "ketchup_1_to_robot0_eef_quat": [
+          3886,
+          4
+        ],
+        "milk_1_to_robot0_eef_pos": [
+          3886,
+          3
+        ],
+        "milk_1_to_robot0_eef_quat": [
+          3886,
+          4
+        ],
+        "orange_juice_1_to_robot0_eef_pos": [
+          3886,
+          3
+        ],
+        "orange_juice_1_to_robot0_eef_quat": [
+          3886,
+          4
+        ],
+        "robot0_eef_pos": [
+          3886,
+          3
+        ],
+        "robot0_eef_quat": [
+          3886,
+          4
+        ],
+        "robot0_gripper_qpos": [
+          3886,
+          2
+        ],
+        "robot0_gripper_qvel": [
+          3886,
+          2
+        ],
+        "tomato_sauce_1_to_robot0_eef_pos": [
+          3886,
+          3
+        ],
+        "tomato_sauce_1_to_robot0_eef_quat": [
+          3886,
+          4
+        ]
+      },
+      "obs_keys": [
+        "agentview_image",
+        "alphabet_soup_1_pos",
+        "alphabet_soup_1_quat",
+        "alphabet_soup_1_to_robot0_eef_pos",
+        "alphabet_soup_1_to_robot0_eef_quat",
+        "basket_1_pos",
+        "basket_1_quat",
+        "basket_1_to_robot0_eef_pos",
+        "basket_1_to_robot0_eef_quat",
+        "butter_1_pos",
+        "butter_1_quat",
+        "butter_1_to_robot0_eef_pos",
+        "butter_1_to_robot0_eef_quat",
+        "cream_cheese_1_pos",
+        "cream_cheese_1_quat",
+        "cream_cheese_1_to_robot0_eef_pos",
+        "cream_cheese_1_to_robot0_eef_quat",
+        "ketchup_1_pos",
+        "ketchup_1_quat",
+        "ketchup_1_to_robot0_eef_pos",
+        "ketchup_1_to_robot0_eef_quat",
+        "milk_1_pos",
+        "milk_1_quat",
+        "milk_1_to_robot0_eef_pos",
+        "milk_1_to_robot0_eef_quat",
+        "object-state",
+        "orange_juice_1_pos",
+        "orange_juice_1_quat",
+        "orange_juice_1_to_robot0_eef_pos",
+        "orange_juice_1_to_robot0_eef_quat",
+        "robot0_eef_pos",
+        "robot0_eef_quat",
+        "robot0_eye_in_hand_image",
+        "robot0_gripper_qpos",
+        "robot0_gripper_qvel",
+        "robot0_joint_pos",
+        "robot0_joint_pos_cos",
+        "robot0_joint_pos_sin",
+        "robot0_joint_vel",
+        "robot0_proprio-state",
+        "tomato_sauce_1_pos",
+        "tomato_sauce_1_quat",
+        "tomato_sauce_1_to_robot0_eef_pos",
+        "tomato_sauce_1_to_robot0_eef_quat"
+      ]
+    },
+    "outputs/phase1_run_20260715_121907/unit_collect_t9_s0/failure_dataset_task9_seed0.h5": {
+      "n_samples": 3418,
+      "class_distribution": {
+        "0": 3268,
+        "1": 150
+      },
+      "img_shapes": {
+        "agentview": [
+          3418,
+          256,
+          256,
+          3
+        ],
+        "eye_in_hand": [
+          3418,
+          256,
+          256,
+          3
+        ]
+      },
+      "state_dims": {
+        "porcelain_mug_1_to_robot0_eef_pos": [
+          3418,
+          3
+        ],
+        "porcelain_mug_1_to_robot0_eef_quat": [
+          3418,
+          4
+        ],
+        "robot0_eef_pos": [
+          3418,
+          3
+        ],
+        "robot0_eef_quat": [
+          3418,
+          4
+        ],
+        "robot0_gripper_qpos": [
+          3418,
+          2
+        ],
+        "robot0_gripper_qvel": [
+          3418,
+          2
+        ],
+        "white_yellow_mug_1_to_robot0_eef_pos": [
+          3418,
+          3
+        ],
+        "white_yellow_mug_1_to_robot0_eef_quat": [
+          3418,
+          4
+        ]
+      },
+      "obs_keys": [
+        "agentview_image",
+        "object-state",
+        "porcelain_mug_1_pos",
+        "porcelain_mug_1_quat",
+        "porcelain_mug_1_to_robot0_eef_pos",
+        "porcelain_mug_1_to_robot0_eef_quat",
+        "robot0_eef_pos",
+        "robot0_eef_quat",
+        "robot0_eye_in_hand_image",
+        "robot0_gripper_qpos",
+        "robot0_gripper_qvel",
+        "robot0_joint_pos",
+        "robot0_joint_pos_cos",
+        "robot0_joint_pos_sin",
+        "robot0_joint_vel",
+        "robot0_proprio-state",
+        "white_yellow_mug_1_pos",
+        "white_yellow_mug_1_quat",
+        "white_yellow_mug_1_to_robot0_eef_pos",
+        "white_yellow_mug_1_to_robot0_eef_quat"
+      ]
+    },
+    "outputs/phase1_run_20260715_121907/unit_collect_t2_s0/failure_dataset_task2_seed0.h5": {
+      "n_samples": 3005,
+      "class_distribution": {
+        "0": 2915,
+        "1": 90
+      },
+      "img_shapes": {
+        "agentview": [
+          3005,
+          256,
+          256,
+          3
+        ],
+        "eye_in_hand": [
+          3005,
+          256,
+          256,
+          3
+        ]
+      },
+      "state_dims": {
+        "chefmate_8_frypan_1_to_robot0_eef_pos": [
+          3005,
+          3
+        ],
+        "chefmate_8_frypan_1_to_robot0_eef_quat": [
+          3005,
+          4
+        ],
+        "moka_pot_1_to_robot0_eef_pos": [
+          3005,
+          3
+        ],
+        "moka_pot_1_to_robot0_eef_quat": [
+          3005,
+          4
+        ],
+        "robot0_eef_pos": [
+          3005,
+          3
+        ],
+        "robot0_eef_quat": [
+          3005,
+          4
+        ],
+        "robot0_gripper_qpos": [
+          3005,
+          2
+        ],
+        "robot0_gripper_qvel": [
+          3005,
+          2
+        ]
+      },
+      "obs_keys": [
+        "agentview_image",
+        "chefmate_8_frypan_1_pos",
+        "chefmate_8_frypan_1_quat",
+        "chefmate_8_frypan_1_to_robot0_eef_pos",
+        "chefmate_8_frypan_1_to_robot0_eef_quat",
+        "moka_pot_1_pos",
+        "moka_pot_1_quat",
+        "moka_pot_1_to_robot0_eef_pos",
+        "moka_pot_1_to_robot0_eef_quat",
+        "object-state",
+        "robot0_eef_pos",
+        "robot0_eef_quat",
+        "robot0_eye_in_hand_image",
+        "robot0_gripper_qpos",
+        "robot0_gripper_qvel",
+        "robot0_joint_pos",
+        "robot0_joint_pos_cos",
+        "robot0_joint_pos_sin",
+        "robot0_joint_vel",
+        "robot0_proprio-state"
+      ]
+    },
+    "outputs/phase1_run_20260715_121907/unit_collect_t3_s1/failure_dataset_task3_seed1.h5": {
+      "n_samples": 2673,
+      "class_distribution": {
+        "0": 2613,
+        "1": 60
+      },
+      "img_shapes": {
+        "agentview": [
+          2673,
+          256,
+          256,
+          3
+        ],
+        "eye_in_hand": [
+          2673,
+          256,
+          256,
+          3
+        ]
+      },
+      "state_dims": {
+        "akita_black_bowl_1_to_robot0_eef_pos": [
+          2673,
+          3
+        ],
+        "akita_black_bowl_1_to_robot0_eef_quat": [
+          2673,
+          4
+        ],
+        "robot0_eef_pos": [
+          2673,
+          3
+        ],
+        "robot0_eef_quat": [
+          2673,
+          4
+        ],
+        "robot0_gripper_qpos": [
+          2673,
+          2
+        ],
+        "robot0_gripper_qvel": [
+          2673,
+          2
+        ],
+        "wine_bottle_1_to_robot0_eef_pos": [
+          2673,
+          3
+        ],
+        "wine_bottle_1_to_robot0_eef_quat": [
+          2673,
+          4
+        ]
+      },
+      "obs_keys": [
+        "agentview_image",
+        "akita_black_bowl_1_pos",
+        "akita_black_bowl_1_quat",
+        "akita_black_bowl_1_to_robot0_eef_pos",
+        "akita_black_bowl_1_to_robot0_eef_quat",
+        "object-state",
+        "robot0_eef_pos",
+        "robot0_eef_quat",
+        "robot0_eye_in_hand_image",
+        "robot0_gripper_qpos",
+        "robot0_gripper_qvel",
+        "robot0_joint_pos",
+        "robot0_joint_pos_cos",
+        "robot0_joint_pos_sin",
+        "robot0_joint_vel",
+        "robot0_proprio-state",
+        "wine_bottle_1_pos",
+        "wine_bottle_1_quat",
+        "wine_bottle_1_to_robot0_eef_pos",
+        "wine_bottle_1_to_robot0_eef_quat"
+      ]
+    },
+    "outputs/phase1_run_20260715_121907/unit_collect_t8_s1/failure_dataset_task8_seed1.h5": {
+      "n_samples": 4000,
+      "class_distribution": {
+        "0": 3700,
+        "1": 300
+      },
+      "img_shapes": {
+        "agentview": [
+          4000,
+          256,
+          256,
+          3
+        ],
+        "eye_in_hand": [
+          4000,
+          256,
+          256,
+          3
+        ]
+      },
+      "state_dims": {
+        "moka_pot_1_to_robot0_eef_pos": [
+          4000,
+          3
+        ],
+        "moka_pot_1_to_robot0_eef_quat": [
+          4000,
+          4
+        ],
+        "moka_pot_2_to_robot0_eef_pos": [
+          4000,
+          3
+        ],
+        "moka_pot_2_to_robot0_eef_quat": [
+          4000,
+          4
+        ],
+        "robot0_eef_pos": [
+          4000,
+          3
+        ],
+        "robot0_eef_quat": [
+          4000,
+          4
+        ],
+        "robot0_gripper_qpos": [
+          4000,
+          2
+        ],
+        "robot0_gripper_qvel": [
+          4000,
+          2
+        ]
+      },
+      "obs_keys": [
+        "agentview_image",
+        "moka_pot_1_pos",
+        "moka_pot_1_quat",
+        "moka_pot_1_to_robot0_eef_pos",
+        "moka_pot_1_to_robot0_eef_quat",
+        "moka_pot_2_pos",
+        "moka_pot_2_quat",
+        "moka_pot_2_to_robot0_eef_pos",
+        "moka_pot_2_to_robot0_eef_quat",
+        "object-state",
+        "robot0_eef_pos",
+        "robot0_eef_quat",
+        "robot0_eye_in_hand_image",
+        "robot0_gripper_qpos",
+        "robot0_gripper_qvel",
+        "robot0_joint_pos",
+        "robot0_joint_pos_cos",
+        "robot0_joint_pos_sin",
+        "robot0_joint_vel",
+        "robot0_proprio-state"
+      ]
+    },
+    "outputs/phase1_run_20260715_121907/unit_collect_t6_s1/failure_dataset_task6_seed1.h5": {
+      "n_samples": 3395,
+      "class_distribution": {
+        "0": 3245,
+        "1": 150
+      },
+      "img_shapes": {
+        "agentview": [
+          3395,
+          256,
+          256,
+          3
+        ],
+        "eye_in_hand": [
+          3395,
+          256,
+          256,
+          3
+        ]
+      },
+      "state_dims": {
+        "chocolate_pudding_1_to_robot0_eef_pos": [
+          3395,
+          3
+        ],
+        "chocolate_pudding_1_to_robot0_eef_quat": [
+          3395,
+          4
+        ],
+        "plate_1_to_robot0_eef_pos": [
+          3395,
+          3
+        ],
+        "plate_1_to_robot0_eef_quat": [
+          3395,
+          4
+        ],
+        "porcelain_mug_1_to_robot0_eef_pos": [
+          3395,
+          3
+        ],
+        "porcelain_mug_1_to_robot0_eef_quat": [
+          3395,
+          4
+        ],
+        "red_coffee_mug_1_to_robot0_eef_pos": [
+          3395,
+          3
+        ],
+        "red_coffee_mug_1_to_robot0_eef_quat": [
+          3395,
+          4
+        ],
+        "robot0_eef_pos": [
+          3395,
+          3
+        ],
+        "robot0_eef_quat": [
+          3395,
+          4
+        ],
+        "robot0_gripper_qpos": [
+          3395,
+          2
+        ],
+        "robot0_gripper_qvel": [
+          3395,
+          2
+        ]
+      },
+      "obs_keys": [
+        "agentview_image",
+        "chocolate_pudding_1_pos",
+        "chocolate_pudding_1_quat",
+        "chocolate_pudding_1_to_robot0_eef_pos",
+        "chocolate_pudding_1_to_robot0_eef_quat",
+        "object-state",
+        "plate_1_pos",
+        "plate_1_quat",
+        "plate_1_to_robot0_eef_pos",
+        "plate_1_to_robot0_eef_quat",
+        "porcelain_mug_1_pos",
+        "porcelain_mug_1_quat",
+        "porcelain_mug_1_to_robot0_eef_pos",
+        "porcelain_mug_1_to_robot0_eef_quat",
+        "red_coffee_mug_1_pos",
+        "red_coffee_mug_1_quat",
+        "red_coffee_mug_1_to_robot0_eef_pos",
+        "red_coffee_mug_1_to_robot0_eef_quat",
+        "robot0_eef_pos",
+        "robot0_eef_quat",
+        "robot0_eye_in_hand_image",
+        "robot0_gripper_qpos",
+        "robot0_gripper_qvel",
+        "robot0_joint_pos",
+        "robot0_joint_pos_cos",
+        "robot0_joint_pos_sin",
+        "robot0_joint_vel",
+        "robot0_proprio-state"
+      ]
+    },
+    "outputs/phase1_run_20260715_121907/unit_collect_t9_s2/failure_dataset_task9_seed2.h5": {
+      "n_samples": 3875,
+      "class_distribution": {
+        "0": 3605,
+        "1": 270
+      },
+      "img_shapes": {
+        "agentview": [
+          3875,
+          256,
+          256,
+          3
+        ],
+        "eye_in_hand": [
+          3875,
+          256,
+          256,
+          3
+        ]
+      },
+      "state_dims": {
+        "porcelain_mug_1_to_robot0_eef_pos": [
+          3875,
+          3
+        ],
+        "porcelain_mug_1_to_robot0_eef_quat": [
+          3875,
+          4
+        ],
+        "robot0_eef_pos": [
+          3875,
+          3
+        ],
+        "robot0_eef_quat": [
+          3875,
+          4
+        ],
+        "robot0_gripper_qpos": [
+          3875,
+          2
+        ],
+        "robot0_gripper_qvel": [
+          3875,
+          2
+        ],
+        "white_yellow_mug_1_to_robot0_eef_pos": [
+          3875,
+          3
+        ],
+        "white_yellow_mug_1_to_robot0_eef_quat": [
+          3875,
+          4
+        ]
+      },
+      "obs_keys": [
+        "agentview_image",
+        "object-state",
+        "porcelain_mug_1_pos",
+        "porcelain_mug_1_quat",
+        "porcelain_mug_1_to_robot0_eef_pos",
+        "porcelain_mug_1_to_robot0_eef_quat",
+        "robot0_eef_pos",
+        "robot0_eef_quat",
+        "robot0_eye_in_hand_image",
+        "robot0_gripper_qpos",
+        "robot0_gripper_qvel",
+        "robot0_joint_pos",
+        "robot0_joint_pos_cos",
+        "robot0_joint_pos_sin",
+        "robot0_joint_vel",
+        "robot0_proprio-state",
+        "white_yellow_mug_1_pos",
+        "white_yellow_mug_1_quat",
+        "white_yellow_mug_1_to_robot0_eef_pos",
+        "white_yellow_mug_1_to_robot0_eef_quat"
+      ]
+    },
+    "outputs/phase1_run_20260715_121907/unit_collect_t7_s2/failure_dataset_task7_seed2.h5": {
+      "n_samples": 3778,
+      "class_distribution": {
+        "0": 3568,
+        "1": 210
+      },
+      "img_shapes": {
+        "agentview": [
+          3778,
+          256,
+          256,
+          3
+        ],
+        "eye_in_hand": [
+          3778,
+          256,
+          256,
+          3
+        ]
+      },
+      "state_dims": {
+        "alphabet_soup_1_to_robot0_eef_pos": [
+          3778,
+          3
+        ],
+        "alphabet_soup_1_to_robot0_eef_quat": [
+          3778,
+          4
+        ],
+        "basket_1_to_robot0_eef_pos": [
+          3778,
+          3
+        ],
+        "basket_1_to_robot0_eef_quat": [
+          3778,
+          4
+        ],
+        "cream_cheese_1_to_robot0_eef_pos": [
+          3778,
+          3
+        ],
+        "cream_cheese_1_to_robot0_eef_quat": [
+          3778,
+          4
+        ],
+        "ketchup_1_to_robot0_eef_pos": [
+          3778,
+          3
+        ],
+        "ketchup_1_to_robot0_eef_quat": [
+          3778,
+          4
+        ],
+        "robot0_eef_pos": [
+          3778,
+          3
+        ],
+        "robot0_eef_quat": [
+          3778,
+          4
+        ],
+        "robot0_gripper_qpos": [
+          3778,
+          2
+        ],
+        "robot0_gripper_qvel": [
+          3778,
+          2
+        ],
+        "tomato_sauce_1_to_robot0_eef_pos": [
+          3778,
+          3
+        ],
+        "tomato_sauce_1_to_robot0_eef_quat": [
+          3778,
+          4
+        ]
+      },
+      "obs_keys": [
+        "agentview_image",
+        "alphabet_soup_1_pos",
+        "alphabet_soup_1_quat",
+        "alphabet_soup_1_to_robot0_eef_pos",
+        "alphabet_soup_1_to_robot0_eef_quat",
+        "basket_1_pos",
+        "basket_1_quat",
+        "basket_1_to_robot0_eef_pos",
+        "basket_1_to_robot0_eef_quat",
+        "cream_cheese_1_pos",
+        "cream_cheese_1_quat",
+        "cream_cheese_1_to_robot0_eef_pos",
+        "cream_cheese_1_to_robot0_eef_quat",
+        "ketchup_1_pos",
+        "ketchup_1_quat",
+        "ketchup_1_to_robot0_eef_pos",
+        "ketchup_1_to_robot0_eef_quat",
+        "object-state",
+        "robot0_eef_pos",
+        "robot0_eef_quat",
+        "robot0_eye_in_hand_image",
+        "robot0_gripper_qpos",
+        "robot0_gripper_qvel",
+        "robot0_joint_pos",
+        "robot0_joint_pos_cos",
+        "robot0_joint_pos_sin",
+        "robot0_joint_vel",
+        "robot0_proprio-state",
+        "tomato_sauce_1_pos",
+        "tomato_sauce_1_quat",
+        "tomato_sauce_1_to_robot0_eef_pos",
+        "tomato_sauce_1_to_robot0_eef_quat"
+      ]
+    },
+    "outputs/phase1_run_20260715_121907/unit_collect_t2_s2/failure_dataset_task2_seed2.h5": {
+      "n_samples": 2974,
+      "class_distribution": {
+        "0": 2884,
+        "1": 90
+      },
+      "img_shapes": {
+        "agentview": [
+          2974,
+          256,
+          256,
+          3
+        ],
+        "eye_in_hand": [
+          2974,
+          256,
+          256,
+          3
+        ]
+      },
+      "state_dims": {
+        "chefmate_8_frypan_1_to_robot0_eef_pos": [
+          2974,
+          3
+        ],
+        "chefmate_8_frypan_1_to_robot0_eef_quat": [
+          2974,
+          4
+        ],
+        "moka_pot_1_to_robot0_eef_pos": [
+          2974,
+          3
+        ],
+        "moka_pot_1_to_robot0_eef_quat": [
+          2974,
+          4
+        ],
+        "robot0_eef_pos": [
+          2974,
+          3
+        ],
+        "robot0_eef_quat": [
+          2974,
+          4
+        ],
+        "robot0_gripper_qpos": [
+          2974,
+          2
+        ],
+        "robot0_gripper_qvel": [
+          2974,
+          2
+        ]
+      },
+      "obs_keys": [
+        "agentview_image",
+        "chefmate_8_frypan_1_pos",
+        "chefmate_8_frypan_1_quat",
+        "chefmate_8_frypan_1_to_robot0_eef_pos",
+        "chefmate_8_frypan_1_to_robot0_eef_quat",
+        "moka_pot_1_pos",
+        "moka_pot_1_quat",
+        "moka_pot_1_to_robot0_eef_pos",
+        "moka_pot_1_to_robot0_eef_quat",
+        "object-state",
+        "robot0_eef_pos",
+        "robot0_eef_quat",
+        "robot0_eye_in_hand_image",
+        "robot0_gripper_qpos",
+        "robot0_gripper_qvel",
+        "robot0_joint_pos",
+        "robot0_joint_pos_cos",
+        "robot0_joint_pos_sin",
+        "robot0_joint_vel",
+        "robot0_proprio-state"
+      ]
+    },
+    "outputs/phase1_run_20260715_121907/unit_collect_t5_s0/failure_dataset_task5_seed0.h5": {
+      "n_samples": 2941,
+      "class_distribution": {
+        "0": 2881,
+        "1": 60
+      },
+      "img_shapes": {
+        "agentview": [
+          2941,
+          256,
+          256,
+          3
+        ],
+        "eye_in_hand": [
+          2941,
+          256,
+          256,
+          3
+        ]
+      },
+      "state_dims": {
+        "black_book_1_to_robot0_eef_pos": [
+          2941,
+          3
+        ],
+        "black_book_1_to_robot0_eef_quat": [
+          2941,
+          4
+        ],
+        "robot0_eef_pos": [
+          2941,
+          3
+        ],
+        "robot0_eef_quat": [
+          2941,
+          4
+        ],
+        "robot0_gripper_qpos": [
+          2941,
+          2
+        ],
+        "robot0_gripper_qvel": [
+          2941,
+          2
+        ],
+        "white_yellow_mug_1_to_robot0_eef_pos": [
+          2941,
+          3
+        ],
+        "white_yellow_mug_1_to_robot0_eef_quat": [
+          2941,
+          4
+        ]
+      },
+      "obs_keys": [
+        "agentview_image",
+        "black_book_1_pos",
+        "black_book_1_quat",
+        "black_book_1_to_robot0_eef_pos",
+        "black_book_1_to_robot0_eef_quat",
+        "object-state",
+        "robot0_eef_pos",
+        "robot0_eef_quat",
+        "robot0_eye_in_hand_image",
+        "robot0_gripper_qpos",
+        "robot0_gripper_qvel",
+        "robot0_joint_pos",
+        "robot0_joint_pos_cos",
+        "robot0_joint_pos_sin",
+        "robot0_joint_vel",
+        "robot0_proprio-state",
+        "white_yellow_mug_1_pos",
+        "white_yellow_mug_1_quat",
+        "white_yellow_mug_1_to_robot0_eef_pos",
+        "white_yellow_mug_1_to_robot0_eef_quat"
+      ]
+    },
+    "outputs/phase1_run_20260715_121907/unit_collect_t2_s1/failure_dataset_task2_seed1.h5": {
+      "n_samples": 3317,
+      "class_distribution": {
+        "0": 3137,
+        "1": 180
+      },
+      "img_shapes": {
+        "agentview": [
+          3317,
+          256,
+          256,
+          3
+        ],
+        "eye_in_hand": [
+          3317,
+          256,
+          256,
+          3
+        ]
+      },
+      "state_dims": {
+        "chefmate_8_frypan_1_to_robot0_eef_pos": [
+          3317,
+          3
+        ],
+        "chefmate_8_frypan_1_to_robot0_eef_quat": [
+          3317,
+          4
+        ],
+        "moka_pot_1_to_robot0_eef_pos": [
+          3317,
+          3
+        ],
+        "moka_pot_1_to_robot0_eef_quat": [
+          3317,
+          4
+        ],
+        "robot0_eef_pos": [
+          3317,
+          3
+        ],
+        "robot0_eef_quat": [
+          3317,
+          4
+        ],
+        "robot0_gripper_qpos": [
+          3317,
+          2
+        ],
+        "robot0_gripper_qvel": [
+          3317,
+          2
+        ]
+      },
+      "obs_keys": [
+        "agentview_image",
+        "chefmate_8_frypan_1_pos",
+        "chefmate_8_frypan_1_quat",
+        "chefmate_8_frypan_1_to_robot0_eef_pos",
+        "chefmate_8_frypan_1_to_robot0_eef_quat",
+        "moka_pot_1_pos",
+        "moka_pot_1_quat",
+        "moka_pot_1_to_robot0_eef_pos",
+        "moka_pot_1_to_robot0_eef_quat",
+        "object-state",
+        "robot0_eef_pos",
+        "robot0_eef_quat",
+        "robot0_eye_in_hand_image",
+        "robot0_gripper_qpos",
+        "robot0_gripper_qvel",
+        "robot0_joint_pos",
+        "robot0_joint_pos_cos",
+        "robot0_joint_pos_sin",
+        "robot0_joint_vel",
+        "robot0_proprio-state"
+      ]
+    },
+    "outputs/phase1_run_20260715_121907/unit_collect_t6_s2/failure_dataset_task6_seed2.h5": {
+      "n_samples": 2790,
+      "class_distribution": {
+        "0": 2760,
+        "1": 30
+      },
+      "img_shapes": {
+        "agentview": [
+          2790,
+          256,
+          256,
+          3
+        ],
+        "eye_in_hand": [
+          2790,
+          256,
+          256,
+          3
+        ]
+      },
+      "state_dims": {
+        "chocolate_pudding_1_to_robot0_eef_pos": [
+          2790,
+          3
+        ],
+        "chocolate_pudding_1_to_robot0_eef_quat": [
+          2790,
+          4
+        ],
+        "plate_1_to_robot0_eef_pos": [
+          2790,
+          3
+        ],
+        "plate_1_to_robot0_eef_quat": [
+          2790,
+          4
+        ],
+        "porcelain_mug_1_to_robot0_eef_pos": [
+          2790,
+          3
+        ],
+        "porcelain_mug_1_to_robot0_eef_quat": [
+          2790,
+          4
+        ],
+        "red_coffee_mug_1_to_robot0_eef_pos": [
+          2790,
+          3
+        ],
+        "red_coffee_mug_1_to_robot0_eef_quat": [
+          2790,
+          4
+        ],
+        "robot0_eef_pos": [
+          2790,
+          3
+        ],
+        "robot0_eef_quat": [
+          2790,
+          4
+        ],
+        "robot0_gripper_qpos": [
+          2790,
+          2
+        ],
+        "robot0_gripper_qvel": [
+          2790,
+          2
+        ]
+      },
+      "obs_keys": [
+        "agentview_image",
+        "chocolate_pudding_1_pos",
+        "chocolate_pudding_1_quat",
+        "chocolate_pudding_1_to_robot0_eef_pos",
+        "chocolate_pudding_1_to_robot0_eef_quat",
+        "object-state",
+        "plate_1_pos",
+        "plate_1_quat",
+        "plate_1_to_robot0_eef_pos",
+        "plate_1_to_robot0_eef_quat",
+        "porcelain_mug_1_pos",
+        "porcelain_mug_1_quat",
+        "porcelain_mug_1_to_robot0_eef_pos",
+        "porcelain_mug_1_to_robot0_eef_quat",
+        "red_coffee_mug_1_pos",
+        "red_coffee_mug_1_quat",
+        "red_coffee_mug_1_to_robot0_eef_pos",
+        "red_coffee_mug_1_to_robot0_eef_quat",
+        "robot0_eef_pos",
+        "robot0_eef_quat",
+        "robot0_eye_in_hand_image",
+        "robot0_gripper_qpos",
+        "robot0_gripper_qvel",
+        "robot0_joint_pos",
+        "robot0_joint_pos_cos",
+        "robot0_joint_pos_sin",
+        "robot0_joint_vel",
+        "robot0_proprio-state"
+      ]
+    },
+    "outputs/phase1_run_20260715_121907/unit_collect_t4_s2/failure_dataset_task4_seed2.h5": {
+      "n_samples": 4000,
+      "class_distribution": {
+        "0": 3700,
+        "1": 300
+      },
+      "img_shapes": {
+        "agentview": [
+          4000,
+          256,
+          256,
+          3
+        ],
+        "eye_in_hand": [
+          4000,
+          256,
+          256,
+          3
+        ]
+      },
+      "state_dims": {
+        "plate_1_to_robot0_eef_pos": [
+          4000,
+          3
+        ],
+        "plate_1_to_robot0_eef_quat": [
+          4000,
+          4
+        ],
+        "plate_2_to_robot0_eef_pos": [
+          4000,
+          3
+        ],
+        "plate_2_to_robot0_eef_quat": [
+          4000,
+          4
+        ],
+        "porcelain_mug_1_to_robot0_eef_pos": [
+          4000,
+          3
+        ],
+        "porcelain_mug_1_to_robot0_eef_quat": [
+          4000,
+          4
+        ],
+        "red_coffee_mug_1_to_robot0_eef_pos": [
+          4000,
+          3
+        ],
+        "red_coffee_mug_1_to_robot0_eef_quat": [
+          4000,
+          4
+        ],
+        "robot0_eef_pos": [
+          4000,
+          3
+        ],
+        "robot0_eef_quat": [
+          4000,
+          4
+        ],
+        "robot0_gripper_qpos": [
+          4000,
+          2
+        ],
+        "robot0_gripper_qvel": [
+          4000,
+          2
+        ],
+        "white_yellow_mug_1_to_robot0_eef_pos": [
+          4000,
+          3
+        ],
+        "white_yellow_mug_1_to_robot0_eef_quat": [
+          4000,
+          4
+        ]
+      },
+      "obs_keys": [
+        "agentview_image",
+        "object-state",
+        "plate_1_pos",
+        "plate_1_quat",
+        "plate_1_to_robot0_eef_pos",
+        "plate_1_to_robot0_eef_quat",
+        "plate_2_pos",
+        "plate_2_quat",
+        "plate_2_to_robot0_eef_pos",
+        "plate_2_to_robot0_eef_quat",
+        "porcelain_mug_1_pos",
+        "porcelain_mug_1_quat",
+        "porcelain_mug_1_to_robot0_eef_pos",
+        "porcelain_mug_1_to_robot0_eef_quat",
+        "red_coffee_mug_1_pos",
+        "red_coffee_mug_1_quat",
+        "red_coffee_mug_1_to_robot0_eef_pos",
+        "red_coffee_mug_1_to_robot0_eef_quat",
+        "robot0_eef_pos",
+        "robot0_eef_quat",
+        "robot0_eye_in_hand_image",
+        "robot0_gripper_qpos",
+        "robot0_gripper_qvel",
+        "robot0_joint_pos",
+        "robot0_joint_pos_cos",
+        "robot0_joint_pos_sin",
+        "robot0_joint_vel",
+        "robot0_proprio-state",
+        "white_yellow_mug_1_pos",
+        "white_yellow_mug_1_quat",
+        "white_yellow_mug_1_to_robot0_eef_pos",
+        "white_yellow_mug_1_to_robot0_eef_quat"
+      ]
+    },
+    "outputs/phase1_run_20260715_121907/unit_collect_t5_s2/failure_dataset_task5_seed2.h5": {
+      "n_samples": 2669,
+      "class_distribution": {
+        "0": 2579,
+        "1": 90
+      },
+      "img_shapes": {
+        "agentview": [
+          2669,
+          256,
+          256,
+          3
+        ],
+        "eye_in_hand": [
+          2669,
+          256,
+          256,
+          3
+        ]
+      },
+      "state_dims": {
+        "black_book_1_to_robot0_eef_pos": [
+          2669,
+          3
+        ],
+        "black_book_1_to_robot0_eef_quat": [
+          2669,
+          4
+        ],
+        "robot0_eef_pos": [
+          2669,
+          3
+        ],
+        "robot0_eef_quat": [
+          2669,
+          4
+        ],
+        "robot0_gripper_qpos": [
+          2669,
+          2
+        ],
+        "robot0_gripper_qvel": [
+          2669,
+          2
+        ],
+        "white_yellow_mug_1_to_robot0_eef_pos": [
+          2669,
+          3
+        ],
+        "white_yellow_mug_1_to_robot0_eef_quat": [
+          2669,
+          4
+        ]
+      },
+      "obs_keys": [
+        "agentview_image",
+        "black_book_1_pos",
+        "black_book_1_quat",
+        "black_book_1_to_robot0_eef_pos",
+        "black_book_1_to_robot0_eef_quat",
+        "object-state",
+        "robot0_eef_pos",
+        "robot0_eef_quat",
+        "robot0_eye_in_hand_image",
+        "robot0_gripper_qpos",
+        "robot0_gripper_qvel",
+        "robot0_joint_pos",
+        "robot0_joint_pos_cos",
+        "robot0_joint_pos_sin",
+        "robot0_joint_vel",
+        "robot0_proprio-state",
+        "white_yellow_mug_1_pos",
+        "white_yellow_mug_1_quat",
+        "white_yellow_mug_1_to_robot0_eef_pos",
+        "white_yellow_mug_1_to_robot0_eef_quat"
+      ]
+    },
+    "outputs/phase1_run_20260715_121907/unit_collect_t9_s1/failure_dataset_task9_seed1.h5": {
+      "n_samples": 3297,
+      "class_distribution": {
+        "0": 3207,
+        "1": 90
+      },
+      "img_shapes": {
+        "agentview": [
+          3297,
+          256,
+          256,
+          3
+        ],
+        "eye_in_hand": [
+          3297,
+          256,
+          256,
+          3
+        ]
+      },
+      "state_dims": {
+        "porcelain_mug_1_to_robot0_eef_pos": [
+          3297,
+          3
+        ],
+        "porcelain_mug_1_to_robot0_eef_quat": [
+          3297,
+          4
+        ],
+        "robot0_eef_pos": [
+          3297,
+          3
+        ],
+        "robot0_eef_quat": [
+          3297,
+          4
+        ],
+        "robot0_gripper_qpos": [
+          3297,
+          2
+        ],
+        "robot0_gripper_qvel": [
+          3297,
+          2
+        ],
+        "white_yellow_mug_1_to_robot0_eef_pos": [
+          3297,
+          3
+        ],
+        "white_yellow_mug_1_to_robot0_eef_quat": [
+          3297,
+          4
+        ]
+      },
+      "obs_keys": [
+        "agentview_image",
+        "object-state",
+        "porcelain_mug_1_pos",
+        "porcelain_mug_1_quat",
+        "porcelain_mug_1_to_robot0_eef_pos",
+        "porcelain_mug_1_to_robot0_eef_quat",
+        "robot0_eef_pos",
+        "robot0_eef_quat",
+        "robot0_eye_in_hand_image",
+        "robot0_gripper_qpos",
+        "robot0_gripper_qvel",
+        "robot0_joint_pos",
+        "robot0_joint_pos_cos",
+        "robot0_joint_pos_sin",
+        "robot0_joint_vel",
+        "robot0_proprio-state",
+        "white_yellow_mug_1_pos",
+        "white_yellow_mug_1_quat",
+        "white_yellow_mug_1_to_robot0_eef_pos",
+        "white_yellow_mug_1_to_robot0_eef_quat"
+      ]
+    },
+    "outputs/phase1_run_20260715_121907/unit_collect_t7_s1/failure_dataset_task7_seed1.h5": {
+      "n_samples": 3780,
+      "class_distribution": {
+        "0": 3540,
+        "1": 240
+      },
+      "img_shapes": {
+        "agentview": [
+          3780,
+          256,
+          256,
+          3
+        ],
+        "eye_in_hand": [
+          3780,
+          256,
+          256,
+          3
+        ]
+      },
+      "state_dims": {
+        "alphabet_soup_1_to_robot0_eef_pos": [
+          3780,
+          3
+        ],
+        "alphabet_soup_1_to_robot0_eef_quat": [
+          3780,
+          4
+        ],
+        "basket_1_to_robot0_eef_pos": [
+          3780,
+          3
+        ],
+        "basket_1_to_robot0_eef_quat": [
+          3780,
+          4
+        ],
+        "cream_cheese_1_to_robot0_eef_pos": [
+          3780,
+          3
+        ],
+        "cream_cheese_1_to_robot0_eef_quat": [
+          3780,
+          4
+        ],
+        "ketchup_1_to_robot0_eef_pos": [
+          3780,
+          3
+        ],
+        "ketchup_1_to_robot0_eef_quat": [
+          3780,
+          4
+        ],
+        "robot0_eef_pos": [
+          3780,
+          3
+        ],
+        "robot0_eef_quat": [
+          3780,
+          4
+        ],
+        "robot0_gripper_qpos": [
+          3780,
+          2
+        ],
+        "robot0_gripper_qvel": [
+          3780,
+          2
+        ],
+        "tomato_sauce_1_to_robot0_eef_pos": [
+          3780,
+          3
+        ],
+        "tomato_sauce_1_to_robot0_eef_quat": [
+          3780,
+          4
+        ]
+      },
+      "obs_keys": [
+        "agentview_image",
+        "alphabet_soup_1_pos",
+        "alphabet_soup_1_quat",
+        "alphabet_soup_1_to_robot0_eef_pos",
+        "alphabet_soup_1_to_robot0_eef_quat",
+        "basket_1_pos",
+        "basket_1_quat",
+        "basket_1_to_robot0_eef_pos",
+        "basket_1_to_robot0_eef_quat",
+        "cream_cheese_1_pos",
+        "cream_cheese_1_quat",
+        "cream_cheese_1_to_robot0_eef_pos",
+        "cream_cheese_1_to_robot0_eef_quat",
+        "ketchup_1_pos",
+        "ketchup_1_quat",
+        "ketchup_1_to_robot0_eef_pos",
+        "ketchup_1_to_robot0_eef_quat",
+        "object-state",
+        "robot0_eef_pos",
+        "robot0_eef_quat",
+        "robot0_eye_in_hand_image",
+        "robot0_gripper_qpos",
+        "robot0_gripper_qvel",
+        "robot0_joint_pos",
+        "robot0_joint_pos_cos",
+        "robot0_joint_pos_sin",
+        "robot0_joint_vel",
+        "robot0_proprio-state",
+        "tomato_sauce_1_pos",
+        "tomato_sauce_1_quat",
+        "tomato_sauce_1_to_robot0_eef_pos",
+        "tomato_sauce_1_to_robot0_eef_quat"
+      ]
+    },
+    "outputs/phase1_run_20260715_121907/unit_collect_t8_s0/failure_dataset_task8_seed0.h5": {
+      "n_samples": 4000,
+      "class_distribution": {
+        "0": 3700,
+        "1": 300
+      },
+      "img_shapes": {
+        "agentview": [
+          4000,
+          256,
+          256,
+          3
+        ],
+        "eye_in_hand": [
+          4000,
+          256,
+          256,
+          3
+        ]
+      },
+      "state_dims": {
+        "moka_pot_1_to_robot0_eef_pos": [
+          4000,
+          3
+        ],
+        "moka_pot_1_to_robot0_eef_quat": [
+          4000,
+          4
+        ],
+        "moka_pot_2_to_robot0_eef_pos": [
+          4000,
+          3
+        ],
+        "moka_pot_2_to_robot0_eef_quat": [
+          4000,
+          4
+        ],
+        "robot0_eef_pos": [
+          4000,
+          3
+        ],
+        "robot0_eef_quat": [
+          4000,
+          4
+        ],
+        "robot0_gripper_qpos": [
+          4000,
+          2
+        ],
+        "robot0_gripper_qvel": [
+          4000,
+          2
+        ]
+      },
+      "obs_keys": [
+        "agentview_image",
+        "moka_pot_1_pos",
+        "moka_pot_1_quat",
+        "moka_pot_1_to_robot0_eef_pos",
+        "moka_pot_1_to_robot0_eef_quat",
+        "moka_pot_2_pos",
+        "moka_pot_2_quat",
+        "moka_pot_2_to_robot0_eef_pos",
+        "moka_pot_2_to_robot0_eef_quat",
+        "object-state",
+        "robot0_eef_pos",
+        "robot0_eef_quat",
+        "robot0_eye_in_hand_image",
+        "robot0_gripper_qpos",
+        "robot0_gripper_qvel",
+        "robot0_joint_pos",
+        "robot0_joint_pos_cos",
+        "robot0_joint_pos_sin",
+        "robot0_joint_vel",
+        "robot0_proprio-state"
+      ]
+    },
+    "outputs/phase1_run_20260715_121907/unit_collect_t0_s1/failure_dataset_task0_seed1.h5": {
+      "n_samples": 3830,
+      "class_distribution": {
+        "0": 3590,
+        "1": 240
+      },
+      "img_shapes": {
+        "agentview": [
+          3830,
+          256,
+          256,
+          3
+        ],
+        "eye_in_hand": [
+          3830,
+          256,
+          256,
+          3
+        ]
+      },
+      "state_dims": {
+        "alphabet_soup_1_to_robot0_eef_pos": [
+          3830,
+          3
+        ],
+        "alphabet_soup_1_to_robot0_eef_quat": [
+          3830,
+          4
+        ],
+        "basket_1_to_robot0_eef_pos": [
+          3830,
+          3
+        ],
+        "basket_1_to_robot0_eef_quat": [
+          3830,
+          4
+        ],
+        "butter_1_to_robot0_eef_pos": [
+          3830,
+          3
+        ],
+        "butter_1_to_robot0_eef_quat": [
+          3830,
+          4
+        ],
+        "cream_cheese_1_to_robot0_eef_pos": [
+          3830,
+          3
+        ],
+        "cream_cheese_1_to_robot0_eef_quat": [
+          3830,
+          4
+        ],
+        "ketchup_1_to_robot0_eef_pos": [
+          3830,
+          3
+        ],
+        "ketchup_1_to_robot0_eef_quat": [
+          3830,
+          4
+        ],
+        "milk_1_to_robot0_eef_pos": [
+          3830,
+          3
+        ],
+        "milk_1_to_robot0_eef_quat": [
+          3830,
+          4
+        ],
+        "orange_juice_1_to_robot0_eef_pos": [
+          3830,
+          3
+        ],
+        "orange_juice_1_to_robot0_eef_quat": [
+          3830,
+          4
+        ],
+        "robot0_eef_pos": [
+          3830,
+          3
+        ],
+        "robot0_eef_quat": [
+          3830,
+          4
+        ],
+        "robot0_gripper_qpos": [
+          3830,
+          2
+        ],
+        "robot0_gripper_qvel": [
+          3830,
+          2
+        ],
+        "tomato_sauce_1_to_robot0_eef_pos": [
+          3830,
+          3
+        ],
+        "tomato_sauce_1_to_robot0_eef_quat": [
+          3830,
+          4
+        ]
+      },
+      "obs_keys": [
+        "agentview_image",
+        "alphabet_soup_1_pos",
+        "alphabet_soup_1_quat",
+        "alphabet_soup_1_to_robot0_eef_pos",
+        "alphabet_soup_1_to_robot0_eef_quat",
+        "basket_1_pos",
+        "basket_1_quat",
+        "basket_1_to_robot0_eef_pos",
+        "basket_1_to_robot0_eef_quat",
+        "butter_1_pos",
+        "butter_1_quat",
+        "butter_1_to_robot0_eef_pos",
+        "butter_1_to_robot0_eef_quat",
+        "cream_cheese_1_pos",
+        "cream_cheese_1_quat",
+        "cream_cheese_1_to_robot0_eef_pos",
+        "cream_cheese_1_to_robot0_eef_quat",
+        "ketchup_1_pos",
+        "ketchup_1_quat",
+        "ketchup_1_to_robot0_eef_pos",
+        "ketchup_1_to_robot0_eef_quat",
+        "milk_1_pos",
+        "milk_1_quat",
+        "milk_1_to_robot0_eef_pos",
+        "milk_1_to_robot0_eef_quat",
+        "object-state",
+        "orange_juice_1_pos",
+        "orange_juice_1_quat",
+        "orange_juice_1_to_robot0_eef_pos",
+        "orange_juice_1_to_robot0_eef_quat",
+        "robot0_eef_pos",
+        "robot0_eef_quat",
+        "robot0_eye_in_hand_image",
+        "robot0_gripper_qpos",
+        "robot0_gripper_qvel",
+        "robot0_joint_pos",
+        "robot0_joint_pos_cos",
+        "robot0_joint_pos_sin",
+        "robot0_joint_vel",
+        "robot0_proprio-state",
+        "tomato_sauce_1_pos",
+        "tomato_sauce_1_quat",
+        "tomato_sauce_1_to_robot0_eef_pos",
+        "tomato_sauce_1_to_robot0_eef_quat"
+      ]
+    },
+    "outputs/phase1_run_20260715_121907/unit_collect_t8_s2/failure_dataset_task8_seed2.h5": {
+      "n_samples": 4000,
+      "class_distribution": {
+        "0": 3700,
+        "1": 300
+      },
+      "img_shapes": {
+        "agentview": [
+          4000,
+          256,
+          256,
+          3
+        ],
+        "eye_in_hand": [
+          4000,
+          256,
+          256,
+          3
+        ]
+      },
+      "state_dims": {
+        "moka_pot_1_to_robot0_eef_pos": [
+          4000,
+          3
+        ],
+        "moka_pot_1_to_robot0_eef_quat": [
+          4000,
+          4
+        ],
+        "moka_pot_2_to_robot0_eef_pos": [
+          4000,
+          3
+        ],
+        "moka_pot_2_to_robot0_eef_quat": [
+          4000,
+          4
+        ],
+        "robot0_eef_pos": [
+          4000,
+          3
+        ],
+        "robot0_eef_quat": [
+          4000,
+          4
+        ],
+        "robot0_gripper_qpos": [
+          4000,
+          2
+        ],
+        "robot0_gripper_qvel": [
+          4000,
+          2
+        ]
+      },
+      "obs_keys": [
+        "agentview_image",
+        "moka_pot_1_pos",
+        "moka_pot_1_quat",
+        "moka_pot_1_to_robot0_eef_pos",
+        "moka_pot_1_to_robot0_eef_quat",
+        "moka_pot_2_pos",
+        "moka_pot_2_quat",
+        "moka_pot_2_to_robot0_eef_pos",
+        "moka_pot_2_to_robot0_eef_quat",
+        "object-state",
+        "robot0_eef_pos",
+        "robot0_eef_quat",
+        "robot0_eye_in_hand_image",
+        "robot0_gripper_qpos",
+        "robot0_gripper_qvel",
+        "robot0_joint_pos",
+        "robot0_joint_pos_cos",
+        "robot0_joint_pos_sin",
+        "robot0_joint_vel",
+        "robot0_proprio-state"
+      ]
+    },
+    "outputs/phase1_run_20260715_121907/unit_collect_t5_s1/failure_dataset_task5_seed1.h5": {
+      "n_samples": 2820,
+      "class_distribution": {
+        "0": 2700,
+        "1": 120
+      },
+      "img_shapes": {
+        "agentview": [
+          2820,
+          256,
+          256,
+          3
+        ],
+        "eye_in_hand": [
+          2820,
+          256,
+          256,
+          3
+        ]
+      },
+      "state_dims": {
+        "black_book_1_to_robot0_eef_pos": [
+          2820,
+          3
+        ],
+        "black_book_1_to_robot0_eef_quat": [
+          2820,
+          4
+        ],
+        "robot0_eef_pos": [
+          2820,
+          3
+        ],
+        "robot0_eef_quat": [
+          2820,
+          4
+        ],
+        "robot0_gripper_qpos": [
+          2820,
+          2
+        ],
+        "robot0_gripper_qvel": [
+          2820,
+          2
+        ],
+        "white_yellow_mug_1_to_robot0_eef_pos": [
+          2820,
+          3
+        ],
+        "white_yellow_mug_1_to_robot0_eef_quat": [
+          2820,
+          4
+        ]
+      },
+      "obs_keys": [
+        "agentview_image",
+        "black_book_1_pos",
+        "black_book_1_quat",
+        "black_book_1_to_robot0_eef_pos",
+        "black_book_1_to_robot0_eef_quat",
+        "object-state",
+        "robot0_eef_pos",
+        "robot0_eef_quat",
+        "robot0_eye_in_hand_image",
+        "robot0_gripper_qpos",
+        "robot0_gripper_qvel",
+        "robot0_joint_pos",
+        "robot0_joint_pos_cos",
+        "robot0_joint_pos_sin",
+        "robot0_joint_vel",
+        "robot0_proprio-state",
+        "white_yellow_mug_1_pos",
+        "white_yellow_mug_1_quat",
+        "white_yellow_mug_1_to_robot0_eef_pos",
+        "white_yellow_mug_1_to_robot0_eef_quat"
+      ]
+    },
+    "outputs/phase1_run_20260715_121907/unit_collect_t0_s0/failure_dataset_task0_seed0.h5": {
+      "n_samples": 3729,
+      "class_distribution": {
+        "0": 3519,
+        "1": 210
+      },
+      "img_shapes": {
+        "agentview": [
+          3729,
+          256,
+          256,
+          3
+        ],
+        "eye_in_hand": [
+          3729,
+          256,
+          256,
+          3
+        ]
+      },
+      "state_dims": {
+        "alphabet_soup_1_to_robot0_eef_pos": [
+          3729,
+          3
+        ],
+        "alphabet_soup_1_to_robot0_eef_quat": [
+          3729,
+          4
+        ],
+        "basket_1_to_robot0_eef_pos": [
+          3729,
+          3
+        ],
+        "basket_1_to_robot0_eef_quat": [
+          3729,
+          4
+        ],
+        "butter_1_to_robot0_eef_pos": [
+          3729,
+          3
+        ],
+        "butter_1_to_robot0_eef_quat": [
+          3729,
+          4
+        ],
+        "cream_cheese_1_to_robot0_eef_pos": [
+          3729,
+          3
+        ],
+        "cream_cheese_1_to_robot0_eef_quat": [
+          3729,
+          4
+        ],
+        "ketchup_1_to_robot0_eef_pos": [
+          3729,
+          3
+        ],
+        "ketchup_1_to_robot0_eef_quat": [
+          3729,
+          4
+        ],
+        "milk_1_to_robot0_eef_pos": [
+          3729,
+          3
+        ],
+        "milk_1_to_robot0_eef_quat": [
+          3729,
+          4
+        ],
+        "orange_juice_1_to_robot0_eef_pos": [
+          3729,
+          3
+        ],
+        "orange_juice_1_to_robot0_eef_quat": [
+          3729,
+          4
+        ],
+        "robot0_eef_pos": [
+          3729,
+          3
+        ],
+        "robot0_eef_quat": [
+          3729,
+          4
+        ],
+        "robot0_gripper_qpos": [
+          3729,
+          2
+        ],
+        "robot0_gripper_qvel": [
+          3729,
+          2
+        ],
+        "tomato_sauce_1_to_robot0_eef_pos": [
+          3729,
+          3
+        ],
+        "tomato_sauce_1_to_robot0_eef_quat": [
+          3729,
+          4
+        ]
+      },
+      "obs_keys": [
+        "agentview_image",
+        "alphabet_soup_1_pos",
+        "alphabet_soup_1_quat",
+        "alphabet_soup_1_to_robot0_eef_pos",
+        "alphabet_soup_1_to_robot0_eef_quat",
+        "basket_1_pos",
+        "basket_1_quat",
+        "basket_1_to_robot0_eef_pos",
+        "basket_1_to_robot0_eef_quat",
+        "butter_1_pos",
+        "butter_1_quat",
+        "butter_1_to_robot0_eef_pos",
+        "butter_1_to_robot0_eef_quat",
+        "cream_cheese_1_pos",
+        "cream_cheese_1_quat",
+        "cream_cheese_1_to_robot0_eef_pos",
+        "cream_cheese_1_to_robot0_eef_quat",
+        "ketchup_1_pos",
+        "ketchup_1_quat",
+        "ketchup_1_to_robot0_eef_pos",
+        "ketchup_1_to_robot0_eef_quat",
+        "milk_1_pos",
+        "milk_1_quat",
+        "milk_1_to_robot0_eef_pos",
+        "milk_1_to_robot0_eef_quat",
+        "object-state",
+        "orange_juice_1_pos",
+        "orange_juice_1_quat",
+        "orange_juice_1_to_robot0_eef_pos",
+        "orange_juice_1_to_robot0_eef_quat",
+        "robot0_eef_pos",
+        "robot0_eef_quat",
+        "robot0_eye_in_hand_image",
+        "robot0_gripper_qpos",
+        "robot0_gripper_qvel",
+        "robot0_joint_pos",
+        "robot0_joint_pos_cos",
+        "robot0_joint_pos_sin",
+        "robot0_joint_vel",
+        "robot0_proprio-state",
+        "tomato_sauce_1_pos",
+        "tomato_sauce_1_quat",
+        "tomato_sauce_1_to_robot0_eef_pos",
+        "tomato_sauce_1_to_robot0_eef_quat"
+      ]
+    },
+    "outputs/phase1_run_20260715_121907/unit_collect_t1_s0/failure_dataset_task1_seed0.h5": {
+      "n_samples": 3206,
+      "class_distribution": {
+        "0": 3116,
+        "1": 90
+      },
+      "img_shapes": {
+        "agentview": [
+          3206,
+          256,
+          256,
+          3
+        ],
+        "eye_in_hand": [
+          3206,
+          256,
+          256,
+          3
+        ]
+      },
+      "state_dims": {
+        "alphabet_soup_1_to_robot0_eef_pos": [
+          3206,
+          3
+        ],
+        "alphabet_soup_1_to_robot0_eef_quat": [
+          3206,
+          4
+        ],
+        "basket_1_to_robot0_eef_pos": [
+          3206,
+          3
+        ],
+        "basket_1_to_robot0_eef_quat": [
+          3206,
+          4
+        ],
+        "butter_1_to_robot0_eef_pos": [
+          3206,
+          3
+        ],
+        "butter_1_to_robot0_eef_quat": [
+          3206,
+          4
+        ],
+        "cream_cheese_1_to_robot0_eef_pos": [
+          3206,
+          3
+        ],
+        "cream_cheese_1_to_robot0_eef_quat": [
+          3206,
+          4
+        ],
+        "ketchup_1_to_robot0_eef_pos": [
+          3206,
+          3
+        ],
+        "ketchup_1_to_robot0_eef_quat": [
+          3206,
+          4
+        ],
+        "milk_1_to_robot0_eef_pos": [
+          3206,
+          3
+        ],
+        "milk_1_to_robot0_eef_quat": [
+          3206,
+          4
+        ],
+        "orange_juice_1_to_robot0_eef_pos": [
+          3206,
+          3
+        ],
+        "orange_juice_1_to_robot0_eef_quat": [
+          3206,
+          4
+        ],
+        "robot0_eef_pos": [
+          3206,
+          3
+        ],
+        "robot0_eef_quat": [
+          3206,
+          4
+        ],
+        "robot0_gripper_qpos": [
+          3206,
+          2
+        ],
+        "robot0_gripper_qvel": [
+          3206,
+          2
+        ],
+        "tomato_sauce_1_to_robot0_eef_pos": [
+          3206,
+          3
+        ],
+        "tomato_sauce_1_to_robot0_eef_quat": [
+          3206,
+          4
+        ]
+      },
+      "obs_keys": [
+        "agentview_image",
+        "alphabet_soup_1_pos",
+        "alphabet_soup_1_quat",
+        "alphabet_soup_1_to_robot0_eef_pos",
+        "alphabet_soup_1_to_robot0_eef_quat",
+        "basket_1_pos",
+        "basket_1_quat",
+        "basket_1_to_robot0_eef_pos",
+        "basket_1_to_robot0_eef_quat",
+        "butter_1_pos",
+        "butter_1_quat",
+        "butter_1_to_robot0_eef_pos",
+        "butter_1_to_robot0_eef_quat",
+        "cream_cheese_1_pos",
+        "cream_cheese_1_quat",
+        "cream_cheese_1_to_robot0_eef_pos",
+        "cream_cheese_1_to_robot0_eef_quat",
+        "ketchup_1_pos",
+        "ketchup_1_quat",
+        "ketchup_1_to_robot0_eef_pos",
+        "ketchup_1_to_robot0_eef_quat",
+        "milk_1_pos",
+        "milk_1_quat",
+        "milk_1_to_robot0_eef_pos",
+        "milk_1_to_robot0_eef_quat",
+        "object-state",
+        "orange_juice_1_pos",
+        "orange_juice_1_quat",
+        "orange_juice_1_to_robot0_eef_pos",
+        "orange_juice_1_to_robot0_eef_quat",
+        "robot0_eef_pos",
+        "robot0_eef_quat",
+        "robot0_eye_in_hand_image",
+        "robot0_gripper_qpos",
+        "robot0_gripper_qvel",
+        "robot0_joint_pos",
+        "robot0_joint_pos_cos",
+        "robot0_joint_pos_sin",
+        "robot0_joint_vel",
+        "robot0_proprio-state",
+        "tomato_sauce_1_pos",
+        "tomato_sauce_1_quat",
+        "tomato_sauce_1_to_robot0_eef_pos",
+        "tomato_sauce_1_to_robot0_eef_quat"
+      ]
+    },
+    "outputs/phase1_run_20260715_121907/unit_collect_t3_s2/failure_dataset_task3_seed2.h5": {
+      "n_samples": 2795,
+      "class_distribution": {
+        "0": 2705,
+        "1": 90
+      },
+      "img_shapes": {
+        "agentview": [
+          2795,
+          256,
+          256,
+          3
+        ],
+        "eye_in_hand": [
+          2795,
+          256,
+          256,
+          3
+        ]
+      },
+      "state_dims": {
+        "akita_black_bowl_1_to_robot0_eef_pos": [
+          2795,
+          3
+        ],
+        "akita_black_bowl_1_to_robot0_eef_quat": [
+          2795,
+          4
+        ],
+        "robot0_eef_pos": [
+          2795,
+          3
+        ],
+        "robot0_eef_quat": [
+          2795,
+          4
+        ],
+        "robot0_gripper_qpos": [
+          2795,
+          2
+        ],
+        "robot0_gripper_qvel": [
+          2795,
+          2
+        ],
+        "wine_bottle_1_to_robot0_eef_pos": [
+          2795,
+          3
+        ],
+        "wine_bottle_1_to_robot0_eef_quat": [
+          2795,
+          4
+        ]
+      },
+      "obs_keys": [
+        "agentview_image",
+        "akita_black_bowl_1_pos",
+        "akita_black_bowl_1_quat",
+        "akita_black_bowl_1_to_robot0_eef_pos",
+        "akita_black_bowl_1_to_robot0_eef_quat",
+        "object-state",
+        "robot0_eef_pos",
+        "robot0_eef_quat",
+        "robot0_eye_in_hand_image",
+        "robot0_gripper_qpos",
+        "robot0_gripper_qvel",
+        "robot0_joint_pos",
+        "robot0_joint_pos_cos",
+        "robot0_joint_pos_sin",
+        "robot0_joint_vel",
+        "robot0_proprio-state",
+        "wine_bottle_1_pos",
+        "wine_bottle_1_quat",
+        "wine_bottle_1_to_robot0_eef_pos",
+        "wine_bottle_1_to_robot0_eef_quat"
+      ]
+    },
+    "outputs/phase1_run_20260715_121907/unit_collect_t6_s0/failure_dataset_task6_seed0.h5": {
+      "n_samples": 3294,
+      "class_distribution": {
+        "0": 3144,
+        "1": 150
+      },
+      "img_shapes": {
+        "agentview": [
+          3294,
+          256,
+          256,
+          3
+        ],
+        "eye_in_hand": [
+          3294,
+          256,
+          256,
+          3
+        ]
+      },
+      "state_dims": {
+        "chocolate_pudding_1_to_robot0_eef_pos": [
+          3294,
+          3
+        ],
+        "chocolate_pudding_1_to_robot0_eef_quat": [
+          3294,
+          4
+        ],
+        "plate_1_to_robot0_eef_pos": [
+          3294,
+          3
+        ],
+        "plate_1_to_robot0_eef_quat": [
+          3294,
+          4
+        ],
+        "porcelain_mug_1_to_robot0_eef_pos": [
+          3294,
+          3
+        ],
+        "porcelain_mug_1_to_robot0_eef_quat": [
+          3294,
+          4
+        ],
+        "red_coffee_mug_1_to_robot0_eef_pos": [
+          3294,
+          3
+        ],
+        "red_coffee_mug_1_to_robot0_eef_quat": [
+          3294,
+          4
+        ],
+        "robot0_eef_pos": [
+          3294,
+          3
+        ],
+        "robot0_eef_quat": [
+          3294,
+          4
+        ],
+        "robot0_gripper_qpos": [
+          3294,
+          2
+        ],
+        "robot0_gripper_qvel": [
+          3294,
+          2
+        ]
+      },
+      "obs_keys": [
+        "agentview_image",
+        "chocolate_pudding_1_pos",
+        "chocolate_pudding_1_quat",
+        "chocolate_pudding_1_to_robot0_eef_pos",
+        "chocolate_pudding_1_to_robot0_eef_quat",
+        "object-state",
+        "plate_1_pos",
+        "plate_1_quat",
+        "plate_1_to_robot0_eef_pos",
+        "plate_1_to_robot0_eef_quat",
+        "porcelain_mug_1_pos",
+        "porcelain_mug_1_quat",
+        "porcelain_mug_1_to_robot0_eef_pos",
+        "porcelain_mug_1_to_robot0_eef_quat",
+        "red_coffee_mug_1_pos",
+        "red_coffee_mug_1_quat",
+        "red_coffee_mug_1_to_robot0_eef_pos",
+        "red_coffee_mug_1_to_robot0_eef_quat",
+        "robot0_eef_pos",
+        "robot0_eef_quat",
+        "robot0_eye_in_hand_image",
+        "robot0_gripper_qpos",
+        "robot0_gripper_qvel",
+        "robot0_joint_pos",
+        "robot0_joint_pos_cos",
+        "robot0_joint_pos_sin",
+        "robot0_joint_vel",
+        "robot0_proprio-state"
+      ]
+    },
+    "outputs/phase1_run_20260715_121907/unit_collect_t3_s0/failure_dataset_task3_seed0.h5": {
+      "n_samples": 2569,
+      "class_distribution": {
+        "0": 2539,
+        "1": 30
+      },
+      "img_shapes": {
+        "agentview": [
+          2569,
+          256,
+          256,
+          3
+        ],
+        "eye_in_hand": [
+          2569,
+          256,
+          256,
+          3
+        ]
+      },
+      "state_dims": {
+        "akita_black_bowl_1_to_robot0_eef_pos": [
+          2569,
+          3
+        ],
+        "akita_black_bowl_1_to_robot0_eef_quat": [
+          2569,
+          4
+        ],
+        "robot0_eef_pos": [
+          2569,
+          3
+        ],
+        "robot0_eef_quat": [
+          2569,
+          4
+        ],
+        "robot0_gripper_qpos": [
+          2569,
+          2
+        ],
+        "robot0_gripper_qvel": [
+          2569,
+          2
+        ],
+        "wine_bottle_1_to_robot0_eef_pos": [
+          2569,
+          3
+        ],
+        "wine_bottle_1_to_robot0_eef_quat": [
+          2569,
+          4
+        ]
+      },
+      "obs_keys": [
+        "agentview_image",
+        "akita_black_bowl_1_pos",
+        "akita_black_bowl_1_quat",
+        "akita_black_bowl_1_to_robot0_eef_pos",
+        "akita_black_bowl_1_to_robot0_eef_quat",
+        "object-state",
+        "robot0_eef_pos",
+        "robot0_eef_quat",
+        "robot0_eye_in_hand_image",
+        "robot0_gripper_qpos",
+        "robot0_gripper_qvel",
+        "robot0_joint_pos",
+        "robot0_joint_pos_cos",
+        "robot0_joint_pos_sin",
+        "robot0_joint_vel",
+        "robot0_proprio-state",
+        "wine_bottle_1_pos",
+        "wine_bottle_1_quat",
+        "wine_bottle_1_to_robot0_eef_pos",
+        "wine_bottle_1_to_robot0_eef_quat"
+      ]
+    },
+    "outputs/phase1_run_20260715_121907/unit_collect_t1_s1/failure_dataset_task1_seed1.h5": {
+      "n_samples": 3603,
+      "class_distribution": {
+        "0": 3423,
+        "1": 180
+      },
+      "img_shapes": {
+        "agentview": [
+          3603,
+          256,
+          256,
+          3
+        ],
+        "eye_in_hand": [
+          3603,
+          256,
+          256,
+          3
+        ]
+      },
+      "state_dims": {
+        "alphabet_soup_1_to_robot0_eef_pos": [
+          3603,
+          3
+        ],
+        "alphabet_soup_1_to_robot0_eef_quat": [
+          3603,
+          4
+        ],
+        "basket_1_to_robot0_eef_pos": [
+          3603,
+          3
+        ],
+        "basket_1_to_robot0_eef_quat": [
+          3603,
+          4
+        ],
+        "butter_1_to_robot0_eef_pos": [
+          3603,
+          3
+        ],
+        "butter_1_to_robot0_eef_quat": [
+          3603,
+          4
+        ],
+        "cream_cheese_1_to_robot0_eef_pos": [
+          3603,
+          3
+        ],
+        "cream_cheese_1_to_robot0_eef_quat": [
+          3603,
+          4
+        ],
+        "ketchup_1_to_robot0_eef_pos": [
+          3603,
+          3
+        ],
+        "ketchup_1_to_robot0_eef_quat": [
+          3603,
+          4
+        ],
+        "milk_1_to_robot0_eef_pos": [
+          3603,
+          3
+        ],
+        "milk_1_to_robot0_eef_quat": [
+          3603,
+          4
+        ],
+        "orange_juice_1_to_robot0_eef_pos": [
+          3603,
+          3
+        ],
+        "orange_juice_1_to_robot0_eef_quat": [
+          3603,
+          4
+        ],
+        "robot0_eef_pos": [
+          3603,
+          3
+        ],
+        "robot0_eef_quat": [
+          3603,
+          4
+        ],
+        "robot0_gripper_qpos": [
+          3603,
+          2
+        ],
+        "robot0_gripper_qvel": [
+          3603,
+          2
+        ],
+        "tomato_sauce_1_to_robot0_eef_pos": [
+          3603,
+          3
+        ],
+        "tomato_sauce_1_to_robot0_eef_quat": [
+          3603,
+          4
+        ]
+      },
+      "obs_keys": [
+        "agentview_image",
+        "alphabet_soup_1_pos",
+        "alphabet_soup_1_quat",
+        "alphabet_soup_1_to_robot0_eef_pos",
+        "alphabet_soup_1_to_robot0_eef_quat",
+        "basket_1_pos",
+        "basket_1_quat",
+        "basket_1_to_robot0_eef_pos",
+        "basket_1_to_robot0_eef_quat",
+        "butter_1_pos",
+        "butter_1_quat",
+        "butter_1_to_robot0_eef_pos",
+        "butter_1_to_robot0_eef_quat",
+        "cream_cheese_1_pos",
+        "cream_cheese_1_quat",
+        "cream_cheese_1_to_robot0_eef_pos",
+        "cream_cheese_1_to_robot0_eef_quat",
+        "ketchup_1_pos",
+        "ketchup_1_quat",
+        "ketchup_1_to_robot0_eef_pos",
+        "ketchup_1_to_robot0_eef_quat",
+        "milk_1_pos",
+        "milk_1_quat",
+        "milk_1_to_robot0_eef_pos",
+        "milk_1_to_robot0_eef_quat",
+        "object-state",
+        "orange_juice_1_pos",
+        "orange_juice_1_quat",
+        "orange_juice_1_to_robot0_eef_pos",
+        "orange_juice_1_to_robot0_eef_quat",
+        "robot0_eef_pos",
+        "robot0_eef_quat",
+        "robot0_eye_in_hand_image",
+        "robot0_gripper_qpos",
+        "robot0_gripper_qvel",
+        "robot0_joint_pos",
+        "robot0_joint_pos_cos",
+        "robot0_joint_pos_sin",
+        "robot0_joint_vel",
+        "robot0_proprio-state",
+        "tomato_sauce_1_pos",
+        "tomato_sauce_1_quat",
+        "tomato_sauce_1_to_robot0_eef_pos",
+        "tomato_sauce_1_to_robot0_eef_quat"
+      ]
+    },
+    "outputs/phase1_run_20260715_121907/unit_collect_t1_s2/failure_dataset_task1_seed2.h5": {
+      "n_samples": 3281,
+      "class_distribution": {
+        "0": 3221,
+        "1": 60
+      },
+      "img_shapes": {
+        "agentview": [
+          3281,
+          256,
+          256,
+          3
+        ],
+        "eye_in_hand": [
+          3281,
+          256,
+          256,
+          3
+        ]
+      },
+      "state_dims": {
+        "alphabet_soup_1_to_robot0_eef_pos": [
+          3281,
+          3
+        ],
+        "alphabet_soup_1_to_robot0_eef_quat": [
+          3281,
+          4
+        ],
+        "basket_1_to_robot0_eef_pos": [
+          3281,
+          3
+        ],
+        "basket_1_to_robot0_eef_quat": [
+          3281,
+          4
+        ],
+        "butter_1_to_robot0_eef_pos": [
+          3281,
+          3
+        ],
+        "butter_1_to_robot0_eef_quat": [
+          3281,
+          4
+        ],
+        "cream_cheese_1_to_robot0_eef_pos": [
+          3281,
+          3
+        ],
+        "cream_cheese_1_to_robot0_eef_quat": [
+          3281,
+          4
+        ],
+        "ketchup_1_to_robot0_eef_pos": [
+          3281,
+          3
+        ],
+        "ketchup_1_to_robot0_eef_quat": [
+          3281,
+          4
+        ],
+        "milk_1_to_robot0_eef_pos": [
+          3281,
+          3
+        ],
+        "milk_1_to_robot0_eef_quat": [
+          3281,
+          4
+        ],
+        "orange_juice_1_to_robot0_eef_pos": [
+          3281,
+          3
+        ],
+        "orange_juice_1_to_robot0_eef_quat": [
+          3281,
+          4
+        ],
+        "robot0_eef_pos": [
+          3281,
+          3
+        ],
+        "robot0_eef_quat": [
+          3281,
+          4
+        ],
+        "robot0_gripper_qpos": [
+          3281,
+          2
+        ],
+        "robot0_gripper_qvel": [
+          3281,
+          2
+        ],
+        "tomato_sauce_1_to_robot0_eef_pos": [
+          3281,
+          3
+        ],
+        "tomato_sauce_1_to_robot0_eef_quat": [
+          3281,
+          4
+        ]
+      },
+      "obs_keys": [
+        "agentview_image",
+        "alphabet_soup_1_pos",
+        "alphabet_soup_1_quat",
+        "alphabet_soup_1_to_robot0_eef_pos",
+        "alphabet_soup_1_to_robot0_eef_quat",
+        "basket_1_pos",
+        "basket_1_quat",
+        "basket_1_to_robot0_eef_pos",
+        "basket_1_to_robot0_eef_quat",
+        "butter_1_pos",
+        "butter_1_quat",
+        "butter_1_to_robot0_eef_pos",
+        "butter_1_to_robot0_eef_quat",
+        "cream_cheese_1_pos",
+        "cream_cheese_1_quat",
+        "cream_cheese_1_to_robot0_eef_pos",
+        "cream_cheese_1_to_robot0_eef_quat",
+        "ketchup_1_pos",
+        "ketchup_1_quat",
+        "ketchup_1_to_robot0_eef_pos",
+        "ketchup_1_to_robot0_eef_quat",
+        "milk_1_pos",
+        "milk_1_quat",
+        "milk_1_to_robot0_eef_pos",
+        "milk_1_to_robot0_eef_quat",
+        "object-state",
+        "orange_juice_1_pos",
+        "orange_juice_1_quat",
+        "orange_juice_1_to_robot0_eef_pos",
+        "orange_juice_1_to_robot0_eef_quat",
+        "robot0_eef_pos",
+        "robot0_eef_quat",
+        "robot0_eye_in_hand_image",
+        "robot0_gripper_qpos",
+        "robot0_gripper_qvel",
+        "robot0_joint_pos",
+        "robot0_joint_pos_cos",
+        "robot0_joint_pos_sin",
+        "robot0_joint_vel",
+        "robot0_proprio-state",
+        "tomato_sauce_1_pos",
+        "tomato_sauce_1_quat",
+        "tomato_sauce_1_to_robot0_eef_pos",
+        "tomato_sauce_1_to_robot0_eef_quat"
+      ]
+    },
+    "outputs/phase1_run_20260715_121907/unit_collect_t4_s0/failure_dataset_task4_seed0.h5": {
+      "n_samples": 3938,
+      "class_distribution": {
+        "0": 3668,
+        "1": 270
+      },
+      "img_shapes": {
+        "agentview": [
+          3938,
+          256,
+          256,
+          3
+        ],
+        "eye_in_hand": [
+          3938,
+          256,
+          256,
+          3
+        ]
+      },
+      "state_dims": {
+        "plate_1_to_robot0_eef_pos": [
+          3938,
+          3
+        ],
+        "plate_1_to_robot0_eef_quat": [
+          3938,
+          4
+        ],
+        "plate_2_to_robot0_eef_pos": [
+          3938,
+          3
+        ],
+        "plate_2_to_robot0_eef_quat": [
+          3938,
+          4
+        ],
+        "porcelain_mug_1_to_robot0_eef_pos": [
+          3938,
+          3
+        ],
+        "porcelain_mug_1_to_robot0_eef_quat": [
+          3938,
+          4
+        ],
+        "red_coffee_mug_1_to_robot0_eef_pos": [
+          3938,
+          3
+        ],
+        "red_coffee_mug_1_to_robot0_eef_quat": [
+          3938,
+          4
+        ],
+        "robot0_eef_pos": [
+          3938,
+          3
+        ],
+        "robot0_eef_quat": [
+          3938,
+          4
+        ],
+        "robot0_gripper_qpos": [
+          3938,
+          2
+        ],
+        "robot0_gripper_qvel": [
+          3938,
+          2
+        ],
+        "white_yellow_mug_1_to_robot0_eef_pos": [
+          3938,
+          3
+        ],
+        "white_yellow_mug_1_to_robot0_eef_quat": [
+          3938,
+          4
+        ]
+      },
+      "obs_keys": [
+        "agentview_image",
+        "object-state",
+        "plate_1_pos",
+        "plate_1_quat",
+        "plate_1_to_robot0_eef_pos",
+        "plate_1_to_robot0_eef_quat",
+        "plate_2_pos",
+        "plate_2_quat",
+        "plate_2_to_robot0_eef_pos",
+        "plate_2_to_robot0_eef_quat",
+        "porcelain_mug_1_pos",
+        "porcelain_mug_1_quat",
+        "porcelain_mug_1_to_robot0_eef_pos",
+        "porcelain_mug_1_to_robot0_eef_quat",
+        "red_coffee_mug_1_pos",
+        "red_coffee_mug_1_quat",
+        "red_coffee_mug_1_to_robot0_eef_pos",
+        "red_coffee_mug_1_to_robot0_eef_quat",
+        "robot0_eef_pos",
+        "robot0_eef_quat",
+        "robot0_eye_in_hand_image",
+        "robot0_gripper_qpos",
+        "robot0_gripper_qvel",
+        "robot0_joint_pos",
+        "robot0_joint_pos_cos",
+        "robot0_joint_pos_sin",
+        "robot0_joint_vel",
+        "robot0_proprio-state",
+        "white_yellow_mug_1_pos",
+        "white_yellow_mug_1_quat",
+        "white_yellow_mug_1_to_robot0_eef_pos",
+        "white_yellow_mug_1_to_robot0_eef_quat"
+      ]
+    },
+    "outputs/phase1_run_20260715_121907/unit_collect_t7_s0/failure_dataset_task7_seed0.h5": {
+      "n_samples": 3891,
+      "class_distribution": {
+        "0": 3621,
+        "1": 270
+      },
+      "img_shapes": {
+        "agentview": [
+          3891,
+          256,
+          256,
+          3
+        ],
+        "eye_in_hand": [
+          3891,
+          256,
+          256,
+          3
+        ]
+      },
+      "state_dims": {
+        "alphabet_soup_1_to_robot0_eef_pos": [
+          3891,
+          3
+        ],
+        "alphabet_soup_1_to_robot0_eef_quat": [
+          3891,
+          4
+        ],
+        "basket_1_to_robot0_eef_pos": [
+          3891,
+          3
+        ],
+        "basket_1_to_robot0_eef_quat": [
+          3891,
+          4
+        ],
+        "cream_cheese_1_to_robot0_eef_pos": [
+          3891,
+          3
+        ],
+        "cream_cheese_1_to_robot0_eef_quat": [
+          3891,
+          4
+        ],
+        "ketchup_1_to_robot0_eef_pos": [
+          3891,
+          3
+        ],
+        "ketchup_1_to_robot0_eef_quat": [
+          3891,
+          4
+        ],
+        "robot0_eef_pos": [
+          3891,
+          3
+        ],
+        "robot0_eef_quat": [
+          3891,
+          4
+        ],
+        "robot0_gripper_qpos": [
+          3891,
+          2
+        ],
+        "robot0_gripper_qvel": [
+          3891,
+          2
+        ],
+        "tomato_sauce_1_to_robot0_eef_pos": [
+          3891,
+          3
+        ],
+        "tomato_sauce_1_to_robot0_eef_quat": [
+          3891,
+          4
+        ]
+      },
+      "obs_keys": [
+        "agentview_image",
+        "alphabet_soup_1_pos",
+        "alphabet_soup_1_quat",
+        "alphabet_soup_1_to_robot0_eef_pos",
+        "alphabet_soup_1_to_robot0_eef_quat",
+        "basket_1_pos",
+        "basket_1_quat",
+        "basket_1_to_robot0_eef_pos",
+        "basket_1_to_robot0_eef_quat",
+        "cream_cheese_1_pos",
+        "cream_cheese_1_quat",
+        "cream_cheese_1_to_robot0_eef_pos",
+        "cream_cheese_1_to_robot0_eef_quat",
+        "ketchup_1_pos",
+        "ketchup_1_quat",
+        "ketchup_1_to_robot0_eef_pos",
+        "ketchup_1_to_robot0_eef_quat",
+        "object-state",
+        "robot0_eef_pos",
+        "robot0_eef_quat",
+        "robot0_eye_in_hand_image",
+        "robot0_gripper_qpos",
+        "robot0_gripper_qvel",
+        "robot0_joint_pos",
+        "robot0_joint_pos_cos",
+        "robot0_joint_pos_sin",
+        "robot0_joint_vel",
+        "robot0_proprio-state",
+        "tomato_sauce_1_pos",
+        "tomato_sauce_1_quat",
+        "tomato_sauce_1_to_robot0_eef_pos",
+        "tomato_sauce_1_to_robot0_eef_quat"
+      ]
+    },
+    "outputs/phase1_run_20260715_121907/unit_collect_t4_s1/failure_dataset_task4_seed1.h5": {
+      "n_samples": 3908,
+      "class_distribution": {
+        "0": 3638,
+        "1": 270
+      },
+      "img_shapes": {
+        "agentview": [
+          3908,
+          256,
+          256,
+          3
+        ],
+        "eye_in_hand": [
+          3908,
+          256,
+          256,
+          3
+        ]
+      },
+      "state_dims": {
+        "plate_1_to_robot0_eef_pos": [
+          3908,
+          3
+        ],
+        "plate_1_to_robot0_eef_quat": [
+          3908,
+          4
+        ],
+        "plate_2_to_robot0_eef_pos": [
+          3908,
+          3
+        ],
+        "plate_2_to_robot0_eef_quat": [
+          3908,
+          4
+        ],
+        "porcelain_mug_1_to_robot0_eef_pos": [
+          3908,
+          3
+        ],
+        "porcelain_mug_1_to_robot0_eef_quat": [
+          3908,
+          4
+        ],
+        "red_coffee_mug_1_to_robot0_eef_pos": [
+          3908,
+          3
+        ],
+        "red_coffee_mug_1_to_robot0_eef_quat": [
+          3908,
+          4
+        ],
+        "robot0_eef_pos": [
+          3908,
+          3
+        ],
+        "robot0_eef_quat": [
+          3908,
+          4
+        ],
+        "robot0_gripper_qpos": [
+          3908,
+          2
+        ],
+        "robot0_gripper_qvel": [
+          3908,
+          2
+        ],
+        "white_yellow_mug_1_to_robot0_eef_pos": [
+          3908,
+          3
+        ],
+        "white_yellow_mug_1_to_robot0_eef_quat": [
+          3908,
+          4
+        ]
+      },
+      "obs_keys": [
+        "agentview_image",
+        "object-state",
+        "plate_1_pos",
+        "plate_1_quat",
+        "plate_1_to_robot0_eef_pos",
+        "plate_1_to_robot0_eef_quat",
+        "plate_2_pos",
+        "plate_2_quat",
+        "plate_2_to_robot0_eef_pos",
+        "plate_2_to_robot0_eef_quat",
+        "porcelain_mug_1_pos",
+        "porcelain_mug_1_quat",
+        "porcelain_mug_1_to_robot0_eef_pos",
+        "porcelain_mug_1_to_robot0_eef_quat",
+        "red_coffee_mug_1_pos",
+        "red_coffee_mug_1_quat",
+        "red_coffee_mug_1_to_robot0_eef_pos",
+        "red_coffee_mug_1_to_robot0_eef_quat",
+        "robot0_eef_pos",
+        "robot0_eef_quat",
+        "robot0_eye_in_hand_image",
+        "robot0_gripper_qpos",
+        "robot0_gripper_qvel",
+        "robot0_joint_pos",
+        "robot0_joint_pos_cos",
+        "robot0_joint_pos_sin",
+        "robot0_joint_vel",
+        "robot0_proprio-state",
+        "white_yellow_mug_1_pos",
+        "white_yellow_mug_1_quat",
+        "white_yellow_mug_1_to_robot0_eef_pos",
+        "white_yellow_mug_1_to_robot0_eef_quat"
+      ]
+    }
+  },
+  "task_summary": {
+    "0": {
+      "total_samples": 11445,
+      "n_seeds": 3,
+      "class_distribution": {
+        "0": 10725,
+        "1": 720
+      }
+    },
+    "9": {
+      "total_samples": 10590,
+      "n_seeds": 3,
+      "class_distribution": {
+        "0": 10080,
+        "1": 510
+      }
+    },
+    "2": {
+      "total_samples": 9296,
+      "n_seeds": 3,
+      "class_distribution": {
+        "0": 8936,
+        "1": 360
+      }
+    },
+    "3": {
+      "total_samples": 8037,
+      "n_seeds": 3,
+      "class_distribution": {
+        "0": 7857,
+        "1": 180
+      }
+    },
+    "8": {
+      "total_samples": 12000,
+      "n_seeds": 3,
+      "class_distribution": {
+        "0": 11100,
+        "1": 900
+      }
+    },
+    "6": {
+      "total_samples": 9479,
+      "n_seeds": 3,
+      "class_distribution": {
+        "0": 9149,
+        "1": 330
+      }
+    },
+    "7": {
+      "total_samples": 11449,
+      "n_seeds": 3,
+      "class_distribution": {
+        "0": 10729,
+        "1": 720
+      }
+    },
+    "5": {
+      "total_samples": 8430,
+      "n_seeds": 3,
+      "class_distribution": {
+        "0": 8160,
+        "1": 270
+      }
+    },
+    "4": {
+      "total_samples": 11846,
+      "n_seeds": 3,
+      "class_distribution": {
+        "0": 11006,
+        "1": 840
+      }
+    },
+    "1": {
+      "total_samples": 10090,
+      "n_seeds": 3,
+      "class_distribution": {
+        "0": 9760,
+        "1": 330
+      }
+    }
+  },
+  "overall_stats": {
+    "total_samples": 102662,
+    "class_distribution": {
+      "0": 97502,
+      "1": 5160
+    },
+    "file_errors": 0
+  },
+  "overall_balance": 0.05292199134376731,
+  "baseline_accuracy": {
+    "overall_success_rate": 0.4266666666666667,
+    "task_success_rates": {
+      "0": 0.2,
+      "1": 0.6333333333333333,
+      "2": 0.6,
+      "3": 0.8,
+      "4": 0.06666666666666667,
+      "5": 0.7,
+      "6": 0.6333333333333333,
+      "7": 0.2,
+      "8": 0.0,
+      "9": 0.43333333333333335
+    }
+  }
+}

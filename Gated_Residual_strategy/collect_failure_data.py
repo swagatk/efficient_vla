@@ -62,7 +62,7 @@ except Exception as e:
 def get_libero_dummy_action():
     return [0, 0, 0, 0, 0, 0, -1]
 
-def run_baseline_rollout(task_id, seed, num_episodes=10, max_steps=400):
+def run_baseline_rollout(task_id, seed, num_episodes=10, max_steps=520):
     """
     Runs the baseline SmolVLA policy for a given task and seed.
     
@@ -112,11 +112,10 @@ def run_baseline_rollout(task_id, seed, num_episodes=10, max_steps=400):
     for ep in range(num_episodes):
         print(f"Running episode {ep + 1}/{num_episodes} for task '{task_name}' (id: {task_id}), seed: {seed}")
 
-        # Reset environment and policy
         env.reset()
         init_states = TASK_SUITE.get_task_init_states(task_id)
-        if init_states is not None and len(init_states) > 0:
-            env.set_init_state(random.choice(init_states))
+        if init_states is not None and len(init_states) > ep:
+            env.set_init_state(init_states[ep])
         obs = env.reset()
 
         for _ in range(10):
@@ -293,6 +292,7 @@ def main():
     parser.add_argument("--output_dir", type=str, default="Gated_Residual_strategy/data", help="Output directory")
     parser.add_argument("--run_all", action="store_true", help="Run all tasks and seeds")
     parser.add_argument("--failure_window", type=int, default=30, help="Number of final steps in failed trajectories to label as 1 (failure risk)")
+    parser.add_argument("--max_steps", type=int, default=520, help="Max steps per episode")
     
     args = parser.parse_args()
     
@@ -304,7 +304,7 @@ def main():
                 logs_path = f"{args.output_dir}/logs_task{task_id}_seed{seed}.json"
 
                 print(f"\nProcessing Task {task_id}, Seed {seed}")
-                trajectories = run_baseline_rollout(task_id, seed, args.num_episodes)
+                trajectories = run_baseline_rollout(task_id, seed, args.num_episodes, max_steps=args.max_steps)
                 save_failure_dataset(trajectories, output_path, task_id, seed, failure_window=args.failure_window)
                 save_per_step_logs(trajectories, task_id, seed, logs_path)
     else:
@@ -313,7 +313,7 @@ def main():
         output_path = f"{args.output_dir}/failure_dataset_task{task_id}_seed{args.seed}.h5"
         logs_path = f"{args.output_dir}/logs_task{task_id}_seed{args.seed}.json"
 
-        trajectories = run_baseline_rollout(task_id, args.seed, args.num_episodes)
+        trajectories = run_baseline_rollout(task_id, args.seed, args.num_episodes, max_steps=args.max_steps)
         save_failure_dataset(trajectories, output_path, task_id, args.seed, failure_window=args.failure_window)
         save_per_step_logs(trajectories, task_id, args.seed, logs_path)
 

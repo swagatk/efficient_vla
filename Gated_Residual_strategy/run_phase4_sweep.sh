@@ -25,21 +25,21 @@ CONFIGS=(
 # Dry run settings vs normal settings
 if [[ "${SCRIPT_DRY_RUN:-0}" == "1" ]]; then
   echo "=== Running in DRY RUN mode ==="
-  export NUM_EPISODES=1
-  export SEEDS="0"
-  export TASKS="2"
+  export NUM_EPISODES="${NUM_EPISODES:-1}"
+  export SEEDS="${SEEDS:-0}"
+  export TASKS="${TASKS:-2}"
 else
-  export NUM_EPISODES=10
-  export SEEDS="0 1 2"
-  export TASKS="2 7 9"
+  export NUM_EPISODES="${NUM_EPISODES:-10}"
+  export SEEDS="${SEEDS:-0 1 2}"
+  export TASKS="${TASKS:-2 7 9}"
 fi
 
-export ACTIVE_GATING_TASKS="2 7 9"
+export ACTIVE_GATING_TASKS="${ACTIVE_GATING_TASKS:-2 7 9}"
 export ADAPTIVE_GATING=1
-export INFERENCE_MODE="delta"
+export INFERENCE_MODE="${INFERENCE_MODE:-delta}"
 
-TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-SWEEP_DIR="$SCRIPT_DIR/outputs/phase4_sweep_${TIMESTAMP}"
+TIMESTAMP="${TIMESTAMP:-$(date +%Y%m%d_%H%M%S)}"
+SWEEP_DIR="${SWEEP_DIR:-$SCRIPT_DIR/outputs/phase4_sweep_${TIMESTAMP}}"
 mkdir -p "$SWEEP_DIR"
 
 echo "Sweep results will be saved to: $SWEEP_DIR"

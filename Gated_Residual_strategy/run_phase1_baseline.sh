@@ -9,11 +9,37 @@ HEARTBEAT_SEC="${HEARTBEAT_SEC:-60}"
 PYTHON_BIN="${PYTHON_BIN:-python3}"
 USE_POWER_HARDENING="${USE_POWER_HARDENING:-1}"
 FAILURE_WINDOW="${FAILURE_WINDOW:-30}"
+MAX_STEPS="${MAX_STEPS:-520}"
+NUM_EPISODES="${NUM_EPISODES:-10}"
+BENCHMARK="${BENCHMARK:-libero_10}"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 OUTPUT_ROOT="${OUTPUT_ROOT:-$SCRIPT_DIR/outputs/phase1_run_$(date +%Y%m%d_%H%M%S)}"
 mkdir -p "$OUTPUT_ROOT"
 PROGRESS_LOG="$OUTPUT_ROOT/progress.log"
+
+# Save execution configuration (including all flags and defaults) to config.json
+"$PYTHON_BIN" - <<PY
+import json, os
+
+config = {
+    "resume": int("${RESUME}"),
+    "heartbeat_sec": int("${HEARTBEAT_SEC}"),
+    "python_bin": "${PYTHON_BIN}",
+    "use_power_hardening": int("${USE_POWER_HARDENING}"),
+    "failure_window": int("${FAILURE_WINDOW}"),
+    "max_steps": int("${MAX_STEPS}"),
+    "num_episodes": int("${NUM_EPISODES}"),
+    "benchmark": "${BENCHMARK}",
+    "mujoco_gl": os.environ.get("MUJOCO_GL", "egl"),
+    "pyopengl_platform": os.environ.get("PYOPENGL_PLATFORM", "egl"),
+    "output_root": "${OUTPUT_ROOT}",
+    "script_dir": "${SCRIPT_DIR}"
+}
+
+with open(os.path.join("${OUTPUT_ROOT}", "config.json"), "w") as f:
+    json.dump(config, f, indent=4)
+PY
 
 ORIG_POWER_PROFILE=""
 ORIG_SLEEP_MODE=""
@@ -163,9 +189,12 @@ import json
 import sys
 import math
 from pathlib import Path
+from collections import defaultdict
 
 root = Path(sys.argv[1])
 all_successes = []
+task_successes = defaultdict(list)
+task_names = {}
 
 # Read all individual evaluation result files to aggregate success booleans
 for p in root.rglob("evaluation_report_*.json"):
@@ -174,12 +203,15 @@ for p in root.rglob("evaluation_report_*.json"):
             data = json.load(f)
             if 'tasks' in data:
                 for task_id, task_data in data['tasks'].items():
+                    if 'task_name' in task_data and task_id not in task_names:
+                        task_names[task_id] = task_data['task_name']
                     if 'runs' in task_data:
                         for run in task_data['runs']:
                             if 'episode_details' in run:
                                 for ep in run['episode_details']:
                                     if 'success' in ep:
                                         all_successes.append(ep['success'])
+                                        task_successes[task_id].append(ep['success'])
     except Exception:
         pass
 
@@ -193,25 +225,47 @@ if all_successes:
     ci_lower = max(0.0, p - z * se)
     ci_upper = min(1.0, p + z * se)
 
+    task_results = {}
+    for tid in sorted(task_successes.keys(), key=lambda x: int(x) if x.isdigit() else x):
+        t_list = task_successes[tid]
+        t_n = len(t_list)
+        t_p = sum(t_list) / t_n if t_n > 0 else 0.0
+        t_se = math.sqrt((t_p * (1 - t_p)) / t_n) if t_n > 0 else 0
+        task_results[str(tid)] = {
+            "task_name": task_names.get(tid, f"Task_{tid}"),
+            "success_rate": t_p,
+            "ci_95_lower": max(0.0, t_p - z * t_se),
+            "ci_95_upper": min(1.0, t_p + z * t_se),
+            "total_episodes": t_n,
+            "total_successes": sum(t_list)
+        }
+
     results = {
         "overall_mean_success_rate": p,
         "ci_95_lower": ci_lower,
         "ci_95_upper": ci_upper,
         "total_episodes": n,
-        "total_successes": sum(all_successes)
+        "total_successes": sum(all_successes),
+        "task_results": task_results
     }
 
     out_file = root / "global_aggregate_results.json"
     with out_file.open("w") as f:
         json.dump(results, f, indent=2)
 
-    print("\n" + "="*40)
+    print("\n" + "="*70)
     print(" PHASE 1: BASELINE BENCHMARK RESULTS")
-    print("="*40)
+    print("="*70)
+    print(f"{'Task ID':<10} {'Task Name':<35} {'Success Rate':<15} {'Episodes':<10}")
+    print("-" * 70)
+    for tid, t_data in task_results.items():
+        name_trunc = (t_data['task_name'][:32] + '...') if len(t_data['task_name']) > 35 else t_data['task_name']
+        print(f"{tid:<10} {name_trunc:<35} {t_data['success_rate']:<15.2%} {t_data['total_episodes']:<10}")
+    print("-" * 70)
     print(f"Total Episodes Analyzed: {n}")
     print(f"Overall Success Rate: {results['overall_mean_success_rate']:.2%}")
     print(f"95% CI: [{results['ci_95_lower']:.2%}, {results['ci_95_upper']:.2%}]")
-    print("="*40 + "\n")
+    print("="*70 + "\n")
 else:
     print("\n[analyze] No evaluation results found to analyze.\n")
 PY
@@ -250,11 +304,11 @@ for UNIT in "${UNITS[@]}"; do
   if [[ "$UNIT" == collect_* ]]; then
     TASK=$(echo "$UNIT" | sed -n 's/.*_t\([0-9]*\)_s.*/\1/p')
     SEED=$(echo "$UNIT" | sed -n 's/.*_s\([0-9]*\)/\1/p')
-    CMD=( env PYTHONUNBUFFERED=1 "$PYTHON_BIN" "-u" "$SCRIPT_DIR/collect_failure_data.py" --task_id "$TASK" --seed "$SEED" --num_episodes 10 --output_dir "$UNIT_DIR" --failure_window "$FAILURE_WINDOW" )
+    CMD=( env PYTHONUNBUFFERED=1 "$PYTHON_BIN" "-u" "$SCRIPT_DIR/collect_failure_data.py" --task_id "$TASK" --seed "$SEED" --num_episodes "$NUM_EPISODES" --max_steps "$MAX_STEPS" --output_dir "$UNIT_DIR" --failure_window "$FAILURE_WINDOW" )
   else
     TASK=$(echo "$UNIT" | sed -n 's/.*_t\([0-9]*\)_s.*/\1/p')
     SEED=$(echo "$UNIT" | sed -n 's/.*_s\([0-9]*\)/\1/p')
-    CMD=( env PYTHONUNBUFFERED=1 "$PYTHON_BIN" "-u" "$SCRIPT_DIR/eval_gated_baseline.py" --task_id "$TASK" --seed "$SEED" --output_dir "$UNIT_DIR" )
+    CMD=( env PYTHONUNBUFFERED=1 "$PYTHON_BIN" "-u" "$SCRIPT_DIR/eval_gated_baseline.py" --task_id "$TASK" --seed "$SEED" --num_episodes "$NUM_EPISODES" --max_steps "$MAX_STEPS" --benchmark "$BENCHMARK" --output_dir "$UNIT_DIR" )
   fi
 
   print_progress "$DONE_UNITS" "$TOTAL_UNITS" "unit=${UNIT} starting"

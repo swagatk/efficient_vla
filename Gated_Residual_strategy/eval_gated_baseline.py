@@ -40,17 +40,18 @@ from robosuite.utils.transform_utils import quat2axisangle
 
 # Redefine architectures locally to avoid import path complexities
 class LightweightFailureGate(nn.Module):
-    def __init__(self, state_dim=8):
+    def __init__(self, state_dim=8, window_size=1):
         super().__init__()
+        self.window_size = window_size
         self.state_mlp = nn.Sequential(
             nn.Linear(state_dim, 32),
             nn.ReLU(),
             nn.Linear(32, 32),
             nn.ReLU()
         )
-        # 768 (img1 SigLIP pooler) + 768 (img2 SigLIP pooler) + 32 (state) = 1568
+        # 768 (img1 SigLIP pooler) + 768 (img2 SigLIP pooler) + 32 (state) = 1568 * window_size
         self.fusion = nn.Sequential(
-            nn.Linear(1568, 512),
+            nn.Linear(1568 * window_size, 512),
             nn.ReLU(),
             nn.Dropout(0.2),
             nn.Linear(512, 256),
@@ -61,8 +62,16 @@ class LightweightFailureGate(nn.Module):
         )
 
     def forward(self, feat1, feat2, state):
-        xs = self.state_mlp(state)
-        x = torch.cat([feat1, feat2, xs], dim=1)
+        if state.ndim == 3:  # (B, W, state_dim)
+            B, W, _ = state.shape
+            xs = self.state_mlp(state)              # (B, W, 32)
+            xs_flat = xs.view(B, -1)                # (B, W * 32)
+            feat1_flat = feat1.view(B, -1)          # (B, W * 768)
+            feat2_flat = feat2.view(B, -1)          # (B, W * 768)
+            x = torch.cat([feat1_flat, feat2_flat, xs_flat], dim=1)
+        else:
+            xs = self.state_mlp(state)
+            x = torch.cat([feat1, feat2, xs], dim=1)
         return self.fusion(x)
 
 class LightweightResidualCorrector(nn.Module):
@@ -96,7 +105,7 @@ def get_libero_dummy_action():
 
 def evaluate_task(task_id, seed, base_policy, preprocessor, postprocessor, 
                   gate_model=None, corrector_model=None, 
-                  threshold=0.5, alpha=0.5, num_episodes=10, max_steps=400, device="cuda",
+                  threshold=0.5, alpha=0.5, num_episodes=10, max_steps=520, device="cuda",
                   inference_mode="absolute", benchmark_name="libero_10"):
     """
     Evaluates policy on a single LIBERO task. Blends corrector output when gate triggers.
@@ -159,6 +168,12 @@ def evaluate_task(task_id, seed, base_policy, preprocessor, postprocessor,
         for _ in range(10):
             obs, _, _, _ = env.step(get_libero_dummy_action())
 
+        # Initialize rolling history buffers for gate model sequence inputs (window_size)
+        window_size = getattr(gate_model, 'window_size', 1) if gate_model is not None else 1
+        feat1_history = []
+        feat2_history = []
+        state_history = []
+
         instruction = task.language
         if hasattr(base_policy, 'reset'):
             base_policy.reset()
@@ -204,7 +219,27 @@ def evaluate_task(task_id, seed, base_policy, preprocessor, postprocessor,
                     feat1 = vision_tower(batch_obs["observation.images.image"].to(dtype=v_dtype)).last_hidden_state.mean(dim=1)
                     feat2 = vision_tower(batch_obs["observation.images.image2"].to(dtype=v_dtype)).last_hidden_state.mean(dim=1)
                     
-                    gate_logits = gate_model(feat1.to(torch.float32), feat2.to(torch.float32), state_tensor)
+                    # Update history queues
+                    feat1_history.append(feat1)
+                    feat2_history.append(feat2)
+                    state_history.append(state_tensor)
+                    
+                    if len(feat1_history) > window_size:
+                        feat1_history.pop(0)
+                        feat2_history.pop(0)
+                        state_history.pop(0)
+                        
+                    # Pad history if not full yet (repeat the first available elements)
+                    while len(feat1_history) < window_size:
+                        feat1_history.insert(0, feat1)
+                        feat2_history.insert(0, feat2)
+                        state_history.insert(0, state_tensor)
+                        
+                    feat1_seq = torch.stack(feat1_history, dim=1)  # (1, W, 768)
+                    feat2_seq = torch.stack(feat2_history, dim=1)  # (1, W, 768)
+                    state_seq = torch.stack(state_history, dim=1)  # (1, W, state_dim)
+                    
+                    gate_logits = gate_model(feat1_seq.to(torch.float32), feat2_seq.to(torch.float32), state_seq)
                     gate_prob = torch.sigmoid(gate_logits).item()
 
                 if gate_prob > threshold:
@@ -283,7 +318,7 @@ def main():
     parser.add_argument("--threshold", type=float, default=0.5, help="Gating confidence threshold")
     parser.add_argument("--alpha", type=float, default=0.5, help="Residual interpolation scaling factor")
     parser.add_argument("--num_episodes", type=int, default=10, help="Episodes per task-seed run")
-    parser.add_argument("--max_steps", type=int, default=400, help="Max steps per episode")
+    parser.add_argument("--max_steps", type=int, default=520, help="Max steps per episode")
     parser.add_argument("--inference_mode", type=str, choices=["absolute", "delta"], default="absolute", help="Inference action blending mode")
     parser.add_argument("--output_dir", type=str, default="Gated_Residual_strategy/eval_results", help="Directory to save evaluation reports")
     parser.add_argument("--adaptive_gating", action="store_true", help="Enable task-adaptive gating: only use gate/corrector on specified tasks")
@@ -294,6 +329,11 @@ def main():
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     os.makedirs(args.output_dir, exist_ok=True)
+
+    # Save the configuration (including default arguments) to config.json
+    config_path = os.path.join(args.output_dir, "config.json")
+    with open(config_path, "w") as f:
+        json.dump(vars(args), f, indent=4)
 
     # 1. Load Base Policy once
     print("Loading baseline SmolVLA policy...")
@@ -325,9 +365,20 @@ def main():
                     gate_path = Path(args.gate_dir) / f"unit_train_seed_{train_seed}" / "best_model.pth"
                 
                 if gate_path.exists():
-                    print(f"Loading Failure Gate from {gate_path}")
+                    # Load window_size from config.json if it exists
+                    window_size = 1
+                    gate_config_path = gate_path.parent / "config.json"
+                    if gate_config_path.exists():
+                        try:
+                            with open(gate_config_path, "r") as f:
+                                gate_cfg = json.load(f)
+                                window_size = gate_cfg.get("window_size", 1)
+                        except Exception as e:
+                            print(f"[Warning] Could not load gate config.json: {e}")
+                    
+                    print(f"Loading Failure Gate from {gate_path} (window_size: {window_size})")
                     # Failure Gate uses state_dim=8
-                    gate_model = LightweightFailureGate(state_dim=8).to(device)
+                    gate_model = LightweightFailureGate(state_dim=8, window_size=window_size).to(device)
                     gate_model.load_state_dict(torch.load(gate_path, map_location=device))
                     gate_model.eval()
                 else:

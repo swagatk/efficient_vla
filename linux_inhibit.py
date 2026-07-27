@@ -52,13 +52,15 @@ class LinuxInhibit:
 
     def _handle_stop(self, sig, frame):
         self._release_lock()
-        self._set_profile(self.orig_profile)
+        if self.orig_profile and self.orig_profile != "performance":
+            self._set_profile(self.orig_profile)
         os.kill(os.getpid(), signal.SIGSTOP)
 
     def _handle_continue(self, sig, frame):
         self._acquire_lock()
-        self._set_profile("performance")
-        print("--- Power profile set to 'performance' after resume ---")
+        if self.orig_profile and self.orig_profile != "performance":
+            self._set_profile("performance")
+            print("--- Power profile set to 'performance' after resume ---")
 
     def _handle_terminate(self, sig, frame):
         print(f"\n--- Interrupt signal ({sig}) received. Cleaning up... ---")
@@ -91,22 +93,36 @@ class LinuxInhibit:
         try:
             res = subprocess.run(["powerprofilesctl", "get"], capture_output=True, text=True)
             self.orig_profile = res.stdout.strip()
-            self._set_profile("performance")
-            print(f"--- Power profile set to 'performance' (was '{self.orig_profile}') ---")
             
             # Spawn a detached bash watchdog to guarantee power profile restoration
             # even if this Python process is hard-killed (SIGKILL) or hung.
             pid = os.getpid()
             inhibit_pid = self.process.pid if self.process else None
-            watchdog_script = f"""
-            while kill -0 {pid} 2>/dev/null; do
-                sleep 1
-            done
-            if [ -n \"{inhibit_pid or ''}\" ]; then
-                kill {inhibit_pid or ''} 2>/dev/null
-            fi
-            powerprofilesctl set {self.orig_profile} 2>/dev/null
-            """
+            
+            if self.orig_profile != "performance":
+                self._set_profile("performance")
+                print(f"--- Power profile set to 'performance' (was '{self.orig_profile}') ---")
+                
+                watchdog_script = f"""
+                while kill -0 {pid} 2>/dev/null; do
+                    sleep 1
+                done
+                if [ -n \"{inhibit_pid or ''}\" ]; then
+                    kill {inhibit_pid or ''} 2>/dev/null
+                fi
+                powerprofilesctl set {self.orig_profile} 2>/dev/null
+                """
+            else:
+                print(f"--- Power profile already set to 'performance' (was '{self.orig_profile}') ---")
+                watchdog_script = f"""
+                while kill -0 {pid} 2>/dev/null; do
+                    sleep 1
+                done
+                if [ -n \"{inhibit_pid or ''}\" ]; then
+                    kill {inhibit_pid or ''} 2>/dev/null
+                fi
+                """
+                
             self.watchdog = subprocess.Popen(
                 ["bash", "-c", watchdog_script],
                 start_new_session=True,
@@ -123,7 +139,7 @@ class LinuxInhibit:
         self._restore_signal_hooks()
         self._release_lock()
             
-        if self.orig_profile:
+        if self.orig_profile and self.orig_profile != "performance":
             try:
                 self._set_profile(self.orig_profile)
                 print(f"--- Power profile restored to '{self.orig_profile}' ---")

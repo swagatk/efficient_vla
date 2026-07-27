@@ -127,6 +127,34 @@ Once the corrector model capacity is upgraded and trained:
 - **Sweep Threshold:** Test `threshold` values in `[0.3, 0.5, 0.7]` (determines how early/sensitively the gate triggers).
 - **Sweep Alpha:** Test blending weight `alpha` in `[0.3, 0.5, 0.7, 1.0]` (determines the magnitude of the corrective offset).
 
+To perform sweep in delta mode with adaptive gating
+
+```
+GATE_DIR=outputs/phase2_task_specific_train_20260716_125525 \
+CORRECTOR_DIR=outputs/phase3_task_specific_train_20260717_003320 \
+ACTIVE_GATING_TASKS="1 2 4 6 7 8" \
+TASKS="1 2 4 6 7 8" \
+SEEDS="0 1 2" \
+NUM_EPISODES=10 \
+INFERENCE_MODE=delta \
+PYTHON_BIN=/home/swagat/anaconda3/envs/lerobot_v040/bin/python \
+bash run_phase4_sweep.sh
+
+```
+To perform sweep in absolute mode
+
+```
+INFERENCE_MODE=absolute \
+GATE_DIR=outputs/phase2_task_specific_train_20260716_125525 \
+CORRECTOR_DIR=outputs/phase3_task_specific_train_20260716_210747 \
+ACTIVE_GATING_TASKS="1 2 4 6 7 8" \
+TASKS="1 2 4 6 7 8" \
+SEEDS="0 1 2" \
+NUM_EPISODES=10 \
+PYTHON_BIN=/home/swagat/anaconda3/envs/lerobot_v040/bin/python \
+bash run_phase4_sweep.sh
+
+```
 ---
 
 ## Crucial Recommendations for Better Performance
@@ -156,6 +184,14 @@ Based on empirical benchmarks comparing **Online RL (PPO/SAC)**, **Hybrid Diffus
 2. **Temporal Window Failure Gate (Upgrading Phase 2 Gate):**
    * Single-frame SigLIP features lack dynamic context (causing lower AUC on tasks like Task 9).
    * Upgrade `LightweightFailureGate` to process a short temporal window (e.g., past 4 frames) to accurately detect dynamic failure regions (slip, collision, trajectory drift).
+
+   ```
+   WINDOW_SIZE=4 \
+DATA_DIR=outputs/phase1_run_20260715_121907 \
+PYTHON_BIN=/home/swagat/anaconda3/envs/lerobot_v040/bin/python \
+bash run_phase2_task_specific_gate.sh
+
+   ```
 
 3. **Demonstration-Anchored Residual Target with $L_2$ Magnitude Penalty:**
    * If training residual heads, explicitly target expert deltas ($\Delta a = a_{\text{expert}} - a_{\text{base}}$) with an $L_2$ norm penalty $\|\Delta a\|^2$ to force deltas to zero when baseline action is accurate.
