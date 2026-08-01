@@ -13,6 +13,10 @@ USE_POWER_HARDENING="${USE_POWER_HARDENING:-1}"
 TRAIN_MODE="${TRAIN_MODE:-absolute}"
 BENCHMARK="${BENCHMARK:-libero_10}"
 L2_PENALTY_WEIGHT="${L2_PENALTY_WEIGHT:-0.001}"
+EPOCHS="${EPOCHS:-15}"
+BATCH_SIZE="${BATCH_SIZE:-128}"
+LR="${LR:-1e-3}"
+TARGET_LABEL="${TARGET_LABEL:-0}"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DATA_DIR="${DATA_DIR:-$SCRIPT_DIR/outputs/phase1_run_20260706_233849}"
@@ -21,18 +25,28 @@ OUTPUT_ROOT="${OUTPUT_ROOT:-$SCRIPT_DIR/outputs/phase3_task_specific_train_$(dat
 mkdir -p "$OUTPUT_ROOT"
 PROGRESS_LOG="$OUTPUT_ROOT/progress.log"
 
-cat << EOF > "$OUTPUT_ROOT/config.json"
-{
+"$PYTHON_BIN" - <<PY
+import json, os
+
+config = {
     "train_mode": "${TRAIN_MODE}",
-    "l2_penalty_weight": ${L2_PENALTY_WEIGHT},
+    "l2_penalty_weight": float("${L2_PENALTY_WEIGHT}"),
     "benchmark": "${BENCHMARK}",
     "data_dir": "${DATA_DIR}",
     "output_root": "${OUTPUT_ROOT}",
     "wandb_project": "${WANDB_PROJECT}",
-    "resume": ${RESUME},
-    "python_bin": "${PYTHON_BIN}"
+    "resume": int("${RESUME}"),
+    "python_bin": "${PYTHON_BIN}",
+    "epochs": int("${EPOCHS}"),
+    "batch_size": int("${BATCH_SIZE}"),
+    "lr": float("${LR}"),
+    "target_label": int("${TARGET_LABEL}"),
+    "use_power_hardening": int("${USE_POWER_HARDENING}")
 }
-EOF
+
+with open(os.path.join("${OUTPUT_ROOT}", "config.json"), "w") as f:
+    json.dump(config, f, indent=4)
+PY
 
 INTERRUPTED=0
 START_TS=$(date +%s)
@@ -216,7 +230,10 @@ for seed in "${SEEDS[@]}"; do
       --output_dir "$UNIT_DIR"
       --task_id "$task_id"
       --seed "$seed"
-      --epochs 15
+      --epochs "$EPOCHS"
+      --batch_size "$BATCH_SIZE"
+      --lr "$LR"
+      --target_label "$TARGET_LABEL"
       --train_mode "$TRAIN_MODE"
       --l2_penalty_weight "$L2_PENALTY_WEIGHT"
       --wandb_project "$WANDB_PROJECT"

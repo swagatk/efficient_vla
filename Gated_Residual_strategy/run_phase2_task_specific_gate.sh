@@ -11,24 +11,36 @@ WANDB_RESUME_POLICY="${WANDB_RESUME_POLICY:-allow}"
 PYTHON_BIN="${PYTHON_BIN:-/home/swagat/anaconda3/envs/lerobot_v040/bin/python}"
 USE_POWER_HARDENING="${USE_POWER_HARDENING:-1}"
 WINDOW_SIZE="${WINDOW_SIZE:-1}"
+EPOCHS="${EPOCHS:-30}"
+BATCH_SIZE="${BATCH_SIZE:-128}"
+LR="${LR:-1e-3}"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-DATA_DIR="${DATA_DIR:-$SCRIPT_DIR/outputs/phase1_run_20260706_233849}"
+DATA_DIR="${DATA_DIR:-$SCRIPT_DIR/outputs/phase1_run_20260727_162257}"
 OUTPUT_ROOT="${OUTPUT_ROOT:-$SCRIPT_DIR/outputs/phase2_task_specific_train_$(date +%Y%m%d_%H%M%S)}"
 
 mkdir -p "$OUTPUT_ROOT"
 PROGRESS_LOG="$OUTPUT_ROOT/progress.log"
 
-cat << EOF > "$OUTPUT_ROOT/config.json"
-{
-    "window_size": ${WINDOW_SIZE},
+"$PYTHON_BIN" - <<PY
+import json, os
+
+config = {
+    "window_size": int("${WINDOW_SIZE}"),
+    "epochs": int("${EPOCHS}"),
+    "batch_size": int("${BATCH_SIZE}"),
+    "lr": float("${LR}"),
     "data_dir": "${DATA_DIR}",
     "output_root": "${OUTPUT_ROOT}",
     "wandb_project": "${WANDB_PROJECT}",
-    "resume": ${RESUME},
-    "python_bin": "${PYTHON_BIN}"
+    "resume": int("${RESUME}"),
+    "python_bin": "${PYTHON_BIN}",
+    "use_power_hardening": int("${USE_POWER_HARDENING}")
 }
-EOF
+
+with open(os.path.join("${OUTPUT_ROOT}", "config.json"), "w") as f:
+    json.dump(config, f, indent=4)
+PY
 
 INTERRUPTED=0
 START_TS=$(date +%s)
@@ -212,7 +224,9 @@ for seed in "${SEEDS[@]}"; do
       --output_dir "$UNIT_DIR"
       --task_id "$task_id"
       --seed "$seed"
-      --epochs 15
+      --epochs "$EPOCHS"
+      --batch_size "$BATCH_SIZE"
+      --lr "$LR"
       --window_size "$WINDOW_SIZE"
       --wandb_project "$WANDB_PROJECT"
       --wandb_resume "$WANDB_RESUME_POLICY"

@@ -35,10 +35,10 @@ bash run_phase1_baseline.sh
 - **Epochs:** Increase to 20–30 epochs to ensure validation AUC converges (watch out for class imbalance: use weighted BCE loss).
 
 Command to start fresh execution:
-```
-RESUME=0 \ 
-DATA_DIR=outputs/phase1_run_20260715_121907 \ 
-PYTHON_BIN=/home/swagat/anaconda3/envs/lerobot_v040/bin/python \ 
+```bash
+RESUME=0 \
+DATA_DIR=outputs/phase1_run_20260727_162257 \
+PYTHON_BIN=/home/swagat/anaconda3/envs/lerobot_v040/bin/python \
 bash run_phase2_task_specific_gate.sh
 ```
 

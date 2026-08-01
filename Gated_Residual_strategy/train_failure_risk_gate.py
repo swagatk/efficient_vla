@@ -86,8 +86,8 @@ class FailureDataset(Dataset):
             eef_pos = h5["observations"]["robot0_eef_pos"][i]
             eef_quat = h5["observations"]["robot0_eef_quat"][i]
             gripper_qpos = h5["observations"]["robot0_gripper_qpos"][i]
-            state_np = np.concatenate([eef_pos, quat2axisangle(eef_quat), gripper_qpos])
-            state = torch.from_numpy(state_np).float()
+            state_np = np.concatenate([eef_pos, quat2axisangle(eef_quat), gripper_qpos]).astype(np.float32)
+            state = torch.from_numpy(state_np)
         else:
             # Padding strategy: repeat frame 0 if step_i < 0
             seq_indices = [max(0, i - k) for k in reversed(range(self.window_size))]
@@ -103,8 +103,8 @@ class FailureDataset(Dataset):
                 eef_pos = h5["observations"]["robot0_eef_pos"][step_i]
                 eef_quat = h5["observations"]["robot0_eef_quat"][step_i]
                 gripper_qpos = h5["observations"]["robot0_gripper_qpos"][step_i]
-                s_np = np.concatenate([eef_pos, quat2axisangle(eef_quat), gripper_qpos])
-                state_list.append(torch.from_numpy(s_np).float())
+                s_np = np.concatenate([eef_pos, quat2axisangle(eef_quat), gripper_qpos]).astype(np.float32)
+                state_list.append(torch.from_numpy(s_np))
                 
             img1 = torch.stack(img1_list, dim=0)   # (W, 3, H, W)
             img2 = torch.stack(img2_list, dim=0)   # (W, 3, H, W)
@@ -230,7 +230,7 @@ def main():
     parser.add_argument("--data_dir", type=str, default="Gated_Residual_strategy/data")
     parser.add_argument("--output_dir", type=str, required=True)
     parser.add_argument("--task_id", type=int, default=None, help="Train specifically on this task ID (0-9)")
-    parser.add_argument("--epochs", type=int, default=10)
+    parser.add_argument("--epochs", type=int, default=30)
     parser.add_argument("--batch_size", type=int, default=128)
     parser.add_argument("--lr", type=float, default=1e-3)
     parser.add_argument("--seed", type=int, default=42)

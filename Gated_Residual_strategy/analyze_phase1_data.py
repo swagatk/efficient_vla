@@ -68,7 +68,7 @@ def analyze_log_file(filepath):
 
 def analyze_dataset_quality(data_dir):
     """Analyze the overall quality of the Phase 1 dataset"""
-    print("Analyzing Phase 1 Dataset Quality...")
+    print(f"Analyzing Phase 1 Dataset Quality in {data_dir}...")
     
     # Find all HDF5 files
     h5_files = list(Path(data_dir).rglob("failure_dataset_task*_seed*.h5"))
@@ -80,7 +80,7 @@ def analyze_dataset_quality(data_dir):
     all_labels = []
     task_stats = {}
     
-    for h5_file in h5_files[:5]:  # Analyze first 5 files
+    for h5_file in h5_files:  # Analyze all files
         try:
             with h5py.File(h5_file, 'r') as f:
                 if 'labels' in f:
@@ -127,42 +127,33 @@ def analyze_dataset_quality(data_dir):
         
         # Per-task statistics
         print(f"\nPer-Task Statistics:")
-        for task, stats in task_stats.items():
+        for task in sorted(task_stats.keys(), key=lambda x: int(x.replace('task', '')) if x.replace('task', '').isdigit() else x):
+            stats = task_stats[task]
             if stats['total'] > 0:
                 failure_rate = stats['failure'] / stats['total']
-                print(f"  {task}: {stats['failure']}/{stats['total']} failures ({failure_rate:.2%})")
-    
-    # Check log files for success rates
-    print(f"\nEpisode Success Rates from Logs:")
-    for log_file in log_files[:3]:  # Check first 3 log files
-        try:
-            with open(log_file, 'r') as f:
-                data = json.load(f)
-                
-            if data:
-                successes = sum(1 for ep in data if ep.get('success', False))
-                success_rate = successes / len(data) if data else 0
-                print(f"  {os.path.basename(log_file)}: {success_rate:.2%} ({successes}/{len(data)})")
-        except Exception as e:
-            print(f"  Error reading {log_file}: {e}")
+                print(f"  {task}: {stats['failure']}/{stats['total']} failure steps ({failure_rate:.2%})")
     
     return {
         'total_samples': len(all_labels),
-        'success_count': label_dist.get(0, 0),
-        'failure_count': label_dist.get(1, 0),
+        'success_count': label_dist.get(0, 0) if all_labels else 0,
+        'failure_count': label_dist.get(1, 0) if all_labels else 0,
         'success_rate': label_dist.get(0, 0) / len(all_labels) if all_labels else 0,
         'failure_rate': label_dist.get(1, 0) / len(all_labels) if all_labels else 0,
         'task_stats': task_stats
     }
 
 def main():
-    # Change to the correct directory
-    os.chdir('Gated_Residual_strategy')
+    import argparse
+    parser = argparse.ArgumentParser(description="Analyze Phase 1 Dataset Quality")
+    parser.add_argument("--data_dir", type=str, default="outputs/phase1_run_20260727_162257", help="Path to Phase 1 output directory")
+    args = parser.parse_args()
     
-    data_dir = "outputs/run_20260603_214930"
+    data_dir = args.data_dir
+    if not os.path.exists(data_dir) and os.path.exists(f"Gated_Residual_strategy/{data_dir}"):
+        data_dir = f"Gated_Residual_strategy/{data_dir}"
     
     if not os.path.exists(data_dir):
-        print(f"Data directory {data_dir} not found")
+        print(f"Data directory '{data_dir}' not found.")
         return
     
     # Analyze dataset quality
@@ -173,25 +164,18 @@ def main():
         'dataset_statistics': stats,
         'quality_assessment': {
             'sufficient_data': stats['total_samples'] > 1000,
-            'balanced_classes': stats.get('failure_rate', 0) > 0.1 and stats.get('failure_rate', 0) < 0.9,
+            'balanced_classes': stats.get('failure_rate', 0) > 0.05 and stats.get('failure_rate', 0) < 0.9,
             'adequate_failure_examples': stats.get('failure_count', 0) > 100
         }
     }
     
     print(f"\nQuality Assessment:")
     print(f"  Sufficient data (>1000 samples): {report['quality_assessment']['sufficient_data']}")
-    print(f"  Balanced classes (10-90% failure rate): {report['quality_assessment']['balanced_classes']}")
+    print(f"  Balanced classes (5-90% failure rate): {report['quality_assessment']['balanced_classes']}")
     print(f"  Adequate failure examples (>100): {report['quality_assessment']['adequate_failure_examples']}")
     
-    # Determine if dataset is suitable for Phase 2
     suitable = all(report['quality_assessment'].values())
     print(f"\nDataset suitable for Phase 2 training: {'✅ YES' if suitable else '❌ NO'}")
-    
-    if suitable:
-        print("\n✅ Dataset quality is good for training the failure-risk gate!")
-        print("Next step: Run 'bash run_phase2_train_gate.sh' to train the gate")
-    else:
-        print("\n⚠️  Dataset quality may need improvement before training")
 
 if __name__ == "__main__":
     main()

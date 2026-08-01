@@ -186,7 +186,7 @@ def evaluate_task(task_id, seed, base_policy, preprocessor, postprocessor,
         while not done and step < max_steps:
             img_agent = obs["agentview_image"][::-1, ::-1, :].copy()
             img_wrist = obs["robot0_eye_in_hand_image"][::-1, ::-1, :].copy()
-            state_np = np.concatenate([obs["robot0_eef_pos"], quat2axisangle(obs["robot0_eef_quat"]), obs["robot0_gripper_qpos"]])
+            state_np = np.concatenate([obs["robot0_eef_pos"], quat2axisangle(obs["robot0_eef_quat"]), obs["robot0_gripper_qpos"]]).astype(np.float32)
             
             # 1. Forward through Base SmolVLA Policy
             raw_obs = {

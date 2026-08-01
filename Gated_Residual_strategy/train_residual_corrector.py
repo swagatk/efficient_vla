@@ -153,8 +153,8 @@ class CorrectorDataset(Dataset):
             eef_quat = h5["observations"]["robot0_eef_quat"][i]
             gripper_qpos = h5["observations"]["robot0_gripper_qpos"][i]
             
-            state_np = np.concatenate([eef_pos, quat2axisangle(eef_quat), gripper_qpos])
-            state = torch.from_numpy(state_np).float()
+            state_np = np.concatenate([eef_pos, quat2axisangle(eef_quat), gripper_qpos]).astype(np.float32)
+            state = torch.from_numpy(state_np)
             
             # Read and prepare action target
             action_np = h5["actions"][i]

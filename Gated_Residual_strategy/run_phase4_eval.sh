@@ -226,6 +226,47 @@ SEEDS=( ${SEEDS:-0 1 2} )
 TOTAL_RUNS=$(( ${#TASKS[@]} * ${#SEEDS[@]} ))
 DONE_RUNS=0
 
+# Save configuration arguments to config.json
+TASKS_STR="${TASKS[*]}" \
+SEEDS_STR="${SEEDS[*]}" \
+RESUME="$RESUME" \
+GATE_DIR="$GATE_DIR" \
+CORRECTOR_DIR="$CORRECTOR_DIR" \
+THRESHOLD="$THRESHOLD" \
+ALPHA="$ALPHA" \
+NUM_EPISODES="$NUM_EPISODES" \
+HEARTBEAT_SEC="$HEARTBEAT_SEC" \
+PYTHON_BIN="$PYTHON_BIN" \
+USE_POWER_HARDENING="$USE_POWER_HARDENING" \
+INFERENCE_MODE="$INFERENCE_MODE" \
+BENCHMARK="$BENCHMARK" \
+ADAPTIVE_GATING="$ADAPTIVE_GATING" \
+ACTIVE_GATING_TASKS="$ACTIVE_GATING_TASKS" \
+OUTPUT_DIR="$OUTPUT_DIR" \
+"$PYTHON_BIN" - <<PY
+import json, os
+config = {
+    "resume": int(os.environ.get("RESUME", 1)),
+    "gate_dir": os.environ.get("GATE_DIR", ""),
+    "corrector_dir": os.environ.get("CORRECTOR_DIR", ""),
+    "threshold": float(os.environ.get("THRESHOLD", 0.5)),
+    "alpha": float(os.environ.get("ALPHA", 0.5)),
+    "num_episodes": int(os.environ.get("NUM_EPISODES", 10)),
+    "heartbeat_sec": int(os.environ.get("HEARTBEAT_SEC", 60)),
+    "python_bin": os.environ.get("PYTHON_BIN", "python3"),
+    "use_power_hardening": int(os.environ.get("USE_POWER_HARDENING", 1)),
+    "inference_mode": os.environ.get("INFERENCE_MODE", "absolute"),
+    "benchmark": os.environ.get("BENCHMARK", "libero_10"),
+    "adaptive_gating": int(os.environ.get("ADAPTIVE_GATING", 0)),
+    "active_gating_tasks": os.environ.get("ACTIVE_GATING_TASKS", "2 7 9"),
+    "output_dir": os.environ.get("OUTPUT_DIR", ""),
+    "tasks": os.environ.get("TASKS_STR", ""),
+    "seeds": os.environ.get("SEEDS_STR", "")
+}
+with open(os.path.join(os.environ.get("OUTPUT_DIR"), "config.json"), "w") as f:
+    json.dump(config, f, indent=4)
+PY
+
 echo "Starting Gated Residual Strategy Evaluation..." | tee -a "$PROGRESS_LOG"
 echo "Outputs will be saved in: $OUTPUT_DIR" | tee -a "$PROGRESS_LOG"
 echo "To resume this run if interrupted, execute with:" | tee -a "$PROGRESS_LOG"
