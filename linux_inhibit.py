@@ -15,9 +15,8 @@ class LinuxInhibit:
         self._previous_handlers = {}
 
     def _set_profile(self, profile):
-        if not profile:
-            return
-        subprocess.run(["powerprofilesctl", "set", profile], check=False)
+        # Disabled power profile switching to prevent voltage/thermal instability and GPU driver resets on Alienware laptops
+        pass
 
     def _release_lock(self):
         if self.process and self.process.poll() is None:

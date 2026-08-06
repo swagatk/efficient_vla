@@ -3,6 +3,10 @@ import torch.nn as nn
 import torch.nn.functional as F
 import math
 
+import transformers
+import sys
+sys.path.insert(0, "/home/swagat/lerobot/src")
+
 try:
     from lerobot.policies.smolvla.modeling_smolvla import SmolVLAPolicy, make_att_2d_masks
 except ImportError:
@@ -225,7 +229,8 @@ class HybridFrozenBrainDiffusionHands(nn.Module):
         """
         Uses the frozen SmolVLA backbone purely as a semantic feature extractor.
         """
-        with torch.no_grad():
+        use_cuda_autocast = str(self.device).startswith("cuda")
+        with torch.no_grad(), torch.autocast(device_type="cuda", dtype=torch.bfloat16, enabled=use_cuda_autocast):
             vla_model = self.base_policy.model
             
             # Prepare inputs just like SmolVLA forward pass
@@ -257,8 +262,8 @@ class HybridFrozenBrainDiffusionHands(nn.Module):
                 position_ids=prefix_position_ids,
                 past_key_values=None,
                 inputs_embeds=[prefix_embs, None],
-                use_cache=self.base_policy.config.use_cache,
-                fill_kv_cache=True,
+                use_cache=False,  # DO NOT save KV cache during training to save memory!
+                fill_kv_cache=True, # MUST be True to trigger SmolVLA prefill logic!
             )
             
             # Depending on transformer return type unpacking
@@ -301,12 +306,18 @@ class HybridFrozenBrainDiffusionHands(nn.Module):
                 self._prepare_language_tensors(batch)
                 use_cuda_autocast = str(self.device).startswith("cuda")
                 with torch.autocast(device_type="cuda", dtype=torch.bfloat16, enabled=use_cuda_autocast):
-                    base_action = self.base_policy.select_action(batch)
+                    base_action = self.base_policy._get_action_chunk(batch)
                 base_action = base_action.to(torch.float32)
             if base_action.ndim == 2:
                 base_action = base_action.unsqueeze(1)
-            if base_action.shape[1] == 1 and gt_actions.shape[1] > 1:
+            
+            # Base policy might generate a larger chunk (e.g., 50) than the dataset yields (e.g., 16).
+            # We slice the base action to match the ground truth sequence length.
+            if base_action.shape[1] > gt_actions.shape[1]:
+                base_action = base_action[:, :gt_actions.shape[1], :]
+            elif base_action.shape[1] == 1 and gt_actions.shape[1] > 1:
                 base_action = base_action.expand(-1, gt_actions.shape[1], -1)
+                
             target_actions = gt_actions - base_action
         else:
             target_actions = gt_actions

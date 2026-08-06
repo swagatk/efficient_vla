@@ -19,7 +19,13 @@ import matplotlib.pyplot as plt
 import random
 from typing import Iterable
 import re
+import sys
 from pathlib import Path
+
+# Pre-import transformers to prevent sys.path modifications from causing import_utils.py generator TypeErrors
+import transformers
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from hybrid_diffusion_agent import HybridFrozenBrainDiffusionHands
 from linux_inhibit import LinuxInhibit
@@ -34,6 +40,9 @@ try:
 except ImportError:
     has_libero = False
     print("Warning: Could not import LIBERO. Evaluation loops will be skipped.")
+
+import sys
+sys.path.insert(0, "/home/swagat/lerobot/src")
 
 try:
     from lerobot.common.datasets.lerobot_dataset import LeRobotDataset
@@ -364,6 +373,9 @@ def evaluate_in_environment(
             total_reward += ep_reward
             print(f"Eval Ep {ep+1}/{num_episodes} | Success: {ep_success} | Reward: {ep_reward:.2f} | Steps: {step}")
             
+            # Clean up memory after each evaluation episode
+            torch.cuda.empty_cache()
+            
         success_rate = success_count / num_episodes
         avg_ep_reward = total_reward / num_episodes
         all_tasks_success.append(success_rate)
@@ -381,6 +393,9 @@ def evaluate_in_environment(
         # Clean up env for next task to prevent memory leaks from MuJoCo
         env.close()
         del env
+        import gc
+        gc.collect()
+        torch.cuda.empty_cache()
 
     overall_success = sum(all_tasks_success) / len(all_tasks_success)
     print(f"\nEval Complete | Overall Success Rate: {overall_success:.2f}\n")
@@ -501,6 +516,8 @@ def run_preflight_baseline_check(
                 f"[Preflight] Ep {ep+1}/{num_episodes} | Success: {ep_success} "
                 f"| Reward: {ep_reward:.2f} | Steps: {step}"
             )
+            # Clean up memory after each baseline check episode
+            torch.cuda.empty_cache()
 
         success_rate = success_count / num_episodes
         avg_ep_reward = total_reward / num_episodes
@@ -511,6 +528,10 @@ def run_preflight_baseline_check(
             "avg_reward": float(avg_ep_reward),
         })
         env.close()
+        del env
+        import gc
+        gc.collect()
+        torch.cuda.empty_cache()
 
     overall_success = sum(all_tasks_success) / len(all_tasks_success)
     print(f"\n[Preflight] Overall baseline success rate: {overall_success:.2f}\n")
@@ -618,6 +639,7 @@ def train():
     parser.add_argument("--base_policy_path", type=str, required=True, help="Path to the frozen base SmolVLA policy (e.g. huggingface repo or local path)")
     parser.add_argument("--dataset_repo_id", type=str, default="lerobot/libero_10", help="HuggingFace repo ID for the dataset")
     parser.add_argument("--batch_size", type=int, default=8, help="Batch size for training")
+    parser.add_argument("--num_workers", type=int, default=0, help="Number of dataloader workers. Set to 0 to prevent video decoding segfaults.")
     parser.add_argument("--epochs", type=int, default=50, help="Number of training epochs")
     parser.add_argument("--lr", type=float, default=1e-4, help="Learning rate for the diffusion head")
     parser.add_argument("--chunk_size", type=int, default=16, help="Action chunk size")
@@ -911,7 +933,7 @@ def train():
         dataset,
         batch_size=args.batch_size,
         shuffle=True,
-        num_workers=4,
+        num_workers=args.num_workers,
         pin_memory=True,
         drop_last=True
     )
@@ -977,6 +999,8 @@ def train():
             
             epoch_loss += loss.item()
             global_step += 1
+
+
             
             wandb_payload = {
                 "train/loss": loss.item(),
