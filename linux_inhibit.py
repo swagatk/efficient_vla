@@ -90,37 +90,19 @@ class LinuxInhibit:
         self._install_signal_hooks()
             
         try:
-            res = subprocess.run(["powerprofilesctl", "get"], capture_output=True, text=True)
-            self.orig_profile = res.stdout.strip()
-            
-            # Spawn a detached bash watchdog to guarantee power profile restoration
+            # Spawn a detached bash watchdog to guarantee lock cleanup
             # even if this Python process is hard-killed (SIGKILL) or hung.
             pid = os.getpid()
             inhibit_pid = self.process.pid if self.process else None
             
-            if self.orig_profile != "performance":
-                self._set_profile("performance")
-                print(f"--- Power profile set to 'performance' (was '{self.orig_profile}') ---")
-                
-                watchdog_script = f"""
-                while kill -0 {pid} 2>/dev/null; do
-                    sleep 1
-                done
-                if [ -n \"{inhibit_pid or ''}\" ]; then
-                    kill {inhibit_pid or ''} 2>/dev/null
-                fi
-                powerprofilesctl set {self.orig_profile} 2>/dev/null
-                """
-            else:
-                print(f"--- Power profile already set to 'performance' (was '{self.orig_profile}') ---")
-                watchdog_script = f"""
-                while kill -0 {pid} 2>/dev/null; do
-                    sleep 1
-                done
-                if [ -n \"{inhibit_pid or ''}\" ]; then
-                    kill {inhibit_pid or ''} 2>/dev/null
-                fi
-                """
+            watchdog_script = f"""
+            while kill -0 {pid} 2>/dev/null; do
+                sleep 1
+            done
+            if [ -n "{inhibit_pid or ''}" ]; then
+                kill {inhibit_pid or ''} 2>/dev/null
+            fi
+            """
                 
             self.watchdog = subprocess.Popen(
                 ["bash", "-c", watchdog_script],
@@ -130,7 +112,7 @@ class LinuxInhibit:
                 stderr=DEVNULL,
             )
         except Exception as e:
-            print(f"Could not set power profile: {e}")
+            print(f"Could not initialize watchdog: {e}")
             
         return self
 

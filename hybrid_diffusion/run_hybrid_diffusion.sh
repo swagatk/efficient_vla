@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# hybrid_diffusion/run_hybrid_diffusion.sh
-# Orchestrates train_hybrid_diffusion.py with power management, resumption, and config logging.
+export PYTORCH_CUDA_ALLOC_CONF="${PYTORCH_CUDA_ALLOC_CONF:-expandable_segments:True}"
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PYTHON_BIN="${PYTHON_BIN:-/home/swagat/anaconda3/envs/lerobot_v040/bin/python}"
 
 BASE_POLICY_PATH="${BASE_POLICY_PATH:-HuggingFaceVLA/smolvla_libero}"
@@ -17,23 +17,23 @@ ACTION_DIM="${ACTION_DIM:-7}"
 COND_DIM="${COND_DIM:-960}"
 DIFF_HIDDEN_DIM="${DIFF_HIDDEN_DIM:-256}"
 DIFF_LAYERS="${DIFF_LAYERS:-5}"
-VIS_FREQ="${VIS_FREQ:-2}"
+VIS_FREQ="${VIS_FREQ:-5}"
 DEVICE="${DEVICE:-cuda}"
 EVAL_TASK_IDS="${EVAL_TASK_IDS:-0 1 2 4 6 7 8 9}"
-EVAL_EPISODES="${EVAL_EPISODES:-20}"
+EVAL_EPISODES="${EVAL_EPISODES:-2}"
 IMAGE_FLIP_MODE="${IMAGE_FLIP_MODE:-vertical_horizontal}"
 EVAL_POLICY_MODE="${EVAL_POLICY_MODE:-residual}"
 RESIDUAL_ALPHA="${RESIDUAL_ALPHA:-0.02}"
 EVAL_DIFFUSION_STEPS="${EVAL_DIFFUSION_STEPS:-10}"
 EVAL_ACTION_CLIP="${EVAL_ACTION_CLIP:-1.0}"
 EVAL_LOG_ACTION_STATS_EVERY="${EVAL_LOG_ACTION_STATS_EVERY:-0}"
-EVAL_REPLAN_EACH_STEP="${EVAL_REPLAN_EACH_STEP:-1}"
-RESIDUAL_TARGET="${RESIDUAL_TARGET:-1}"
+EVAL_REPLAN_EACH_STEP="${EVAL_REPLAN_EACH_STEP:-0}"
+RESIDUAL_TARGET="${RESIDUAL_TARGET:-0}"
 DELTA_L2_WEIGHT="${DELTA_L2_WEIGHT:-0.001}"
 WANDB_PROJECT="${WANDB_PROJECT:-hybrid_diffusion_vla}"
 
 RESUME="${RESUME:-0}"
-USE_POWER_HARDENING=1
+USE_POWER_HARDENING="${USE_POWER_HARDENING:-0}"
 INTERRUPTED=0
 TERMINATED=0
 CLEANUP_DONE=0
@@ -45,11 +45,7 @@ OS_NAME="$(uname -s)"
 # Power Hardening
 apply_power_hardening() {
   [[ "$USE_POWER_HARDENING" == "1" ]] || return 0
-  echo "[power] Enabling performance profile..."
-  if command -v powerprofilesctl >/dev/null 2>&1; then
-    ORIG_POWER_PROFILE="$(powerprofilesctl get 2>/dev/null || true)"
-    powerprofilesctl set performance 2>/dev/null || true
-  fi
+  echo "[power] Inhibit configured..."
   if command -v gsettings >/dev/null 2>&1; then
     ORIG_SLEEP_MODE="$(gsettings get org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 2>/dev/null || true)"
     gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing' 2>/dev/null || true
@@ -145,9 +141,17 @@ config = {
 with open('$CONFIG_PATH', 'w') as f:
     json.dump(config, f, indent=4)
 "
-  echo "Saved parameters to $CONFIG_PATH"
 else
   echo "Using existing parameters from $CONFIG_PATH"
+  eval "$("$PYTHON_BIN" -c "
+import json
+with open('$CONFIG_PATH') as f:
+    cfg = json.load(f)
+for k, v in cfg.items():
+    if isinstance(v, list):
+        v = ' '.join(map(str, v))
+    print(f'export {k}=\"{v}\"')
+")"
 fi
 
 apply_power_hardening
@@ -194,7 +198,7 @@ PY
   echo "----------------------------------------"
 
   CMD=(
-    env "PYTHONUNBUFFERED=1" "PYTHONHASHSEED=$SEED" "$PYTHON_BIN" -u "train_hybrid_diffusion.py"
+    env "PYTHONUNBUFFERED=1" "PYTHONFAULTHANDLER=1" "TORCHDYNAMO_DISABLE=1" "TORCH_COMPILE_DISABLE=1" "PYTHONHASHSEED=$SEED" "$PYTHON_BIN" -u "$SCRIPT_DIR/train_hybrid_diffusion.py"
     "--base_policy_path" "$BASE_POLICY_PATH"
     "--dataset_repo_id" "$DATASET_REPO_ID"
     "--batch_size" "$BATCH_SIZE"

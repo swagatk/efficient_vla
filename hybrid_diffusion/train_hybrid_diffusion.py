@@ -1,5 +1,16 @@
 import argparse
 import os
+
+# Prevent OpenGL/EGL context teardown crashes during MuJoCo garbage collection
+os.environ["MUJOCO_GL"] = os.environ.get("MUJOCO_GL", "egl")
+os.environ["PYOPENGL_PLATFORM"] = os.environ.get("PYOPENGL_PLATFORM", "egl")
+try:
+    import OpenGL
+    from OpenGL import EGL
+    OpenGL.ERROR_CHECKING = False
+except ImportError:
+    pass
+
 import torch
 
 # Fix for PyTorch 2.6+ weights_only=True default when loading libero init states
@@ -60,6 +71,19 @@ except ImportError:
     has_lerobot_processors = False
     print("Warning: Could not import LeRobot pre/post processors.")
 
+
+def clear_preprocessor_state(preprocessor):
+    """Clear intermediate EnvTransition references stored in LeRobot processor steps to prevent host RAM memory leaks."""
+    if preprocessor is None:
+        return
+    if hasattr(preprocessor, "steps"):
+        for step in preprocessor.steps:
+            if hasattr(step, "_current_transition"):
+                step._current_transition = None
+    if hasattr(preprocessor, "reset"):
+        preprocessor.reset()
+
+
 def extract_success(info, env=None):
     """Best-effort extraction of task success from env info."""
     if env is not None and hasattr(env, "check_success"):
@@ -73,6 +97,15 @@ def extract_success(info, env=None):
                 val = info[key]
                 return bool(val.item() if hasattr(val, "item") else val)
     return False
+
+
+def set_base_policy_num_steps(base_policy, num_steps: int):
+    if base_policy is None:
+        return
+    if hasattr(base_policy, "config"):
+        base_policy.config.num_steps = num_steps
+    if hasattr(base_policy, "model") and hasattr(base_policy.model, "config"):
+        base_policy.model.config.num_steps = num_steps
 
 
 def get_libero_dummy_action():
@@ -167,6 +200,38 @@ def parse_task_id_tokens(task_id_tokens):
             unique_ids.append(tid)
     return unique_ids
 
+import atexit
+
+_ENV_CACHE = {}
+
+def get_libero_env(task_id, benchmark, benchmark_root):
+    if task_id not in _ENV_CACHE:
+        task = benchmark.get_task(task_id)
+        bddl_file_path = os.path.join(benchmark_root, "bddl_files", task.problem_folder, task.bddl_file)
+        _ENV_CACHE[task_id] = OffScreenRenderEnv(
+            bddl_file_name=bddl_file_path,
+            camera_heights=256,
+            camera_widths=256,
+        )
+    return _ENV_CACHE[task_id]
+
+def close_libero_envs():
+    global _ENV_CACHE
+    for task_id, env in list(_ENV_CACHE.items()):
+        try:
+            env.close()
+        except Exception:
+            pass
+    _ENV_CACHE.clear()
+    import gc
+    gc.collect()
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
+
+atexit.register(close_libero_envs)
+
+
+
 def evaluate_in_environment(
     model,
     device,
@@ -194,28 +259,28 @@ def evaluate_in_environment(
     benchmark_root = os.path.dirname(libero_pkg.__file__)
     
     model.eval()
+    if hasattr(model, "base_policy"):
+        set_base_policy_num_steps(model.base_policy, diffusion_steps)
     
     all_tasks_success = []
     
     for task_id in tasks:
         task = benchmark.get_task(task_id)
-        bddl_file_path = os.path.join(benchmark_root, "bddl_files", task.problem_folder, task.bddl_file)
-        
-        env = OffScreenRenderEnv(
-            bddl_file_name=bddl_file_path,
-            camera_heights=256,
-            camera_widths=256,
-        )
+        env = get_libero_env(task_id, benchmark, benchmark_root)
         
         success_count = 0
         total_reward = 0.0
     
-        print(f"\n--- Running Evaluation on Task {task_id}: {task.language} ---")
+        print(f"\n--- Running Evaluation on Task {task_id}: {task.language} ---", flush=True)
+        init_states = benchmark.get_task_init_states(task_id)
         for ep in range(num_episodes):
             env.reset()
-            init_states = benchmark.get_task_init_states(task_id)
-            env.set_init_state(random.choice(init_states))
-            obs = env.reset()
+            if init_states is not None and len(init_states) > 0:
+                init_state = init_states[ep % len(init_states)]
+                obs = env.set_init_state(init_state)
+            else:
+                obs = env.reset()
+
             for _ in range(10):
                 obs, _, _, _ = env.step(get_libero_dummy_action())
 
@@ -237,6 +302,7 @@ def evaluate_in_environment(
                     policy_obs = preprocess_observation(raw_obs)
                     policy_obs["task"] = [current_instruction]
                     batch = preprocessor(policy_obs)
+                    clear_preprocessor_state(preprocessor)
                 else:
                     img_tensor_agent, img_tensor_wrist = preprocess_policy_images(
                         obs,
@@ -259,107 +325,106 @@ def evaluate_in_environment(
                     }
                 
                 with torch.no_grad():
-                    with torch.autocast(device_type='cuda', dtype=torch.bfloat16):
-                        if policy_mode == "base":
+                    if policy_mode == "base":
+                        base_action = model.base_policy.select_action(batch)
+                        if postprocessor is not None:
+                            env_action = postprocessor(base_action)
+                            action_np = env_action.detach().cpu().to(torch.float32).numpy()[0]
+                        else:
+                            action_np = base_action[0].detach().cpu().to(torch.float32).numpy()
+                            action_np = np.clip(action_np, -1.0, 1.0)
+                    else:
+                        if eval_replan_each_step:
+                            pending_chunk = None
+                            chunk_idx = 0
+
+                        if pending_chunk is None or chunk_idx >= pending_chunk.shape[1]:
+                            pending_chunk = model.select_action(
+                                batch,
+                                steps=diffusion_steps,
+                                return_intermediates=False,
+                            )
+                            chunk_idx = 0
+
+                        hybrid_action = pending_chunk[:, chunk_idx, :]
+                        chunk_idx += 1
+
+                        # Keep normalized policy-space actions bounded before postprocessing.
+                        hybrid_action = torch.clamp(hybrid_action, -eval_action_clip, eval_action_clip)
+
+                        if policy_mode == "mixed":
                             base_action = model.base_policy.select_action(batch)
+                            blended_action = (1.0 - hybrid_mix) * base_action + hybrid_mix * hybrid_action
+                            blended_action = torch.clamp(blended_action, -eval_action_clip, eval_action_clip)
+
+                            if eval_log_action_stats_every > 0 and (step % eval_log_action_stats_every == 0):
+                                def _stats(x):
+                                    x = x.detach().to(torch.float32)
+                                    return {
+                                        "min": float(x.min().item()),
+                                        "max": float(x.max().item()),
+                                        "mean": float(x.mean().item()),
+                                        "std": float(x.std(unbiased=False).item()),
+                                    }
+                                base_stats = _stats(base_action)
+                                hybrid_stats = _stats(hybrid_action)
+                                blend_stats = _stats(blended_action)
+                                print(
+                                    f"[Eval Action Stats][task={task_id} ep={ep+1} step={step}] "
+                                    f"base(min={base_stats['min']:.3f}, max={base_stats['max']:.3f}, mean={base_stats['mean']:.3f}, std={base_stats['std']:.3f}) "
+                                    f"hybrid(min={hybrid_stats['min']:.3f}, max={hybrid_stats['max']:.3f}, mean={hybrid_stats['mean']:.3f}, std={hybrid_stats['std']:.3f}) "
+                                    f"blend(min={blend_stats['min']:.3f}, max={blend_stats['max']:.3f}, mean={blend_stats['mean']:.3f}, std={blend_stats['std']:.3f})"
+                                )
+
                             if postprocessor is not None:
-                                env_action = postprocessor(base_action)
+                                env_action = postprocessor(blended_action)
                                 action_np = env_action.detach().cpu().to(torch.float32).numpy()[0]
                             else:
-                                action_np = base_action[0].detach().cpu().to(torch.float32).numpy()
+                                action_np = blended_action[0].detach().cpu().to(torch.float32).numpy()
+                                action_np = np.clip(action_np, -1.0, 1.0)
+                        elif policy_mode == "residual":
+                            base_action = model.base_policy.select_action(batch)
+                            residual_action = base_action + residual_alpha * hybrid_action
+                            residual_action = torch.clamp(residual_action, -eval_action_clip, eval_action_clip)
+
+                            if eval_log_action_stats_every > 0 and (step % eval_log_action_stats_every == 0):
+                                def _stats(x):
+                                    x = x.detach().to(torch.float32)
+                                    return {
+                                        "min": float(x.min().item()),
+                                        "max": float(x.max().item()),
+                                        "mean": float(x.mean().item()),
+                                        "std": float(x.std(unbiased=False).item()),
+                                    }
+                                base_stats = _stats(base_action)
+                                hybrid_stats = _stats(hybrid_action)
+                                residual_stats = _stats(residual_action)
+                                print(
+                                    f"[Eval Action Stats][task={task_id} ep={ep+1} step={step}] "
+                                    f"base(min={base_stats['min']:.3f}, max={base_stats['max']:.3f}, mean={base_stats['mean']:.3f}, std={base_stats['std']:.3f}) "
+                                    f"hybrid(min={hybrid_stats['min']:.3f}, max={hybrid_stats['max']:.3f}, mean={hybrid_stats['mean']:.3f}, std={hybrid_stats['std']:.3f}) "
+                                    f"residual(min={residual_stats['min']:.3f}, max={residual_stats['max']:.3f}, mean={residual_stats['mean']:.3f}, std={residual_stats['std']:.3f})"
+                                )
+
+                            if postprocessor is not None:
+                                env_action = postprocessor(residual_action)
+                                action_np = env_action.detach().cpu().to(torch.float32).numpy()[0]
+                            else:
+                                action_np = residual_action[0].detach().cpu().to(torch.float32).numpy()
                                 action_np = np.clip(action_np, -1.0, 1.0)
                         else:
-                            if eval_replan_each_step:
-                                pending_chunk = None
-                                chunk_idx = 0
-
-                            if pending_chunk is None or chunk_idx >= pending_chunk.shape[1]:
-                                pending_chunk = model.select_action(
-                                    batch,
-                                    steps=diffusion_steps,
-                                    return_intermediates=False,
+                            if eval_log_action_stats_every > 0 and (step % eval_log_action_stats_every == 0):
+                                h = hybrid_action.detach().to(torch.float32)
+                                print(
+                                    f"[Eval Action Stats][task={task_id} ep={ep+1} step={step}] "
+                                    f"hybrid(min={h.min().item():.3f}, max={h.max().item():.3f}, mean={h.mean().item():.3f}, std={h.std(unbiased=False).item():.3f})"
                                 )
-                                chunk_idx = 0
-
-                            hybrid_action = pending_chunk[:, chunk_idx, :]
-                            chunk_idx += 1
-
-                            # Keep normalized policy-space actions bounded before postprocessing.
-                            hybrid_action = torch.clamp(hybrid_action, -eval_action_clip, eval_action_clip)
-
-                            if policy_mode == "mixed":
-                                base_action = model.base_policy.select_action(batch)
-                                blended_action = (1.0 - hybrid_mix) * base_action + hybrid_mix * hybrid_action
-                                blended_action = torch.clamp(blended_action, -eval_action_clip, eval_action_clip)
-
-                                if eval_log_action_stats_every > 0 and (step % eval_log_action_stats_every == 0):
-                                    def _stats(x):
-                                        x = x.detach().to(torch.float32)
-                                        return {
-                                            "min": float(x.min().item()),
-                                            "max": float(x.max().item()),
-                                            "mean": float(x.mean().item()),
-                                            "std": float(x.std(unbiased=False).item()),
-                                        }
-                                    base_stats = _stats(base_action)
-                                    hybrid_stats = _stats(hybrid_action)
-                                    blend_stats = _stats(blended_action)
-                                    print(
-                                        f"[Eval Action Stats][task={task_id} ep={ep+1} step={step}] "
-                                        f"base(min={base_stats['min']:.3f}, max={base_stats['max']:.3f}, mean={base_stats['mean']:.3f}, std={base_stats['std']:.3f}) "
-                                        f"hybrid(min={hybrid_stats['min']:.3f}, max={hybrid_stats['max']:.3f}, mean={hybrid_stats['mean']:.3f}, std={hybrid_stats['std']:.3f}) "
-                                        f"blend(min={blend_stats['min']:.3f}, max={blend_stats['max']:.3f}, mean={blend_stats['mean']:.3f}, std={blend_stats['std']:.3f})"
-                                    )
-
-                                if postprocessor is not None:
-                                    env_action = postprocessor(blended_action)
-                                    action_np = env_action.detach().cpu().to(torch.float32).numpy()[0]
-                                else:
-                                    action_np = blended_action[0].detach().cpu().to(torch.float32).numpy()
-                                    action_np = np.clip(action_np, -1.0, 1.0)
-                            elif policy_mode == "residual":
-                                base_action = model.base_policy.select_action(batch)
-                                residual_action = base_action + residual_alpha * hybrid_action
-                                residual_action = torch.clamp(residual_action, -eval_action_clip, eval_action_clip)
-
-                                if eval_log_action_stats_every > 0 and (step % eval_log_action_stats_every == 0):
-                                    def _stats(x):
-                                        x = x.detach().to(torch.float32)
-                                        return {
-                                            "min": float(x.min().item()),
-                                            "max": float(x.max().item()),
-                                            "mean": float(x.mean().item()),
-                                            "std": float(x.std(unbiased=False).item()),
-                                        }
-                                    base_stats = _stats(base_action)
-                                    hybrid_stats = _stats(hybrid_action)
-                                    residual_stats = _stats(residual_action)
-                                    print(
-                                        f"[Eval Action Stats][task={task_id} ep={ep+1} step={step}] "
-                                        f"base(min={base_stats['min']:.3f}, max={base_stats['max']:.3f}, mean={base_stats['mean']:.3f}, std={base_stats['std']:.3f}) "
-                                        f"hybrid(min={hybrid_stats['min']:.3f}, max={hybrid_stats['max']:.3f}, mean={hybrid_stats['mean']:.3f}, std={hybrid_stats['std']:.3f}) "
-                                        f"residual(min={residual_stats['min']:.3f}, max={residual_stats['max']:.3f}, mean={residual_stats['mean']:.3f}, std={residual_stats['std']:.3f})"
-                                    )
-
-                                if postprocessor is not None:
-                                    env_action = postprocessor(residual_action)
-                                    action_np = env_action.detach().cpu().to(torch.float32).numpy()[0]
-                                else:
-                                    action_np = residual_action[0].detach().cpu().to(torch.float32).numpy()
-                                    action_np = np.clip(action_np, -1.0, 1.0)
+                            if postprocessor is not None:
+                                env_action = postprocessor(hybrid_action)
+                                action_np = env_action.detach().cpu().to(torch.float32).numpy()[0]
                             else:
-                                if eval_log_action_stats_every > 0 and (step % eval_log_action_stats_every == 0):
-                                    h = hybrid_action.detach().to(torch.float32)
-                                    print(
-                                        f"[Eval Action Stats][task={task_id} ep={ep+1} step={step}] "
-                                        f"hybrid(min={h.min().item():.3f}, max={h.max().item():.3f}, mean={h.mean().item():.3f}, std={h.std(unbiased=False).item():.3f})"
-                                    )
-                                if postprocessor is not None:
-                                    env_action = postprocessor(hybrid_action)
-                                    action_np = env_action.detach().cpu().to(torch.float32).numpy()[0]
-                                else:
-                                    action_np = hybrid_action[0].detach().cpu().to(torch.float32).numpy()
-                                    action_np = np.clip(action_np, -1.0, 1.0)
+                                action_np = hybrid_action[0].detach().cpu().to(torch.float32).numpy()
+                                action_np = np.clip(action_np, -1.0, 1.0)
                 next_obs, reward, done, info = env.step(action_np)
                 step_success = extract_success(info, env)
                 done = bool(done or step_success)
@@ -371,9 +436,8 @@ def evaluate_in_environment(
                 
             success_count += int(ep_success)
             total_reward += ep_reward
-            print(f"Eval Ep {ep+1}/{num_episodes} | Success: {ep_success} | Reward: {ep_reward:.2f} | Steps: {step}")
+            print(f"Eval Ep {ep+1}/{num_episodes} | Success: {ep_success} | Reward: {ep_reward:.2f} | Steps: {step}", flush=True)
             
-            # Clean up memory after each evaluation episode
             torch.cuda.empty_cache()
             
         success_rate = success_count / num_episodes
@@ -389,13 +453,6 @@ def evaluate_in_environment(
             wandb.log(eval_log, step=global_step)
         else:
             wandb.log(eval_log)
-        
-        # Clean up env for next task to prevent memory leaks from MuJoCo
-        env.close()
-        del env
-        import gc
-        gc.collect()
-        torch.cuda.empty_cache()
 
     overall_success = sum(all_tasks_success) / len(all_tasks_success)
     print(f"\nEval Complete | Overall Success Rate: {overall_success:.2f}\n")
@@ -408,6 +465,10 @@ def evaluate_in_environment(
         wandb.log(overall_log, step=global_step)
     else:
         wandb.log(overall_log)
+    import gc
+    gc.collect()
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
     model.train()
 
 
@@ -432,17 +493,12 @@ def run_preflight_baseline_check(
     task_metrics = []
 
     model.base_policy.eval()
+    set_base_policy_num_steps(model.base_policy, 10)
     print("\n[Preflight] Running frozen base-policy baseline check...")
 
     for task_id in tasks:
         task = benchmark.get_task(task_id)
-        bddl_file_path = os.path.join(benchmark_root, "bddl_files", task.problem_folder, task.bddl_file)
-
-        env = OffScreenRenderEnv(
-            bddl_file_name=bddl_file_path,
-            camera_heights=256,
-            camera_widths=256,
-        )
+        env = get_libero_env(task_id, benchmark, benchmark_root)
 
         success_count = 0
         total_reward = 0.0
@@ -470,6 +526,7 @@ def run_preflight_baseline_check(
                     policy_obs = preprocess_observation(raw_obs)
                     policy_obs["task"] = [task.language]
                     batch = preprocessor(policy_obs)
+                    clear_preprocessor_state(preprocessor)
                 else:
                     img_tensor_agent, img_tensor_wrist = preprocess_policy_images(
                         obs,
@@ -492,8 +549,7 @@ def run_preflight_baseline_check(
                     }
 
                 with torch.no_grad():
-                    with torch.autocast(device_type='cuda', dtype=torch.bfloat16):
-                        base_action = model.base_policy.select_action(batch)
+                    base_action = model.base_policy.select_action(batch)
 
                 if postprocessor is not None:
                     env_action = postprocessor(base_action)
@@ -509,14 +565,15 @@ def run_preflight_baseline_check(
                 ep_reward += float(reward)
                 obs = next_obs
                 step += 1
-
+                
+            if preprocessor is not None:
+                clear_preprocessor_state(preprocessor)
             success_count += int(ep_success)
             total_reward += ep_reward
             print(
                 f"[Preflight] Ep {ep+1}/{num_episodes} | Success: {ep_success} "
                 f"| Reward: {ep_reward:.2f} | Steps: {step}"
             )
-            # Clean up memory after each baseline check episode
             torch.cuda.empty_cache()
 
         success_rate = success_count / num_episodes
@@ -527,14 +584,13 @@ def run_preflight_baseline_check(
             "success_rate": float(success_rate),
             "avg_reward": float(avg_ep_reward),
         })
-        env.close()
-        del env
-        import gc
-        gc.collect()
-        torch.cuda.empty_cache()
 
     overall_success = sum(all_tasks_success) / len(all_tasks_success)
     print(f"\n[Preflight] Overall baseline success rate: {overall_success:.2f}\n")
+    import gc
+    gc.collect()
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
     return {
         "overall_success": float(overall_success),
         "episodes": int(num_episodes),
@@ -578,7 +634,7 @@ def plot_diffusion_trajectories(model, batch, device, epoch, num_samples=4, glob
             if isinstance(v, torch.Tensor):
                 v_sub = v[:num_samples]
                 if v_sub.is_floating_point():
-                    vis_batch[k] = v_sub.to(dtype=torch.bfloat16, device=device)
+                    vis_batch[k] = v_sub.to(dtype=torch.float32, device=device)
                 else:
                     vis_batch[k] = v_sub.to(device=device)
             elif isinstance(v, list):
@@ -588,15 +644,8 @@ def plot_diffusion_trajectories(model, batch, device, epoch, num_samples=4, glob
                 
         gt_actions = gt_actions[:num_samples]
         
-        # DEBUG
-        print("DEBUG VIS_BATCH DEVICES:")
-        for k,v in vis_batch.items():
-            if hasattr(v, 'device'):
-                print(f"  {k}: {v.device}")
-        
         # Run inference tracking intermediate noise steps
-        with torch.autocast(device_type="cuda", dtype=torch.bfloat16):
-            final_action, intermediates = model.select_action(vis_batch, steps=10, return_intermediates=True)
+        final_action, intermediates = model.select_action(vis_batch, steps=10, return_intermediates=True)
             
         fig, axes = plt.subplots(num_samples, 1, figsize=(10, 4 * num_samples))
         if num_samples == 1:
@@ -940,7 +989,16 @@ def train():
     
     # Grab a single fixed batch early for consistent visualizations across epochs
     print("Caching fixed batch for evaluation interpolation visualizations...")
-    vis_batch = next(iter(dataloader))
+    raw_vis_batch = next(iter(dataloader))
+    vis_batch = {}
+    for k, v in raw_vis_batch.items():
+        if isinstance(v, torch.Tensor):
+            vis_batch[k] = v.detach().clone()
+        elif isinstance(v, list):
+            vis_batch[k] = list(v)
+        else:
+            vis_batch[k] = v
+    del raw_vis_batch
 
     # Optimizer specifically targeting ONLY the diffusion head
     optimizer = optim.AdamW(model.diffusion_head.parameters(), lr=args.lr, weight_decay=1e-4)
@@ -949,6 +1007,16 @@ def train():
     if checkpoint is not None:
         optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
         scheduler.load_state_dict(checkpoint.get('scheduler_state_dict', scheduler.state_dict()))
+    elif wandb_resume_step > 0 and len(dataloader) > 0:
+        inferred_epoch = wandb_resume_step // len(dataloader)
+        if inferred_epoch > start_epoch:
+            print(
+                f"[W&B Resume] No checkpoint file found, but WandB logged up to step {wandb_resume_step}.\n"
+                f"[W&B Resume] Inferring {inferred_epoch} completed epoch(s). JUMPING DIRECTLY TO Epoch {inferred_epoch + 1}/{args.epochs}!"
+            )
+            start_epoch = inferred_epoch
+            for _ in range(start_epoch):
+                scheduler.step()
 
     checkpoint_step = start_epoch * len(dataloader)
     global_step = max(checkpoint_step, wandb_resume_step)
@@ -957,6 +1025,8 @@ def train():
     print("Starting Training Loop...")
     if args.residual_target:
         print(f"[Train] Residual-target mode enabled (delta_l2_weight={args.delta_l2_weight}).")
+        if hasattr(model, "base_policy"):
+            set_base_policy_num_steps(model.base_policy, 1)
     for epoch in range(start_epoch, args.epochs):
         model.diffusion_head.train()
         epoch_loss = 0.0
@@ -1000,7 +1070,6 @@ def train():
             epoch_loss += loss.item()
             global_step += 1
 
-
             
             wandb_payload = {
                 "train/loss": loss.item(),
@@ -1015,28 +1084,32 @@ def train():
             wandb.log(wandb_payload, step=global_step)
             pbar.set_postfix({"loss": f"{loss.item():.4f}"})
             
+            # Explicitly delete variables that hold large compute graphs or memory
+            del loss, loss_metrics, batch, gt_actions
+            if global_step % 2000 == 0:
+                import gc
+                gc.collect()
+                torch.cuda.empty_cache()
         scheduler.step()
         
         avg_loss = epoch_loss / len(dataloader)
         print(f"Epoch {epoch+1} Average Loss: {avg_loss:.4f}")
         wandb.log({"train/epoch_loss": avg_loss, "epoch": epoch+1}, step=global_step)
         
-        # Save checkpoints BEFORE evaluation to prevent progress loss on eval crashes
+        # Always save latest checkpoint every epoch for seamless resumption
+        ckpt_state = {
+            'epoch': epoch + 1,
+            'model_state_dict': model.get_trainable_state_dict(),
+            'optimizer_state_dict': optimizer.state_dict(),
+            'scheduler_state_dict': scheduler.state_dict(),
+            'wandb_run_id': run_id,
+        }
+        torch.save(ckpt_state, latest_ckpt_path)
+
+        # Save periodic numbered checkpoint according to vis_freq
         if (epoch + 1) % args.vis_freq == 0 or (epoch + 1) == args.epochs:
-            ckpt_state = {
-                'epoch': epoch + 1,
-                'model_state_dict': model.get_trainable_state_dict(),
-                'optimizer_state_dict': optimizer.state_dict(),
-                'scheduler_state_dict': scheduler.state_dict(),
-                'wandb_run_id': run_id,
-            }
-            
-            # Save periodic numbered checkpoint
             ckpt_path = os.path.join(args.out_dir, f"hybrid_diff_epoch_{epoch+1:03d}.pt")
             torch.save(ckpt_state, ckpt_path)
-            
-            # Save latest checkpoint for easy resumption
-            torch.save(ckpt_state, latest_ckpt_path)
             print(f"Checkpoints saved to {args.out_dir}")
             
         # Periodic visualization and real environment evaluation
@@ -1061,6 +1134,10 @@ def train():
                 eval_log_action_stats_every=args.eval_log_action_stats_every,
                 eval_action_clip=args.eval_action_clip,
             )
+        
+        import gc
+        gc.collect()
+        torch.cuda.empty_cache()
             
     wandb.finish()
     print("Training complete.")

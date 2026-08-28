@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import math
+import hashlib
 
 import transformers
 import sys
@@ -9,6 +10,37 @@ sys.path.insert(0, "/home/swagat/lerobot/src")
 
 try:
     from lerobot.policies.smolvla.modeling_smolvla import SmolVLAPolicy, make_att_2d_masks
+    from lerobot.policies.smolvla.smolvlm_with_expert import SmolVLMWithExpertModel
+
+    def _patched_eager_attention_forward(self, attention_mask, batch_size, head_dim, query_states, key_states, value_states):
+        num_att_heads = self.num_attention_heads
+        num_key_value_heads = self.num_key_value_heads
+        num_key_value_groups = num_att_heads // num_key_value_heads
+
+        if num_key_value_groups > 1:
+            key_states = key_states.repeat_interleave(num_key_value_groups, dim=2)
+            value_states = value_states.repeat_interleave(num_key_value_groups, dim=2)
+
+        query_states = query_states.to(dtype=torch.float32).transpose(1, 2)
+        key_states = key_states.to(dtype=torch.float32).transpose(1, 2)
+
+        att_weights = torch.matmul(query_states, key_states.transpose(2, 3))
+        att_weights *= head_dim**-0.5
+
+        big_neg = torch.finfo(att_weights.dtype).min
+        if attention_mask.ndim == 3:
+            att_mask_4d = attention_mask.unsqueeze(1)
+        else:
+            att_mask_4d = attention_mask
+        masked_att_weights = torch.where(att_mask_4d, att_weights, big_neg)
+        probs = nn.functional.softmax(masked_att_weights, dim=-1).to(dtype=value_states.dtype)
+
+        val_perm = value_states.permute(0, 2, 1, 3).contiguous()
+        att_output = torch.matmul(probs, val_perm).permute(0, 2, 1, 3).contiguous()
+        att_output = att_output.reshape(batch_size, -1, num_key_value_heads * num_key_value_groups * head_dim)
+        return att_output
+
+    SmolVLMWithExpertModel.eager_attention_forward = _patched_eager_attention_forward
 except ImportError:
     pass
 
@@ -100,12 +132,20 @@ class HybridFrozenBrainDiffusionHands(nn.Module):
     Implements the 'Frozen Brain, Diffusion Hands' Architecture.
     Strips standard action head, freezes the VLM backbone, and attaches a Diffusion head.
     """
+    def set_base_policy_num_steps(self, num_steps: int):
+        if not hasattr(self, "base_policy") or self.base_policy is None:
+            return
+        if hasattr(self.base_policy, "config"):
+            self.base_policy.config.num_steps = num_steps
+        if hasattr(self.base_policy, "model") and hasattr(self.base_policy.model, "config"):
+            self.base_policy.model.config.num_steps = num_steps
+
     def __init__(
         self,
         base_policy_path,
         action_dim=7,
         chunk_size=16,
-        cond_dim=2048, # Default for SmolVLM hidden_size depending on variant. Update if different.
+        cond_dim=960, # SmolVLM2 500M hidden_size / pooled semantic feature dimension
         diff_hidden_dim=256,
         diff_layers=5,
         device="cuda"
@@ -126,6 +166,8 @@ class HybridFrozenBrainDiffusionHands(nn.Module):
         self.base_policy.to(torch.float32)
         self.base_policy.to(self.device)
         self.base_policy.eval()
+        # Set 1-step sampling for base policy to optimize training loss baseline calculation and prevent multi-step KV-cache memory buildup
+        self.set_base_policy_num_steps(1)
         
         # 1. Strip the standard action head completely by completely freezing the 500M parameters backbone
         # so it acts purely as a semantic feature extractor. 
@@ -144,6 +186,7 @@ class HybridFrozenBrainDiffusionHands(nn.Module):
         )
         self.diffusion_head.to(self.device)
         print(f"[HybridDiffusion] Attached highly specialized Diffusion Head with condition dim {cond_dim}.")
+        self._lang_token_cache = {}
 
     def _normalize_text_batch(self, raw_text):
         if raw_text is None:
@@ -215,10 +258,19 @@ class HybridFrozenBrainDiffusionHands(nn.Module):
                 f"No language tokens or text field found in batch keys: {list(batch.keys())}"
             )
 
-        processor = self.base_policy.model.vlm_with_expert.processor
-        text_out = processor(text=texts, return_tensors="pt", padding=True, truncation=True)
-        lang_tokens = text_out["input_ids"].to(self.device)
-        lang_masks = text_out["attention_mask"].to(self.device).bool()
+        cache_key = tuple(texts)
+        if hasattr(self, "_lang_token_cache") and cache_key in self._lang_token_cache:
+            lang_tokens, lang_masks = self._lang_token_cache[cache_key]
+        else:
+            processor = self.base_policy.model.vlm_with_expert.processor
+            text_out = processor(text=texts, return_tensors="pt", padding=True, truncation=True)
+            lang_tokens = text_out["input_ids"].to(self.device)
+            lang_masks = text_out["attention_mask"].to(self.device).bool()
+            if not hasattr(self, "_lang_token_cache"):
+                self._lang_token_cache = {}
+            if len(self._lang_token_cache) > 100:
+                self._lang_token_cache.clear()
+            self._lang_token_cache[cache_key] = (lang_tokens, lang_masks)
 
         # Cache tokenized values so subsequent calls in the same step reuse them.
         batch["observation.language.tokens"] = lang_tokens
@@ -227,10 +279,10 @@ class HybridFrozenBrainDiffusionHands(nn.Module):
 
     def extract_semantic_features(self, batch):
         """
-        Uses the frozen SmolVLA backbone purely as a semantic feature extractor.
+        Passes images + language + robot state through the frozen SmolVLA backbone
+        and extracts 1D pooled vision-language-state semantic conditioning vectors.
         """
-        use_cuda_autocast = str(self.device).startswith("cuda")
-        with torch.no_grad(), torch.autocast(device_type="cuda", dtype=torch.bfloat16, enabled=use_cuda_autocast):
+        with torch.no_grad():
             vla_model = self.base_policy.model
             
             # Prepare inputs just like SmolVLA forward pass
@@ -246,7 +298,6 @@ class HybridFrozenBrainDiffusionHands(nn.Module):
             )
             
             # Dynamically infer the make_att_2d_masks function from the backbone if not imported
-            # usually it is in lerobot.policies.smolvla.modeling_smolvla
             try:
                 from lerobot.policies.smolvla.modeling_smolvla import make_att_2d_masks
                 prefix_att_2d_masks = make_att_2d_masks(prefix_pad_masks, prefix_att_masks)
@@ -254,7 +305,7 @@ class HybridFrozenBrainDiffusionHands(nn.Module):
                 # Fallback to a simple attention mask
                 prefix_att_2d_masks = prefix_att_masks.unsqueeze(1) & prefix_att_masks.unsqueeze(2)
 
-            prefix_position_ids = torch.cumsum(prefix_pad_masks, dim=1) - 1
+            prefix_position_ids = torch.clamp(torch.cumsum(prefix_pad_masks, dim=1) - 1, min=0)
             
             # 2. Pass through frozen VLM to get heavy semantic features
             outputs = vla_model.vlm_with_expert.forward(
@@ -266,11 +317,6 @@ class HybridFrozenBrainDiffusionHands(nn.Module):
                 fill_kv_cache=True, # MUST be True to trigger SmolVLA prefill logic!
             )
             
-            # Depending on transformer return type unpacking
-            # outputs[0] contains the hidden states for inputs_embeds
-            # Since we passed [prefix_embs, None], it returns [prefix_hidden_states, suffix_hidden_states]
-            # outputs is a tuple: (list_of_hidden_states, past_key_values)
-            
             if isinstance(outputs, tuple) and len(outputs) == 2:
                 hidden_states_list, past_key_values = outputs
                 hidden_states = hidden_states_list[0]
@@ -279,11 +325,10 @@ class HybridFrozenBrainDiffusionHands(nn.Module):
                 if isinstance(hidden_states, (tuple, list)):
                     hidden_states = hidden_states[0] # Handle nested tuples
             
-            # Mean pool over sequence length to get 1D vector (or use CLS/final token)
-            # shape: [B, seq_len, cond_dim] => [B, cond_dim]
-            pooled_semantics = hidden_states.mean(dim=1)
-            
-        return pooled_semantics.float() # Convert to float32 for diffusion head
+            # Mean pool over sequence length to get 1D vector
+            pooled_semantics = hidden_states.mean(dim=1).float()
+                        
+        return pooled_semantics
         
     def compute_loss(
         self,
@@ -303,11 +348,12 @@ class HybridFrozenBrainDiffusionHands(nn.Module):
 
         if residual_target:
             with torch.no_grad():
-                self._prepare_language_tensors(batch)
-                use_cuda_autocast = str(self.device).startswith("cuda")
-                with torch.autocast(device_type="cuda", dtype=torch.bfloat16, enabled=use_cuda_autocast):
-                    base_action = self.base_policy._get_action_chunk(batch)
-                base_action = base_action.to(torch.float32)
+                self.set_base_policy_num_steps(1)
+                if hasattr(self.base_policy, "reset"):
+                    self.base_policy.reset()
+                base_action = self.base_policy._get_action_chunk(batch).to(torch.float32)
+                if hasattr(self.base_policy, "reset"):
+                    self.base_policy.reset()
             if base_action.ndim == 2:
                 base_action = base_action.unsqueeze(1)
             
