@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-export PYTORCH_CUDA_ALLOC_CONF="${PYTORCH_CUDA_ALLOC_CONF:-expandable_segments:True}"
+export PYTORCH_CUDA_ALLOC_CONF="${PYTORCH_CUDA_ALLOC_CONF:-max_split_size_mb:128}"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PYTHON_BIN="${PYTHON_BIN:-/home/swagat/anaconda3/envs/lerobot_v040/bin/python}"
@@ -31,6 +31,8 @@ EVAL_REPLAN_EACH_STEP="${EVAL_REPLAN_EACH_STEP:-0}"
 RESIDUAL_TARGET="${RESIDUAL_TARGET:-0}"
 DELTA_L2_WEIGHT="${DELTA_L2_WEIGHT:-0.001}"
 WANDB_PROJECT="${WANDB_PROJECT:-hybrid_diffusion_vla}"
+VIDEO_BACKEND="${VIDEO_BACKEND:-torchcodec}"
+DECODER_CACHE_CLEAR_FREQ="${DECODER_CACHE_CLEAR_FREQ:-500}"
 
 RESUME="${RESUME:-0}"
 USE_POWER_HARDENING="${USE_POWER_HARDENING:-0}"
@@ -182,6 +184,8 @@ for SEED in $SEEDS; do
   else
     WANDB_RUN_ID="$($PYTHON_BIN - <<'PY'
 try:
+    import sys
+    sys.setrecursionlimit(50000)
     import wandb
     print(wandb.util.generate_id())
 except Exception:
@@ -223,6 +227,8 @@ PY
     "--eval_episodes" "$EVAL_EPISODES"
     "--image_flip_mode" "$IMAGE_FLIP_MODE"
     "--delta_l2_weight" "$DELTA_L2_WEIGHT"
+    "--video_backend" "$VIDEO_BACKEND"
+    "--decoder_cache_clear_freq" "$DECODER_CACHE_CLEAR_FREQ"
     "--eval_task_ids" $EVAL_TASK_IDS
   )
 

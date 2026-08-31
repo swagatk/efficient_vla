@@ -118,10 +118,11 @@ apply_power_hardening() {
     return 0
   fi
 
-  if command -v powerprofilesctl >/dev/null 2>&1; then
-    ORIG_POWER_PROFILE="$(powerprofilesctl get 2>/dev/null || true)"
-    powerprofilesctl set performance 2>/dev/null || true
-  fi
+  # Power profile switching disabled to prevent hardware thermal/voltage instability under GPU load
+  # if command -v powerprofilesctl >/dev/null 2>&1; then
+  #   ORIG_POWER_PROFILE="$(powerprofilesctl get 2>/dev/null || true)"
+  #   powerprofilesctl set performance 2>/dev/null || true
+  # fi
 
   if command -v gsettings >/dev/null 2>&1; then
     ORIG_SLEEP_MODE="$(gsettings get org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 2>/dev/null || true)"

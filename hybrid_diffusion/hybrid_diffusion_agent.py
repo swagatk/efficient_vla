@@ -11,36 +11,136 @@ sys.path.insert(0, "/home/swagat/lerobot/src")
 try:
     from lerobot.policies.smolvla.modeling_smolvla import SmolVLAPolicy, make_att_2d_masks
     from lerobot.policies.smolvla.smolvlm_with_expert import SmolVLMWithExpertModel
+    import lerobot.policies.smolvla.smolvlm_with_expert as smolvlm_expert_module
 
-    def _patched_eager_attention_forward(self, attention_mask, batch_size, head_dim, query_states, key_states, value_states):
-        num_att_heads = self.num_attention_heads
-        num_key_value_heads = self.num_key_value_heads
-        num_key_value_groups = num_att_heads // num_key_value_heads
+    def _patched_apply_rope(x, positions, max_wavelength=10000):
+        d_half = x.shape[-1] // 2
+        dtype = x.dtype
+        timescale = smolvlm_expert_module._get_timescale(x.shape[-1], x.device, max_wavelength)
 
-        if num_key_value_groups > 1:
-            key_states = key_states.repeat_interleave(num_key_value_groups, dim=2)
-            value_states = value_states.repeat_interleave(num_key_value_groups, dim=2)
+        if positions.ndim == 1:
+            positions = positions.unsqueeze(0)
 
-        query_states = query_states.to(dtype=torch.float32).transpose(1, 2)
-        key_states = key_states.to(dtype=torch.float32).transpose(1, 2)
+        rad = (positions[..., None].to(torch.float32) / timescale)
 
-        att_weights = torch.matmul(query_states, key_states.transpose(2, 3))
-        att_weights *= head_dim**-0.5
-
-        big_neg = torch.finfo(att_weights.dtype).min
-        if attention_mask.ndim == 3:
-            att_mask_4d = attention_mask.unsqueeze(1)
+        if x.ndim == 4:
+            if x.shape[1] == positions.shape[1]:
+                rad = rad.unsqueeze(2)
+            elif x.shape[2] == positions.shape[1]:
+                rad = rad.unsqueeze(1)
+            else:
+                rad = rad.unsqueeze(2)
         else:
-            att_mask_4d = attention_mask
-        masked_att_weights = torch.where(att_mask_4d, att_weights, big_neg)
-        probs = nn.functional.softmax(masked_att_weights, dim=-1).to(dtype=value_states.dtype)
+            rad = rad.unsqueeze(-2)
 
-        val_perm = value_states.permute(0, 2, 1, 3).contiguous()
-        att_output = torch.matmul(probs, val_perm).permute(0, 2, 1, 3).contiguous()
-        att_output = att_output.reshape(batch_size, -1, num_key_value_heads * num_key_value_groups * head_dim)
-        return att_output
+        sin = torch.sin(rad)
+        cos = torch.cos(rad)
 
-    SmolVLMWithExpertModel.eager_attention_forward = _patched_eager_attention_forward
+        x_fp32 = x.to(torch.float32)
+        x1 = x_fp32[..., :d_half]
+        x2 = x_fp32[..., d_half:]
+
+        res = torch.zeros_like(x_fp32)
+        res[..., :d_half] = x1 * cos - x2 * sin
+        res[..., d_half:] = x2 * cos + x1 * sin
+
+        return res.to(dtype)
+
+    def _patched_smolvlm_forward(
+        self,
+        attention_mask: torch.Tensor | None = None,
+        position_ids: torch.LongTensor | None = None,
+        past_key_values: list[torch.FloatTensor] | None = None,
+        inputs_embeds: list[torch.FloatTensor] = None,
+        use_cache: bool | None = None,
+        fill_kv_cache: bool | None = None,
+    ):
+        models = [self.get_vlm_model().text_model, self.lm_expert]
+        model_layers = self.get_model_layers(models)
+        for hidden_states in inputs_embeds:
+            if hidden_states is None:
+                continue
+            batch_size = hidden_states.shape[0]
+
+        num_layers = self.num_vlm_layers
+        head_dim = self.vlm.config.text_config.head_dim
+        for layer_idx in range(num_layers):
+            if (
+                fill_kv_cache
+                or "cross" not in self.attention_mode
+                or (self.self_attn_every_n_layers > 0 and layer_idx % self.self_attn_every_n_layers == 0)
+            ):
+                att_outputs, past_key_values = self.forward_attn_layer(
+                    model_layers,
+                    inputs_embeds,
+                    layer_idx,
+                    position_ids,
+                    attention_mask,
+                    batch_size,
+                    head_dim,
+                    use_cache=use_cache,
+                    fill_kv_cache=fill_kv_cache,
+                    past_key_values=past_key_values,
+                )
+            else:
+                att_outputs, past_key_values = self.forward_cross_attn_layer(
+                    model_layers,
+                    inputs_embeds,
+                    layer_idx,
+                    position_ids,
+                    attention_mask,
+                    batch_size,
+                    head_dim,
+                    use_cache=use_cache,
+                    fill_kv_cache=fill_kv_cache,
+                    past_key_values=past_key_values,
+                )
+            outputs_embeds = []
+            start = 0
+            for i, hidden_states in enumerate(inputs_embeds):
+                layer = model_layers[i][layer_idx]
+                att_output = (
+                    att_outputs[i] if i < len(att_outputs) else att_outputs[0]
+                )
+                if hidden_states is not None:
+                    if layer is None:
+                        outputs_embeds.append(hidden_states)
+                        continue
+                    end = start + hidden_states.shape[1]
+
+                    if att_output.dtype != layer.self_attn.o_proj.weight.dtype:
+                        att_output = att_output.to(layer.self_attn.o_proj.weight.dtype)
+                    att_out = att_output[:, start:end]
+                    out_emb = layer.self_attn.o_proj(att_out)
+
+                    # Out-of-place residual additions prevent CUDA buffer mutation
+                    out_emb = out_emb + hidden_states
+                    after_first_residual = out_emb.clone()
+
+                    out_emb = layer.post_attention_layernorm(out_emb)
+                    out_emb = layer.mlp(out_emb)
+
+                    out_emb = out_emb + after_first_residual
+
+                    outputs_embeds.append(out_emb)
+
+                    start = end if len(att_outputs) == 1 else 0
+                else:
+                    outputs_embeds.append(None)
+
+            inputs_embeds = outputs_embeds
+
+        outputs_embeds = []
+        for i, hidden_states in enumerate(inputs_embeds):
+            if hidden_states is not None:
+                out_emb = models[i].norm(hidden_states)
+                outputs_embeds.append(out_emb)
+            else:
+                outputs_embeds.append(None)
+        return outputs_embeds, past_key_values
+
+    smolvlm_expert_module.apply_rope = _patched_apply_rope
+    SmolVLMWithExpertModel.forward = _patched_smolvlm_forward
 except ImportError:
     pass
 
@@ -258,19 +358,34 @@ class HybridFrozenBrainDiffusionHands(nn.Module):
                 f"No language tokens or text field found in batch keys: {list(batch.keys())}"
             )
 
-        cache_key = tuple(texts)
-        if hasattr(self, "_lang_token_cache") and cache_key in self._lang_token_cache:
-            lang_tokens, lang_masks = self._lang_token_cache[cache_key]
-        else:
-            processor = self.base_policy.model.vlm_with_expert.processor
-            text_out = processor(text=texts, return_tensors="pt", padding=True, truncation=True)
-            lang_tokens = text_out["input_ids"].to(self.device)
-            lang_masks = text_out["attention_mask"].to(self.device).bool()
-            if not hasattr(self, "_lang_token_cache"):
-                self._lang_token_cache = {}
-            if len(self._lang_token_cache) > 100:
-                self._lang_token_cache.clear()
-            self._lang_token_cache[cache_key] = (lang_tokens, lang_masks)
+        if not hasattr(self, "_single_string_token_cache"):
+            self._single_string_token_cache = {}
+
+        tokens_list = []
+        masks_list = []
+        processor = self.base_policy.model.vlm_with_expert.processor
+
+        for text in texts:
+            if text not in self._single_string_token_cache:
+                text_out = processor(text=text, return_tensors="pt", padding=True, truncation=True)
+                t_ids = text_out["input_ids"].to(self.device)
+                t_mask = text_out["attention_mask"].to(self.device).bool()
+                self._single_string_token_cache[text] = (t_ids, t_mask)
+
+            t_ids, t_mask = self._single_string_token_cache[text]
+            tokens_list.append(t_ids)
+            masks_list.append(t_mask)
+
+        max_len = max(t.shape[1] for t in tokens_list)
+        batch_size = len(tokens_list)
+
+        lang_tokens = torch.zeros((batch_size, max_len), dtype=tokens_list[0].dtype, device=self.device)
+        lang_masks = torch.zeros((batch_size, max_len), dtype=torch.bool, device=self.device)
+
+        for i, (t_ids, t_mask) in enumerate(zip(tokens_list, masks_list)):
+            l = t_ids.shape[1]
+            lang_tokens[i, :l] = t_ids[0]
+            lang_masks[i, :l] = t_mask[0]
 
         # Cache tokenized values so subsequent calls in the same step reuse them.
         batch["observation.language.tokens"] = lang_tokens
@@ -282,7 +397,7 @@ class HybridFrozenBrainDiffusionHands(nn.Module):
         Passes images + language + robot state through the frozen SmolVLA backbone
         and extracts 1D pooled vision-language-state semantic conditioning vectors.
         """
-        with torch.no_grad():
+        with torch.inference_mode():
             vla_model = self.base_policy.model
             
             # Prepare inputs just like SmolVLA forward pass
@@ -320,6 +435,7 @@ class HybridFrozenBrainDiffusionHands(nn.Module):
             if isinstance(outputs, tuple) and len(outputs) == 2:
                 hidden_states_list, past_key_values = outputs
                 hidden_states = hidden_states_list[0]
+                del past_key_values
             else:
                 hidden_states = outputs[0] if isinstance(outputs, (tuple, list)) else outputs
                 if isinstance(hidden_states, (tuple, list)):
@@ -327,8 +443,9 @@ class HybridFrozenBrainDiffusionHands(nn.Module):
             
             # Mean pool over sequence length to get 1D vector
             pooled_semantics = hidden_states.mean(dim=1).float()
+            del outputs, prefix_embs, prefix_pad_masks, prefix_att_masks, prefix_att_2d_masks, prefix_position_ids, hidden_states
                         
-        return pooled_semantics
+        return pooled_semantics.clone()
         
     def compute_loss(
         self,
@@ -347,7 +464,7 @@ class HybridFrozenBrainDiffusionHands(nn.Module):
         semantics = self.extract_semantic_features(batch)
 
         if residual_target:
-            with torch.no_grad():
+            with torch.inference_mode():
                 self.set_base_policy_num_steps(1)
                 if hasattr(self.base_policy, "reset"):
                     self.base_policy.reset()

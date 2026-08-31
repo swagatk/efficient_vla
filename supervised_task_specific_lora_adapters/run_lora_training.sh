@@ -22,9 +22,9 @@ TASKS=( ${TASKS:-0 1 2 4 6 7 8 9} )
 
 # Hyperparameters & Memory Optimization Settings
 EPOCHS="${EPOCHS:-20}"
-BATCH_SIZE="${BATCH_SIZE:-2}"
-GRAD_ACCUM_STEPS="${GRAD_ACCUM_STEPS:-8}"
-GRADIENT_CHECKPOINTING="${GRADIENT_CHECKPOINTING:-1}"
+BATCH_SIZE="${BATCH_SIZE:-8}"
+GRAD_ACCUM_STEPS="${GRAD_ACCUM_STEPS:-2}"
+GRADIENT_CHECKPOINTING="${GRADIENT_CHECKPOINTING:-0}"
 LR="${LR:-1e-4}"
 LORA_RANK="${LORA_RANK:-16}"
 LORA_ALPHA="${LORA_ALPHA:-32}"
@@ -112,8 +112,24 @@ echo "Gradient accumulation steps: $GRAD_ACCUM_STEPS"
 echo "Gradient checkpointing: $GRADIENT_CHECKPOINTING"
 echo "Learning rate: $LR"
 echo "LoRA Rank: $LORA_RANK, Alpha: $LORA_ALPHA"
-echo "Outputs directory: $OUTPUT_DIR"
-echo "============================================="
+# Evict any existing Ollama models to ensure 100% free VRAM
+if command -v ollama >/dev/null 2>&1; then
+  ollama stop mdq100/qwen3.5-coder:35b >/dev/null 2>&1 || true
+fi
+
+# Background VRAM watchdog: continuously monitors and evicts competing GPU models
+(
+  while true; do
+    if command -v ollama >/dev/null 2>&1; then
+      if ollama ps 2>/dev/null | grep -q "qwen"; then
+        ollama stop mdq100/qwen3.5-coder:35b >/dev/null 2>&1 || true
+      fi
+    fi
+    sleep 3
+  done
+) &
+WATCHDOG_PID=$!
+trap "kill -9 $WATCHDOG_PID >/dev/null 2>&1 || true" EXIT INT TERM
 
 for task_id in "${TASKS[@]}"; do
   TASK_DIR="$OUTPUT_DIR/task_$task_id"
@@ -148,7 +164,34 @@ for task_id in "${TASKS[@]}"; do
     CMD+=(--dry_run)
   fi
   
-  "${CMD[@]}"
+  MAX_RETRIES=5
+  RETRY_COUNT=0
+  EXIT_CODE=0
+  until [[ $RETRY_COUNT -ge $MAX_RETRIES ]]; do
+    set +e
+    if command -v systemd-inhibit >/dev/null 2>&1; then
+      systemd-inhibit --what=idle:sleep:shutdown --why="SmolVLA LoRA Training" "${CMD[@]}"
+    elif command -v gnome-session-inhibit >/dev/null 2>&1; then
+      gnome-session-inhibit --inhibit suspend:idle --reason "SmolVLA LoRA Training" "${CMD[@]}"
+    else
+      "${CMD[@]}"
+    fi
+    EXIT_CODE=$?
+    set -e
+
+    if [[ $EXIT_CODE -eq 0 ]]; then
+      break
+    fi
+
+    RETRY_COUNT=$((RETRY_COUNT + 1))
+    echo "⚠️ Warning: Task $task_id training process exited with code $EXIT_CODE. Automatically resuming from saved epoch checkpoint (Attempt $RETRY_COUNT/$MAX_RETRIES)..."
+    sleep 3
+  done
+
+  if [[ $EXIT_CODE -ne 0 ]]; then
+    echo "Error: Task $task_id failed after $MAX_RETRIES attempts."
+    exit $EXIT_CODE
+  fi
   
   # Remove auto-generated PEFT README.md if it exists inside the task folder
   if [[ -f "$TASK_DIR/README.md" ]]; then
