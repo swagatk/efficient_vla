@@ -1,0 +1,27 @@
+{
+  "task_id": 1,
+  "task_name": "LIVING_ROOM_SCENE2_put_both_the_cream_cheese_box_and_the_butter_in_the_basket",
+  "seed": 1,
+  "num_episodes": 3,
+  "num_successful": 0,
+  "avg_steps_to_success": 520.0,
+  "episode_details": [
+    {
+      "episode": 0,
+      "success": false,
+      "steps": 520
+    },
+    {
+      "episode": 1,
+      "success": false,
+      "steps": 520
+    },
+    {
+      "episode": 2,
+      "success": false,
+      "steps": 520
+    }
+  ],
+  "success_rate": 0.0,
+  "completed": true
+}

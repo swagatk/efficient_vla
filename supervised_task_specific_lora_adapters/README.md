@@ -11,13 +11,15 @@ Instead of training external residual networks or diffusion heads, this approach
 Activate the environment before executing training or evaluation scripts:
 
 ```bash
-conda activate lerobot_v040
+conda activate lerobot_env
 cd /home/swagat/GIT/efficient_vla/supervised_task_specific_lora_adapters
 ```
 
-* Ensure `peft` is installed in the conda environment.
-* Demonstration datasets are loaded from `/home/swagat/libero_dataset/libero_10`.
-* System power management is handled automatically via `LinuxInhibit` (preventing OS suspend/sleep during runs).
+* Ensure `peft`, `h5py`, and `wandb` are installed in the conda environment.
+* Demonstration datasets are loaded from `DATA_DIR` (defaults to `/home/swagat/libero_dataset/libero_10`).
+* System power management is handled automatically:
+  * **On Windows WSL**: The script dynamically switches Windows 11 host power to *High Performance* and sets standby sleep timeout to 0 (never sleep) via `powercfg.exe`, automatically restoring the original scheme and timeouts upon completion or exit.
+  * **On Native Linux**: Handled via `systemd-inhibit` or `gnome-session-inhibit`.
 
 ---
 

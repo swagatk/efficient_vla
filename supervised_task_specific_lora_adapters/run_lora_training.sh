@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # run_lora_training.sh
 # Ordinarily trains supervised LoRA adapters for SmolVLA across tasks.
+# Supports both native Linux and Windows WSL (with automated Windows 11 power profile & sleep inhibition).
 #
 # To run normally:
 #   bash run_lora_training.sh
@@ -14,8 +15,38 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-export PYTHON_BIN="${PYTHON_BIN:-/home/swagat/anaconda3/envs/lerobot_v040/bin/python}"
-export DATA_DIR="${DATA_DIR:-/home/swagat/libero_dataset/libero_10}"
+
+# --- Environment & Interpreter Detection ---
+if [[ -z "${PYTHON_BIN:-}" ]]; then
+  if [[ -x "/home/swagat/miniconda3/envs/lerobot_env/bin/python" ]]; then
+    PYTHON_BIN="/home/swagat/miniconda3/envs/lerobot_env/bin/python"
+  elif [[ -x "/home/swagat/anaconda3/envs/lerobot_v040/bin/python" ]]; then
+    PYTHON_BIN="/home/swagat/anaconda3/envs/lerobot_v040/bin/python"
+  elif command -v python >/dev/null 2>&1; then
+    PYTHON_BIN="$(command -v python)"
+  else
+    PYTHON_BIN="python3"
+  fi
+fi
+export PYTHON_BIN
+
+# Add local LIBERO clone to PYTHONPATH if present
+if [[ -d "$HOME/LIBERO" ]]; then
+  export PYTHONPATH="$HOME/LIBERO:${PYTHONPATH:-}"
+fi
+
+if [[ -z "${DATA_DIR:-}" ]]; then
+  if [[ -d "/home/swagat/lerobot_datasets/libero_10" ]]; then
+    DATA_DIR="/home/swagat/lerobot_datasets/libero_10"
+  elif [[ -d "/home/swagat/libero_dataset/libero_10" ]]; then
+    DATA_DIR="/home/swagat/libero_dataset/libero_10"
+  elif [[ -d "/home/swagat/lerobot_datasets" ]]; then
+    DATA_DIR="/home/swagat/lerobot_datasets"
+  else
+    DATA_DIR="/home/swagat/lerobot_datasets/libero_10"
+  fi
+fi
+export DATA_DIR
 
 # Target tasks to train (defaults to the 8 evaluated tasks)
 TASKS=( ${TASKS:-0 1 2 4 6 7 8 9} )
@@ -28,8 +59,94 @@ GRADIENT_CHECKPOINTING="${GRADIENT_CHECKPOINTING:-0}"
 LR="${LR:-1e-4}"
 LORA_RANK="${LORA_RANK:-16}"
 LORA_ALPHA="${LORA_ALPHA:-32}"
+PATIENCE="${PATIENCE:-4}"
 
 DRY_RUN="${DRY_RUN:-0}"
+
+# --- Windows WSL Power Profile & Sleep Management ---
+IS_WSL=0
+if grep -qi "microsoft" /proc/version 2>/dev/null || [[ -n "${WSL_DISTRO_NAME:-}" ]]; then
+  IS_WSL=1
+fi
+
+POWERCFG_BIN=""
+ORIG_POWER_SCHEME=""
+ORIG_STANDBY_AC=""
+
+if [[ "$IS_WSL" == "1" ]]; then
+  if command -v powercfg.exe >/dev/null 2>&1; then
+    POWERCFG_BIN="powercfg.exe"
+  elif [[ -x "/mnt/c/Windows/System32/powercfg.exe" ]]; then
+    POWERCFG_BIN="/mnt/c/Windows/System32/powercfg.exe"
+  fi
+fi
+
+setup_wsl_power() {
+  if [[ -n "$POWERCFG_BIN" ]]; then
+    echo "==========================================================="
+    echo "⚡ [WSL] Configuring Windows 11 Host Power Profile"
+    echo "==========================================================="
+    # Query current active scheme GUID
+    ORIG_POWER_SCHEME=$($POWERCFG_BIN /getactivescheme 2>/dev/null | awk '{print $4}' | tr -d '\r')
+    echo "  • Original Active Scheme: ${ORIG_POWER_SCHEME:-Unknown}"
+
+    # Query current AC standby setting index
+    ORIG_STANDBY_AC=$($POWERCFG_BIN /query SCHEME_CURRENT SUB_SLEEP STANDBYIDLE 2>/dev/null | grep -i "Current AC Power Setting Index" | awk '{print $NF}' | tr -d '\r' || true)
+    echo "  • Original Standby AC Setting: ${ORIG_STANDBY_AC:-Default}"
+
+    # Find or duplicate High Performance scheme
+    local high_perf_guid=""
+    high_perf_guid=$($POWERCFG_BIN /list 2>/dev/null | grep -i "High performance" | awk '{print $4}' | head -n 1 | tr -d '\r' || true)
+    if [[ -z "$high_perf_guid" ]]; then
+      high_perf_guid=$($POWERCFG_BIN -duplicatescheme 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 2>/dev/null | awk '{print $4}' | head -n 1 | tr -d '\r' || true)
+    fi
+
+    if [[ -n "$high_perf_guid" ]]; then
+      $POWERCFG_BIN /setactive "$high_perf_guid" 2>/dev/null || true
+      echo "  • Activated Windows High Performance scheme: $high_perf_guid"
+    fi
+
+    # Disable standby sleep timeouts while training (0 = never sleep)
+    $POWERCFG_BIN /setacvalueindex SCHEME_CURRENT SUB_SLEEP STANDBYIDLE 0 2>/dev/null || true
+    $POWERCFG_BIN /setdcvalueindex SCHEME_CURRENT SUB_SLEEP STANDBYIDLE 0 2>/dev/null || true
+    $POWERCFG_BIN /setactive SCHEME_CURRENT 2>/dev/null || true
+    $POWERCFG_BIN /change standby-timeout-ac 0 2>/dev/null || true
+    echo "  • Disabled Windows Standby Sleep (timeout set to 0)"
+    echo "==========================================================="
+  fi
+}
+
+restore_wsl_power() {
+  if [[ -n "$POWERCFG_BIN" ]]; then
+    echo ""
+    echo "==========================================================="
+    echo "⚡ [WSL] Restoring Windows 11 Host Power Profile"
+    echo "==========================================================="
+    if [[ -n "$ORIG_POWER_SCHEME" ]]; then
+      $POWERCFG_BIN /setactive "$ORIG_POWER_SCHEME" 2>/dev/null || true
+      echo "  • Restored original Windows Power Scheme ($ORIG_POWER_SCHEME)"
+    fi
+    if [[ -n "$ORIG_STANDBY_AC" ]]; then
+      $POWERCFG_BIN /setacvalueindex SCHEME_CURRENT SUB_SLEEP STANDBYIDLE "$ORIG_STANDBY_AC" 2>/dev/null || true
+      $POWERCFG_BIN /setactive SCHEME_CURRENT 2>/dev/null || true
+      echo "  • Restored original Standby AC setting ($ORIG_STANDBY_AC)"
+    fi
+    echo "==========================================================="
+  fi
+}
+
+# --- Pre-flight Checks ---
+if [[ ! -d "$DATA_DIR" ]]; then
+  echo "================================================================================"
+  echo "⚠️ ERROR: Demonstration dataset directory not found at:"
+  echo "  $DATA_DIR"
+  echo ""
+  echo "Please verify the LIBERO-10 demonstration dataset (.hdf5 / .h5 files)."
+  echo "You can specify a custom dataset location via:"
+  echo "  DATA_DIR=/path/to/demonstrations bash run_lora_training.sh"
+  echo "================================================================================"
+  exit 1
+fi
 
 # --- Setup Output Directory & Resuming ---
 if [[ -n "${RESUME_DIR:-}" ]]; then
@@ -103,8 +220,8 @@ cat <<EOF > "$OUTPUT_DIR/config.json"
 }
 EOF
 
-
 echo "============================================="
+echo "Python binary: $PYTHON_BIN"
 echo "Training tasks: ${TASKS[*]}"
 echo "Epochs: $EPOCHS"
 echo "Batch size: $BATCH_SIZE"
@@ -112,12 +229,20 @@ echo "Gradient accumulation steps: $GRAD_ACCUM_STEPS"
 echo "Gradient checkpointing: $GRADIENT_CHECKPOINTING"
 echo "Learning rate: $LR"
 echo "LoRA Rank: $LORA_RANK, Alpha: $LORA_ALPHA"
+echo "============================================="
+
 # Evict any existing Ollama models to ensure 100% free VRAM
 if command -v ollama >/dev/null 2>&1; then
   ollama stop mdq100/qwen3.5-coder:35b >/dev/null 2>&1 || true
 fi
 
+# Activate Windows WSL power configuration
+if [[ "$IS_WSL" == "1" ]]; then
+  setup_wsl_power
+fi
+
 # Background VRAM watchdog: continuously monitors and evicts competing GPU models
+WATCHDOG_PID=""
 (
   while true; do
     if command -v ollama >/dev/null 2>&1; then
@@ -129,7 +254,16 @@ fi
   done
 ) &
 WATCHDOG_PID=$!
-trap "kill -9 $WATCHDOG_PID >/dev/null 2>&1 || true" EXIT INT TERM
+
+cleanup() {
+  if [[ -n "${WATCHDOG_PID:-}" ]]; then
+    kill -9 "$WATCHDOG_PID" >/dev/null 2>&1 || true
+  fi
+  if [[ "$IS_WSL" == "1" ]]; then
+    restore_wsl_power
+  fi
+}
+trap cleanup EXIT INT TERM
 
 for task_id in "${TASKS[@]}"; do
   TASK_DIR="$OUTPUT_DIR/task_$task_id"
@@ -152,6 +286,7 @@ for task_id in "${TASKS[@]}"; do
     --lr "$LR"
     --r "$LORA_RANK"
     --alpha "$LORA_ALPHA"
+    --patience "$PATIENCE"
     --data_dir "$DATA_DIR"
     --output_dir "$OUTPUT_DIR"
   )
@@ -169,7 +304,10 @@ for task_id in "${TASKS[@]}"; do
   EXIT_CODE=0
   until [[ $RETRY_COUNT -ge $MAX_RETRIES ]]; do
     set +e
-    if command -v systemd-inhibit >/dev/null 2>&1; then
+    if [[ "$IS_WSL" == "1" ]]; then
+      # On WSL, host power management and sleep prevention is handled by powercfg.exe directly
+      "${CMD[@]}"
+    elif command -v systemd-inhibit >/dev/null 2>&1; then
       systemd-inhibit --what=idle:sleep:shutdown --why="SmolVLA LoRA Training" "${CMD[@]}"
     elif command -v gnome-session-inhibit >/dev/null 2>&1; then
       gnome-session-inhibit --inhibit suspend:idle --reason "SmolVLA LoRA Training" "${CMD[@]}"
@@ -209,3 +347,4 @@ echo "============================================="
 echo "ALL LORA TRAINING COMPLETED SUCCESSFULLY"
 echo "Checkpoints saved to: $OUTPUT_DIR"
 echo "============================================="
+

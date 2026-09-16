@@ -12,6 +12,11 @@ project_root = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(project_root))
 sys.path.insert(0, "/home/swagat/lerobot/src")
 
+# Add LIBERO repository path if present locally
+_libero_repo = os.path.expanduser("~/LIBERO")
+if os.path.isdir(_libero_repo) and _libero_repo not in sys.path:
+    sys.path.insert(0, _libero_repo)
+
 # Pre-import transformers
 import transformers
 import argparse
@@ -26,6 +31,15 @@ from tqdm import tqdm
 from pathlib import Path
 import wandb
 from datetime import datetime
+
+# Fix for PyAV 15+ missing av.option.Option type hint in LeRobot
+try:
+    import av
+    import types
+    if not hasattr(av, "option"):
+        av.option = types.SimpleNamespace(Option=object)
+except Exception:
+    pass
 
 # Import LeRobot/SmolVLA modules
 from lerobot.policies.smolvla.modeling_smolvla import SmolVLAPolicy
@@ -80,6 +94,20 @@ OBS_STATE = "observation.state"
 OBS_LANGUAGE_TOKENS = "observation.language.tokens"
 OBS_LANGUAGE_ATTENTION_MASK = "observation.language.attention_mask"
 
+# Official LIBERO-10 benchmark task order: benchmark.get_task(task_id)
+LIBERO_10_TASKS = [
+    ("LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket", "put both the alphabet soup and the tomato sauce in the basket"),
+    ("LIVING_ROOM_SCENE2_put_both_the_cream_cheese_box_and_the_butter_in_the_basket", "put both the cream cheese box and the butter in the basket"),
+    ("KITCHEN_SCENE3_turn_on_the_stove_and_put_the_moka_pot_on_it", "turn on the stove and put the moka pot on it"),
+    ("KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it", "put the black bowl in the bottom drawer of the cabinet and close it"),
+    ("LIVING_ROOM_SCENE5_put_the_white_mug_on_the_left_plate_and_put_the_yellow_and_white_mug_on_the_right_plate", "put the white mug on the left plate and put the yellow and white mug on the right plate"),
+    ("STUDY_SCENE1_pick_up_the_book_and_place_it_in_the_back_compartment_of_the_caddy", "pick up the book and place it in the back compartment of the caddy"),
+    ("LIVING_ROOM_SCENE6_put_the_white_mug_on_the_plate_and_put_the_chocolate_pudding_to_the_right_of_the_plate", "put the white mug on the plate and put the chocolate pudding to the right of the plate"),
+    ("LIVING_ROOM_SCENE1_put_both_the_alphabet_soup_and_the_cream_cheese_box_in_the_basket", "put both the alphabet soup and the cream cheese box in the basket"),
+    ("KITCHEN_SCENE8_put_both_moka_pots_on_the_stove", "put both moka pots on the stove"),
+    ("KITCHEN_SCENE6_put_the_yellow_and_white_mug_in_the_microwave_and_close_it", "put the yellow and white mug in the microwave and close it"),
+]
+
 class SupervisedLoRADataset(Dataset):
     def __init__(self, data_dir, task_id, split="train", val_ratio=0.15, benchmark_name="libero_10"):
         self.file_paths = sorted(list(Path(data_dir).rglob("*.h5")) + list(Path(data_dir).rglob("*.hdf5")))
@@ -92,9 +120,13 @@ class SupervisedLoRADataset(Dataset):
             self.task_name = task.name
             self.instruction = task.language
         except Exception as e:
-            print(f"Warning: Could not get task name from benchmark: {e}")
-            self.task_name = None
-            self.instruction = ""
+            if benchmark_name == "libero_10" and 0 <= task_id < len(LIBERO_10_TASKS):
+                self.task_name, self.instruction = LIBERO_10_TASKS[task_id]
+                print(f"Loaded task info from LIBERO-10 specification: '{self.task_name}' ('{self.instruction}')")
+            else:
+                print(f"Warning: Could not get task name from benchmark: {e}")
+                self.task_name = None
+                self.instruction = ""
 
         # Filter file paths for this specific task
         filtered_paths = []
@@ -107,7 +139,12 @@ class SupervisedLoRADataset(Dataset):
         self.file_paths = filtered_paths
         
         if not self.file_paths:
-            raise ValueError(f"No demonstration files found for task {task_id} in {data_dir}")
+            searched_pattern = f"_t{task_id}_" if self.task_name is None else f"_t{task_id}_ or '{self.task_name}'"
+            raise ValueError(
+                f"No demonstration files found for task {task_id} in '{data_dir}'.\n"
+                f"Searched pattern: {searched_pattern}.\n"
+                f"Found {len(list(Path(data_dir).rglob('*.*')))} total file(s) in '{data_dir}'."
+            )
 
         # Preload demonstration data into memory for zero HDF5 disk churn and max throughput
         self.samples = []
@@ -180,6 +217,13 @@ def make_collate_fn(preprocessor):
         # Images: convert [B, H, W, C] in [0, 255] to [B, C, H, W] in [0, 1] as float32 contiguous on CPU
         img_agent = torch.from_numpy(img1_np).permute(0, 3, 1, 2).contiguous().to(dtype=torch.float32) / 255.0
         img_wrist = torch.from_numpy(img2_np).permute(0, 3, 1, 2).contiguous().to(dtype=torch.float32) / 255.0
+
+        # Resize to (256, 256) to strictly match SmolVLA pretraining and evaluation resolution
+        if img_agent.shape[-2:] != (256, 256):
+            img_agent = torch.nn.functional.interpolate(img_agent, size=(256, 256), mode="bilinear", align_corners=False)
+        if img_wrist.shape[-2:] != (256, 256):
+            img_wrist = torch.nn.functional.interpolate(img_wrist, size=(256, 256), mode="bilinear", align_corners=False)
+
         state = torch.from_numpy(state_np).contiguous().to(dtype=torch.float32)
         
         action = torch.stack([torch.from_numpy(item["action"]) for item in batch], dim=0).contiguous().to(dtype=torch.float32)
@@ -195,22 +239,49 @@ def make_collate_fn(preprocessor):
         }
         
         processed_batch = preprocessor(raw_batch)
+        processed_batch["action_is_pad"] = actions_is_pad
         processed_batch["actions_is_pad"] = actions_is_pad
         return processed_batch
     return collate_fn
+
+from transformers import get_cosine_schedule_with_warmup
+
+def save_model_checkpoint(save_dir, policy, args):
+    """Save both PEFT LoRA adapter and (optionally) action head projection weights."""
+    os.makedirs(save_dir, exist_ok=True)
+    policy.model.vlm_with_expert.lm_expert.save_pretrained(save_dir)
+    readme_path = os.path.join(save_dir, "README.md")
+    if os.path.exists(readme_path):
+        os.remove(readme_path)
+    if args.train_action_head:
+        heads_dict = {
+            "action_out_proj": policy.model.action_out_proj.state_dict(),
+            "action_time_mlp_in": policy.model.action_time_mlp_in.state_dict(),
+            "action_time_mlp_out": policy.model.action_time_mlp_out.state_dict(),
+            "action_in_proj": policy.model.action_in_proj.state_dict(),
+        }
+        torch.save(heads_dict, os.path.join(save_dir, "action_heads.pt"))
 
 def main():
     parser = argparse.ArgumentParser(description="Supervised Task-Specific LoRA Finetuning of SmolVLA")
     parser.add_argument("--task_id", type=int, default=0, help="LIBERO task ID (0-9)")
     parser.add_argument("--epochs", type=int, default=20, help="Number of training epochs")
     parser.add_argument("--batch_size", type=int, default=16, help="Batch size")
-    parser.add_argument("--lr", type=float, default=1e-4, help="Learning rate")
-    parser.add_argument("--r", type=int, default=16, help="LoRA rank")
-    parser.add_argument("--alpha", type=int, default=32, help="LoRA alpha scaling")
-    parser.add_argument("--data_dir", type=str, default="/home/swagat/libero_dataset/libero_10", help="Path to LIBERO-10 demonstrations directory")
+    parser.add_argument("--lr", type=float, default=2e-5, help="Learning rate (default: 2e-5 for diffusion VLA stability)")
+    parser.add_argument("--r", type=int, default=8, help="LoRA rank (default: 8)")
+    parser.add_argument("--alpha", type=int, default=16, help="LoRA alpha scaling (default: 16)")
+    parser.add_argument("--lora_dropout", type=float, default=0.05, help="LoRA dropout rate")
+    parser.add_argument("--target_modules", type=str, default="attn", help="LoRA targets: 'attn' (q_proj, v_proj) or 'all' (all 7 projections)")
+    parser.add_argument("--train_action_head", action="store_true", default=True, help="Fine-tune action read-out heads alongside LoRA")
+    parser.add_argument("--freeze_action_head", action="store_false", dest="train_action_head", help="Freeze action read-out heads")
+    parser.add_argument("--weight_decay", type=float, default=0.01, help="AdamW weight decay")
+    parser.add_argument("--warmup_ratio", type=float, default=0.05, help="Linear warmup ratio for learning rate scheduler")
+    default_dataset_dir = os.environ.get("DATA_DIR", "/home/swagat/lerobot_datasets/libero_10" if os.path.isdir("/home/swagat/lerobot_datasets/libero_10") else "/home/swagat/libero_dataset/libero_10")
+    parser.add_argument("--data_dir", type=str, default=default_dataset_dir, help="Path to LIBERO-10 demonstrations directory")
     parser.add_argument("--output_dir", type=str, default="checkpoints_lora", help="Root directory for saving checkpoints")
     parser.add_argument("--grad_accum_steps", type=int, default=1, help="Gradient accumulation steps")
     parser.add_argument("--gradient_checkpointing", action="store_true", help="Use gradient checkpointing to save VRAM")
+    parser.add_argument("--patience", type=int, default=6, help="Early stopping patience (epochs without validation loss improvement)")
     parser.add_argument("--dry_run", action="store_true", help="Run a quick training step validation")
     args = parser.parse_args()
 
@@ -226,30 +297,45 @@ def main():
     is_resuming = False
     start_epoch = 0
     best_val_loss = float("inf")
-    wandb_run_id = wandb.util.generate_id()
+    def _generate_wandb_id():
+        try:
+            from wandb.sdk.lib import runid
+            return runid.generate_id()
+        except Exception:
+            try:
+                return wandb.util.generate_id()
+            except Exception:
+                import uuid
+                return uuid.uuid4().hex[:8]
+
+    wandb_run_id = _generate_wandb_id()
     
     if os.path.exists(config_path):
         try:
             with open(config_path, "r") as f:
                 saved_config = json.load(f)
             # Verify if LoRA adapter weights actually exist before resuming
-            if os.path.exists(os.path.join(task_checkpoint_dir, "adapter_model.safetensors")) or \
-               os.path.exists(os.path.join(task_checkpoint_dir, "adapter_model.bin")):
+            last_dir = os.path.join(task_checkpoint_dir, "last")
+            resume_source = last_dir if os.path.exists(os.path.join(last_dir, "adapter_model.safetensors")) else task_checkpoint_dir
+            if os.path.exists(os.path.join(resume_source, "adapter_model.safetensors")) or \
+               os.path.exists(os.path.join(resume_source, "adapter_model.bin")):
                 is_resuming = True
                 wandb_run_id = saved_config.get("wandb_run_id", wandb_run_id)
                 start_epoch = saved_config.get("epoch", 0)
                 best_val_loss = saved_config.get("best_val_loss", float("inf"))
-                print(f"[Resume] Found checkpoint. Resuming from epoch {start_epoch} (wandb run id: {wandb_run_id})")
+                print(f"[Resume] Found checkpoint in {resume_source}. Resuming from epoch {start_epoch} (wandb run id: {wandb_run_id})")
         except Exception as e:
             print(f"Warning: Could not parse saved config to resume: {e}. Starting fresh.")
 
     # Initialize wandb (with support for resume and fallback if deleted)
+    wandb_mode = "disabled" if args.dry_run else os.environ.get("WANDB_MODE", "online")
     try:
         wandb.init(
             project="smolvla_supervised_lora",
             name=f"task_{args.task_id}_lora_r{args.r}",
             id=wandb_run_id,
             resume="allow",
+            mode=wandb_mode,
             config={
                 "task_id": args.task_id,
                 "epochs": args.epochs,
@@ -257,16 +343,19 @@ def main():
                 "lr": args.lr,
                 "lora_rank": args.r,
                 "lora_alpha": args.alpha,
+                "train_action_head": args.train_action_head,
+                "target_modules": args.target_modules,
                 "data_dir": args.data_dir
             }
         )
     except Exception as e:
         print(f"Warning: Could not resume wandb run {wandb_run_id}: {e}. Creating a new wandb run.")
-        wandb_run_id = wandb.util.generate_id()
+        wandb_run_id = _generate_wandb_id()
         wandb.init(
             project="smolvla_supervised_lora",
             name=f"task_{args.task_id}_lora_r{args.r}",
             id=wandb_run_id,
+            mode=wandb_mode,
             config={
                 "task_id": args.task_id,
                 "epochs": args.epochs,
@@ -274,6 +363,8 @@ def main():
                 "lr": args.lr,
                 "lora_rank": args.r,
                 "lora_alpha": args.alpha,
+                "train_action_head": args.train_action_head,
+                "target_modules": args.target_modules,
                 "data_dir": args.data_dir
             }
         )
@@ -284,21 +375,40 @@ def main():
     policy = SmolVLAPolicy.from_pretrained(policy_name).to(device)
     preprocessor, _ = make_pre_post_processors(policy.config, policy_name)
 
+    # Resolve target modules
+    if args.target_modules == "attn":
+        target_modules = ["q_proj", "v_proj"]
+    elif args.target_modules == "all":
+        target_modules = ["q_proj", "v_proj", "k_proj", "o_proj", "gate_proj", "up_proj", "down_proj"]
+    else:
+        target_modules = [m.strip() for m in args.target_modules.split(",") if m.strip()]
+
     # 2. Wrap lm_expert with Peft LoRA
     if is_resuming:
-        print(f"Loading existing LoRA adapters from {task_checkpoint_dir}...")
+        last_dir = os.path.join(task_checkpoint_dir, "last")
+        load_dir = last_dir if os.path.exists(os.path.join(last_dir, "adapter_model.safetensors")) else task_checkpoint_dir
+        print(f"Loading existing LoRA adapters from {load_dir}...")
         policy.model.vlm_with_expert.lm_expert = PeftModel.from_pretrained(
             policy.model.vlm_with_expert.lm_expert,
-            task_checkpoint_dir,
+            load_dir,
             is_trainable=True
         ).to(device)
+        
+        # Load action heads if present
+        resume_heads = os.path.join(load_dir, "action_heads.pt")
+        if os.path.exists(resume_heads):
+            print(f"[Resume] Loading action heads from {resume_heads}...")
+            heads_dict = torch.load(resume_heads, map_location=device, weights_only=False)
+            for head_name in ["action_out_proj", "action_time_mlp_in", "action_time_mlp_out", "action_in_proj"]:
+                if head_name in heads_dict and hasattr(policy.model, head_name):
+                    getattr(policy.model, head_name).load_state_dict(heads_dict[head_name])
     else:
-        print(f"Integrating LoRA (rank={args.r}, alpha={args.alpha}) on Action Expert...")
+        print(f"Integrating LoRA (rank={args.r}, alpha={args.alpha}, targets={target_modules}) on Action Expert...")
         peft_config = LoraConfig(
             r=args.r,
             lora_alpha=args.alpha,
-            target_modules=["q_proj", "v_proj", "k_proj", "o_proj", "gate_proj", "up_proj", "down_proj"],
-            lora_dropout=0.05,
+            target_modules=target_modules,
+            lora_dropout=args.lora_dropout,
             bias="none",
         )
         policy.model.vlm_with_expert.lm_expert = get_peft_model(policy.model.vlm_with_expert.lm_expert, peft_config).to(device)
@@ -313,11 +423,11 @@ def main():
         else:
             print("Warning: Action Expert does not support gradient checkpointing.")
 
-    # Freeze the entire policy except LoRA layers
+    # Freeze the entire policy by default
     for p in policy.parameters():
         p.requires_grad = False
         
-    # Explicitly ensure only LoRA parameters have requires_grad=True
+    # Explicitly activate trainable parameters: LoRA weights + optional Action Heads
     trainable_params = []
     for name, p in policy.named_parameters():
         if "lora_" in name:
@@ -325,8 +435,42 @@ def main():
             trainable_params.append(p)
         else:
             p.requires_grad = False
-            
-    optimizer = optim.AdamW(trainable_params, lr=args.lr)
+
+    if args.train_action_head:
+        print("Enabling trainable action read-out heads (action_out_proj, action_time_mlp, action_in_proj)...")
+        head_modules = [
+            policy.model.action_out_proj,
+            policy.model.action_time_mlp_in,
+            policy.model.action_time_mlp_out,
+            policy.model.action_in_proj
+        ]
+        for module in head_modules:
+            for p in module.parameters():
+                p.requires_grad = True
+                trainable_params.append(p)
+
+    total_trainable = sum(p.numel() for p in trainable_params)
+    print(f"Total trainable parameters: {total_trainable:,}")
+
+    # 3. Create Dataset and DataLoader
+    print("Loading datasets...")
+    train_dataset = SupervisedLoRADataset(args.data_dir, task_id=args.task_id, split="train")
+    val_dataset = SupervisedLoRADataset(args.data_dir, task_id=args.task_id, split="val")
+    
+    collate_fn = make_collate_fn(preprocessor)
+    train_loader = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True, collate_fn=collate_fn, drop_last=True)
+    val_loader = DataLoader(val_dataset, batch_size=args.batch_size, shuffle=False, collate_fn=collate_fn, drop_last=False)
+
+    # Optimizer and Cosine Warmup Learning Rate Scheduler
+    optimizer = optim.AdamW(trainable_params, lr=args.lr, weight_decay=args.weight_decay)
+    total_training_steps = max(1, (len(train_loader) * args.epochs) // args.grad_accum_steps)
+    warmup_steps = max(1, int(total_training_steps * args.warmup_ratio))
+    scheduler = get_cosine_schedule_with_warmup(
+        optimizer,
+        num_warmup_steps=warmup_steps,
+        num_training_steps=total_training_steps
+    )
+    print(f"Initialized AdamW optimizer (lr={args.lr}, weight_decay={args.weight_decay}) with Cosine Warmup ({warmup_steps}/{total_training_steps} steps).")
 
     # Save initial config.json with all passed arguments (including default parameters)
     if not is_resuming:
@@ -337,22 +481,18 @@ def main():
         with open(config_path, "w") as f:
             json.dump(initial_config, f, indent=4)
 
-    # 3. Create Dataset and DataLoader
-    print("Loading datasets...")
-    train_dataset = SupervisedLoRADataset(args.data_dir, task_id=args.task_id, split="train")
-    val_dataset = SupervisedLoRADataset(args.data_dir, task_id=args.task_id, split="val")
-    
-    collate_fn = make_collate_fn(preprocessor)
-    
-    train_loader = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True, collate_fn=collate_fn, drop_last=True)
-    val_loader = DataLoader(val_dataset, batch_size=args.batch_size, shuffle=False, collate_fn=collate_fn, drop_last=False)
-
+    epochs_no_improve = 0
     print("Starting training...")
     for epoch in range(start_epoch, args.epochs):
-        # Keep base frozen backbone in eval mode; only train the LoRA Action Expert
+        # Keep base frozen backbone in eval mode; only train the LoRA Action Expert and Action Heads
         policy.eval()
         policy.model.vlm_with_expert.vlm.eval()
         policy.model.vlm_with_expert.lm_expert.train()
+        if args.train_action_head:
+            policy.model.action_out_proj.train()
+            policy.model.action_time_mlp_in.train()
+            policy.model.action_time_mlp_out.train()
+            policy.model.action_in_proj.train()
         
         optimizer.zero_grad(set_to_none=True)
         train_losses = []
@@ -376,11 +516,12 @@ def main():
             
             if (step + 1) % args.grad_accum_steps == 0 or (step + 1) == len(train_loader):
                 optimizer.step()
+                scheduler.step()
                 optimizer.zero_grad(set_to_none=True)
             
             loss_val = loss.item() * args.grad_accum_steps
             train_losses.append(loss_val)
-            train_pbar.set_postfix({"loss": f"{loss_val:.4f}", "avg_loss": f"{np.mean(train_losses):.4f}"})
+            train_pbar.set_postfix({"loss": f"{loss_val:.4f}", "avg_loss": f"{np.mean(train_losses):.4f}", "lr": f"{scheduler.get_last_lr()[0]:.2e}"})
             
             # Synchronize CUDA stream at every step to prevent autograd thread race conditions with CUDA memory allocator
             torch.cuda.synchronize()
@@ -399,6 +540,12 @@ def main():
         # Validation pass
         policy.eval()
         policy.model.vlm_with_expert.lm_expert.eval()
+        if args.train_action_head:
+            policy.model.action_out_proj.eval()
+            policy.model.action_time_mlp_in.eval()
+            policy.model.action_time_mlp_out.eval()
+            policy.model.action_in_proj.eval()
+
         val_losses = []
         val_pbar = tqdm(
             val_loader,
@@ -420,22 +567,27 @@ def main():
                     break
                     
         avg_val_loss = np.mean(val_losses)
+        current_lr = scheduler.get_last_lr()[0]
         
-        print(f"Epoch {epoch+1:02d}/{args.epochs:02d} | Train Loss: {avg_train_loss:.5f} | Val Loss: {avg_val_loss:.5f}")
-        wandb.log({"train_loss": avg_train_loss, "val_loss": avg_val_loss, "epoch": epoch + 1})
+        print(f"Epoch {epoch+1:02d}/{args.epochs:02d} | Train Loss: {avg_train_loss:.5f} | Val Loss: {avg_val_loss:.5f} | LR: {current_lr:.2e}")
+        wandb.log({"train_loss": avg_train_loss, "val_loss": avg_val_loss, "lr": current_lr, "epoch": epoch + 1})
         
-        # Save checkpoint every epoch for seamless interruption resumption
+        # Save checkpoint and track best validation performance
         if not args.dry_run:
-            # 1. Always save latest checkpoint weights and update resume state
-            policy.model.vlm_with_expert.lm_expert.save_pretrained(task_checkpoint_dir)
-            readme_path = os.path.join(task_checkpoint_dir, "README.md")
-            if os.path.exists(readme_path):
-                os.remove(readme_path)
+            # 1. Save latest checkpoint weights to 'last' subdirectory for seamless resumption
+            last_dir = os.path.join(task_checkpoint_dir, "last")
+            save_model_checkpoint(last_dir, policy, args)
 
             is_best = avg_val_loss < best_val_loss
             if is_best:
                 best_val_loss = avg_val_loss
-                print(f"★ New best validation loss: {best_val_loss:.5f}")
+                epochs_no_improve = 0
+                # Save best checkpoint directly to task_checkpoint_dir (loaded by evaluation script)
+                save_model_checkpoint(task_checkpoint_dir, policy, args)
+                print(f"★ New best validation loss: {best_val_loss:.5f} (saved best model to {task_checkpoint_dir})")
+            else:
+                epochs_no_improve += 1
+                print(f"Validation loss did not improve ({epochs_no_improve}/{args.patience} epochs)")
 
             # Update config.json with current epoch and best loss
             with open(config_path, "w") as f:
@@ -444,8 +596,14 @@ def main():
                 updated_config["epoch"] = epoch + 1
                 updated_config["best_val_loss"] = best_val_loss
                 json.dump(updated_config, f, indent=4)
-            print(f"Saved LoRA checkpoint (epoch {epoch+1}) to {task_checkpoint_dir}")
+            print(f"Saved resume checkpoint (epoch {epoch+1}) to {last_dir}")
             
+            # Early stopping check
+            if args.patience > 0 and epochs_no_improve >= args.patience:
+                print(f"\n[Early Stopping] Validation loss did not improve for {args.patience} consecutive epochs.")
+                print(f"Stopping training early at epoch {epoch+1}. Best validation loss: {best_val_loss:.5f}")
+                break
+
             # Clean up memory caches at epoch boundary
             torch.cuda.empty_cache()
             import gc
@@ -461,3 +619,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

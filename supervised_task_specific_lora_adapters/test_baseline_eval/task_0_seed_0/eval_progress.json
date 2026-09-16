@@ -1,0 +1,17 @@
+{
+  "task_id": 0,
+  "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+  "seed": 0,
+  "num_episodes": 1,
+  "num_successful": 0,
+  "avg_steps_to_success": 520.0,
+  "episode_details": [
+    {
+      "episode": 0,
+      "success": false,
+      "steps": 520
+    }
+  ],
+  "success_rate": 0.0,
+  "completed": true
+}
