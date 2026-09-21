@@ -1,0 +1,14 @@
+Week 1 Baseline Lock: Aggregate Report
+============================================
+Runs logged: 1
+Target success (%): 46.00
+Mean success (%): NA
+Std success (%): NA
+95% CI half-width: NA
+Delta vs target (%): NA
+
+Per-seed runs:
+  seed=0, success=NA, peak_vram_gb=1.404, latency_ms=NA, loop_hz=NA, wall_sec=19.577741, exit=1
+
+Per-task success across seeds (%):
+  NA

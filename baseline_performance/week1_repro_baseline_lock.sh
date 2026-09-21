@@ -16,10 +16,11 @@ set -euo pipefail
 #   DATASET_ROOT=~/libero_dataset MODEL_ID=HuggingFaceVLA/smolvla_libero \
 #   bash week1_repro_baseline_lock.sh
 
-DATASET_ROOT="${DATASET_ROOT:-$HOME/libero_dataset}"
+DATASET_ROOT="${DATASET_ROOT:-$HOME/lerobot_datasets}"
 MODEL_ID="${MODEL_ID:-HuggingFaceVLA/smolvla_libero}"
 TASK_SUITE="${TASK_SUITE:-libero_10}"
 TASK_SPLIT="${TASK_SPLIT:-LIBERO-10 official split}"
+TASK_ID="${TASK_ID:-}"
 N_EPISODES="${N_EPISODES:-10}"
 EPISODE_HORIZON="${EPISODE_HORIZON:-520}"
 BATCH_SIZE="${BATCH_SIZE:-1}"
@@ -33,12 +34,55 @@ USE_EVAL_SEED_FLAG="${USE_EVAL_SEED_FLAG:-1}"
 SEED_FLAG_MODE="${SEED_FLAG_MODE:-auto}"
 EXTRA_EVAL_ARGS="${EXTRA_EVAL_ARGS:-}"
 
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --seed)
+      SEEDS="$2"
+      shift 2
+      ;;
+    --seeds)
+      SEEDS="$2"
+      shift 2
+      ;;
+    --n_episodes|--episodes|-n)
+      N_EPISODES="$2"
+      shift 2
+      ;;
+    --task_id|--task|-t)
+      TASK_ID="$2"
+      shift 2
+      ;;
+    --model_id)
+      MODEL_ID="$2"
+      shift 2
+      ;;
+    --dataset_root)
+      DATASET_ROOT="$2"
+      shift 2
+      ;;
+    --episode_horizon)
+      EPISODE_HORIZON="$2"
+      shift 2
+      ;;
+    --help|-h)
+      echo "Usage: $0 [--seed SEED] [--n_episodes N] [--task_id ID] [EXTRA_ARGS...]"
+      exit 0
+      ;;
+    *)
+      EXTRA_EVAL_ARGS="${EXTRA_EVAL_ARGS:+$EXTRA_EVAL_ARGS }$1"
+      shift
+      ;;
+  esac
+done
+
 TIMESTAMP="$(date +%Y%m%d_%H%M%S)"
 RUN_NAME="week1_baseline_lock_${TIMESTAMP}"
 OUTPUT_ROOT="${OUTPUT_ROOT:-./outputs/week1_baseline_lock/${RUN_NAME}}"
 mkdir -p "$OUTPUT_ROOT"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+export PYTHONPATH="$REPO_ROOT:${PYTHONPATH:-}"
 CONSOLIDATED_DIR="${CONSOLIDATED_DIR:-$SCRIPT_DIR}"
 mkdir -p "$CONSOLIDATED_DIR"
 
@@ -94,6 +138,7 @@ project_stage: "Week 1 Reproducible Baseline Lock"
 model_id: "$MODEL_ID"
 task_suite: "$TASK_SUITE"
 task_split: "$TASK_SPLIT"
+task_id: "${TASK_ID:-all}"
 episodes_per_seed: $N_EPISODES
 episode_horizon: $EPISODE_HORIZON
 camera_settings:
@@ -144,13 +189,20 @@ if [[ "$USE_EVAL_SEED_FLAG" == "1" ]]; then
       fi
       ;;
     eval.seed|seed|none)
-        echo "$SEED,$SUCCESS_RATE,$PEAK_VRAM_GB,$AVG_STEP_LATENCY_MS,$E2E_LOOP_RATE_HZ,$WALL_SEC,$EXIT_CODE,$RUN_DIR,$EPISODE_HORIZON,$TASK_SUCCESS_RATES" >> "$SUMMARY_CSV"
+      RESOLVED_SEED_FLAG_MODE="$SEED_FLAG_MODE"
       ;;
     *)
       echo "ERROR: invalid SEED_FLAG_MODE=$SEED_FLAG_MODE (use auto|eval.seed|seed|none)" >&2
-          f.write(f"{seed},{group},{task_id},{rate_text},{episode_horizon}\n")
+      exit 1
       ;;
   esac
+fi
+
+RESOLVED_RENDERED_FLAG_MODE="none"
+if lerobot-eval -h 2>&1 | grep -q -- '--eval.max_episodes_rendered'; then
+  RESOLVED_RENDERED_FLAG_MODE="eval.max_episodes_rendered"
+elif lerobot-eval -h 2>&1 | grep -q -- '--max_episodes_rendered'; then
+  RESOLVED_RENDERED_FLAG_MODE="max_episodes_rendered"
 fi
 
 echo "Starting Week 1 baseline lock runs..."
@@ -191,9 +243,18 @@ for SEED in $SEEDS; do
     "--eval.batch_size=$BATCH_SIZE"
     --eval.use_async_envs=false
     "--eval.n_episodes=$N_EPISODES"
-    "--eval.max_episodes_rendered=$MAX_EPISODES_RENDERED"
     "--output_dir=$EVAL_OUT_DIR"
   )
+
+  if [[ "$RESOLVED_RENDERED_FLAG_MODE" == "eval.max_episodes_rendered" ]]; then
+    CMD+=("--eval.max_episodes_rendered=$MAX_EPISODES_RENDERED")
+  elif [[ "$RESOLVED_RENDERED_FLAG_MODE" == "max_episodes_rendered" ]]; then
+    CMD+=("--max_episodes_rendered=$MAX_EPISODES_RENDERED")
+  fi
+
+  if [[ -n "$TASK_ID" ]]; then
+    CMD+=("--env.task_ids=[$TASK_ID]")
+  fi
 
   if [[ "$RESOLVED_SEED_FLAG_MODE" == "eval.seed" ]]; then
     CMD+=("--eval.seed=$SEED")

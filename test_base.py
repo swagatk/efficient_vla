@@ -1,3 +1,8 @@
+"""
+python test_base.py
+This program evaluates the base policy on libero_10 benchmark.
+
+"""
 import os
 import torch
 import numpy as np
@@ -30,9 +35,11 @@ env = OffScreenRenderEnv(bddl_file_name=bddl, camera_heights=256, camera_widths=
 env.reset()
 env.set_init_state(benchmark.get_task_init_states(3)[0])
 obs = env.env._get_observations()
+max_steps = env.env.spec.max_episode_steps
+print(f"Max steps: {max_steps}")
 
 step, done, success = 0, False, False
-while not done and step < 400:
+while not done and step < max_steps:
     current_instruction = task.language
     img_agent = obs["agentview_image"][::-1, ::-1, :].copy()
     img_wrist = obs["robot0_eye_in_hand_image"][::-1, ::-1, :].copy()
