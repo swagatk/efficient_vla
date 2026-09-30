@@ -203,59 +203,55 @@ try:
             except Exception:
                 pass
 
-    # Safety wrapper for mj_fullM compatible with robosuite 1.4 + MuJoCo 3.x
     _orig_mj_fullM = mujoco.mj_fullM
-
-    def _unpack_M_fallback(m, dst, M):
-        nv = int(m.nv)
-        dst.fill(0.0)
-        for i in range(nv):
-            adr = int(m.dof_Madr[i])
-            j = i
-            while j >= 0:
-                val = float(M[adr])
-                dst[i, j] = val
-                dst[j, i] = val
-                adr += 1
-                j = int(m.dof_parentid[j])
 
     def _patched_mj_fullM(*args, **kwargs):
         if len(args) == 3:
             m, a1, a2 = args
             model = getattr(m, "_model", m)
 
-            # Case 1: Called as mj_fullM(model, data, dst) [Standard MuJoCo 3.x]
+            # Case 1: mj_fullM(model, data, dst)
             if not isinstance(a1, np.ndarray) and isinstance(a2, np.ndarray):
                 dst = a2
-                d = getattr(a1, "_data", a1)
-                raw_M = getattr(d, "M", getattr(d, "qM", None))
-                if raw_M is not None:
-                    return _unpack_M_fallback(model, dst, raw_M)
+                d = getattr(a1, "_data", getattr(a1, "_mj_data", a1))
                 try:
                     return _orig_mj_fullM(model, d, dst)
                 except Exception:
                     pass
 
-            # Case 2: Called as mj_fullM(model, dst, qM_or_data) [Robosuite 1.4 API]
-            if isinstance(a1, np.ndarray):
+            # Case 2: mj_fullM(model, dst, qM) [Robosuite 1.4 API]
+            if isinstance(a1, np.ndarray) and isinstance(a2, np.ndarray):
                 dst = a1
-                qM_or_data = a2
-                raw_M = getattr(qM_or_data, "M", getattr(qM_or_data, "qM", qM_or_data))
-                if isinstance(raw_M, np.ndarray):
-                    return _unpack_M_fallback(model, dst, raw_M)
-                d = getattr(qM_or_data, "_mj_data", getattr(qM_or_data, "_data", None))
+                
+                # Extract MjData using stack inspection (for Robosuite's base_controller.py)
+                d = None
+                try:
+                    import sys
+                    frame = sys._getframe(1)
+                    for _ in range(3):
+                        if frame is None:
+                            break
+                        if 'self' in frame.f_locals:
+                            s = frame.f_locals['self']
+                            if hasattr(s, 'sim') and hasattr(s.sim, 'data'):
+                                d = s.sim.data
+                                break
+                        frame = frame.f_back
+                except Exception:
+                    pass
+
                 if d is not None:
-                    raw_M = getattr(d, "M", getattr(d, "qM", None))
-                    if raw_M is not None:
-                        return _unpack_M_fallback(model, dst, raw_M)
-                if raw_M is not None:
-                    return _unpack_M_fallback(model, dst, raw_M)
+                    try:
+                        raw_d = getattr(d, "_data", getattr(d, "_mj_data", d))
+                        return _orig_mj_fullM(model, raw_d, dst)
+                    except Exception:
+                        pass
 
         elif len(args) == 2:
             m, a1 = args
             model = getattr(m, "_model", m)
-            if hasattr(a1, "_mj_data") or hasattr(a1, "_data") or hasattr(a1, "qpos"):
-                d = getattr(a1, "_mj_data", getattr(a1, "_data", a1))
+            if hasattr(a1, "_data") or hasattr(a1, "_mj_data") or hasattr(a1, "qpos"):
+                d = getattr(a1, "_data", getattr(a1, "_mj_data", a1))
                 return _orig_mj_fullM(model, d)
 
         return _orig_mj_fullM(*args, **kwargs)

@@ -83,12 +83,14 @@ mkdir -p "$OUTPUT_ROOT"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 export PYTHONPATH="$REPO_ROOT:${PYTHONPATH:-}"
+export PATH="/home/swagat/miniconda3/envs/lerobot_env/bin:${PATH:-}"
 CONSOLIDATED_DIR="${CONSOLIDATED_DIR:-$SCRIPT_DIR}"
 mkdir -p "$CONSOLIDATED_DIR"
 
 # Headless rendering backend for MuJoCo.
 export MUJOCO_GL="${MUJOCO_GL:-egl}"
 export PYOPENGL_PLATFORM="${PYOPENGL_PLATFORM:-egl}"
+export PYTHONFAULTHANDLER=1
 export DATASET_ROOT
 
 # LIBERO reads paths from $LIBERO_CONFIG_PATH/config.yaml.
@@ -172,7 +174,6 @@ SUMMARY_CSV="$CONSOLIDATED_DIR/week1_run_summary.csv"
 TASK_SUMMARY_CSV="$CONSOLIDATED_DIR/week1_task_success_summary.csv"
 echo "seed,success_rate,peak_vram_gb,avg_step_latency_ms,e2e_loop_rate_hz,wall_time_sec,exit_code,run_dir,task_success_rates" > "$SUMMARY_CSV"
 echo "seed,task_group,task_id,task_success_rate" > "$TASK_SUMMARY_CSV"
-echo "seed,task_group,task_id,task_success_rate,episode_horizon" > "$TASK_SUMMARY_CSV"
 
 read -r -a EXTRA_ARGS_ARRAY <<< "$EXTRA_EVAL_ARGS"
 
@@ -495,9 +496,9 @@ with open(summary_csv, newline="") as f:
     reader = csv.DictReader(f)
     for r in reader:
         rows.append(r)
-    v = parse_float(r.get("success_rate", ""))
-    if v is not None:
-      success_vals.append(v)
+        v = parse_float(r.get("success_rate", ""))
+        if v is not None:
+            success_vals.append(v)
 
 print("Week 1 Baseline Lock: Aggregate Report")
 print("=" * 44)
