@@ -306,6 +306,19 @@ if [[ -n "${RESUME_DIR:-}" && -d "${RESUME_DIR}" ]]; then
   OUTPUT_ROOT="${RESUME_DIR}"
   RESUME="1"
   echo "--- Resuming from directory: $OUTPUT_ROOT ---"
+elif [[ "$RESUME" == "1" ]]; then
+  # Auto-detect latest run directory
+  LATEST_DIR=$(ls -td ./outputs/run_hybrid_diffusion_* 2>/dev/null | head -n 1)
+  if [[ -n "$LATEST_DIR" ]]; then
+    OUTPUT_ROOT="$LATEST_DIR"
+    echo "--- Auto-resuming from latest directory: $OUTPUT_ROOT ---"
+  else
+    echo "--- No previous run found to resume. Creating new directory. ---"
+    TIMESTAMP="$(date +%Y%m%d_%H%M%S)"
+    OUTPUT_ROOT="./outputs/run_hybrid_diffusion_${TIMESTAMP}"
+    mkdir -p "$OUTPUT_ROOT"
+    RESUME="0"
+  fi
 else
   TIMESTAMP="$(date +%Y%m%d_%H%M%S)"
   OUTPUT_ROOT="./outputs/run_hybrid_diffusion_${TIMESTAMP}"

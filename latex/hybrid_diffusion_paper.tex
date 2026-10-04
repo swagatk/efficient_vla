@@ -1,0 +1,133 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+% The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows, positioning, fit, calc}
+
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+\begin{document}
+
+\title{Efficient Vision-Language-Action Models via Hybrid Diffusion Heads\\
+}
+
+\author{\IEEEauthorblockN{1\textsuperscript{st} Given Name Surname}
+\IEEEauthorblockA{\textit{dept. name of organization (of Aff.)} \\
+\textit{name of organization (of Aff.)}\\
+City, Country \\
+email address or ORCID}
+}
+
+\maketitle
+
+\begin{abstract}
+Vision-Language-Action (VLA) models have demonstrated significant success in end-to-end robotic control, leveraging large-scale pre-training to align visual and textual modalities with physical actions. However, standard VLA models often struggle with complex, multi-modal continuous action spaces where deterministic policies fall short. In this paper, we propose a Hybrid Diffusion method that integrates a Conditional Denoising Diffusion Probabilistic Model (DDPM) head directly onto a frozen, pre-trained VLA architecture (SmolVLA). By extracting fully contextualized semantic representations from the last causal token of the VLA, our approach leverages the zero-shot generalization capabilities of large foundation models while maintaining a highly expressive, multimodal diffusion-based action space. We structure the diffusion head to operate either as a standalone policy estimator or as a residual correction to the base policy. 
+\end{abstract}
+
+\begin{IEEEkeywords}
+Vision-Language-Action, Diffusion Models, Robotic Control, Imitation Learning
+\end{IEEEkeywords}
+
+\section{Introduction}
+End-to-end robotic manipulation relies heavily on the ability of models to map high-dimensional observations (e.g., visual inputs, robot proprioception) and natural language instructions into continuous action sequences. Recent advancements in Vision-Language-Action (VLA) models, such as RT-2 and OpenVLA, have shown that pre-trained Vision-Language Models (VLMs) can be fine-tuned to act as robust robotic policies. 
+
+Despite these successes, standard VLA architectures typically frame action prediction as a deterministic regression or a discretized token generation task. These formulations often suffer from compounding errors in long-horizon tasks and struggle to model multi-modal distributions in ambiguous scenarios (e.g., grasping an object from multiple valid approaches). Diffusion models have emerged as a powerful alternative for imitation learning, offering expressive continuous action distributions and stable score-matching objectives.
+
+In this work, we present a \textit{Hybrid Diffusion} approach that bridges the representational power of causal VLMs with the expressivity of Diffusion Policies. Instead of training a monolithic diffusion model from scratch or fine-tuning a massive VLA model, we freeze the underlying pre-trained VLA (SmolVLA) and train a lightweight Conditional DDPM head. By routing the causal state token of the VLA directly into the diffusion process, the model retains the robust visual and language grounding of the foundation model while acquiring the ability to generate complex, multi-modal action trajectories.
+
+\section{Literature Review}
+\subsection{Vision-Language-Action Models}
+The paradigm of Vision-Language-Action (VLA) models involves co-training or fine-tuning large vision-language models on robotic demonstration data. By casting robotic actions into a tokenized vocabulary or continuous embedding space, models like RT-2 and SmolVLM can leverage semantic knowledge to generalize across tasks and objects. However, updating these massive architectures requires significant computational resources, and discretized action spaces often lack the precision required for delicate manipulation.
+
+\subsection{Diffusion Policies in Robotics}
+Diffusion Models have been widely adopted in reinforcement and imitation learning for their ability to model complex, multimodal action distributions. Diffusion Policy reformulates robotic control as a conditional denoising process, where an action trajectory is progressively refined from random noise. While highly successful in handling multimodal demonstrations and exhibiting strong stability, standard diffusion policies often rely on relatively simple visual encoders (e.g., ResNet or ViT) that lack the deep semantic language alignment present in VLMs.
+
+\subsection{Residual and Hybrid Architectures}
+To combine the strengths of pre-trained models with specialized controllers, residual learning strategies have been explored. In these setups, a base policy provides a nominal action, and a secondary, often more lightweight policy, learns to predict residual corrections. Our work extends this concept by applying a diffusion-based head to act either as the primary continuous action predictor or a residual corrector, conditioned on the rich features extracted from the frozen VLA.
+
+\section{Methodology}
+
+The core methodology of the Hybrid Diffusion model relies on using a frozen, pre-trained VLA (SmolVLM2/SmolVLA) as a robust feature extractor, coupled with a lightweight Denoising Diffusion Probabilistic Model (DDPM) head for continuous action chunk prediction.
+
+\subsection{Semantic Feature Extraction}
+Given an observation consisting of an agent-view image, a wrist-view image, proprioceptive state, and a language instruction, the base policy tokenizes and concatenates these inputs. To extract a unified, contextualized representation without disrupting the pre-trained weights, we pass the sequence through the frozen causal transformer layers.
+
+In standard causal language models (such as LLaMA-based architectures), the final token in the sequence has attended to all prior visual, textual, and state tokens. We extract this final causal token $\mathbf{z}_{sem} \in \mathbb{R}^{d}$ to serve as the unified semantic condition for the diffusion process. This prevents the loss of spatial and relational context that often occurs when mean-pooling across the entire sequence.
+
+\subsection{Conditional Diffusion Head}
+The continuous action generation is formulated as a conditional flow-matching/DDPM process. We define an action chunk $\mathbf{a} = [a_t, a_{t+1}, \dots, a_{t+H}] \in \mathbb{R}^{H \times A}$, where $H$ is the chunk size and $A$ is the action dimension (e.g., end-effector translation, rotation, and gripper state).
+
+During training, the ground truth action chunk $\mathbf{a}$ is normalized using a pre-defined variance scale to match the standard unit Gaussian noise $\epsilon \sim \mathcal{N}(0, \mathbf{I})$. A continuous timestep $t \sim \mathcal{U}(0,1)$ is sampled, and the forward diffusion process interpolates the action and noise:
+\begin{equation}
+    x_t = t \mathbf{a} + (1 - t) \epsilon
+\end{equation}
+The diffusion head, implemented as a sequence of Multi-Layer Perceptron (MLP) residual blocks, takes $x_t$, the timestep $t$, and the semantic condition $\mathbf{z}_{sem}$ as inputs, and predicts the target velocity:
+\begin{equation}
+    v_{target} = \mathbf{a} - \epsilon
+\end{equation}
+The model is optimized using the Mean Squared Error (MSE) flow loss:
+\begin{equation}
+    \mathcal{L}_{flow} = || v_{\theta}(x_t, t, \mathbf{z}_{sem}) - v_{target} ||^2_2
+\end{equation}
+
+\subsection{Action Modes: Hybrid vs. Residual}
+The architecture natively supports two evaluation modes:
+\begin{itemize}
+    \item \textbf{Hybrid Mode:} The diffusion head is trained to predict the absolute action chunk directly. The base policy is purely used as a feature extractor.
+    \item \textbf{Residual Mode:} The diffusion head is trained to predict a corrective delta relative to the base policy's deterministic prediction. The target action becomes $\mathbf{a}_{target} = \mathbf{a}_{GT} - \mathbf{a}_{base}$.
+\end{itemize}
+
+\subsection{Architectural Diagram}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+    node distance=1.2cm and 1cm,
+    block/.style={rectangle, draw, fill=blue!10, text width=2.5cm, text centered, rounded corners, minimum height=1.2cm},
+    frozen/.style={rectangle, draw, fill=gray!20, text width=3.5cm, text centered, rounded corners, minimum height=1.2cm},
+    diff/.style={rectangle, draw, fill=green!10, text width=3.5cm, text centered, rounded corners, minimum height=1.2cm},
+    arrow/.style={thick,->,>=stealth}
+]
+
+% Nodes
+\node (inputs) [text width=4cm, text centered] {Observations \\ (Agent Img, Wrist Img, State, Text)};
+\node (tokenizer) [block, below=of inputs] {Tokenization \& \\ Prefix Formatting};
+\node (vla) [frozen, below=of tokenizer] {Frozen Causal VLA \\ (SmolVLA)};
+\node (extract) [block, below=of vla] {Extract Last \\ Causal Token ($\mathbf{z}_{sem}$)};
+\node (noise) [text width=2cm, text centered, left=of extract, xshift=-1cm] {Noise $\epsilon$ \\ Timestep $t$};
+\node (ddpm) [diff, below=of extract] {Conditional DDPM Head (MLP Blocks)};
+\node (output) [text width=3cm, text centered, below=of ddpm] {Predicted Action Chunk $\mathbf{a}$};
+
+% Arrows
+\draw [arrow] (inputs) -- (tokenizer);
+\draw [arrow] (tokenizer) -- (vla);
+\draw [arrow] (vla) -- (extract);
+\draw [arrow] (extract) -- (ddpm);
+\draw [arrow] (noise) |- (ddpm);
+\draw [arrow] (ddpm) -- (output);
+
+% Bounding box for Frozen model
+\node[draw, dotted, thick, fit=(tokenizer)(vla), inner sep=0.3cm] (base_box) {};
+\node[above=0.1cm of base_box] {Base Model (Frozen)};
+
+\end{tikzpicture}
+\caption{Architectural diagram of the Hybrid Diffusion model. A pre-trained, frozen causal Vision-Language-Action model tokenizes and processes multimodal inputs. The final contextualized causal token is extracted and serves as the conditioning vector for a multi-layer Denoising Diffusion Probabilistic Model (DDPM) head, which progressively denoises random noise into a structured, continuous action sequence.}
+\label{fig:architecture}
+\end{figure}
+
+\section{Experiments and Results}
+
+[Experiments are currently running. This section will contain empirical evaluations on the LIBERO-10 benchmark, comparing the Hybrid Diffusion approach against the baseline deterministic SmolVLA across various tasks.]
+
+\section{Conclusion}
+
+[This section will summarize the findings and discuss the implications of integrating diffusion policies with large pre-trained VLMs for robotic manipulation, based on the outcomes of the experiments.]
+
+\end{document}

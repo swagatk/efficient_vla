@@ -623,6 +623,30 @@ def evaluate_in_environment(
 
         print(f"\n--- Running Evaluation on Task {task_id}: {task.language} ---", flush=True)
 
+        def _write_results_files(eval_dir, payload, ep_details, task_list, task_success_dict):
+            if eval_dir is None:
+                return
+            try:
+                os.makedirs(eval_dir, exist_ok=True)
+                results_json_path = os.path.join(eval_dir, "eval_results.json")
+                with open(results_json_path, "w") as f:
+                    json.dump(payload, f, indent=2)
+            except Exception as e:
+                print(f"Warning: Failed to save eval_results.json: {e}")
+
+            try:
+                summary_csv_path = os.path.join(eval_dir, "eval_summary.csv")
+                with open(summary_csv_path, "w") as f:
+                    f.write("task_id,task_name,success_rate,avg_reward,num_episodes\n")
+                    for tid in task_list:
+                        sr = task_success_dict.get(tid, 0.0)
+                        task_eps = [e for e in ep_details if e["task_id"] == tid]
+                        t_rew = sum(e["reward"] for e in task_eps) / len(task_eps) if task_eps else 0.0
+                        t_name = task_eps[0]["task_name"] if task_eps else f"task_{tid}"
+                        f.write(f"{tid},{t_name},{sr:.4f},{t_rew:.4f},{len(task_eps)}\n")
+            except Exception as e:
+                print(f"Warning: Failed to save eval_summary.csv: {e}")
+
         if use_lerobot_env:
             env_cfg = make_env_config(
                 "libero",
@@ -661,7 +685,7 @@ def evaluate_in_environment(
                         obs = task_env_pre(obs)
                         batch = preprocessor(obs) if preprocessor is not None else obs
 
-                        with torch.inference_mode():
+                        with torch.no_grad():
                             with torch.autocast(device_type="cuda", dtype=torch.bfloat16):
                                 if policy_mode == "base":
                                     base_action = model.base_policy.select_action(batch)
@@ -752,13 +776,35 @@ def evaluate_in_environment(
                         "reward": float(ep_reward),
                         "steps": int(step),
                     })
+
+                    # Incremental progress saving after each episode
+                    cur_task_sr = {tid: (sum(1 for e in all_episode_details if e["task_id"] == tid and e["success"]) / max(1, sum(1 for e in all_episode_details if e["task_id"] == tid))) for tid in tasks}
+                    cur_overall = sum(cur_task_sr.values()) / max(1, len(cur_task_sr))
+                    _write_results_files(
+                        eval_dir=eval_output_dir,
+                        payload={
+                            "overall_success_rate": float(cur_overall),
+                            "epoch": epoch,
+                            "policy_mode": policy_mode,
+                            "residual_alpha": float(residual_alpha),
+                            "diffusion_steps": int(diffusion_steps),
+                            "eval_replan_each_step": bool(eval_replan_each_step),
+                            "tasks": {str(t): float(cur_task_sr[t]) for t in tasks if t in cur_task_sr},
+                            "episodes": all_episode_details,
+                        },
+                        ep_details=all_episode_details,
+                        task_list=tasks,
+                        task_success_dict=cur_task_sr,
+                    )
             finally:
                 try:
                     vec_env.close()
                 except Exception:
                     pass
-                del vec_env
+                del vec_env, env_dict
                 clear_preprocessor_state(preprocessor)
+                import gc
+                gc.collect()
                 if torch.cuda.is_available():
                     torch.cuda.empty_cache()
 
@@ -1623,27 +1669,52 @@ def train():
             
         # Periodic visualization and real environment evaluation
         if (epoch + 1) % args.vis_freq == 0 or (epoch + 1) == args.epochs:
+            clear_video_decoder_cache()
+            torch.cuda.empty_cache()
+            
             plot_diffusion_trajectories(model, vis_batch, args.device, epoch+1, global_step=global_step)
+            
             # Evaluate across multiple tasks in the benchmark
-            evaluate_in_environment(
-                model,
-                args.device,
-                epoch+1,
-                tasks=args.eval_task_ids,
-                num_episodes=args.eval_episodes,
-                global_step=global_step,
-                image_flip_mode=args.image_flip_mode,
-                preprocessor=preprocessor,
-                postprocessor=postprocessor,
-                policy_mode=args.eval_policy_mode,
-                hybrid_mix=args.eval_hybrid_mix,
-                residual_alpha=args.eval_residual_alpha,
-                diffusion_steps=args.eval_diffusion_steps,
-                eval_replan_each_step=args.eval_replan_each_step,
-                eval_log_action_stats_every=args.eval_log_action_stats_every,
-                eval_action_clip=args.eval_action_clip,
-                max_steps=args.eval_max_steps,
-            )
+            # We run this in a separate subprocess to prevent MuJoCo EGL memory corruption (SIGSEGV/SIGILL)
+            # caused by creating and destroying contexts in the same process as the PyTorch training loop.
+            print("\n[Eval] Spawning subprocess for evaluation to prevent EGL context crashes...")
+            ckpt_path = os.path.join(args.out_dir, f"hybrid_diff_epoch_{epoch+1:03d}.pt")
+            if not os.path.exists(ckpt_path):
+                ckpt_path = latest_ckpt_path
+                
+            eval_cmd = [
+                sys.executable, "-u", os.path.abspath(__file__),
+                "--eval_only",
+                "--eval_checkpoint_path", ckpt_path,
+                "--base_policy_path", args.base_policy_path,
+                "--device", str(args.device),
+                "--eval_policy_mode", args.eval_policy_mode,
+                "--eval_diffusion_steps", str(args.eval_diffusion_steps),
+                "--eval_action_clip", str(args.eval_action_clip),
+                "--eval_episodes", str(args.eval_episodes),
+                "--eval_log_action_stats_every", str(args.eval_log_action_stats_every),
+                "--eval_replan_each_step" if args.eval_replan_each_step else "",
+                "--eval_wandb_run_id", str(run_id),
+                "--eval_wandb_resume", "allow",
+                "--wandb_project", args.wandb_project,
+            ]
+            if args.eval_task_ids:
+                eval_cmd.extend(["--eval_task_ids"] + [str(t) for t in args.eval_task_ids])
+            if args.residual_target:
+                eval_cmd.append("--residual_target")
+                eval_cmd.extend(["--eval_residual_alpha", str(args.eval_residual_alpha)])
+            if args.image_flip_mode:
+                eval_cmd.extend(["--image_flip_mode", args.image_flip_mode])
+                
+            # Filter out empty strings
+            eval_cmd = [c for c in eval_cmd if c]
+            
+            import subprocess
+            try:
+                subprocess.run(eval_cmd, check=True)
+            except subprocess.CalledProcessError as e:
+                print(f"[Eval] Subprocess evaluation failed with exit code {e.returncode}. Continuing training...")
+            print("[Eval] Subprocess evaluation finished.\n")
         
         clear_video_decoder_cache()
         torch.cuda.empty_cache()

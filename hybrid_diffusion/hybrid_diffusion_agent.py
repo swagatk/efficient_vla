@@ -137,6 +137,8 @@ class HybridFrozenBrainDiffusionHands(nn.Module):
         self.base_policy.to(torch.float32)
         self.base_policy.to(self.device)
         self.base_policy.eval()
+        # Prevent base_policy.select_action from recursively traversing all submodules on every rollout step
+        self.base_policy.eval = lambda *args, **kwargs: self.base_policy
         # Set 1-step sampling for base policy to optimize training loss baseline calculation and prevent multi-step KV-cache memory buildup
         self.set_base_policy_num_steps(1)
         
@@ -283,24 +285,33 @@ class HybridFrozenBrainDiffusionHands(nn.Module):
                 images, img_masks, lang_tokens, lang_masks, state=state
             )
             
-            # Dynamically infer the make_att_2d_masks function from the backbone if not imported
+            # --- INJECT DUMMY EXPERT TOKEN ---
+            # Create a 1-token dummy expert embedding (hidden dim 480)
+            dummy_expert_embs = torch.zeros((prefix_embs.size(0), 1, 480), dtype=prefix_embs.dtype, device=prefix_embs.device)
+            
+            # Pad the 1D masks with 1 for the dummy token so they match the total concatenated sequence length
+            expert_pad_masks = torch.ones((prefix_pad_masks.size(0), 1), dtype=prefix_pad_masks.dtype, device=prefix_pad_masks.device)
+            full_pad_masks = torch.cat([prefix_pad_masks, expert_pad_masks], dim=1)
+            
+            expert_att_masks = torch.ones((prefix_att_masks.size(0), 1), dtype=prefix_att_masks.dtype, device=prefix_att_masks.device)
+            full_att_masks = torch.cat([prefix_att_masks, expert_att_masks], dim=1)
+            
+            # Create the 2D attention mask for the full sequence
             try:
                 from lerobot.policies.smolvla.modeling_smolvla import make_att_2d_masks
-                prefix_att_2d_masks = make_att_2d_masks(prefix_pad_masks, prefix_att_masks)
+                full_att_2d_masks = make_att_2d_masks(full_pad_masks, full_att_masks)
             except ImportError:
-                # Fallback to a simple attention mask
-                prefix_att_2d_masks = prefix_att_masks.unsqueeze(1) & prefix_att_masks.unsqueeze(2)
+                full_att_2d_masks = full_att_masks.unsqueeze(1) & full_att_masks.unsqueeze(2)
 
-            prefix_position_ids = torch.clamp(torch.cumsum(prefix_pad_masks, dim=1) - 1, min=0)
+            full_position_ids = torch.clamp(torch.cumsum(full_pad_masks, dim=1) - 1, min=0)
             
             # 2. Pass through frozen VLM to get heavy semantic features
             outputs = vla_model.vlm_with_expert.forward(
-                attention_mask=prefix_att_2d_masks,
-                position_ids=prefix_position_ids,
+                attention_mask=full_att_2d_masks,
+                position_ids=full_position_ids,
                 past_key_values=None,
-                inputs_embeds=[prefix_embs, None],
+                inputs_embeds=[prefix_embs, dummy_expert_embs],
                 use_cache=False,  # DO NOT save KV cache during training to save memory!
-                fill_kv_cache=True, # MUST be True to trigger SmolVLA prefill logic!
             )
             
             if isinstance(outputs, tuple) and len(outputs) == 2:
@@ -312,9 +323,13 @@ class HybridFrozenBrainDiffusionHands(nn.Module):
                 if isinstance(hidden_states, (tuple, list)):
                     hidden_states = hidden_states[0] # Handle nested tuples
             
-            # Mean pool over sequence length to get 1D vector
-            pooled_semantics = hidden_states.mean(dim=1).float()
-            del outputs, prefix_embs, prefix_pad_masks, prefix_att_masks, prefix_att_2d_masks, prefix_position_ids, hidden_states
+            # Discard the dummy expert token from the end of the sequence before pooling
+            hidden_states = hidden_states[:, :-1, :]
+            
+            # The VLM is a Causal LM (Llama). Only the last token has attended to the full sequence (images + language + state).
+            # Mean pooling dilutes context and includes tokens that haven't seen the instruction.
+            pooled_semantics = hidden_states[:, -1, :].float()
+            del outputs, prefix_embs, prefix_pad_masks, prefix_att_masks, dummy_expert_embs, full_pad_masks, full_att_masks, full_att_2d_masks, full_position_ids, hidden_states
                         
         return pooled_semantics.clone()
         
@@ -328,11 +343,11 @@ class HybridFrozenBrainDiffusionHands(nn.Module):
     ):
         """
         Train ONLY the new Diffusion head.
-
-        When residual_target=True, train on action deltas relative to the frozen
-        base policy: delta = gt_actions - base_action.
         """
         semantics = self.extract_semantic_features(batch)
+        
+        # Define scale to normalize translation (xyz) up to diffusion unit variance, and leave rotation/gripper alone.
+        action_scale = torch.tensor([10.0, 10.0, 10.0, 1.0, 1.0, 1.0, 1.0], device=gt_actions.device)
 
         if residual_target:
             with torch.inference_mode():
@@ -345,8 +360,6 @@ class HybridFrozenBrainDiffusionHands(nn.Module):
             if base_action.ndim == 2:
                 base_action = base_action.unsqueeze(1)
             
-            # Base policy might generate a larger chunk (e.g., 50) than the dataset yields (e.g., 16).
-            # We slice the base action to match the ground truth sequence length.
             if base_action.shape[1] > gt_actions.shape[1]:
                 base_action = base_action[:, :gt_actions.shape[1], :]
             elif base_action.shape[1] == 1 and gt_actions.shape[1] > 1:
@@ -355,21 +368,20 @@ class HybridFrozenBrainDiffusionHands(nn.Module):
             target_actions = gt_actions - base_action
         else:
             target_actions = gt_actions
+            
+        # Apply scaling to match diffusion noise variance
+        target_actions = target_actions * action_scale
         
         B = gt_actions.shape[0]
         device = gt_actions.device
         
-        # Sample random noise & timesteps for Conditional Flow Matching / DDPM
         noise = torch.randn_like(target_actions)
-        timesteps = torch.rand((B,), device=device) # continuous [0, 1]
+        timesteps = torch.rand((B,), device=device)
         
-        # Flow Matching style interpolation
-        # x_t = t * target_actions + (1 - t) * noise
         t_expand = timesteps[:, None, None]
         x_t = t_expand * target_actions + (1 - t_expand) * noise
         target_velocity = target_actions - noise
         
-        # Predict velocity
         pred_velocity = self.diffusion_head(x_t, timesteps, semantics)
 
         flow_loss = F.mse_loss(pred_velocity, target_velocity)
@@ -377,7 +389,6 @@ class HybridFrozenBrainDiffusionHands(nn.Module):
         delta_l2_loss = torch.tensor(0.0, device=device)
 
         if residual_target and delta_l2_weight > 0.0:
-            # Reconstruct predicted clean delta from flow velocity parameterization.
             pred_delta = x_t + (1.0 - t_expand) * pred_velocity
             delta_l2_loss = pred_delta.square().mean()
             total_loss = total_loss + float(delta_l2_weight) * delta_l2_loss
@@ -401,10 +412,12 @@ class HybridFrozenBrainDiffusionHands(nn.Module):
         semantics = self.extract_semantic_features(batch)
         B = semantics.shape[0]
         
+        # Scaling factor matching compute_loss
+        action_scale = torch.tensor([10.0, 10.0, 10.0, 1.0, 1.0, 1.0, 1.0], device=self.device)
+        
         x_t = torch.randn((B, self.chunk_size, self.action_dim), device=self.device)
         intermediates = [x_t.clone()] if return_intermediates else None
         
-        # ODE Solver
         dt = 1.0 / steps
         for i in range(steps):
             t = torch.full((B,), i * dt, device=self.device)
@@ -412,6 +425,9 @@ class HybridFrozenBrainDiffusionHands(nn.Module):
             x_t = x_t + v_pred * dt
             if return_intermediates:
                 intermediates.append(x_t.clone())
+                
+        # Unscale back to raw environment space
+        x_t = x_t / action_scale
                 
         if return_intermediates:
             return x_t, intermediates
