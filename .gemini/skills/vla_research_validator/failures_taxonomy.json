@@ -1,0 +1,128 @@
+[
+  {
+    "id": "FAIL-001",
+    "date": "2026-10-06",
+    "title": "VLM Semantic Conditioning Corruption (0% Success)",
+    "symptom": "Evaluation success rate on LIBERO Task 0 suddenly dropped from 20% to 0% across all 10 episodes.",
+    "root_cause": "A dummy expert token (1 token, dim 480) was injected into `inputs_embeds = [prefix_embs, dummy_expert_embs]` with `use_cache=False`. Inside SmolVLMWithExpertModel, `fill_kv_cache=False` forced `forward_cross_attn_layer` instead of `forward_attn_layer`. All visual and state prefix tokens cross-attended against zeroes across all layers, completely distorting the conditioning vector passed to the diffusion head.",
+    "resolution": "Removed dummy_expert_embs completely. Restored `inputs_embeds=[prefix_embs, None]` with `use_cache=True` and `past_key_values=None` so `fill_kv_cache=True` runs clean prefix self-attention, matching the trained checkpoint. Delete past_key_values immediately after forward pass to prevent VRAM accumulation.",
+    "invariant": "Never pass non-None expert tokens to the frozen VLM backbone. Always use `inputs_embeds=[prefix_embs, None]` and clean self-attention prefill.",
+    "tags": [
+      "conditioning",
+      "vlm",
+      "diffusion",
+      "performance_drop"
+    ]
+  },
+  {
+    "id": "FAIL-002",
+    "date": "2026-10-06",
+    "title": "PyTorch Submodule Traversal Recursion Segfault (Exit 139)",
+    "symptom": "Evaluation crashed with `Segmentation fault (core dumped)` in `named_children` / `train` / `eval` on step 0 of episode 1.",
+    "root_cause": "SmolVLAPolicy.select_action(batch) calls `self.eval()` internally on every step. Calling `.eval()` traverses all submodules in SmolVLMWithExpertModel recursively. In PyTorch with deep multimodal hierarchies, calling this 520 times per episode overflows the C-level call stack.",
+    "resolution": "Freeze base_policy in eval mode at init: `self.base_policy.eval = lambda *args, **kwargs: self.base_policy`. This neutralizes repeated traversals while keeping the model deterministic.",
+    "invariant": "Always override `self.base_policy.eval` with a lambda no-op after initial `self.base_policy.eval()` call in wrapper classes.",
+    "tags": [
+      "segfault",
+      "eval",
+      "pytorch",
+      "recursion"
+    ]
+  },
+  {
+    "id": "FAIL-003",
+    "date": "2026-10-06",
+    "title": "Missing robosuite_mujoco_patch in PYTHONPATH",
+    "symptom": "Robosuite / MuJoCo 3.x memory corruption and joint property assertions during environment resets.",
+    "root_cause": "eval_hybrid_diffusion.sh only added `hybrid_diffusion/` to PYTHONPATH, omitting the repository root. `sitecustomize.py` and `robosuite_mujoco_patch.py` were never loaded.",
+    "resolution": "Added `REPO_ROOT` to PYTHONPATH in `eval_hybrid_diffusion.sh` and added fallback explicit import in `train_hybrid_diffusion.py`.",
+    "invariant": "All runner scripts and Python entry points must ensure repository root is in PYTHONPATH so `sitecustomize.py` loads `robosuite_mujoco_patch`.",
+    "tags": [
+      "mujoco",
+      "robosuite",
+      "pythonpath",
+      "driver"
+    ]
+  },
+  {
+    "id": "FAIL-004",
+    "date": "2026-10-06",
+    "title": "Headless EGL Resource Accumulation Segfault on 5th Episode Reset",
+    "symptom": "Evaluation crashed with `Segmentation fault` inside `robosuite/utils/mjcf_utils.py` `find_elements` on Episode 5 reset.",
+    "root_cause": "Under headless EGL in WSL2, Robosuite accumulates internal C-level XML ElementTree handles and OpenGL contexts across resets. Running 5 consecutive resets in a single Python process exceeds the memory threshold.",
+    "resolution": "Changed default batch size in `eval_hybrid_diffusion.sh` to 3 episodes per process. Each sub-process runs at most 3 episodes, exiting cleanly and recycling the driver context.",
+    "invariant": "Never run more than 3 consecutive environment resets per Python process under headless EGL.",
+    "tags": [
+      "egl",
+      "batch_size",
+      "segfault",
+      "xml",
+      "robosuite"
+    ]
+  },
+  {
+    "id": "FAIL-005",
+    "date": "2026-10-04",
+    "title": "Open-Loop Residual Execution Collapse (replan_each_step=False)",
+    "symptom": "Residual evaluation dropped to 0.0% when replan_each_step was False.",
+    "root_cause": "When `eval_replan_each_step=False`, the model predicts a 16-step residual chunk and executes it open-loop. In a contact-rich 520-step manipulation task, compounding drift without closed-loop replanning causes failure.",
+    "resolution": "Set `--eval_replan_each_step 1` by default for closed-loop residual adjustment on every step.",
+    "invariant": "Residual evaluations on LIBERO must use `--eval_replan_each_step 1` unless specifically testing open-loop horizon stability.",
+    "tags": [
+      "replan_each_step",
+      "closed_loop",
+      "drift"
+    ]
+  },
+  {
+    "id": "FAIL-006",
+    "date": "2026-10-07",
+    "title": "LeRobot make_env Wrapper Degradation & Batch 2 Segfault",
+    "symptom": "Task 3 baseline evaluation resulted in 0.00% success rate (instead of ~83% expected baseline), and the evaluation script crashed on launching Batch 2 with Segmentation fault (core dumped).",
+    "root_cause": "evaluate_in_environment in train_hybrid_diffusion.py introduced a conditional use_lerobot_env block using make_env which omitted benchmark initial state setup (env.set_init_state), skipped 10-step dummy action physics stabilization, did not enable delta robot control (use_delta = True), ignored image_flip_mode (feeding inverted OpenGL camera images to SmolVLA), and applied duplicate preprocessing and postprocessing. Batch 2 crashed with Segfault due to zero inter-batch delay under WSL2 EGL.",
+    "resolution": "Replaced make_env with direct OffScreenRenderEnv pipeline matching test_base.py, guaranteeing benchmark init_states, dummy action stabilization, delta control, correct image flipping, and single-stage LeRobot preprocessing. Added 2-second inter-batch delay in eval_hybrid_diffusion.sh.",
+    "invariant": "Always evaluate LIBERO policies using direct OffScreenRenderEnv with benchmark initial states, 10 dummy warmup steps, delta controller, vertical_horizontal image flips, and a 2-second delay between batched runner processes.",
+    "tags": [
+      "make_env",
+      "libero",
+      "init_states",
+      "image_flip",
+      "segfault",
+      "egl"
+    ]
+  },
+  {
+    "id": "FAIL-007",
+    "date": "2026-10-10",
+    "title": "Stacked mj_fullM Patches Corrupt OSC Mass Matrix (0% Base Success in Hybrid Harness)",
+    "symptom": "Frozen base SmolVLA scored 0/10 on Task 3 through train_hybrid_diffusion.py --eval_only (expected ~83%), while lerobot_eval on the same task was fine. Robot moved but never completed the task; no crash.",
+    "root_cause": "train_hybrid_diffusion.py carried its own copy of the robosuite/MuJoCo compatibility patch and applied it on top of robosuite_mujoco_patch (already loaded via sitecustomize and the explicit import). The second mujoco.mj_fullM wrapper forwarded robosuite's (model, dst, qM) call to the first wrapper as (model, data, dst), which then unpacked MuJoCo 3.13's data.M with the legacy dof_Madr layout. The OSC controller received a wrong mass matrix (max abs error 4.67 vs mj_mulM ground truth, negative diagonal terms), so every commanded delta pose was executed with wrong torques.",
+    "resolution": "Deleted the duplicated patch block from train_hybrid_diffusion.py; the script now only imports robosuite_mujoco_patch (hard import, no silent fallback). Controller mass matrix error vs ground truth is 3.5e-5 afterwards and base Task 3 succeeds 3/3 in the smoke check.",
+    "invariant": "Only robosuite_mujoco_patch.py may patch mujoco.mj_fullM. No other file may assign mujoco.mj_fullM; verify any eval harness by reproducing the base-policy success rate before measuring a new method.",
+    "tags": [
+      "mujoco",
+      "mj_fullM",
+      "mass_matrix",
+      "osc",
+      "baseline",
+      "harness"
+    ]
+  },
+  {
+    "id": "FAIL-008",
+    "date": "2026-10-11",
+    "title": "Runner Aborted by Segfault in a Helper Python Call (sitecustomize imports torch)",
+    "symptom": "run_task3_residual.sh died with 'Fatal Python error: Segmentation fault' after base-eval seeds 12..14 on Task 0. Stack shows sitecustomize -> robosuite_mujoco_patch -> import torch. The 15 finished episodes were intact; no eval batch had failed.",
+    "root_cause": "The crash was not in an evaluation process. Between batches the runner calls a one-line 'python -c' to count finished seeds in eval_results.json. With the repo root on PYTHONPATH, every interpreter start runs sitecustomize, which imports torch and patches MuJoCo; that import segfaulted once (transient, right after a GPU/EGL process exited under WSL2). The call sat in a command substitution under 'set -e', so one helper crash aborted the whole multi-hour run.",
+    "resolution": "The resume check now runs with 'python -S' (no sitecustomize, stdlib only) and falls back to 0 on any failure; each eval batch is retried up to 3 times until its seeds are present in eval_results.json. The run was resumed from the saved episode records.",
+    "invariant": "Helper Python calls in runner scripts that do not need torch/MuJoCo must use 'python -S', and no single helper or batch failure may abort a resumable run under set -e.",
+    "tags": [
+      "segfault",
+      "sitecustomize",
+      "runner",
+      "set-e",
+      "resume",
+      "wsl2"
+    ]
+  }
+]

@@ -9,6 +9,12 @@ import argparse
 import os
 from pathlib import Path
 
+# Ensure repo root is on sys.path for robosuite_mujoco_patch
+_repo_root = str(Path(__file__).resolve().parent.parent)
+if _repo_root not in sys.path:
+    sys.path.insert(0, _repo_root)
+import robosuite_mujoco_patch  # noqa: F401
+
 # Set headless MuJoCo / PyOpenGL rendering backends
 os.environ["MUJOCO_GL"] = os.environ.get("MUJOCO_GL", "egl")
 os.environ["PYOPENGL_PLATFORM"] = os.environ.get("PYOPENGL_PLATFORM", "egl")
@@ -97,153 +103,9 @@ def _ensure_valid_libero_config():
 
 _ensure_valid_libero_config()
 
-# Robosuite / NumPy 2.x & MuJoCo 3.x compatibility patch
-try:
-    import robosuite.utils.binding_utils as bu
-    import mujoco
-    import numpy as np
-
-    def _create_patched_qpos(orig_fn):
-        def _patched(self, name):
-            joint_id = self.joint_name2id(name)
-            if joint_id < 0:
-                for alt_name in [f"robot0_{name}", name.replace("robot0_", "")]:
-                    alt_id = self.joint_name2id(alt_name)
-                    if alt_id >= 0:
-                        joint_id = alt_id
-                        break
-            if joint_id < 0:
-                raise KeyError(f"Joint '{name}' not found in MuJoCo model.")
-            joint_type = int(self.jnt_type[joint_id])
-            joint_addr = int(self.jnt_qposadr[joint_id])
-            if joint_type == int(mujoco.mjtJoint.mjJNT_FREE):
-                ndim = 7
-            elif joint_type == int(mujoco.mjtJoint.mjJNT_BALL):
-                ndim = 4
-            else:
-                assert joint_type in (int(mujoco.mjtJoint.mjJNT_HINGE), int(mujoco.mjtJoint.mjJNT_SLIDE)), \
-                    f"Joint '{name}' (id {joint_id}) has unsupported type {joint_type}"
-                ndim = 1
-
-            if ndim == 1:
-                return joint_addr
-            return (joint_addr, joint_addr + ndim)
-        return _patched
-
-    def _create_patched_qvel(orig_fn):
-        def _patched(self, name):
-            joint_id = self.joint_name2id(name)
-            if joint_id < 0:
-                for alt_name in [f"robot0_{name}", name.replace("robot0_", "")]:
-                    alt_id = self.joint_name2id(alt_name)
-                    if alt_id >= 0:
-                        joint_id = alt_id
-                        break
-            if joint_id < 0:
-                raise KeyError(f"Joint '{name}' not found in MuJoCo model.")
-            joint_type = int(self.jnt_type[joint_id])
-            joint_addr = int(self.jnt_dofadr[joint_id])
-            if joint_type == int(mujoco.mjtJoint.mjJNT_FREE):
-                ndim = 6
-            elif joint_type == int(mujoco.mjtJoint.mjJNT_BALL):
-                ndim = 3
-            else:
-                assert joint_type in (int(mujoco.mjtJoint.mjJNT_HINGE), int(mujoco.mjtJoint.mjJNT_SLIDE)), \
-                    f"Joint '{name}' (id {joint_id}) has unsupported type {joint_type}"
-                ndim = 1
-
-            if ndim == 1:
-                return joint_addr
-            return (joint_addr, joint_addr + ndim)
-        return _patched
-
-    for target in [bu, getattr(bu, "MjModel", None), getattr(bu, "MjModelWrapper", None)]:
-        if target is not None:
-            if hasattr(target, "get_joint_qpos_addr"):
-                target.get_joint_qpos_addr = _create_patched_qpos(target.get_joint_qpos_addr)
-            if hasattr(target, "get_joint_qvel_addr"):
-                target.get_joint_qvel_addr = _create_patched_qvel(target.get_joint_qvel_addr)
-
-    # Fix for MuJoCo 3.10+ where qM was renamed to M in MjData
-    class _MArray(np.ndarray):
-        """NumPy array view that retains a reference to the MjData struct."""
-        _mj_data = None
-
-    def _get_qM(self):
-        d = getattr(self, "_data", self)
-        raw = getattr(d, "M", None)
-        if raw is None:
-            raw = getattr(d, "qM", None)
-        if raw is None:
-            raise AttributeError("'MjData' object has no attribute 'qM' or 'M'")
-        arr = np.asarray(raw).view(_MArray)
-        arr._mj_data = d
-        return arr
-
-    for data_cls in [getattr(bu, "MjData", None), getattr(bu, "MjDataWrapper", None), getattr(mujoco, "MjData", None)]:
-        if data_cls is not None:
-            try:
-                setattr(data_cls, "qM", property(_get_qM))
-            except Exception:
-                pass
-
-    # Safety wrapper for mj_fullM compatible with robosuite 1.4 + MuJoCo 3.x
-    _orig_mj_fullM = mujoco.mj_fullM
-
-    def _patched_mj_fullM(*args, **kwargs):
-        if len(args) == 3:
-            m, a1, a2 = args
-            model = getattr(m, "_model", m)
-
-            # Case 1: mj_fullM(model, data, dst)
-            if not isinstance(a1, np.ndarray) and isinstance(a2, np.ndarray):
-                dst = a2
-                d = getattr(a1, "_data", getattr(a1, "_mj_data", a1))
-                try:
-                    return _orig_mj_fullM(model, d, dst)
-                except Exception:
-                    pass
-
-            # Case 2: mj_fullM(model, dst, qM) [Robosuite 1.4 API]
-            if isinstance(a1, np.ndarray) and isinstance(a2, np.ndarray):
-                dst = a1
-                
-                # Extract MjData using stack inspection (for Robosuite's base_controller.py)
-                d = None
-                try:
-                    import sys
-                    frame = sys._getframe(1)
-                    for _ in range(3):
-                        if frame is None:
-                            break
-                        if 'self' in frame.f_locals:
-                            s = frame.f_locals['self']
-                            if hasattr(s, 'sim') and hasattr(s.sim, 'data'):
-                                d = s.sim.data
-                                break
-                        frame = frame.f_back
-                except Exception:
-                    pass
-
-                if d is not None:
-                    try:
-                        raw_d = getattr(d, "_data", getattr(d, "_mj_data", d))
-                        return _orig_mj_fullM(model, raw_d, dst)
-                    except Exception:
-                        pass
-
-        elif len(args) == 2:
-            m, a1 = args
-            model = getattr(m, "_model", m)
-            if hasattr(a1, "_data") or hasattr(a1, "_mj_data") or hasattr(a1, "qpos"):
-                d = getattr(a1, "_data", getattr(a1, "_mj_data", a1))
-                return _orig_mj_fullM(model, d)
-
-        return _orig_mj_fullM(*args, **kwargs)
-
-    mujoco.mj_fullM = _patched_mj_fullM
-except Exception as _patch_err:
-    print(f"[Warning] Failed to patch robosuite / MuJoCo binding_utils: {_patch_err}")
+# Robosuite / NumPy 2.x / MuJoCo 3.x compatibility lives in robosuite_mujoco_patch (imported above).
+# Do not re-patch mujoco.mj_fullM here: a second wrapper on top of that module's wrapper hands
+# robosuite's OSC controller a corrupted mass matrix (see FAIL-007).
 
 
 import torch.optim as optim
@@ -264,6 +126,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from hybrid_diffusion_agent import HybridFrozenBrainDiffusionHands
 from linux_inhibit import LinuxInhibit
+from vla_core.seeding import episode_noise_seed
 
 # LIBERO imports for evaluation
 try:
@@ -291,8 +154,13 @@ try:
     from lerobot.policies.factory import make_pre_post_processors
     from lerobot.envs.factory import make_env, make_env_config, make_env_pre_post_processors
     from lerobot.envs.utils import preprocess_observation
+    from lerobot.policies.smolvla.modeling_smolvla import SmolVLAPolicy
     has_lerobot_processors = True
 except ImportError:
+    try:
+        from lerobot.policies.smolvla.modeling_smolvla import SmolVLAPolicy
+    except ImportError:
+        SmolVLAPolicy = None
     has_lerobot_processors = False
     print("Warning: Could not import LeRobot pre/post processors or env factory.")
 
@@ -564,9 +432,6 @@ def create_libero_env(task_id, benchmark, benchmark_root):
         camera_widths=256,
         ignore_done=True,
     )
-    for robot in env.robots:
-        if hasattr(robot, "controller") and robot.controller is not None:
-            robot.controller.use_delta = True
     return env
 
 
@@ -591,6 +456,9 @@ def evaluate_in_environment(
     eval_log_action_stats_every=0,
     eval_action_clip=1.0,
     eval_output_dir=None,
+    seed_offset=0,
+    eval_warmup_steps=10,
+    noise_seed=0,
 ):
     """Run an evaluation loop in the LIBERO environment to measure true success rate."""
     if not has_libero:
@@ -601,20 +469,47 @@ def evaluate_in_environment(
     benchmark_root = os.path.dirname(libero_pkg.__file__)
 
     model.eval()
-    if hasattr(model, "base_policy"):
-        set_base_policy_num_steps(model.base_policy, diffusion_steps)
+    base_policy_obj = getattr(model, "base_policy", model)
+    if hasattr(base_policy_obj, "config"):
+        set_base_policy_num_steps(base_policy_obj, diffusion_steps)
 
     all_tasks_success = []
     all_episode_details = []
+    prev_noise_seed = 0
 
-    # Check if LeRobot make_env is available
-    use_lerobot_env = False
-    if has_lerobot_processors:
-        try:
-            from lerobot.envs.factory import make_env, make_env_config, make_env_pre_post_processors
-            use_lerobot_env = True
-        except ImportError:
-            use_lerobot_env = False
+    if eval_output_dir is not None:
+        existing_json = os.path.join(eval_output_dir, "eval_results.json")
+        if os.path.exists(existing_json):
+            try:
+                with open(existing_json, "r") as f:
+                    prev_data = json.load(f)
+                if isinstance(prev_data, dict) and "episodes" in prev_data and isinstance(prev_data["episodes"], list):
+                    prev_noise_seed = int(prev_data.get("eval_noise_seed", 0))
+                    all_episode_details = list(prev_data["episodes"])
+                    print(
+                        f"[evaluate_in_environment] Loaded {len(all_episode_details)} existing episode records from {existing_json}",
+                        flush=True,
+                    )
+            except Exception as e:
+                print(f"[evaluate_in_environment] Warning: Could not load existing results: {e}", flush=True)
+            # Records are keyed by (task_id, seed); two noise seeds in one file would overwrite each other.
+            if all_episode_details and prev_noise_seed != int(noise_seed):
+                raise ValueError(
+                    f"{existing_json} holds episodes from --eval_noise_seed {prev_noise_seed}, "
+                    f"but this run uses {noise_seed}. Use a separate --eval_output_dir per noise seed."
+                )
+
+    def _record_episode_result(ep_record):
+        existing_idx = next(
+            (i for i, e in enumerate(all_episode_details)
+             if e.get("task_id") == ep_record["task_id"] and e.get("seed") == ep_record["seed"]),
+            None
+        )
+        if existing_idx is not None:
+            all_episode_details[existing_idx] = ep_record
+        else:
+            all_episode_details.append(ep_record)
+        all_episode_details.sort(key=lambda x: (x.get("task_id", 0), x.get("episode", 0)))
 
     for task_id in tasks:
         task = benchmark.get_task(task_id)
@@ -647,177 +542,16 @@ def evaluate_in_environment(
             except Exception as e:
                 print(f"Warning: Failed to save eval_summary.csv: {e}")
 
-        if use_lerobot_env:
-            env_cfg = make_env_config(
-                "libero",
-                task="libero_10",
-                task_ids=[task_id],
-                episode_length=max_steps,
-                observation_height=256,
-                observation_width=256,
-                obs_type="pixels_agent_pos",
-            )
-            policy_cfg = getattr(getattr(model, "base_policy", model), "config", None)
-            task_env_pre, task_env_post = make_env_pre_post_processors(env_cfg, policy_cfg)
-            env_dict = make_env(env_cfg, n_envs=1, use_async_envs=False)
-            vec_env = env_dict["libero_10"][task_id]
-            task_desc = list(vec_env.call("task_description"))[0]
-
-            try:
-                for ep in range(num_episodes):
-                    print(f"Starting Episode {ep + 1}/{num_episodes} (Task {task_id}, seed={ep})...", flush=True)
-                    if hasattr(model, "base_policy") and hasattr(model.base_policy, "reset"):
-                        model.base_policy.reset()
-                    elif hasattr(model, "reset"):
-                        model.reset()
-
-                    obs_dict, info = vec_env.reset(seed=[ep])
-                    step = 0
-                    done = False
-                    ep_reward = 0.0
-                    ep_success = False
-                    pending_chunk = None
-                    chunk_idx = 0
-
-                    while not done and step < max_steps:
-                        obs = preprocess_observation(obs_dict)
-                        obs["task"] = [task_desc]
-                        obs = task_env_pre(obs)
-                        batch = preprocessor(obs) if preprocessor is not None else obs
-
-                        with torch.no_grad():
-                            with torch.autocast(device_type="cuda", dtype=torch.bfloat16):
-                                if policy_mode == "base":
-                                    base_action = model.base_policy.select_action(batch)
-                                    if eval_log_action_stats_every > 0 and (step % eval_log_action_stats_every == 0):
-                                        b = base_action.detach().to(torch.float32)
-                                        print(
-                                            f"[Eval Action Stats][task={task_id} ep={ep+1} step={step}] "
-                                            f"base(min={b.min().item():.3f}, max={b.max().item():.3f}, mean={b.mean().item():.3f}, std={b.std(unbiased=False).item():.3f})"
-                                        )
-                                    chosen_action = base_action
-                                else:
-                                    if eval_replan_each_step:
-                                        pending_chunk = None
-                                        chunk_idx = 0
-
-                                    if pending_chunk is None or chunk_idx >= pending_chunk.shape[1]:
-                                        pending_chunk = model.select_action(
-                                            batch,
-                                            steps=diffusion_steps,
-                                            return_intermediates=False,
-                                        )
-                                        chunk_idx = 0
-
-                                    hybrid_action = pending_chunk[:, chunk_idx, :]
-                                    chunk_idx += 1
-                                    hybrid_action = torch.clamp(hybrid_action, -eval_action_clip, eval_action_clip)
-
-                                    if policy_mode == "mixed":
-                                        base_action = model.base_policy.select_action(batch)
-                                        chosen_action = (1.0 - hybrid_mix) * base_action + hybrid_mix * hybrid_action
-                                        chosen_action = torch.clamp(chosen_action, -eval_action_clip, eval_action_clip)
-                                    elif policy_mode == "residual":
-                                        base_action = model.base_policy.select_action(batch)
-                                        chosen_action = base_action + residual_alpha * hybrid_action
-                                        chosen_action = torch.clamp(chosen_action, -eval_action_clip, eval_action_clip)
-                                    else:
-                                        chosen_action = hybrid_action
-
-                                if postprocessor is not None:
-                                    env_action = postprocessor(chosen_action)
-                                else:
-                                    env_action = chosen_action
-
-                                if task_env_post is not None:
-                                    action_transition = task_env_post({"action": env_action})
-                                    action_to_step = action_transition["action"]
-                                else:
-                                    action_to_step = env_action
-
-                                action_np = action_to_step.detach().cpu().to(torch.float32).numpy()
-                                if action_np.ndim == 1:
-                                    action_np = np.expand_dims(action_np, 0)
-
-                        obs_dict, reward, terminated, truncated, info = vec_env.step(action_np)
-
-                        step_success = False
-                        if "final_info" in info:
-                            fi = info["final_info"]
-                            if isinstance(fi, dict) and "is_success" in fi:
-                                s = fi["is_success"]
-                                step_success = bool(s[0] if hasattr(s, "__getitem__") else s)
-                            elif isinstance(fi, (list, tuple, np.ndarray)) and len(fi) > 0:
-                                item = fi[0]
-                                if isinstance(item, dict) and "is_success" in item:
-                                    step_success = bool(item["is_success"])
-                        elif "is_success" in info:
-                            s = info["is_success"]
-                            step_success = bool(s[0] if hasattr(s, "__getitem__") else s)
-
-                        is_term = bool(terminated[0] if hasattr(terminated, "__getitem__") else terminated)
-                        is_trunc = bool(truncated[0] if hasattr(truncated, "__getitem__") else truncated)
-                        done = bool(is_term or is_trunc or step_success)
-                        ep_success = ep_success or step_success
-                        ep_reward += float(reward[0] if hasattr(reward, "__getitem__") else reward)
-                        step += 1
-
-                    clear_preprocessor_state(preprocessor)
-                    success_count += int(ep_success)
-                    total_reward += ep_reward
-                    print(f"Eval Ep {ep+1}/{num_episodes} | Success: {ep_success} | Reward: {ep_reward:.2f} | Steps: {step}", flush=True)
-
-                    all_episode_details.append({
-                        "task_id": int(task_id),
-                        "task_name": getattr(task, "name", f"task_{task_id}"),
-                        "language": getattr(task, "language", ""),
-                        "episode": ep + 1,
-                        "success": bool(ep_success),
-                        "reward": float(ep_reward),
-                        "steps": int(step),
-                    })
-
-                    # Incremental progress saving after each episode
-                    cur_task_sr = {tid: (sum(1 for e in all_episode_details if e["task_id"] == tid and e["success"]) / max(1, sum(1 for e in all_episode_details if e["task_id"] == tid))) for tid in tasks}
-                    cur_overall = sum(cur_task_sr.values()) / max(1, len(cur_task_sr))
-                    _write_results_files(
-                        eval_dir=eval_output_dir,
-                        payload={
-                            "overall_success_rate": float(cur_overall),
-                            "epoch": epoch,
-                            "policy_mode": policy_mode,
-                            "residual_alpha": float(residual_alpha),
-                            "diffusion_steps": int(diffusion_steps),
-                            "eval_replan_each_step": bool(eval_replan_each_step),
-                            "tasks": {str(t): float(cur_task_sr[t]) for t in tasks if t in cur_task_sr},
-                            "episodes": all_episode_details,
-                        },
-                        ep_details=all_episode_details,
-                        task_list=tasks,
-                        task_success_dict=cur_task_sr,
-                    )
-            finally:
-                try:
-                    vec_env.close()
-                except Exception:
-                    pass
-                del vec_env, env_dict
-                clear_preprocessor_state(preprocessor)
-                import gc
-                gc.collect()
-                if torch.cuda.is_available():
-                    torch.cuda.empty_cache()
-
-        else:
-            # Fallback legacy path if make_env is not available
-            init_states = benchmark.get_task_init_states(task_id)
+        init_states = benchmark.get_task_init_states(task_id)
+        env = create_libero_env(task_id, benchmark, benchmark_root)
+        try:
             for ep in range(num_episodes):
-                print(f"Starting Episode {ep + 1}/{num_episodes} (Task {task_id})...", flush=True)
-                env = create_libero_env(task_id, benchmark, benchmark_root)
+                actual_seed = ep + seed_offset
+                print(f"Starting Episode {ep + 1}/{num_episodes} (Task {task_id}, seed={actual_seed})...", flush=True)
                 try:
                     obs = env.reset()
                     if init_states is not None and len(init_states) > 0:
-                        init_state = init_states[ep % len(init_states)]
+                        init_state = init_states[actual_seed % len(init_states)]
                         env.set_init_state(init_state)
                         if hasattr(env, "env") and hasattr(env.env, "_get_observations"):
                             obs = env.env._get_observations()
@@ -826,12 +560,15 @@ def evaluate_in_environment(
                     else:
                         obs = env.reset()
 
-                    for _ in range(10):
-                        obs, _, _, _ = env.step(get_libero_dummy_action())
-
+                    if eval_warmup_steps > 0:
+                        for _ in range(eval_warmup_steps):
+                            obs, _, _, _ = env.step(get_libero_dummy_action())
                     for robot in env.robots:
                         if hasattr(robot, "controller") and robot.controller is not None:
                             robot.controller.use_delta = True
+
+                    # Same sampling noise for every policy mode on a given init state and noise seed.
+                    torch.manual_seed(episode_noise_seed(actual_seed, noise_seed))
 
                     if hasattr(model, "base_policy") and hasattr(model.base_policy, "reset"):
                         model.base_policy.reset()
@@ -877,7 +614,14 @@ def evaluate_in_environment(
                         with torch.inference_mode():
                             with torch.autocast(device_type="cuda", dtype=torch.bfloat16):
                                 if policy_mode == "base":
-                                    base_action = model.base_policy.select_action(batch)
+                                    base_policy = getattr(model, "base_policy", model)
+                                    base_action = base_policy.select_action(batch)
+                                    if eval_log_action_stats_every > 0 and (step % eval_log_action_stats_every == 0):
+                                        b = base_action.detach().to(torch.float32)
+                                        print(
+                                            f"[Eval Action Stats][task={task_id} ep={ep+1} step={step}] "
+                                            f"base(min={b.min().item():.3f}, max={b.max().item():.3f}, mean={b.mean().item():.3f}, std={b.std(unbiased=False).item():.3f})"
+                                        )
                                     chosen_action = base_action
                                 else:
                                     if eval_replan_each_step:
@@ -885,25 +629,34 @@ def evaluate_in_environment(
                                         chunk_idx = 0
 
                                     if pending_chunk is None or chunk_idx >= pending_chunk.shape[1]:
-                                        pending_chunk = model.select_action(
-                                            batch,
-                                            steps=diffusion_steps,
-                                            return_intermediates=False,
-                                        )
+                                        if policy_mode == "residual":
+                                            # Base and residual chunks come from the same observation and the
+                                            # residual is conditioned on the base sample it is added to.
+                                            pending_chunk, base_chunk, residual_chunk = model.select_residual_action(
+                                                batch,
+                                                steps=diffusion_steps,
+                                                residual_alpha=residual_alpha,
+                                            )
+                                            if eval_log_action_stats_every > 0 and (step % eval_log_action_stats_every == 0):
+                                                print(
+                                                    f"[Eval Action Stats][task={task_id} ep={ep+1} step={step}] "
+                                                    f"base_abs={base_chunk[:, 0].abs().mean().item():.3f} "
+                                                    f"residual_abs={residual_chunk[:, 0].abs().mean().item():.3f}"
+                                                )
+                                        else:
+                                            pending_chunk = model.select_action(
+                                                batch,
+                                                steps=diffusion_steps,
+                                                return_intermediates=False,
+                                            )
                                         chunk_idx = 0
 
                                     hybrid_action = pending_chunk[:, chunk_idx, :]
                                     chunk_idx += 1
-                                    hybrid_action = torch.clamp(hybrid_action, -eval_action_clip, eval_action_clip)
 
                                     if policy_mode == "mixed":
                                         base_action = model.base_policy.select_action(batch)
                                         chosen_action = (1.0 - hybrid_mix) * base_action + hybrid_mix * hybrid_action
-                                        chosen_action = torch.clamp(chosen_action, -eval_action_clip, eval_action_clip)
-                                    elif policy_mode == "residual":
-                                        base_action = model.base_policy.select_action(batch)
-                                        chosen_action = base_action + residual_alpha * hybrid_action
-                                        chosen_action = torch.clamp(chosen_action, -eval_action_clip, eval_action_clip)
                                     else:
                                         chosen_action = hybrid_action
 
@@ -913,6 +666,10 @@ def evaluate_in_environment(
                                 else:
                                     action_np = chosen_action[0].detach().cpu().to(torch.float32).numpy()
                                     action_np = np.clip(action_np, -1.0, 1.0)
+                                if policy_mode != "base":
+                                    # Clip in env action space; actions here are still mean/std-normalized
+                                    # before the postprocessor, where +-1 is only one standard deviation.
+                                    action_np = np.clip(action_np, -eval_action_clip, eval_action_clip)
 
                         next_obs, reward, done, info = env.step(action_np)
                         step_success = extract_success(info, env)
@@ -926,33 +683,61 @@ def evaluate_in_environment(
                     total_reward += ep_reward
                     print(f"Eval Ep {ep+1}/{num_episodes} | Success: {ep_success} | Reward: {ep_reward:.2f} | Steps: {step}", flush=True)
 
-                    all_episode_details.append({
+                    _record_episode_result({
                         "task_id": int(task_id),
                         "task_name": getattr(task, "name", f"task_{task_id}"),
                         "language": getattr(task, "language", ""),
-                        "episode": ep + 1,
+                        "episode": ep + 1 + seed_offset,
+                        "seed": int(actual_seed),
                         "success": bool(ep_success),
                         "reward": float(ep_reward),
                         "steps": int(step),
                     })
-                finally:
-                    try:
-                        env.close()
-                    except Exception:
-                        pass
-                    del env
-                    clear_preprocessor_state(preprocessor)
-                    if torch.cuda.is_available():
-                        torch.cuda.empty_cache()
 
-        success_rate = success_count / num_episodes
-        avg_ep_reward = total_reward / num_episodes
-        all_tasks_success.append(success_rate)
+                    # Incremental progress saving after each episode
+                    cur_task_sr = {tid: (sum(1 for e in all_episode_details if e["task_id"] == tid and e["success"]) / max(1, sum(1 for e in all_episode_details if e["task_id"] == tid))) for tid in tasks}
+                    cur_overall = sum(cur_task_sr.values()) / max(1, len(cur_task_sr))
+                    _write_results_files(
+                        eval_dir=eval_output_dir,
+                        payload={
+                            "overall_success_rate": float(cur_overall),
+                            "epoch": epoch,
+                            "policy_mode": policy_mode,
+                            "residual_alpha": float(residual_alpha),
+                            "diffusion_steps": int(diffusion_steps),
+                            "eval_replan_each_step": bool(eval_replan_each_step),
+                            "eval_noise_seed": int(noise_seed),
+                            "tasks": {str(t): float(cur_task_sr[t]) for t in tasks if t in cur_task_sr},
+                            "episodes": all_episode_details,
+                        },
+                        ep_details=all_episode_details,
+                        task_list=tasks,
+                        task_success_dict=cur_task_sr,
+                    )
+                finally:
+                    clear_preprocessor_state(preprocessor)
+        finally:
+            try:
+                env.close()
+            except Exception:
+                pass
+            del env
+            if torch.cuda.is_available():
+                torch.cuda.empty_cache()
+
+        task_eps = [e for e in all_episode_details if e["task_id"] == int(task_id)]
+        if task_eps:
+            task_success_rate = sum(1 for e in task_eps if e["success"]) / len(task_eps)
+            task_avg_reward = sum(e["reward"] for e in task_eps) / len(task_eps)
+        else:
+            task_success_rate = success_count / max(1, num_episodes)
+            task_avg_reward = total_reward / max(1, num_episodes)
+        all_tasks_success.append(task_success_rate)
 
         if wandb.run is not None:
             eval_log = {
-                f"eval_task/task_{task_id}_success_rate": success_rate,
-                f"eval_task/task_{task_id}_reward": avg_ep_reward,
+                f"eval_task/task_{task_id}_success_rate": task_success_rate,
+                f"eval_task/task_{task_id}_reward": task_avg_reward,
                 "epoch": epoch
             }
             if global_step is not None:
@@ -961,7 +746,8 @@ def evaluate_in_environment(
                 wandb.log(eval_log)
 
     overall_success = sum(all_tasks_success) / len(all_tasks_success) if all_tasks_success else 0.0
-    print(f"\nEval Complete | Overall Success Rate: {overall_success:.2f}\n")
+    total_eps_evaluated = len(all_episode_details)
+    print(f"\nEval Complete | Accumulated Episodes: {total_eps_evaluated} | Overall Success Rate: {overall_success:.2f} ({overall_success*100:.1f}%)\n", flush=True)
 
     if eval_output_dir is not None:
         os.makedirs(eval_output_dir, exist_ok=True)
@@ -972,6 +758,7 @@ def evaluate_in_environment(
             "residual_alpha": float(residual_alpha),
             "diffusion_steps": int(diffusion_steps),
             "eval_replan_each_step": bool(eval_replan_each_step),
+            "eval_noise_seed": int(noise_seed),
             "tasks": {
                 str(tid): float(sr) for tid, sr in zip(tasks, all_tasks_success)
             },
@@ -1301,7 +1088,7 @@ def train():
         "--eval_action_clip",
         type=float,
         default=1.0,
-        help="Clamp hybrid/mixed normalized actions to [-clip, clip] before postprocessor.",
+        help="Clamp hybrid/mixed/residual env-space actions to [-clip, clip] after the postprocessor.",
     )
     parser.add_argument(
         "--eval_output_dir",
@@ -1310,9 +1097,39 @@ def train():
         help="Directory to store evaluation results (eval_results.json, eval_summary.csv, eval_config.json).",
     )
     parser.add_argument(
+        "--eval_seed_offset",
+        type=int,
+        default=0,
+        help="Offset added to evaluation episode seeds (e.g. 5 for evaluating episodes 5-9).",
+    )
+    parser.add_argument(
+        "--eval_noise_seed",
+        type=int,
+        default=0,
+        help="Seed for the policy's sampling noise, independent of the init state. "
+             "Repeat an evaluation on the same init states by changing this (0 = original behaviour).",
+    )
+    parser.add_argument(
+        "--eval_warmup_steps",
+        type=int,
+        default=10,
+        help="Number of dummy warmup steps before episode start (default: 10, as in LeRobot's LiberoEnv).",
+    )
+    parser.add_argument(
         "--residual_target",
         action="store_true",
         help="Train diffusion head on residual deltas (dataset action minus frozen base action).",
+    )
+    parser.add_argument(
+        "--cond_on_base_action",
+        action="store_true",
+        help="Condition the diffusion head on the base action chunk (needed for a well-defined residual).",
+    )
+    parser.add_argument("--time_scale", type=float, default=1.0, help="Scale applied to flow time before the sinusoidal embedding.")
+    parser.add_argument(
+        "--standardize_cond",
+        action="store_true",
+        help="Standardize semantic features with stats stored in the head (set by residual_cache.py training).",
     )
     parser.add_argument(
         "--delta_l2_weight",
@@ -1388,18 +1205,52 @@ def train():
     if not args.eval_only and args.wandb_run_id is not None:
         run_id = args.wandb_run_id
 
-    print("Initializing Hybrid Diffusion Agent...")
-    model = HybridFrozenBrainDiffusionHands(
-        base_policy_path=args.base_policy_path,
-        action_dim=args.action_dim,
-        chunk_size=args.chunk_size,
-        cond_dim=args.cond_dim,
-        diff_hidden_dim=args.diff_hidden_dim,
-        diff_layers=args.diff_layers,
-        device=args.device
-    )
+    if args.eval_only and args.eval_policy_mode == "base":
+        print("[Eval Stack] Loading standalone SmolVLAPolicy for base policy evaluation...")
+        import lerobot.policies.smolvla.modeling_smolvla as smol_mod
+        base_policy = smol_mod.SmolVLAPolicy.from_pretrained(args.base_policy_path).to(torch.bfloat16).to(args.device)
+        base_policy.eval()
+        base_policy.eval = lambda *args, **kwargs: base_policy
+        set_base_policy_num_steps(base_policy, args.eval_diffusion_steps if args.eval_diffusion_steps > 0 else 10)
+
+        class BasePolicyWrapper(torch.nn.Module):
+            def __init__(self, bp):
+                super().__init__()
+                self.base_policy = bp
+            def eval(self):
+                return self
+            def select_action(self, batch, **kwargs):
+                return self.base_policy.select_action(batch)
+            def reset(self):
+                if hasattr(self.base_policy, "reset"):
+                    self.base_policy.reset()
+        model = BasePolicyWrapper(base_policy)
+    else:
+        print("Initializing Hybrid Diffusion Agent...")
+        head_kwargs = dict(
+            action_dim=args.action_dim,
+            chunk_size=args.chunk_size,
+            cond_dim=args.cond_dim,
+            diff_hidden_dim=args.diff_hidden_dim,
+            diff_layers=args.diff_layers,
+            cond_on_base_action=args.cond_on_base_action,
+            time_scale=args.time_scale,
+            standardize_cond=args.standardize_cond,
+        )
+        if checkpoint is not None and "head_config" in checkpoint:
+            # The checkpoint knows its own head shape; CLI values only apply to fresh heads.
+            hc = dict(checkpoint["head_config"])
+            hc["diff_hidden_dim"] = hc.pop("hidden_dim")
+            hc["diff_layers"] = hc.pop("num_layers")
+            head_kwargs.update(hc)
+            print(f"[Checkpoint] Using head config stored in checkpoint: {checkpoint['head_config']}")
+        model = HybridFrozenBrainDiffusionHands(
+            base_policy_path=args.base_policy_path,
+            device=args.device,
+            **head_kwargs,
+        )
     
-    if checkpoint is not None and "model_state_dict" in checkpoint:
+    if checkpoint is not None and "model_state_dict" in checkpoint and hasattr(model, "load_trainable_state_dict"):
         model.load_trainable_state_dict(checkpoint['model_state_dict'])
     elif args.eval_only and args.eval_policy_mode in ("hybrid", "mixed", "residual"):
         parser.error("--eval_only with --eval_policy_mode hybrid/mixed/residual requires a checkpoint with model_state_dict.")
@@ -1487,9 +1338,16 @@ def train():
             eval_log_action_stats_every=args.eval_log_action_stats_every,
             eval_action_clip=args.eval_action_clip,
             eval_output_dir=args.eval_output_dir,
+            seed_offset=args.eval_seed_offset,
+            eval_warmup_steps=args.eval_warmup_steps,
+            noise_seed=args.eval_noise_seed,
         )
         wandb.finish()
         print("Eval-only complete.")
+        import gc
+        gc.collect()
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
         return
 
     wandb.init(project=args.wandb_project, id=run_id, resume=args.wandb_resume, config=vars(args))
@@ -1575,8 +1433,6 @@ def train():
     print("Starting Training Loop...")
     if args.residual_target:
         print(f"[Train] Residual-target mode enabled (delta_l2_weight={args.delta_l2_weight}).")
-        if hasattr(model, "base_policy"):
-            set_base_policy_num_steps(model.base_policy, 1)
     for epoch in range(start_epoch, args.epochs):
         model.diffusion_head.train()
         epoch_loss = 0.0
@@ -1655,6 +1511,8 @@ def train():
         ckpt_state = {
             'epoch': epoch + 1,
             'model_state_dict': model.get_trainable_state_dict(),
+            'head_config': dict(model.head_config),
+            'residual_target': bool(args.residual_target),
             'optimizer_state_dict': optimizer.state_dict(),
             'scheduler_state_dict': scheduler.state_dict(),
             'wandb_run_id': run_id,
@@ -1697,12 +1555,14 @@ def train():
                 "--eval_wandb_run_id", str(run_id),
                 "--eval_wandb_resume", "allow",
                 "--wandb_project", args.wandb_project,
+                "--eval_max_steps", str(args.eval_max_steps),
+                "--eval_warmup_steps", str(args.eval_warmup_steps),
+                "--eval_residual_alpha", str(args.eval_residual_alpha),
             ]
             if args.eval_task_ids:
                 eval_cmd.extend(["--eval_task_ids"] + [str(t) for t in args.eval_task_ids])
             if args.residual_target:
                 eval_cmd.append("--residual_target")
-                eval_cmd.extend(["--eval_residual_alpha", str(args.eval_residual_alpha)])
             if args.image_flip_mode:
                 eval_cmd.extend(["--image_flip_mode", args.image_flip_mode])
                 
@@ -1723,8 +1583,14 @@ def train():
     print("Training complete.")
 
 if __name__ == "__main__":
+    inhibit_cm = None
     try:
-        with LinuxInhibit(reason="Training Hybrid Diffusion Model"):
+        inhibit_cm = LinuxInhibit(reason="Training Hybrid Diffusion Model")
+    except Exception:
+        pass
+
+    if inhibit_cm is not None:
+        with inhibit_cm:
             train()
-    except Exception as _inhibit_err:
+    else:
         train()

@@ -49,10 +49,24 @@ class ResidualBlock(nn.Module):
         return x + res
 
 class ConditionalDDPMHead(nn.Module):
-    def __init__(self, action_dim=7, chunk_size=16, cond_dim=2048, hidden_dim=256, num_layers=4):
+    def __init__(
+        self,
+        action_dim=7,
+        chunk_size=16,
+        cond_dim=2048,
+        hidden_dim=256,
+        num_layers=4,
+        cond_on_base_action=False,
+        time_scale=1.0,
+        standardize_cond=False,
+    ):
         super().__init__()
         self.action_dim = action_dim
         self.chunk_size = chunk_size
+        self.cond_on_base_action = cond_on_base_action
+        # Flow time lives in [0, 1]; the sinusoidal embedding only resolves it when scaled up.
+        self.time_scale = float(time_scale)
+        self.standardize_cond = standardize_cond
         
         self.time_emb = SinusoidalPosEmb(hidden_dim)
         
@@ -66,6 +80,16 @@ class ConditionalDDPMHead(nn.Module):
             nn.GELU(),
             nn.Linear(hidden_dim * 2, hidden_dim)
         )
+        if cond_on_base_action:
+            # A residual is only defined relative to the base action sample it corrects.
+            self.base_action_proj = nn.Sequential(
+                nn.Linear(action_dim * chunk_size, hidden_dim),
+                nn.GELU(),
+                nn.Linear(hidden_dim, hidden_dim)
+            )
+        if standardize_cond:
+            self.register_buffer("cond_mean", torch.zeros(cond_dim))
+            self.register_buffer("cond_std", torch.ones(cond_dim))
         
         self.blocks = nn.ModuleList([
             ResidualBlock(hidden_dim, hidden_dim) for _ in range(num_layers)
@@ -76,26 +100,92 @@ class ConditionalDDPMHead(nn.Module):
             nn.GELU(),
             nn.Linear(hidden_dim, action_dim * chunk_size)
         )
+
+    def set_cond_stats(self, mean, std):
+        self.cond_mean.copy_(mean.to(self.cond_mean))
+        self.cond_std.copy_(std.to(self.cond_std).clamp_min(1e-6))
         
-    def forward(self, x, time, cond):
+    def forward(self, x, time, cond, base_action=None):
         """
         x: [B, chunk_size, action_dim] NOISY action trajectory
         time: [B] noise level or timestep
         cond: [B, cond_dim] semantic feature from frozen brain
+        base_action: [B, chunk_size, action_dim] base action chunk (required if cond_on_base_action)
         """
         B = x.shape[0]
         x = x.view(B, -1)
         x = self.action_in(x)
         
-        t_emb = self.time_emb(time)
+        if self.standardize_cond:
+            cond = (cond - self.cond_mean) / self.cond_std
+        t_emb = self.time_emb(time * self.time_scale)
         c_emb = self.cond_proj(cond)
         emb = t_emb + c_emb
+        if self.cond_on_base_action:
+            if base_action is None:
+                raise ValueError("This head was built with cond_on_base_action=True; base_action is required.")
+            emb = emb + self.base_action_proj(base_action.reshape(B, -1))
         
         for block in self.blocks:
             x = block(x, emb)
             
         out = self.action_out(x)
         return out.view(B, self.chunk_size, self.action_dim)
+
+
+def flow_matching_loss(head, semantics, target_actions, base_action=None, delta_l2_weight=0.0, noise=None, timesteps=None):
+    """Flow-matching loss of the head on precomputed conditioning. Returns (total, flow, delta_l2)."""
+    B = target_actions.shape[0]
+    device = target_actions.device
+    
+    if noise is None:
+        noise = torch.randn_like(target_actions)
+    if timesteps is None:
+        timesteps = torch.rand((B,), device=device)
+    
+    t_expand = timesteps[:, None, None]
+    x_t = t_expand * target_actions + (1 - t_expand) * noise
+    target_velocity = target_actions - noise
+    
+    pred_velocity = head(x_t, timesteps, semantics, base_action=base_action if head.cond_on_base_action else None)
+
+    flow_loss = F.mse_loss(pred_velocity, target_velocity)
+    total_loss = flow_loss
+    delta_l2_loss = torch.tensor(0.0, device=device)
+
+    if delta_l2_weight > 0.0:
+        pred_delta = x_t + (1.0 - t_expand) * pred_velocity
+        delta_l2_loss = pred_delta.square().mean()
+        total_loss = total_loss + float(delta_l2_weight) * delta_l2_loss
+    return total_loss, flow_loss, delta_l2_loss
+
+
+@torch.no_grad()
+def sample_flow(head, semantics, base_action=None, steps=10, return_intermediates=False, noise=None):
+    """Euler-integrate the head's flow from noise (t=0) to an action/residual chunk (t=1) in float32."""
+    B = semantics.shape[0]
+    device_type = "cuda" if semantics.is_cuda else "cpu"
+    with torch.autocast(device_type=device_type, enabled=False):
+        semantics = semantics.float()
+        if not head.cond_on_base_action:
+            base_action = None
+        elif base_action is not None:
+            base_action = base_action.float()
+
+        x_t = noise if noise is not None else torch.randn((B, head.chunk_size, head.action_dim), device=semantics.device)
+        intermediates = [x_t.clone()] if return_intermediates else None
+
+        dt = 1.0 / steps
+        for i in range(steps):
+            t = torch.full((B,), i * dt, device=semantics.device)
+            v_pred = head(x_t, t, semantics, base_action=base_action)
+            x_t = x_t + v_pred * dt
+            if return_intermediates:
+                intermediates.append(x_t.clone())
+
+    if return_intermediates:
+        return x_t, intermediates
+    return x_t
 
 
 class HybridFrozenBrainDiffusionHands(nn.Module):
@@ -119,13 +209,26 @@ class HybridFrozenBrainDiffusionHands(nn.Module):
         cond_dim=960, # SmolVLM2 500M hidden_size / pooled semantic feature dimension
         diff_hidden_dim=256,
         diff_layers=5,
-        device="cuda"
+        device="cuda",
+        cond_on_base_action=False,
+        time_scale=1.0,
+        standardize_cond=False,
     ):
         super().__init__()
         self.device = device
         self.action_dim = action_dim
         self.chunk_size = chunk_size
         self.cond_dim = cond_dim
+        self.head_config = {
+            "action_dim": action_dim,
+            "chunk_size": chunk_size,
+            "cond_dim": cond_dim,
+            "hidden_dim": diff_hidden_dim,
+            "num_layers": diff_layers,
+            "cond_on_base_action": cond_on_base_action,
+            "time_scale": time_scale,
+            "standardize_cond": standardize_cond,
+        }
         
         print(f"[HybridDiffusion] Loading frozen base policy from: {base_policy_path}")
         try:
@@ -133,14 +236,14 @@ class HybridFrozenBrainDiffusionHands(nn.Module):
         except NameError:
             print("SmolVLAPolicy not found. Make sure LeRobot is installed with SmolVLAPolicy support.")
             
-        # Keep base policy in fp32 to avoid dtype mismatch with SmolVLA action-noise path.
-        self.base_policy.to(torch.float32)
+        # Keep base policy in bfloat16 to match pretrained SmolVLA checkpoint
+        self.base_policy.to(torch.bfloat16)
         self.base_policy.to(self.device)
         self.base_policy.eval()
         # Prevent base_policy.select_action from recursively traversing all submodules on every rollout step
         self.base_policy.eval = lambda *args, **kwargs: self.base_policy
-        # Set 1-step sampling for base policy to optimize training loss baseline calculation and prevent multi-step KV-cache memory buildup
-        self.set_base_policy_num_steps(1)
+        # Maintain standard 10-step flow matching sampling for base policy
+        self.set_base_policy_num_steps(10)
         
         # 1. Strip the standard action head completely by completely freezing the 500M parameters backbone
         # so it acts purely as a semantic feature extractor. 
@@ -150,13 +253,7 @@ class HybridFrozenBrainDiffusionHands(nn.Module):
         print("[HybridDiffusion] All base params frozen.")
         
         # 2. Attach continuous Diffusion Policy head
-        self.diffusion_head = ConditionalDDPMHead(
-            action_dim=action_dim,
-            chunk_size=chunk_size,
-            cond_dim=cond_dim,
-            hidden_dim=diff_hidden_dim,
-            num_layers=diff_layers
-        )
+        self.diffusion_head = ConditionalDDPMHead(**self.head_config)
         self.diffusion_head.to(self.device)
         print(f"[HybridDiffusion] Attached highly specialized Diffusion Head with condition dim {cond_dim}.")
         self._lang_token_cache = {}
@@ -265,12 +362,20 @@ class HybridFrozenBrainDiffusionHands(nn.Module):
         batch["observation.language.attention_mask"] = lang_masks
         return lang_tokens, lang_masks
 
-    def extract_semantic_features(self, batch):
+    def _autocast(self):
+        # The frozen base runs in bfloat16 while batches arrive as float32.
+        enabled = str(self.device).startswith("cuda")
+        return torch.autocast(device_type="cuda", dtype=torch.bfloat16, enabled=enabled)
+
+    def encode(self, batch, with_base_action=False, noise=None, num_base_samples=1):
         """
-        Passes images + language + robot state through the frozen SmolVLA backbone
-        and extracts 1D pooled vision-language-state semantic conditioning vectors.
+        Runs the frozen SmolVLA prefix (images + language + state) once and returns the
+        mean-pooled semantic conditioning vector [B, cond_dim]. With with_base_action=True the
+        same prefix KV cache is reused to sample the base policy's action chunk, returned as
+        [B, chunk_size, action_dim] (or [B, S, chunk_size, action_dim] if num_base_samples > 1),
+        in the policy's normalized action space.
         """
-        with torch.inference_mode():
+        with torch.no_grad(), self._autocast():
             vla_model = self.base_policy.model
             
             # Prepare inputs just like SmolVLA forward pass
@@ -284,55 +389,59 @@ class HybridFrozenBrainDiffusionHands(nn.Module):
             prefix_embs, prefix_pad_masks, prefix_att_masks = vla_model.embed_prefix(
                 images, img_masks, lang_tokens, lang_masks, state=state
             )
-            
-            # --- INJECT DUMMY EXPERT TOKEN ---
-            # Create a 1-token dummy expert embedding (hidden dim 480)
-            dummy_expert_embs = torch.zeros((prefix_embs.size(0), 1, 480), dtype=prefix_embs.dtype, device=prefix_embs.device)
-            
-            # Pad the 1D masks with 1 for the dummy token so they match the total concatenated sequence length
-            expert_pad_masks = torch.ones((prefix_pad_masks.size(0), 1), dtype=prefix_pad_masks.dtype, device=prefix_pad_masks.device)
-            full_pad_masks = torch.cat([prefix_pad_masks, expert_pad_masks], dim=1)
-            
-            expert_att_masks = torch.ones((prefix_att_masks.size(0), 1), dtype=prefix_att_masks.dtype, device=prefix_att_masks.device)
-            full_att_masks = torch.cat([prefix_att_masks, expert_att_masks], dim=1)
-            
-            # Create the 2D attention mask for the full sequence
-            try:
-                from lerobot.policies.smolvla.modeling_smolvla import make_att_2d_masks
-                full_att_2d_masks = make_att_2d_masks(full_pad_masks, full_att_masks)
-            except ImportError:
-                full_att_2d_masks = full_att_masks.unsqueeze(1) & full_att_masks.unsqueeze(2)
-
-            full_position_ids = torch.clamp(torch.cumsum(full_pad_masks, dim=1) - 1, min=0)
+            prefix_att_2d_masks = make_att_2d_masks(prefix_pad_masks, prefix_att_masks)
+            prefix_position_ids = torch.cumsum(prefix_pad_masks, dim=1) - 1
             
             # 2. Pass through frozen VLM to get heavy semantic features
-            outputs = vla_model.vlm_with_expert.forward(
-                attention_mask=full_att_2d_masks,
-                position_ids=full_position_ids,
+            # use_cache=True with past_key_values=None triggers fill_kv_cache=True (standard prefix self-attention prefill)
+            hidden_states_list, past_key_values = vla_model.vlm_with_expert.forward(
+                attention_mask=prefix_att_2d_masks,
+                position_ids=prefix_position_ids,
                 past_key_values=None,
-                inputs_embeds=[prefix_embs, dummy_expert_embs],
-                use_cache=False,  # DO NOT save KV cache during training to save memory!
+                inputs_embeds=[prefix_embs, None],
+                use_cache=True,
             )
             
-            if isinstance(outputs, tuple) and len(outputs) == 2:
-                hidden_states_list, past_key_values = outputs
-                hidden_states = hidden_states_list[0]
-                del past_key_values
-            else:
-                hidden_states = outputs[0] if isinstance(outputs, (tuple, list)) else outputs
-                if isinstance(hidden_states, (tuple, list)):
-                    hidden_states = hidden_states[0] # Handle nested tuples
-            
-            # Discard the dummy expert token from the end of the sequence before pooling
-            hidden_states = hidden_states[:, :-1, :]
-            
-            # The VLM is a Causal LM (Llama). Only the last token has attended to the full sequence (images + language + state).
-            # Mean pooling dilutes context and includes tokens that haven't seen the instruction.
-            pooled_semantics = hidden_states[:, -1, :].float()
-            del outputs, prefix_embs, prefix_pad_masks, prefix_att_masks, dummy_expert_embs, full_pad_masks, full_att_masks, full_att_2d_masks, full_position_ids, hidden_states
-                        
-        return pooled_semantics.clone()
+            # Mean pool over prefix sequence length to get 1D vector (matches trained checkpoint)
+            pooled_semantics = hidden_states_list[0].mean(dim=1).float()
+
+            base_action = None
+            if with_base_action:
+                from lerobot.policies.common.flow_matching import euler_integrate
+
+                bsize = state.shape[0]
+                noise_shape = (bsize, vla_model.config.chunk_size, vla_model.config.max_action_dim)
+                samples = []
+                for sample_idx in range(num_base_samples):
+                    x_1 = noise if (noise is not None and sample_idx == 0) else vla_model.sample_noise(noise_shape, state.device)
+                    actions = euler_integrate(
+                        lambda x_t, timestep: vla_model.denoise_step(
+                            x_t=x_t,
+                            prefix_pad_masks=prefix_pad_masks,
+                            past_key_values=past_key_values,
+                            timestep=timestep,
+                        ),
+                        x_1,
+                        vla_model.config.num_steps,
+                    )
+                    samples.append(actions[:, : self.chunk_size, : self.action_dim].float())
+                base_action = samples[0] if num_base_samples == 1 else torch.stack(samples, dim=1)
+            del past_key_values, hidden_states_list, prefix_embs
+
+        if with_base_action:
+            return pooled_semantics, base_action
+        return pooled_semantics
+
+    def extract_semantic_features(self, batch):
+        """
+        Passes images + language + robot state through the frozen SmolVLA backbone
+        and extracts 1D pooled vision-language-state semantic conditioning vectors.
+        """
+        return self.encode(batch)
         
+    def flow_loss(self, semantics, target_actions, base_action=None, delta_l2_weight=0.0):
+        return flow_matching_loss(self.diffusion_head, semantics, target_actions, base_action, delta_l2_weight)
+
     def compute_loss(
         self,
         batch,
@@ -344,54 +453,24 @@ class HybridFrozenBrainDiffusionHands(nn.Module):
         """
         Train ONLY the new Diffusion head.
         """
-        semantics = self.extract_semantic_features(batch)
-        
-        # Define scale to normalize translation (xyz) up to diffusion unit variance, and leave rotation/gripper alone.
-        action_scale = torch.tensor([10.0, 10.0, 10.0, 1.0, 1.0, 1.0, 1.0], device=gt_actions.device)
-
+        base_action = None
         if residual_target:
-            with torch.inference_mode():
-                self.set_base_policy_num_steps(1)
-                if hasattr(self.base_policy, "reset"):
-                    self.base_policy.reset()
-                base_action = self.base_policy._get_action_chunk(batch).to(torch.float32)
-                if hasattr(self.base_policy, "reset"):
-                    self.base_policy.reset()
-            if base_action.ndim == 2:
-                base_action = base_action.unsqueeze(1)
-            
+            # Same base sampler (config.num_steps) and same observation as at rollout time, so the
+            # residual target is defined against the action the base would actually execute.
+            semantics, base_action = self.encode(batch, with_base_action=True)
             if base_action.shape[1] > gt_actions.shape[1]:
                 base_action = base_action[:, :gt_actions.shape[1], :]
-            elif base_action.shape[1] == 1 and gt_actions.shape[1] > 1:
-                base_action = base_action.expand(-1, gt_actions.shape[1], -1)
-                
             target_actions = gt_actions - base_action
         else:
+            semantics = self.encode(batch)
             target_actions = gt_actions
-            
-        # Apply scaling to match diffusion noise variance
-        target_actions = target_actions * action_scale
-        
-        B = gt_actions.shape[0]
-        device = gt_actions.device
-        
-        noise = torch.randn_like(target_actions)
-        timesteps = torch.rand((B,), device=device)
-        
-        t_expand = timesteps[:, None, None]
-        x_t = t_expand * target_actions + (1 - t_expand) * noise
-        target_velocity = target_actions - noise
-        
-        pred_velocity = self.diffusion_head(x_t, timesteps, semantics)
 
-        flow_loss = F.mse_loss(pred_velocity, target_velocity)
-        total_loss = flow_loss
-        delta_l2_loss = torch.tensor(0.0, device=device)
-
-        if residual_target and delta_l2_weight > 0.0:
-            pred_delta = x_t + (1.0 - t_expand) * pred_velocity
-            delta_l2_loss = pred_delta.square().mean()
-            total_loss = total_loss + float(delta_l2_weight) * delta_l2_loss
+        total_loss, flow_loss, delta_l2_loss = self.flow_loss(
+            semantics,
+            target_actions,
+            base_action=base_action if self.diffusion_head.cond_on_base_action else None,
+            delta_l2_weight=delta_l2_weight if residual_target else 0.0,
+        )
 
         if return_metrics:
             metrics = {
@@ -405,34 +484,29 @@ class HybridFrozenBrainDiffusionHands(nn.Module):
 
         return total_loss
 
+    def sample_head(self, semantics, base_action=None, steps=10, return_intermediates=False):
+        return sample_flow(self.diffusion_head, semantics, base_action, steps, return_intermediates)
+
     def select_action(self, batch, steps=10, return_intermediates=False):
         """
         Inference via fast Euler integration (Consistency/Flow matching style).
         """
-        semantics = self.extract_semantic_features(batch)
-        B = semantics.shape[0]
-        
-        # Scaling factor matching compute_loss
-        action_scale = torch.tensor([10.0, 10.0, 10.0, 1.0, 1.0, 1.0, 1.0], device=self.device)
-        
-        x_t = torch.randn((B, self.chunk_size, self.action_dim), device=self.device)
-        intermediates = [x_t.clone()] if return_intermediates else None
-        
-        dt = 1.0 / steps
-        for i in range(steps):
-            t = torch.full((B,), i * dt, device=self.device)
-            v_pred = self.diffusion_head(x_t, t, semantics)
-            x_t = x_t + v_pred * dt
-            if return_intermediates:
-                intermediates.append(x_t.clone())
-                
-        # Unscale back to raw environment space
-        x_t = x_t / action_scale
-                
-        if return_intermediates:
-            return x_t, intermediates
-            
-        return x_t
+        base_action = None
+        if self.diffusion_head.cond_on_base_action:
+            semantics, base_action = self.encode(batch, with_base_action=True)
+        else:
+            semantics = self.encode(batch)
+        return self.sample_head(semantics, base_action, steps=steps, return_intermediates=return_intermediates)
+
+    def select_residual_action(self, batch, steps=10, residual_alpha=1.0):
+        """
+        Residual-mode inference: base chunk and residual chunk come from the same observation and
+        the same prefix pass. Returns (base + alpha * residual, base, residual), each
+        [B, chunk_size, action_dim] in normalized action space.
+        """
+        semantics, base_action = self.encode(batch, with_base_action=True)
+        residual = self.sample_head(semantics, base_action, steps=steps)
+        return base_action + residual_alpha * residual, base_action, residual
 
     def get_trainable_state_dict(self):
         return {

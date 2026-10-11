@@ -93,3 +93,13 @@ When reviewing RL behavior, verify these assumptions explicitly rather than assu
 - Prefer [plan.md](plan.md) and the weekly shell scripts for experiment intent and reproducibility.
 - Ignore live W&B file churn unless the task is log analysis; the repo may be dirty because training is running or was interrupted.
 - If changing evaluation or training protocol, update the relevant shell script or the root instruction file instead of scattering protocol notes across Python files.
+
+## Pre-Commit & Research Invariant Validation
+
+To prevent regressions, broken forward passes, and repeated cycles of fixing and breaking code, all agents MUST run the automated invariant checker before committing or evaluating:
+
+```bash
+bash .gemini/skills/vla_research_validator/scripts/check_invariants.sh
+```
+
+Consult [.gemini/skills/vla_research_validator/FAILURES.md](.gemini/skills/vla_research_validator/FAILURES.md) to review documented past failures (such as VLM conditioning corruption, submodule eval recursion segfaults, and EGL buffer exhaustion) before debugging performance drops.

@@ -1,16 +1,60 @@
 \relax 
+\citation{rt2}
+\citation{openvla}
+\citation{pi0}
+\citation{smolvla}
+\citation{libero}
+\citation{diffusionpolicy}
+\citation{rt2}
+\citation{openvla}
+\citation{pi0}
+\citation{smolvla}
+\citation{diffusionpolicy}
+\citation{ddpm}
+\citation{flowmatching}
+\citation{residualpolicy,residualrl}
 \@writefile{toc}{\contentsline {section}{\numberline {I}Introduction}{1}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {II}Literature Review}{1}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {II}Related Work}{1}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-A}}Vision-Language-Action Models}{1}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-B}}Diffusion Policies in Robotics}{1}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-C}}Residual and Hybrid Architectures}{1}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {III}Methodology}{1}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-A}}Semantic Feature Extraction}{2}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-B}}Conditional Diffusion Head}{2}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-C}}Action Modes: Hybrid vs. Residual}{2}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-D}}Architectural Diagram}{2}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {IV}Experiments and Results}{2}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Architectural diagram of the Hybrid Diffusion model. A pre-trained, frozen causal Vision-Language-Action model tokenizes and processes multimodal inputs. The final contextualized causal token is extracted and serves as the conditioning vector for a multi-layer Denoising Diffusion Probabilistic Model (DDPM) head, which progressively denoises random noise into a structured, continuous action sequence.}}{2}{}\protected@file@percent }
-\newlabel{fig:architecture}{{1}{2}{}{}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {V}Conclusion}{2}{}\protected@file@percent }
-\gdef \@abspage@last{2}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-B}}Diffusion and Flow-Matching Policies}{1}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-C}}Residual Policies}{1}{}\protected@file@percent }
+\citation{smolvla}
+\citation{flowmatching}
+\citation{film}
+\@writefile{toc}{\contentsline {section}{\numberline {III}Method}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-A}}Frozen Base Policy}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-B}}Semantic Conditioning Feature}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-C}}Residual Target}{2}{}\protected@file@percent }
+\newlabel{eq:residual}{{2}{2}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-D}}Conditional Flow-Matching Head}{2}{}\protected@file@percent }
+\newlabel{eq:loss}{{4}{2}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-E}}Training on a Feature Cache}{2}{}\protected@file@percent }
+\citation{libero}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Overview of the residual hybrid-diffusion policy. \textbf  {(a)} Inference. The frozen SmolVLA encodes the two camera images, the instruction and the robot state in a single prefix pass. Its hidden states are mean-pooled into the semantic feature $z$, and its key--value cache drives SmolVLA's own action expert, which samples the base action chunk $a^{b}$. The trainable head (green) samples a residual chunk $\hat  r$ conditioned on both $z$ and $a^{b}$. The first action of $a^{b}+\alpha \hat  r$ is un-normalised, clipped and executed, and the procedure repeats on the next observation. \textbf  {(b)} Training. Demonstration states are replayed in the simulator and passed once through the frozen model to build a cache of features, base-action samples and demonstrated actions; the head is then trained on the cache with a flow-matching loss on the residual $a^{\star }-a^{b}$. Grey: frozen; green: trainable; orange: data and environment.}}{3}{}\protected@file@percent }
+\newlabel{fig:architecture}{{1}{3}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-F}}Closed-Loop Inference}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {IV}Experiments}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-A}}Setup}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-B}}Offline Action Error}{3}{}\protected@file@percent }
+\bibcite{rt2}{1}
+\bibcite{openvla}{2}
+\bibcite{pi0}{3}
+\bibcite{smolvla}{4}
+\bibcite{libero}{5}
+\bibcite{diffusionpolicy}{6}
+\bibcite{ddpm}{7}
+\bibcite{flowmatching}{8}
+\bibcite{residualpolicy}{9}
+\bibcite{residualrl}{10}
+\bibcite{film}{11}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Architecture of the residual flow head $v_\theta $. The noisy residual chunk is flattened and projected to a 512-D hidden vector $h$. Flow time, the semantic feature and the base action chunk are embedded separately and summed into one conditioning vector $e$, which modulates each of six residual blocks through a feature-wise scale $\gamma (e)$ and shift $\beta (e)$. The output is the predicted velocity for all 16 steps of the chunk.}}{4}{}\protected@file@percent }
+\newlabel{fig:head}{{2}{4}{}{}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Offline action error on task 3 (mean squared error to the demonstrated action, normalised action units, lower is better).}}{4}{}\protected@file@percent }
+\newlabel{tab:offline}{{I}{4}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-C}}Closed-Loop Results}{4}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-D}}Limitations of the Current Evidence}{4}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces Closed-loop success on LIBERO-10. ``Reference'' is the frozen base policy evaluated with the standard LeRobot evaluation script (3 seeds $\times $ 10 episodes). ``Base'' and ``Residual'' are evaluated with our harness on the 50 benchmark initial states of each task (successes out of 50). Rows marked -- have not been run yet.}}{4}{}\protected@file@percent }
+\newlabel{tab:results}{{II}{4}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {V}Conclusion}{4}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{References}{4}{}\protected@file@percent }
+\gdef \@abspage@last{4}

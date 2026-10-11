@@ -35,7 +35,7 @@ env = OffScreenRenderEnv(bddl_file_name=bddl, camera_heights=256, camera_widths=
 env.reset()
 env.set_init_state(benchmark.get_task_init_states(3)[0])
 obs = env.env._get_observations()
-max_steps = env.env.spec.max_episode_steps
+max_steps = 520
 print(f"Max steps: {max_steps}")
 
 step, done, success = 0, False, False

@@ -6,4 +6,5 @@ output*/
 logs/
 debug*/
 **/output*/
-
+latex/
+latex/**
