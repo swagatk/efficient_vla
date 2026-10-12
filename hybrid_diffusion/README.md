@@ -25,15 +25,22 @@ pooled exact McNemar test gives p < 0.05; otherwise it is not.
 bash hybrid_diffusion/run_task3_residual_3seed.sh
 ```
 
+`PARALLEL=1` trains the heads first and then runs the six evaluations as concurrent processes (about
+2.7 GB of GPU memory each). `colab_task3_3seed.ipynb` does this on a Colab A100, with the environment
+pinned by `requirements-colab.txt` and results on Google Drive. All six evaluations of one comparison
+must come from the same machine.
+
 Results land in `outputs/task3_residual/` (`eval_base_s<seed>/`, `eval_residual_<run>_s<seed>_alpha1.0/`,
 `seed_summary_s1-2-3_alpha1.0.json`).
 
 ## Seeds
 
 - The episode `seed` in `eval_results.json` is the LIBERO init-state index.
-- `--eval_noise_seed` seeds the policy's sampling noise independently of the init state. With the
-  default 0 an evaluation is deterministic and re-running it reproduces the same episodes, so repeats
-  need a different noise seed and a separate `--eval_output_dir`.
+- `--eval_noise_seed` seeds the policy's sampling noise independently of the init state (default 0 is
+  the original seeding). Each noise seed needs its own `--eval_output_dir`; mixing them is refused.
+- Rollouts are not bit-reproducible: the same init state and noise seed gave 245 and then 229 steps on
+  two consecutive runs of task 3 (base, init state 0) while another job shared the GPU. Outcomes on a
+  single episode can therefore differ between runs with identical seeds.
 
 ## Task 0
 
