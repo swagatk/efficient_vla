@@ -1,0 +1,652 @@
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /content/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+gnome-session-inhibit not found. Power lock skipped.
+Found checkpoint for eval-only: /content/drive/MyDrive/efficient_vla_runs/task3_residual/h512_l6_n0.5_e300_s2/latest_checkpoint.pt (epoch 300).
+Initializing Hybrid Diffusion Agent...
+[Checkpoint] Using head config stored in checkpoint: {'action_dim': 7, 'chunk_size': 16, 'cond_dim': 960, 'hidden_dim': 512, 'num_layers': 6, 'cond_on_base_action': True, 'time_scale': 1000.0, 'standardize_cond': True}
+[HybridDiffusion] Loading frozen base policy from: HuggingFaceVLA/smolvla_libero
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  21%|██▏       | 105/489 [00:00<00:00, 988.39it/s]Loading weights:  42%|████▏     | 204/489 [00:00<00:00, 887.55it/s]Loading weights:  66%|██████▌   | 321/489 [00:00<00:00, 996.61it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 1273.58it/s]
+[HybridDiffusion] All base params frozen.
+[HybridDiffusion] Attached highly specialized Diffusion Head with condition dim 960.
+[Eval Stack] Using LeRobot preprocessor/postprocessor for preflight/eval.
+[Eval Config] Saved evaluation config to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_config.json
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+--- Running Evaluation on Task 3: put the black bowl in the bottom drawer of the cabinet and close it ---
+Starting Episode 1/3 (Task 3, seed=0)...
+Eval Ep 1/3 | Success: True | Reward: 1.00 | Steps: 237
+Starting Episode 2/3 (Task 3, seed=1)...
+Eval Ep 2/3 | Success: True | Reward: 1.00 | Steps: 248
+Starting Episode 3/3 (Task 3, seed=2)...
+Eval Ep 3/3 | Success: True | Reward: 1.00 | Steps: 270
+
+Eval Complete | Accumulated Episodes: 3 | Overall Success Rate: 1.00 (100.0%)
+
+[Eval Results] Saved JSON results to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_results.json
+[Eval Results] Saved CSV summary to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_summary.csv
+Eval-only complete.
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /content/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+gnome-session-inhibit not found. Power lock skipped.
+Found checkpoint for eval-only: /content/drive/MyDrive/efficient_vla_runs/task3_residual/h512_l6_n0.5_e300_s2/latest_checkpoint.pt (epoch 300).
+Initializing Hybrid Diffusion Agent...
+[Checkpoint] Using head config stored in checkpoint: {'action_dim': 7, 'chunk_size': 16, 'cond_dim': 960, 'hidden_dim': 512, 'num_layers': 6, 'cond_on_base_action': True, 'time_scale': 1000.0, 'standardize_cond': True}
+[HybridDiffusion] Loading frozen base policy from: HuggingFaceVLA/smolvla_libero
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  28%|██▊       | 138/489 [00:00<00:00, 1355.70it/s]Loading weights:  56%|█████▌    | 274/489 [00:00<00:00, 1248.50it/s]Loading weights:  95%|█████████▍| 463/489 [00:00<00:00, 1520.99it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 1473.64it/s]
+[HybridDiffusion] All base params frozen.
+[HybridDiffusion] Attached highly specialized Diffusion Head with condition dim 960.
+[Eval Stack] Using LeRobot preprocessor/postprocessor for preflight/eval.
+[Eval Config] Saved evaluation config to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_config.json
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[evaluate_in_environment] Loaded 3 existing episode records from /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_results.json
+
+--- Running Evaluation on Task 3: put the black bowl in the bottom drawer of the cabinet and close it ---
+Starting Episode 1/3 (Task 3, seed=3)...
+Eval Ep 1/3 | Success: True | Reward: 1.00 | Steps: 231
+Starting Episode 2/3 (Task 3, seed=4)...
+Eval Ep 2/3 | Success: True | Reward: 1.00 | Steps: 299
+Starting Episode 3/3 (Task 3, seed=5)...
+Eval Ep 3/3 | Success: True | Reward: 1.00 | Steps: 230
+
+Eval Complete | Accumulated Episodes: 6 | Overall Success Rate: 1.00 (100.0%)
+
+[Eval Results] Saved JSON results to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_results.json
+[Eval Results] Saved CSV summary to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_summary.csv
+Eval-only complete.
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /content/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+gnome-session-inhibit not found. Power lock skipped.
+Found checkpoint for eval-only: /content/drive/MyDrive/efficient_vla_runs/task3_residual/h512_l6_n0.5_e300_s2/latest_checkpoint.pt (epoch 300).
+Initializing Hybrid Diffusion Agent...
+[Checkpoint] Using head config stored in checkpoint: {'action_dim': 7, 'chunk_size': 16, 'cond_dim': 960, 'hidden_dim': 512, 'num_layers': 6, 'cond_on_base_action': True, 'time_scale': 1000.0, 'standardize_cond': True}
+[HybridDiffusion] Loading frozen base policy from: HuggingFaceVLA/smolvla_libero
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  27%|██▋       | 134/489 [00:00<00:00, 1297.95it/s]Loading weights:  54%|█████▍    | 264/489 [00:00<00:00, 1179.10it/s]Loading weights:  96%|█████████▌| 467/489 [00:00<00:00, 1538.02it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 1497.45it/s]
+[HybridDiffusion] All base params frozen.
+[HybridDiffusion] Attached highly specialized Diffusion Head with condition dim 960.
+[Eval Stack] Using LeRobot preprocessor/postprocessor for preflight/eval.
+[Eval Config] Saved evaluation config to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_config.json
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[evaluate_in_environment] Loaded 6 existing episode records from /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_results.json
+
+--- Running Evaluation on Task 3: put the black bowl in the bottom drawer of the cabinet and close it ---
+Starting Episode 1/3 (Task 3, seed=6)...
+Eval Ep 1/3 | Success: True | Reward: 1.00 | Steps: 257
+Starting Episode 2/3 (Task 3, seed=7)...
+Eval Ep 2/3 | Success: True | Reward: 1.00 | Steps: 222
+Starting Episode 3/3 (Task 3, seed=8)...
+Eval Ep 3/3 | Success: True | Reward: 1.00 | Steps: 295
+
+Eval Complete | Accumulated Episodes: 9 | Overall Success Rate: 1.00 (100.0%)
+
+[Eval Results] Saved JSON results to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_results.json
+[Eval Results] Saved CSV summary to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_summary.csv
+Eval-only complete.
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /content/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+gnome-session-inhibit not found. Power lock skipped.
+Found checkpoint for eval-only: /content/drive/MyDrive/efficient_vla_runs/task3_residual/h512_l6_n0.5_e300_s2/latest_checkpoint.pt (epoch 300).
+Initializing Hybrid Diffusion Agent...
+[Checkpoint] Using head config stored in checkpoint: {'action_dim': 7, 'chunk_size': 16, 'cond_dim': 960, 'hidden_dim': 512, 'num_layers': 6, 'cond_on_base_action': True, 'time_scale': 1000.0, 'standardize_cond': True}
+[HybridDiffusion] Loading frozen base policy from: HuggingFaceVLA/smolvla_libero
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  32%|███▏      | 155/489 [00:00<00:00, 1471.73it/s]Loading weights:  71%|███████▏  | 349/489 [00:00<00:00, 1737.87it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 1872.16it/s]
+[HybridDiffusion] All base params frozen.
+[HybridDiffusion] Attached highly specialized Diffusion Head with condition dim 960.
+[Eval Stack] Using LeRobot preprocessor/postprocessor for preflight/eval.
+[Eval Config] Saved evaluation config to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_config.json
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[evaluate_in_environment] Loaded 9 existing episode records from /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_results.json
+
+--- Running Evaluation on Task 3: put the black bowl in the bottom drawer of the cabinet and close it ---
+Starting Episode 1/3 (Task 3, seed=9)...
+Eval Ep 1/3 | Success: True | Reward: 1.00 | Steps: 289
+Starting Episode 2/3 (Task 3, seed=10)...
+Eval Ep 2/3 | Success: False | Reward: 0.00 | Steps: 520
+Starting Episode 3/3 (Task 3, seed=11)...
+Eval Ep 3/3 | Success: True | Reward: 1.00 | Steps: 208
+
+Eval Complete | Accumulated Episodes: 12 | Overall Success Rate: 0.92 (91.7%)
+
+[Eval Results] Saved JSON results to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_results.json
+[Eval Results] Saved CSV summary to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_summary.csv
+Eval-only complete.
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /content/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+gnome-session-inhibit not found. Power lock skipped.
+Found checkpoint for eval-only: /content/drive/MyDrive/efficient_vla_runs/task3_residual/h512_l6_n0.5_e300_s2/latest_checkpoint.pt (epoch 300).
+Initializing Hybrid Diffusion Agent...
+[Checkpoint] Using head config stored in checkpoint: {'action_dim': 7, 'chunk_size': 16, 'cond_dim': 960, 'hidden_dim': 512, 'num_layers': 6, 'cond_on_base_action': True, 'time_scale': 1000.0, 'standardize_cond': True}
+[HybridDiffusion] Loading frozen base policy from: HuggingFaceVLA/smolvla_libero
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  34%|███▍      | 167/489 [00:00<00:00, 1606.32it/s]Loading weights:  71%|███████▏  | 349/489 [00:00<00:00, 1709.27it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 1876.65it/s]
+[HybridDiffusion] All base params frozen.
+[HybridDiffusion] Attached highly specialized Diffusion Head with condition dim 960.
+[Eval Stack] Using LeRobot preprocessor/postprocessor for preflight/eval.
+[Eval Config] Saved evaluation config to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_config.json
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[evaluate_in_environment] Loaded 12 existing episode records from /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_results.json
+
+--- Running Evaluation on Task 3: put the black bowl in the bottom drawer of the cabinet and close it ---
+Starting Episode 1/3 (Task 3, seed=12)...
+Eval Ep 1/3 | Success: True | Reward: 1.00 | Steps: 235
+Starting Episode 2/3 (Task 3, seed=13)...
+Eval Ep 2/3 | Success: False | Reward: 0.00 | Steps: 520
+Starting Episode 3/3 (Task 3, seed=14)...
+Eval Ep 3/3 | Success: True | Reward: 1.00 | Steps: 268
+
+Eval Complete | Accumulated Episodes: 15 | Overall Success Rate: 0.87 (86.7%)
+
+[Eval Results] Saved JSON results to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_results.json
+[Eval Results] Saved CSV summary to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_summary.csv
+Eval-only complete.
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /content/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+gnome-session-inhibit not found. Power lock skipped.
+Found checkpoint for eval-only: /content/drive/MyDrive/efficient_vla_runs/task3_residual/h512_l6_n0.5_e300_s2/latest_checkpoint.pt (epoch 300).
+Initializing Hybrid Diffusion Agent...
+[Checkpoint] Using head config stored in checkpoint: {'action_dim': 7, 'chunk_size': 16, 'cond_dim': 960, 'hidden_dim': 512, 'num_layers': 6, 'cond_on_base_action': True, 'time_scale': 1000.0, 'standardize_cond': True}
+[HybridDiffusion] Loading frozen base policy from: HuggingFaceVLA/smolvla_libero
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  35%|███▌      | 172/489 [00:00<00:00, 1647.83it/s]Loading weights:  75%|███████▌  | 367/489 [00:00<00:00, 1807.54it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 1916.68it/s]
+[HybridDiffusion] All base params frozen.
+[HybridDiffusion] Attached highly specialized Diffusion Head with condition dim 960.
+[Eval Stack] Using LeRobot preprocessor/postprocessor for preflight/eval.
+[Eval Config] Saved evaluation config to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_config.json
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[evaluate_in_environment] Loaded 15 existing episode records from /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_results.json
+
+--- Running Evaluation on Task 3: put the black bowl in the bottom drawer of the cabinet and close it ---
+Starting Episode 1/3 (Task 3, seed=15)...
+Eval Ep 1/3 | Success: False | Reward: 0.00 | Steps: 520
+Starting Episode 2/3 (Task 3, seed=16)...
+Eval Ep 2/3 | Success: True | Reward: 1.00 | Steps: 352
+Starting Episode 3/3 (Task 3, seed=17)...
+Eval Ep 3/3 | Success: False | Reward: 0.00 | Steps: 520
+
+Eval Complete | Accumulated Episodes: 18 | Overall Success Rate: 0.78 (77.8%)
+
+[Eval Results] Saved JSON results to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_results.json
+[Eval Results] Saved CSV summary to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_summary.csv
+Eval-only complete.
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /content/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+gnome-session-inhibit not found. Power lock skipped.
+Found checkpoint for eval-only: /content/drive/MyDrive/efficient_vla_runs/task3_residual/h512_l6_n0.5_e300_s2/latest_checkpoint.pt (epoch 300).
+Initializing Hybrid Diffusion Agent...
+[Checkpoint] Using head config stored in checkpoint: {'action_dim': 7, 'chunk_size': 16, 'cond_dim': 960, 'hidden_dim': 512, 'num_layers': 6, 'cond_on_base_action': True, 'time_scale': 1000.0, 'standardize_cond': True}
+[HybridDiffusion] Loading frozen base policy from: HuggingFaceVLA/smolvla_libero
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  24%|██▎       | 115/489 [00:00<00:00, 1081.76it/s]Loading weights:  49%|████▉     | 239/489 [00:00<00:00, 1158.63it/s]Loading weights:  88%|████████▊ | 429/489 [00:00<00:00, 1456.74it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 1436.90it/s]
+[HybridDiffusion] All base params frozen.
+[HybridDiffusion] Attached highly specialized Diffusion Head with condition dim 960.
+[Eval Stack] Using LeRobot preprocessor/postprocessor for preflight/eval.
+[Eval Config] Saved evaluation config to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_config.json
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[evaluate_in_environment] Loaded 18 existing episode records from /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_results.json
+
+--- Running Evaluation on Task 3: put the black bowl in the bottom drawer of the cabinet and close it ---
+Starting Episode 1/3 (Task 3, seed=18)...
+Eval Ep 1/3 | Success: True | Reward: 1.00 | Steps: 227
+Starting Episode 2/3 (Task 3, seed=19)...
+Eval Ep 2/3 | Success: True | Reward: 1.00 | Steps: 236
+Starting Episode 3/3 (Task 3, seed=20)...
+Eval Ep 3/3 | Success: True | Reward: 1.00 | Steps: 251
+
+Eval Complete | Accumulated Episodes: 21 | Overall Success Rate: 0.81 (81.0%)
+
+[Eval Results] Saved JSON results to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_results.json
+[Eval Results] Saved CSV summary to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_summary.csv
+Eval-only complete.
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /content/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+gnome-session-inhibit not found. Power lock skipped.
+Found checkpoint for eval-only: /content/drive/MyDrive/efficient_vla_runs/task3_residual/h512_l6_n0.5_e300_s2/latest_checkpoint.pt (epoch 300).
+Initializing Hybrid Diffusion Agent...
+[Checkpoint] Using head config stored in checkpoint: {'action_dim': 7, 'chunk_size': 16, 'cond_dim': 960, 'hidden_dim': 512, 'num_layers': 6, 'cond_on_base_action': True, 'time_scale': 1000.0, 'standardize_cond': True}
+[HybridDiffusion] Loading frozen base policy from: HuggingFaceVLA/smolvla_libero
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  32%|███▏      | 158/489 [00:00<00:00, 1559.98it/s]Loading weights:  67%|██████▋   | 329/489 [00:00<00:00, 1646.25it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 1792.91it/s]
+[HybridDiffusion] All base params frozen.
+[HybridDiffusion] Attached highly specialized Diffusion Head with condition dim 960.
+[Eval Stack] Using LeRobot preprocessor/postprocessor for preflight/eval.
+[Eval Config] Saved evaluation config to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_config.json
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[evaluate_in_environment] Loaded 21 existing episode records from /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_results.json
+
+--- Running Evaluation on Task 3: put the black bowl in the bottom drawer of the cabinet and close it ---
+Starting Episode 1/3 (Task 3, seed=21)...
+Eval Ep 1/3 | Success: True | Reward: 1.00 | Steps: 277
+Starting Episode 2/3 (Task 3, seed=22)...
+Eval Ep 2/3 | Success: True | Reward: 1.00 | Steps: 243
+Starting Episode 3/3 (Task 3, seed=23)...
+Eval Ep 3/3 | Success: False | Reward: 0.00 | Steps: 520
+
+Eval Complete | Accumulated Episodes: 24 | Overall Success Rate: 0.79 (79.2%)
+
+[Eval Results] Saved JSON results to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_results.json
+[Eval Results] Saved CSV summary to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_summary.csv
+Eval-only complete.
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /content/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+gnome-session-inhibit not found. Power lock skipped.
+Found checkpoint for eval-only: /content/drive/MyDrive/efficient_vla_runs/task3_residual/h512_l6_n0.5_e300_s2/latest_checkpoint.pt (epoch 300).
+Initializing Hybrid Diffusion Agent...
+[Checkpoint] Using head config stored in checkpoint: {'action_dim': 7, 'chunk_size': 16, 'cond_dim': 960, 'hidden_dim': 512, 'num_layers': 6, 'cond_on_base_action': True, 'time_scale': 1000.0, 'standardize_cond': True}
+[HybridDiffusion] Loading frozen base policy from: HuggingFaceVLA/smolvla_libero
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  27%|██▋       | 130/489 [00:00<00:00, 1295.36it/s]Loading weights:  53%|█████▎    | 260/489 [00:00<00:00, 1275.85it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 1624.32it/s]
+[HybridDiffusion] All base params frozen.
+[HybridDiffusion] Attached highly specialized Diffusion Head with condition dim 960.
+[Eval Stack] Using LeRobot preprocessor/postprocessor for preflight/eval.
+[Eval Config] Saved evaluation config to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_config.json
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[evaluate_in_environment] Loaded 24 existing episode records from /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_results.json
+
+--- Running Evaluation on Task 3: put the black bowl in the bottom drawer of the cabinet and close it ---
+Starting Episode 1/3 (Task 3, seed=24)...
+Eval Ep 1/3 | Success: True | Reward: 1.00 | Steps: 252
+Starting Episode 2/3 (Task 3, seed=25)...
+Eval Ep 2/3 | Success: True | Reward: 1.00 | Steps: 266
+Starting Episode 3/3 (Task 3, seed=26)...
+Eval Ep 3/3 | Success: True | Reward: 1.00 | Steps: 398
+
+Eval Complete | Accumulated Episodes: 27 | Overall Success Rate: 0.81 (81.5%)
+
+[Eval Results] Saved JSON results to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_results.json
+[Eval Results] Saved CSV summary to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_summary.csv
+Eval-only complete.
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /content/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+gnome-session-inhibit not found. Power lock skipped.
+Found checkpoint for eval-only: /content/drive/MyDrive/efficient_vla_runs/task3_residual/h512_l6_n0.5_e300_s2/latest_checkpoint.pt (epoch 300).
+Initializing Hybrid Diffusion Agent...
+[Checkpoint] Using head config stored in checkpoint: {'action_dim': 7, 'chunk_size': 16, 'cond_dim': 960, 'hidden_dim': 512, 'num_layers': 6, 'cond_on_base_action': True, 'time_scale': 1000.0, 'standardize_cond': True}
+[HybridDiffusion] Loading frozen base policy from: HuggingFaceVLA/smolvla_libero
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  43%|████▎     | 211/489 [00:00<00:00, 2046.36it/s]Loading weights:  94%|█████████▍| 459/489 [00:00<00:00, 2275.47it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 2331.40it/s]
+[HybridDiffusion] All base params frozen.
+[HybridDiffusion] Attached highly specialized Diffusion Head with condition dim 960.
+[Eval Stack] Using LeRobot preprocessor/postprocessor for preflight/eval.
+[Eval Config] Saved evaluation config to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_config.json
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[evaluate_in_environment] Loaded 27 existing episode records from /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_results.json
+
+--- Running Evaluation on Task 3: put the black bowl in the bottom drawer of the cabinet and close it ---
+Starting Episode 1/3 (Task 3, seed=27)...
+Eval Ep 1/3 | Success: True | Reward: 1.00 | Steps: 248
+Starting Episode 2/3 (Task 3, seed=28)...
+Eval Ep 2/3 | Success: True | Reward: 1.00 | Steps: 245
+Starting Episode 3/3 (Task 3, seed=29)...
+Eval Ep 3/3 | Success: True | Reward: 1.00 | Steps: 347
+
+Eval Complete | Accumulated Episodes: 30 | Overall Success Rate: 0.83 (83.3%)
+
+[Eval Results] Saved JSON results to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_results.json
+[Eval Results] Saved CSV summary to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_summary.csv
+Eval-only complete.
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /content/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+gnome-session-inhibit not found. Power lock skipped.
+Found checkpoint for eval-only: /content/drive/MyDrive/efficient_vla_runs/task3_residual/h512_l6_n0.5_e300_s2/latest_checkpoint.pt (epoch 300).
+Initializing Hybrid Diffusion Agent...
+[Checkpoint] Using head config stored in checkpoint: {'action_dim': 7, 'chunk_size': 16, 'cond_dim': 960, 'hidden_dim': 512, 'num_layers': 6, 'cond_on_base_action': True, 'time_scale': 1000.0, 'standardize_cond': True}
+[HybridDiffusion] Loading frozen base policy from: HuggingFaceVLA/smolvla_libero
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  29%|██▉       | 141/489 [00:00<00:00, 1409.13it/s]Loading weights:  58%|█████▊    | 282/489 [00:00<00:00, 1298.29it/s]Loading weights:  96%|█████████▌| 467/489 [00:00<00:00, 1538.68it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 1501.83it/s]
+[HybridDiffusion] All base params frozen.
+[HybridDiffusion] Attached highly specialized Diffusion Head with condition dim 960.
+[Eval Stack] Using LeRobot preprocessor/postprocessor for preflight/eval.
+[Eval Config] Saved evaluation config to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_config.json
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[evaluate_in_environment] Loaded 30 existing episode records from /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_results.json
+
+--- Running Evaluation on Task 3: put the black bowl in the bottom drawer of the cabinet and close it ---
+Starting Episode 1/3 (Task 3, seed=30)...
+Eval Ep 1/3 | Success: False | Reward: 0.00 | Steps: 520
+Starting Episode 2/3 (Task 3, seed=31)...
+Eval Ep 2/3 | Success: True | Reward: 1.00 | Steps: 277
+Starting Episode 3/3 (Task 3, seed=32)...
+Eval Ep 3/3 | Success: True | Reward: 1.00 | Steps: 335
+
+Eval Complete | Accumulated Episodes: 33 | Overall Success Rate: 0.82 (81.8%)
+
+[Eval Results] Saved JSON results to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_results.json
+[Eval Results] Saved CSV summary to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_summary.csv
+Eval-only complete.
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /content/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+gnome-session-inhibit not found. Power lock skipped.
+Found checkpoint for eval-only: /content/drive/MyDrive/efficient_vla_runs/task3_residual/h512_l6_n0.5_e300_s2/latest_checkpoint.pt (epoch 300).
+Initializing Hybrid Diffusion Agent...
+[Checkpoint] Using head config stored in checkpoint: {'action_dim': 7, 'chunk_size': 16, 'cond_dim': 960, 'hidden_dim': 512, 'num_layers': 6, 'cond_on_base_action': True, 'time_scale': 1000.0, 'standardize_cond': True}
+[HybridDiffusion] Loading frozen base policy from: HuggingFaceVLA/smolvla_libero
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  35%|███▍      | 169/489 [00:00<00:00, 1641.70it/s]Loading weights:  70%|██████▉   | 341/489 [00:00<00:00, 1683.92it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 1845.11it/s]
+[HybridDiffusion] All base params frozen.
+[HybridDiffusion] Attached highly specialized Diffusion Head with condition dim 960.
+[Eval Stack] Using LeRobot preprocessor/postprocessor for preflight/eval.
+[Eval Config] Saved evaluation config to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_config.json
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[evaluate_in_environment] Loaded 33 existing episode records from /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_results.json
+
+--- Running Evaluation on Task 3: put the black bowl in the bottom drawer of the cabinet and close it ---
+Starting Episode 1/3 (Task 3, seed=33)...
+Eval Ep 1/3 | Success: True | Reward: 1.00 | Steps: 274
+Starting Episode 2/3 (Task 3, seed=34)...
+Eval Ep 2/3 | Success: True | Reward: 1.00 | Steps: 283
+Starting Episode 3/3 (Task 3, seed=35)...
+Eval Ep 3/3 | Success: True | Reward: 1.00 | Steps: 254
+
+Eval Complete | Accumulated Episodes: 36 | Overall Success Rate: 0.83 (83.3%)
+
+[Eval Results] Saved JSON results to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_results.json
+[Eval Results] Saved CSV summary to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_summary.csv
+Eval-only complete.
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /content/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+gnome-session-inhibit not found. Power lock skipped.
+Found checkpoint for eval-only: /content/drive/MyDrive/efficient_vla_runs/task3_residual/h512_l6_n0.5_e300_s2/latest_checkpoint.pt (epoch 300).
+Initializing Hybrid Diffusion Agent...
+[Checkpoint] Using head config stored in checkpoint: {'action_dim': 7, 'chunk_size': 16, 'cond_dim': 960, 'hidden_dim': 512, 'num_layers': 6, 'cond_on_base_action': True, 'time_scale': 1000.0, 'standardize_cond': True}
+[HybridDiffusion] Loading frozen base policy from: HuggingFaceVLA/smolvla_libero
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  36%|███▋      | 178/489 [00:00<00:00, 1678.73it/s]Loading weights:  71%|███████   | 348/489 [00:00<00:00, 1662.62it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 1805.86it/s]
+[HybridDiffusion] All base params frozen.
+[HybridDiffusion] Attached highly specialized Diffusion Head with condition dim 960.
+[Eval Stack] Using LeRobot preprocessor/postprocessor for preflight/eval.
+[Eval Config] Saved evaluation config to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_config.json
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[evaluate_in_environment] Loaded 36 existing episode records from /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_results.json
+
+--- Running Evaluation on Task 3: put the black bowl in the bottom drawer of the cabinet and close it ---
+Starting Episode 1/3 (Task 3, seed=36)...
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /content/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+gnome-session-inhibit not found. Power lock skipped.
+Found checkpoint for eval-only: /content/drive/MyDrive/efficient_vla_runs/task3_residual/h512_l6_n0.5_e300_s2/latest_checkpoint.pt (epoch 300).
+Initializing Hybrid Diffusion Agent...
+[Checkpoint] Using head config stored in checkpoint: {'action_dim': 7, 'chunk_size': 16, 'cond_dim': 960, 'hidden_dim': 512, 'num_layers': 6, 'cond_on_base_action': True, 'time_scale': 1000.0, 'standardize_cond': True}
+[HybridDiffusion] Loading frozen base policy from: HuggingFaceVLA/smolvla_libero
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  18%|█▊        | 86/489 [00:00<00:00, 835.14it/s]Loading weights:  35%|███▍      | 170/489 [00:00<00:00, 567.55it/s]Loading weights:  47%|████▋     | 232/489 [00:00<00:00, 511.11it/s]Loading weights:  58%|█████▊    | 286/489 [00:00<00:00, 502.08it/s]Loading weights:  89%|████████▉ | 434/489 [00:00<00:00, 794.46it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 741.82it/s]
+[HybridDiffusion] All base params frozen.
+[HybridDiffusion] Attached highly specialized Diffusion Head with condition dim 960.
+[Eval Stack] Using LeRobot preprocessor/postprocessor for preflight/eval.
+[Eval Config] Saved evaluation config to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_config.json
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[evaluate_in_environment] Loaded 36 existing episode records from /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_results.json
+
+--- Running Evaluation on Task 3: put the black bowl in the bottom drawer of the cabinet and close it ---
+Starting Episode 1/3 (Task 3, seed=36)...
+Eval Ep 1/3 | Success: False | Reward: 0.00 | Steps: 520
+Starting Episode 2/3 (Task 3, seed=37)...
+Eval Ep 2/3 | Success: True | Reward: 1.00 | Steps: 296
+Starting Episode 3/3 (Task 3, seed=38)...
+Eval Ep 3/3 | Success: True | Reward: 1.00 | Steps: 266
+
+Eval Complete | Accumulated Episodes: 39 | Overall Success Rate: 0.82 (82.1%)
+
+[Eval Results] Saved JSON results to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_results.json
+[Eval Results] Saved CSV summary to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_summary.csv
+Eval-only complete.
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /content/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+gnome-session-inhibit not found. Power lock skipped.
+Found checkpoint for eval-only: /content/drive/MyDrive/efficient_vla_runs/task3_residual/h512_l6_n0.5_e300_s2/latest_checkpoint.pt (epoch 300).
+Initializing Hybrid Diffusion Agent...
+[Checkpoint] Using head config stored in checkpoint: {'action_dim': 7, 'chunk_size': 16, 'cond_dim': 960, 'hidden_dim': 512, 'num_layers': 6, 'cond_on_base_action': True, 'time_scale': 1000.0, 'standardize_cond': True}
+[HybridDiffusion] Loading frozen base policy from: HuggingFaceVLA/smolvla_libero
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  29%|██▉       | 141/489 [00:00<00:00, 1390.02it/s]Loading weights:  58%|█████▊    | 286/489 [00:00<00:00, 1417.01it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 1637.91it/s]
+[HybridDiffusion] All base params frozen.
+[HybridDiffusion] Attached highly specialized Diffusion Head with condition dim 960.
+[Eval Stack] Using LeRobot preprocessor/postprocessor for preflight/eval.
+[Eval Config] Saved evaluation config to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_config.json
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[evaluate_in_environment] Loaded 39 existing episode records from /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_results.json
+
+--- Running Evaluation on Task 3: put the black bowl in the bottom drawer of the cabinet and close it ---
+Starting Episode 1/3 (Task 3, seed=39)...
+Eval Ep 1/3 | Success: True | Reward: 1.00 | Steps: 238
+Starting Episode 2/3 (Task 3, seed=40)...
+Eval Ep 2/3 | Success: True | Reward: 1.00 | Steps: 282
+Starting Episode 3/3 (Task 3, seed=41)...
+Eval Ep 3/3 | Success: True | Reward: 1.00 | Steps: 309
+
+Eval Complete | Accumulated Episodes: 42 | Overall Success Rate: 0.83 (83.3%)
+
+[Eval Results] Saved JSON results to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_results.json
+[Eval Results] Saved CSV summary to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_summary.csv
+Eval-only complete.
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /content/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+gnome-session-inhibit not found. Power lock skipped.
+Found checkpoint for eval-only: /content/drive/MyDrive/efficient_vla_runs/task3_residual/h512_l6_n0.5_e300_s2/latest_checkpoint.pt (epoch 300).
+Initializing Hybrid Diffusion Agent...
+[Checkpoint] Using head config stored in checkpoint: {'action_dim': 7, 'chunk_size': 16, 'cond_dim': 960, 'hidden_dim': 512, 'num_layers': 6, 'cond_on_base_action': True, 'time_scale': 1000.0, 'standardize_cond': True}
+[HybridDiffusion] Loading frozen base policy from: HuggingFaceVLA/smolvla_libero
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  35%|███▍      | 171/489 [00:00<00:00, 1706.92it/s]Loading weights:  81%|████████  | 395/489 [00:00<00:00, 2016.52it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 2076.58it/s]
+[HybridDiffusion] All base params frozen.
+[HybridDiffusion] Attached highly specialized Diffusion Head with condition dim 960.
+[Eval Stack] Using LeRobot preprocessor/postprocessor for preflight/eval.
+[Eval Config] Saved evaluation config to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_config.json
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[evaluate_in_environment] Loaded 42 existing episode records from /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_results.json
+
+--- Running Evaluation on Task 3: put the black bowl in the bottom drawer of the cabinet and close it ---
+Starting Episode 1/3 (Task 3, seed=42)...
+Eval Ep 1/3 | Success: True | Reward: 1.00 | Steps: 264
+Starting Episode 2/3 (Task 3, seed=43)...
+Eval Ep 2/3 | Success: True | Reward: 1.00 | Steps: 280
+Starting Episode 3/3 (Task 3, seed=44)...
+Eval Ep 3/3 | Success: True | Reward: 1.00 | Steps: 272
+
+Eval Complete | Accumulated Episodes: 45 | Overall Success Rate: 0.84 (84.4%)
+
+[Eval Results] Saved JSON results to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_results.json
+[Eval Results] Saved CSV summary to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_summary.csv
+Eval-only complete.
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /content/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+gnome-session-inhibit not found. Power lock skipped.
+Found checkpoint for eval-only: /content/drive/MyDrive/efficient_vla_runs/task3_residual/h512_l6_n0.5_e300_s2/latest_checkpoint.pt (epoch 300).
+Initializing Hybrid Diffusion Agent...
+[Checkpoint] Using head config stored in checkpoint: {'action_dim': 7, 'chunk_size': 16, 'cond_dim': 960, 'hidden_dim': 512, 'num_layers': 6, 'cond_on_base_action': True, 'time_scale': 1000.0, 'standardize_cond': True}
+[HybridDiffusion] Loading frozen base policy from: HuggingFaceVLA/smolvla_libero
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  40%|███▉      | 194/489 [00:00<00:00, 1882.51it/s]Loading weights:  84%|████████▍ | 411/489 [00:00<00:00, 2045.04it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 2110.43it/s]
+[HybridDiffusion] All base params frozen.
+[HybridDiffusion] Attached highly specialized Diffusion Head with condition dim 960.
+[Eval Stack] Using LeRobot preprocessor/postprocessor for preflight/eval.
+[Eval Config] Saved evaluation config to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_config.json
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[evaluate_in_environment] Loaded 45 existing episode records from /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_results.json
+
+--- Running Evaluation on Task 3: put the black bowl in the bottom drawer of the cabinet and close it ---
+Starting Episode 1/3 (Task 3, seed=45)...
+Eval Ep 1/3 | Success: True | Reward: 1.00 | Steps: 212
+Starting Episode 2/3 (Task 3, seed=46)...
+Eval Ep 2/3 | Success: False | Reward: 0.00 | Steps: 520
+Starting Episode 3/3 (Task 3, seed=47)...
+Eval Ep 3/3 | Success: True | Reward: 1.00 | Steps: 246
+
+Eval Complete | Accumulated Episodes: 48 | Overall Success Rate: 0.83 (83.3%)
+
+[Eval Results] Saved JSON results to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_results.json
+[Eval Results] Saved CSV summary to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_summary.csv
+Eval-only complete.
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /content/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+gnome-session-inhibit not found. Power lock skipped.
+Found checkpoint for eval-only: /content/drive/MyDrive/efficient_vla_runs/task3_residual/h512_l6_n0.5_e300_s2/latest_checkpoint.pt (epoch 300).
+Initializing Hybrid Diffusion Agent...
+[Checkpoint] Using head config stored in checkpoint: {'action_dim': 7, 'chunk_size': 16, 'cond_dim': 960, 'hidden_dim': 512, 'num_layers': 6, 'cond_on_base_action': True, 'time_scale': 1000.0, 'standardize_cond': True}
+[HybridDiffusion] Loading frozen base policy from: HuggingFaceVLA/smolvla_libero
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  43%|████▎     | 209/489 [00:00<00:00, 2079.27it/s]Loading weights:  96%|█████████▌| 470/489 [00:00<00:00, 2389.63it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 2368.95it/s]
+[HybridDiffusion] All base params frozen.
+[HybridDiffusion] Attached highly specialized Diffusion Head with condition dim 960.
+[Eval Stack] Using LeRobot preprocessor/postprocessor for preflight/eval.
+[Eval Config] Saved evaluation config to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_config.json
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[evaluate_in_environment] Loaded 48 existing episode records from /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_results.json
+
+--- Running Evaluation on Task 3: put the black bowl in the bottom drawer of the cabinet and close it ---
+Starting Episode 1/2 (Task 3, seed=48)...
+Eval Ep 1/2 | Success: True | Reward: 1.00 | Steps: 223
+Starting Episode 2/2 (Task 3, seed=49)...
+Eval Ep 2/2 | Success: True | Reward: 1.00 | Steps: 233
+
+Eval Complete | Accumulated Episodes: 50 | Overall Success Rate: 0.84 (84.0%)
+
+[Eval Results] Saved JSON results to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_results.json
+[Eval Results] Saved CSV summary to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_residual_h512_l6_n0.5_e300_s2_alpha1.0/eval_summary.csv
+Eval-only complete.

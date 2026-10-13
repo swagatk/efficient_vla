@@ -1,0 +1,514 @@
+{
+  "overall_success_rate": 0.82,
+  "epoch": 0,
+  "policy_mode": "base",
+  "residual_alpha": 0.1,
+  "diffusion_steps": 10,
+  "eval_replan_each_step": true,
+  "eval_noise_seed": 2,
+  "tasks": {
+    "3": 0.82
+  },
+  "episodes": [
+    {
+      "task_id": 3,
+      "task_name": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "language": "put the black bowl in the bottom drawer of the cabinet and close it",
+      "episode": 1,
+      "seed": 0,
+      "success": true,
+      "reward": 1.0,
+      "steps": 235
+    },
+    {
+      "task_id": 3,
+      "task_name": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "language": "put the black bowl in the bottom drawer of the cabinet and close it",
+      "episode": 2,
+      "seed": 1,
+      "success": true,
+      "reward": 1.0,
+      "steps": 243
+    },
+    {
+      "task_id": 3,
+      "task_name": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "language": "put the black bowl in the bottom drawer of the cabinet and close it",
+      "episode": 3,
+      "seed": 2,
+      "success": true,
+      "reward": 1.0,
+      "steps": 209
+    },
+    {
+      "task_id": 3,
+      "task_name": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "language": "put the black bowl in the bottom drawer of the cabinet and close it",
+      "episode": 4,
+      "seed": 3,
+      "success": false,
+      "reward": 0.0,
+      "steps": 520
+    },
+    {
+      "task_id": 3,
+      "task_name": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "language": "put the black bowl in the bottom drawer of the cabinet and close it",
+      "episode": 5,
+      "seed": 4,
+      "success": true,
+      "reward": 1.0,
+      "steps": 235
+    },
+    {
+      "task_id": 3,
+      "task_name": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "language": "put the black bowl in the bottom drawer of the cabinet and close it",
+      "episode": 6,
+      "seed": 5,
+      "success": true,
+      "reward": 1.0,
+      "steps": 217
+    },
+    {
+      "task_id": 3,
+      "task_name": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "language": "put the black bowl in the bottom drawer of the cabinet and close it",
+      "episode": 7,
+      "seed": 6,
+      "success": true,
+      "reward": 1.0,
+      "steps": 228
+    },
+    {
+      "task_id": 3,
+      "task_name": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "language": "put the black bowl in the bottom drawer of the cabinet and close it",
+      "episode": 8,
+      "seed": 7,
+      "success": true,
+      "reward": 1.0,
+      "steps": 248
+    },
+    {
+      "task_id": 3,
+      "task_name": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "language": "put the black bowl in the bottom drawer of the cabinet and close it",
+      "episode": 9,
+      "seed": 8,
+      "success": false,
+      "reward": 0.0,
+      "steps": 520
+    },
+    {
+      "task_id": 3,
+      "task_name": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "language": "put the black bowl in the bottom drawer of the cabinet and close it",
+      "episode": 10,
+      "seed": 9,
+      "success": true,
+      "reward": 1.0,
+      "steps": 247
+    },
+    {
+      "task_id": 3,
+      "task_name": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "language": "put the black bowl in the bottom drawer of the cabinet and close it",
+      "episode": 11,
+      "seed": 10,
+      "success": true,
+      "reward": 1.0,
+      "steps": 238
+    },
+    {
+      "task_id": 3,
+      "task_name": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "language": "put the black bowl in the bottom drawer of the cabinet and close it",
+      "episode": 12,
+      "seed": 11,
+      "success": false,
+      "reward": 0.0,
+      "steps": 520
+    },
+    {
+      "task_id": 3,
+      "task_name": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "language": "put the black bowl in the bottom drawer of the cabinet and close it",
+      "episode": 13,
+      "seed": 12,
+      "success": true,
+      "reward": 1.0,
+      "steps": 240
+    },
+    {
+      "task_id": 3,
+      "task_name": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "language": "put the black bowl in the bottom drawer of the cabinet and close it",
+      "episode": 14,
+      "seed": 13,
+      "success": true,
+      "reward": 1.0,
+      "steps": 239
+    },
+    {
+      "task_id": 3,
+      "task_name": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "language": "put the black bowl in the bottom drawer of the cabinet and close it",
+      "episode": 15,
+      "seed": 14,
+      "success": false,
+      "reward": 0.0,
+      "steps": 520
+    },
+    {
+      "task_id": 3,
+      "task_name": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "language": "put the black bowl in the bottom drawer of the cabinet and close it",
+      "episode": 16,
+      "seed": 15,
+      "success": true,
+      "reward": 1.0,
+      "steps": 301
+    },
+    {
+      "task_id": 3,
+      "task_name": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "language": "put the black bowl in the bottom drawer of the cabinet and close it",
+      "episode": 17,
+      "seed": 16,
+      "success": false,
+      "reward": 0.0,
+      "steps": 520
+    },
+    {
+      "task_id": 3,
+      "task_name": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "language": "put the black bowl in the bottom drawer of the cabinet and close it",
+      "episode": 18,
+      "seed": 17,
+      "success": true,
+      "reward": 1.0,
+      "steps": 214
+    },
+    {
+      "task_id": 3,
+      "task_name": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "language": "put the black bowl in the bottom drawer of the cabinet and close it",
+      "episode": 19,
+      "seed": 18,
+      "success": true,
+      "reward": 1.0,
+      "steps": 273
+    },
+    {
+      "task_id": 3,
+      "task_name": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "language": "put the black bowl in the bottom drawer of the cabinet and close it",
+      "episode": 20,
+      "seed": 19,
+      "success": true,
+      "reward": 1.0,
+      "steps": 285
+    },
+    {
+      "task_id": 3,
+      "task_name": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "language": "put the black bowl in the bottom drawer of the cabinet and close it",
+      "episode": 21,
+      "seed": 20,
+      "success": true,
+      "reward": 1.0,
+      "steps": 260
+    },
+    {
+      "task_id": 3,
+      "task_name": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "language": "put the black bowl in the bottom drawer of the cabinet and close it",
+      "episode": 22,
+      "seed": 21,
+      "success": true,
+      "reward": 1.0,
+      "steps": 233
+    },
+    {
+      "task_id": 3,
+      "task_name": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "language": "put the black bowl in the bottom drawer of the cabinet and close it",
+      "episode": 23,
+      "seed": 22,
+      "success": true,
+      "reward": 1.0,
+      "steps": 238
+    },
+    {
+      "task_id": 3,
+      "task_name": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "language": "put the black bowl in the bottom drawer of the cabinet and close it",
+      "episode": 24,
+      "seed": 23,
+      "success": true,
+      "reward": 1.0,
+      "steps": 352
+    },
+    {
+      "task_id": 3,
+      "task_name": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "language": "put the black bowl in the bottom drawer of the cabinet and close it",
+      "episode": 25,
+      "seed": 24,
+      "success": false,
+      "reward": 0.0,
+      "steps": 520
+    },
+    {
+      "task_id": 3,
+      "task_name": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "language": "put the black bowl in the bottom drawer of the cabinet and close it",
+      "episode": 26,
+      "seed": 25,
+      "success": true,
+      "reward": 1.0,
+      "steps": 228
+    },
+    {
+      "task_id": 3,
+      "task_name": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "language": "put the black bowl in the bottom drawer of the cabinet and close it",
+      "episode": 27,
+      "seed": 26,
+      "success": true,
+      "reward": 1.0,
+      "steps": 274
+    },
+    {
+      "task_id": 3,
+      "task_name": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "language": "put the black bowl in the bottom drawer of the cabinet and close it",
+      "episode": 28,
+      "seed": 27,
+      "success": true,
+      "reward": 1.0,
+      "steps": 233
+    },
+    {
+      "task_id": 3,
+      "task_name": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "language": "put the black bowl in the bottom drawer of the cabinet and close it",
+      "episode": 29,
+      "seed": 28,
+      "success": false,
+      "reward": 0.0,
+      "steps": 520
+    },
+    {
+      "task_id": 3,
+      "task_name": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "language": "put the black bowl in the bottom drawer of the cabinet and close it",
+      "episode": 30,
+      "seed": 29,
+      "success": true,
+      "reward": 1.0,
+      "steps": 228
+    },
+    {
+      "task_id": 3,
+      "task_name": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "language": "put the black bowl in the bottom drawer of the cabinet and close it",
+      "episode": 31,
+      "seed": 30,
+      "success": true,
+      "reward": 1.0,
+      "steps": 421
+    },
+    {
+      "task_id": 3,
+      "task_name": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "language": "put the black bowl in the bottom drawer of the cabinet and close it",
+      "episode": 32,
+      "seed": 31,
+      "success": false,
+      "reward": 0.0,
+      "steps": 520
+    },
+    {
+      "task_id": 3,
+      "task_name": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "language": "put the black bowl in the bottom drawer of the cabinet and close it",
+      "episode": 33,
+      "seed": 32,
+      "success": true,
+      "reward": 1.0,
+      "steps": 226
+    },
+    {
+      "task_id": 3,
+      "task_name": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "language": "put the black bowl in the bottom drawer of the cabinet and close it",
+      "episode": 34,
+      "seed": 33,
+      "success": true,
+      "reward": 1.0,
+      "steps": 269
+    },
+    {
+      "task_id": 3,
+      "task_name": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "language": "put the black bowl in the bottom drawer of the cabinet and close it",
+      "episode": 35,
+      "seed": 34,
+      "success": true,
+      "reward": 1.0,
+      "steps": 460
+    },
+    {
+      "task_id": 3,
+      "task_name": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "language": "put the black bowl in the bottom drawer of the cabinet and close it",
+      "episode": 36,
+      "seed": 35,
+      "success": true,
+      "reward": 1.0,
+      "steps": 252
+    },
+    {
+      "task_id": 3,
+      "task_name": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "language": "put the black bowl in the bottom drawer of the cabinet and close it",
+      "episode": 37,
+      "seed": 36,
+      "success": true,
+      "reward": 1.0,
+      "steps": 254
+    },
+    {
+      "task_id": 3,
+      "task_name": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "language": "put the black bowl in the bottom drawer of the cabinet and close it",
+      "episode": 38,
+      "seed": 37,
+      "success": true,
+      "reward": 1.0,
+      "steps": 281
+    },
+    {
+      "task_id": 3,
+      "task_name": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "language": "put the black bowl in the bottom drawer of the cabinet and close it",
+      "episode": 39,
+      "seed": 38,
+      "success": true,
+      "reward": 1.0,
+      "steps": 248
+    },
+    {
+      "task_id": 3,
+      "task_name": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "language": "put the black bowl in the bottom drawer of the cabinet and close it",
+      "episode": 40,
+      "seed": 39,
+      "success": false,
+      "reward": 0.0,
+      "steps": 520
+    },
+    {
+      "task_id": 3,
+      "task_name": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "language": "put the black bowl in the bottom drawer of the cabinet and close it",
+      "episode": 41,
+      "seed": 40,
+      "success": true,
+      "reward": 1.0,
+      "steps": 221
+    },
+    {
+      "task_id": 3,
+      "task_name": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "language": "put the black bowl in the bottom drawer of the cabinet and close it",
+      "episode": 42,
+      "seed": 41,
+      "success": true,
+      "reward": 1.0,
+      "steps": 212
+    },
+    {
+      "task_id": 3,
+      "task_name": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "language": "put the black bowl in the bottom drawer of the cabinet and close it",
+      "episode": 43,
+      "seed": 42,
+      "success": true,
+      "reward": 1.0,
+      "steps": 235
+    },
+    {
+      "task_id": 3,
+      "task_name": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "language": "put the black bowl in the bottom drawer of the cabinet and close it",
+      "episode": 44,
+      "seed": 43,
+      "success": true,
+      "reward": 1.0,
+      "steps": 493
+    },
+    {
+      "task_id": 3,
+      "task_name": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "language": "put the black bowl in the bottom drawer of the cabinet and close it",
+      "episode": 45,
+      "seed": 44,
+      "success": true,
+      "reward": 1.0,
+      "steps": 226
+    },
+    {
+      "task_id": 3,
+      "task_name": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "language": "put the black bowl in the bottom drawer of the cabinet and close it",
+      "episode": 46,
+      "seed": 45,
+      "success": true,
+      "reward": 1.0,
+      "steps": 223
+    },
+    {
+      "task_id": 3,
+      "task_name": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "language": "put the black bowl in the bottom drawer of the cabinet and close it",
+      "episode": 47,
+      "seed": 46,
+      "success": true,
+      "reward": 1.0,
+      "steps": 224
+    },
+    {
+      "task_id": 3,
+      "task_name": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "language": "put the black bowl in the bottom drawer of the cabinet and close it",
+      "episode": 48,
+      "seed": 47,
+      "success": true,
+      "reward": 1.0,
+      "steps": 236
+    },
+    {
+      "task_id": 3,
+      "task_name": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "language": "put the black bowl in the bottom drawer of the cabinet and close it",
+      "episode": 49,
+      "seed": 48,
+      "success": true,
+      "reward": 1.0,
+      "steps": 351
+    },
+    {
+      "task_id": 3,
+      "task_name": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "language": "put the black bowl in the bottom drawer of the cabinet and close it",
+      "episode": 50,
+      "seed": 49,
+      "success": true,
+      "reward": 1.0,
+      "steps": 210
+    }
+  ]
+}

@@ -1,0 +1,158 @@
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /content/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+gnome-session-inhibit not found. Power lock skipped.
+[Eval Stack] Loading standalone SmolVLAPolicy for base policy evaluation...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  15%|█▌        | 74/489 [00:00<00:00, 739.54it/s]Loading weights:  30%|███       | 148/489 [00:00<00:00, 575.57it/s]Loading weights:  43%|████▎     | 208/489 [00:00<00:00, 496.30it/s]Loading weights:  53%|█████▎    | 260/489 [00:00<00:00, 467.96it/s]Loading weights:  72%|███████▏  | 351/489 [00:00<00:00, 600.35it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 712.01it/s]
+[Eval Stack] Using LeRobot preprocessor/postprocessor for preflight/eval.
+[Eval Config] Saved evaluation config to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_base_s2/eval_config.json
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[evaluate_in_environment] Loaded 36 existing episode records from /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_base_s2/eval_results.json
+
+--- Running Evaluation on Task 3: put the black bowl in the bottom drawer of the cabinet and close it ---
+Starting Episode 1/3 (Task 3, seed=36)...
+Eval Ep 1/3 | Success: True | Reward: 1.00 | Steps: 254
+Starting Episode 2/3 (Task 3, seed=37)...
+Eval Ep 2/3 | Success: True | Reward: 1.00 | Steps: 281
+Starting Episode 3/3 (Task 3, seed=38)...
+Eval Ep 3/3 | Success: True | Reward: 1.00 | Steps: 248
+
+Eval Complete | Accumulated Episodes: 39 | Overall Success Rate: 0.79 (79.5%)
+
+[Eval Results] Saved JSON results to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_base_s2/eval_results.json
+[Eval Results] Saved CSV summary to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_base_s2/eval_summary.csv
+Eval-only complete.
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /content/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+gnome-session-inhibit not found. Power lock skipped.
+[Eval Stack] Loading standalone SmolVLAPolicy for base policy evaluation...
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  23%|██▎       | 113/489 [00:00<00:00, 1129.18it/s]Loading weights:  48%|████▊     | 236/489 [00:00<00:00, 1185.64it/s]Loading weights:  86%|████████▌ | 421/489 [00:00<00:00, 1466.37it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 1487.42it/s]
+[Eval Stack] Using LeRobot preprocessor/postprocessor for preflight/eval.
+[Eval Config] Saved evaluation config to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_base_s2/eval_config.json
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[evaluate_in_environment] Loaded 39 existing episode records from /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_base_s2/eval_results.json
+
+--- Running Evaluation on Task 3: put the black bowl in the bottom drawer of the cabinet and close it ---
+Starting Episode 1/3 (Task 3, seed=39)...
+Eval Ep 1/3 | Success: False | Reward: 0.00 | Steps: 520
+Starting Episode 2/3 (Task 3, seed=40)...
+Eval Ep 2/3 | Success: True | Reward: 1.00 | Steps: 221
+Starting Episode 3/3 (Task 3, seed=41)...
+Eval Ep 3/3 | Success: True | Reward: 1.00 | Steps: 212
+
+Eval Complete | Accumulated Episodes: 42 | Overall Success Rate: 0.79 (78.6%)
+
+[Eval Results] Saved JSON results to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_base_s2/eval_results.json
+[Eval Results] Saved CSV summary to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_base_s2/eval_summary.csv
+Eval-only complete.
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /content/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+gnome-session-inhibit not found. Power lock skipped.
+[Eval Stack] Loading standalone SmolVLAPolicy for base policy evaluation...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  36%|███▌      | 176/489 [00:00<00:00, 1719.39it/s]Loading weights:  78%|███████▊  | 383/489 [00:00<00:00, 1918.09it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 2025.60it/s]
+[Eval Stack] Using LeRobot preprocessor/postprocessor for preflight/eval.
+[Eval Config] Saved evaluation config to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_base_s2/eval_config.json
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[evaluate_in_environment] Loaded 42 existing episode records from /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_base_s2/eval_results.json
+
+--- Running Evaluation on Task 3: put the black bowl in the bottom drawer of the cabinet and close it ---
+Starting Episode 1/3 (Task 3, seed=42)...
+Eval Ep 1/3 | Success: True | Reward: 1.00 | Steps: 235
+Starting Episode 2/3 (Task 3, seed=43)...
+Eval Ep 2/3 | Success: True | Reward: 1.00 | Steps: 493
+Starting Episode 3/3 (Task 3, seed=44)...
+Eval Ep 3/3 | Success: True | Reward: 1.00 | Steps: 226
+
+Eval Complete | Accumulated Episodes: 45 | Overall Success Rate: 0.80 (80.0%)
+
+[Eval Results] Saved JSON results to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_base_s2/eval_results.json
+[Eval Results] Saved CSV summary to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_base_s2/eval_summary.csv
+Eval-only complete.
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /content/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+gnome-session-inhibit not found. Power lock skipped.
+[Eval Stack] Loading standalone SmolVLAPolicy for base policy evaluation...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  44%|████▎     | 213/489 [00:00<00:00, 2100.12it/s]Loading weights:  98%|█████████▊| 479/489 [00:00<00:00, 2426.92it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 2392.46it/s]
+[Eval Stack] Using LeRobot preprocessor/postprocessor for preflight/eval.
+[Eval Config] Saved evaluation config to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_base_s2/eval_config.json
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[evaluate_in_environment] Loaded 45 existing episode records from /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_base_s2/eval_results.json
+
+--- Running Evaluation on Task 3: put the black bowl in the bottom drawer of the cabinet and close it ---
+Starting Episode 1/3 (Task 3, seed=45)...
+Eval Ep 1/3 | Success: True | Reward: 1.00 | Steps: 223
+Starting Episode 2/3 (Task 3, seed=46)...
+Eval Ep 2/3 | Success: True | Reward: 1.00 | Steps: 224
+Starting Episode 3/3 (Task 3, seed=47)...
+Eval Ep 3/3 | Success: True | Reward: 1.00 | Steps: 236
+
+Eval Complete | Accumulated Episodes: 48 | Overall Success Rate: 0.81 (81.2%)
+
+[Eval Results] Saved JSON results to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_base_s2/eval_results.json
+[Eval Results] Saved CSV summary to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_base_s2/eval_summary.csv
+Eval-only complete.
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /content/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+gnome-session-inhibit not found. Power lock skipped.
+[Eval Stack] Loading standalone SmolVLAPolicy for base policy evaluation...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  34%|███▎      | 164/489 [00:00<00:00, 1638.91it/s]Loading weights:  67%|██████▋   | 328/489 [00:00<00:00, 1596.64it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 1827.18it/s]
+[Eval Stack] Using LeRobot preprocessor/postprocessor for preflight/eval.
+[Eval Config] Saved evaluation config to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_base_s2/eval_config.json
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[evaluate_in_environment] Loaded 48 existing episode records from /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_base_s2/eval_results.json
+
+--- Running Evaluation on Task 3: put the black bowl in the bottom drawer of the cabinet and close it ---
+Starting Episode 1/2 (Task 3, seed=48)...
+Eval Ep 1/2 | Success: True | Reward: 1.00 | Steps: 351
+Starting Episode 2/2 (Task 3, seed=49)...
+Eval Ep 2/2 | Success: True | Reward: 1.00 | Steps: 210
+
+Eval Complete | Accumulated Episodes: 50 | Overall Success Rate: 0.82 (82.0%)
+
+[Eval Results] Saved JSON results to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_base_s2/eval_results.json
+[Eval Results] Saved CSV summary to: /content/drive/MyDrive/efficient_vla_runs/task3_residual/eval_base_s2/eval_summary.csv
+Eval-only complete.

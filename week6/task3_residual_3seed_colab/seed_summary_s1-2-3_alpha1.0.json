@@ -1,0 +1,45 @@
+{
+  "seeds": [
+    1,
+    2,
+    3
+  ],
+  "episodes_per_seed": [
+    50,
+    50,
+    50
+  ],
+  "base_rate_mean": 0.8866666666666667,
+  "base_rate_std": 0.05773502691896263,
+  "residual_rate_mean": 0.8666666666666667,
+  "residual_rate_std": 0.03055050463303896,
+  "pooled_base_success": 133,
+  "pooled_residual_success": 130,
+  "pooled_episodes": 150,
+  "pooled_base_only": 20,
+  "pooled_residual_only": 17,
+  "pooled_mcnemar_p": 0.7428293587290682,
+  "per_seed": {
+    "1": {
+      "n": 50,
+      "base_success": 46,
+      "residual_success": 43,
+      "base_only": 7,
+      "residual_only": 4
+    },
+    "2": {
+      "n": 50,
+      "base_success": 41,
+      "residual_success": 42,
+      "base_only": 8,
+      "residual_only": 9
+    },
+    "3": {
+      "n": 50,
+      "base_success": 46,
+      "residual_success": 45,
+      "base_only": 5,
+      "residual_only": 4
+    }
+  }
+}
