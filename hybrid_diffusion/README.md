@@ -7,6 +7,8 @@ residual that is added to the base policy's action (`residual` policy mode, scal
 - `train_hybrid_diffusion.py --eval_only`: LIBERO rollouts for `base` and `residual` policy modes.
 - `run_task3_residual.sh`: cache, train and evaluate one task for one seed (`TASK_ID`, `SEED`).
 - `run_task3_residual_3seed.sh`: the 3-seed comparison below, followed by `aggregate_seeds.py`.
+- `run_base_noise_seeds.sh`: base policy only, several noise seeds on one task, followed by
+  `failure_overlap.py` (see "Are base failures random or systematic?").
 
 ## Hypothesis under test (3-seed replication, task 3)
 
@@ -41,6 +43,39 @@ Results land in `outputs/task3_residual/` (`eval_base_s<seed>/`, `eval_residual_
 - Rollouts are not bit-reproducible: the same init state and noise seed gave 245 and then 229 steps on
   two consecutive runs of task 3 (base, init state 0) while another job shared the GPU. Outcomes on a
   single episode can therefore differ between runs with identical seeds.
+
+## Result of the 3-seed replication (task 3)
+
+Not supported. Base 133/150, residual 130/150, pooled exact McNemar p = 0.7428
+(`week6/task3_residual_3seed_colab/seed_summary_s1-2-3_alpha1.0.json`, all episodes on a Colab A100).
+
+## Are base failures random or systematic? (task 0)
+
+Hypothesis: the base policy's failures on LIBERO-10 task 0 mostly move with the sampling noise instead
+of repeating on the same init states. On task 0 the base solved 16/50 locally with noise seed 0
+(`outputs/task0_residual/eval_base/eval_summary.csv`), so there is room to see either outcome.
+
+Run: base policy, noise seeds 1, 2, 3, the same 50 init states each (150 episodes), no head involved.
+
+```bash
+bash hybrid_diffusion/run_base_noise_seeds.sh
+```
+
+`colab_task0_base_noise_seeds.ipynb` runs it on a Colab A100 with `PARALLEL=1`.
+
+`failure_overlap.py` reports the success of a best-of-3 oracle (an init state counts as solved if any
+seed solved it) and a randomness index: (oracle - single seed) / (oracle under independent failures -
+single seed). It is about 1 when failures move with the seed and about 0 when the same init states
+fail every time. Decision rule, fixed in advance:
+
+- index >= 0.6: mostly random. Next step is selecting among or steering the base policy's own samples.
+- index <= 0.3: mostly systematic. Next step needs new data from the base policy's own rollouts.
+- in between: mixed; report both and do not pick a direction from this run alone.
+
+Rollouts are not bit-reproducible (see "Seeds"), so part of any seed-to-seed variation is run-to-run
+nondeterminism. The index measures how much outcomes vary on a fixed init state, whatever the source.
+
+Results land in `outputs/task0_residual/` (`eval_base_s<seed>/`, `failure_overlap_s1-2-3.json`).
 
 ## Task 0
 
