@@ -77,6 +77,25 @@ nondeterminism. The index measures how much outcomes vary on a fixed init state,
 
 Results land in `outputs/task0_residual/` (`eval_base_s<seed>/`, `failure_overlap_s1-2-3.json`).
 
+### Result (task 0, Colab A100)
+
+Mixed. Base 13/50, 9/50 and 8/50 for seeds 1, 2, 3 (20.0 % pooled, 30/150); best-of-3 oracle 36.0 %
+against 49.0 % if failures were independent; randomness index 0.55; 5 init states solved under all
+three seeds and 32 under none; permutation test for repeated failures p = 0.0001
+(`week6/task0_base_noise_seeds_colab/failure_overlap_s1-2-3.json`). Under the rule above this run does
+not pick a direction.
+
+The Colab base rate matches the reference baseline for task 0 (16.7 +- 5.8 %,
+`baseline_performance/results_300926/consolidated_summary.txt`). The local seed-0 run was higher, 16/50
+(`week6/task0_base_local_seed0/eval_results.json`, copied from `outputs/task0_residual/eval_base/`);
+16/50 against 30/150 gives Fisher exact p = 0.085.
+
+Unplanned comparison, not part of the decision rule: the local seed-0 run solved 8 of the 32 init states
+that Colab never solved in 96 episodes (states 1, 2, 4, 15, 20, 33, 34, 37; 8/32 against 0/96, Fisher
+exact p = 7.4e-6). With the same code, init states and pinned packages, which states succeed depends on
+the machine, so the 32 states are not shown to be unsolvable. The local side is a single 50-episode run.
+Planned check: base on the local GPU with noise seed 1, compared per init state with Colab seed 1.
+
 ## Task 0
 
 The same recipe on task 0 showed no difference: 16/50 base and 15/50 residual

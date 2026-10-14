@@ -1,0 +1,21 @@
+=== seed 1: eval_base started (2026-10-13T20:57:04+00:00), log: /content/drive/MyDrive/efficient_vla_runs/task0_base_noise_seeds/eval_base_s1.runner.log ===
+=== seed 2: eval_base started (2026-10-13T20:57:09+00:00), log: /content/drive/MyDrive/efficient_vla_runs/task0_base_noise_seeds/eval_base_s2.runner.log ===
+=== seed 3: eval_base started (2026-10-13T20:57:14+00:00), log: /content/drive/MyDrive/efficient_vla_runs/task0_base_noise_seeds/eval_base_s3.runner.log ===
+=== seed 1: eval_base started (2026-10-14T09:25:19+00:00), log: /content/drive/MyDrive/efficient_vla_runs/task0_base_noise_seeds/eval_base_s1.runner.log ===
+=== seed 2: eval_base started (2026-10-14T09:25:24+00:00), log: /content/drive/MyDrive/efficient_vla_runs/task0_base_noise_seeds/eval_base_s2.runner.log ===
+=== seed 3: eval_base started (2026-10-14T09:25:29+00:00), log: /content/drive/MyDrive/efficient_vla_runs/task0_base_noise_seeds/eval_base_s3.runner.log ===
+seed 1: base 13/50
+seed 2: base 9/50
+seed 3: base 8/50
+single seed  20.0 %
+init states failing in k seeds (observed | expected if independent):
+  k=0:   5 |   0.4
+  k=1:   2 |   4.7
+  k=2:  11 |  19.4
+  k=3:  32 |  25.5
+always failing init states: [1, 2, 3, 4, 5, 6, 7, 8, 9, 14, 15, 16, 17, 18, 20, 21, 22, 24, 25, 28, 29, 31, 32, 33, 34, 36, 37, 41, 42, 43, 47, 49]
+best-of-3 oracle  36.0 %  (independent failures would give 49.0 %)
+randomness index 0.55  (>= 0.6 mostly random, <= 0.3 mostly systematic)
+permutation test for repeated failures: p = 0.0001
+verdict: mixed
+saved /content/drive/MyDrive/efficient_vla_runs/task0_base_noise_seeds/failure_overlap_s1-2-3.json

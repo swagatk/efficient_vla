@@ -1,0 +1,541 @@
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /home/swagat/miniconda3/envs/lerobot_env/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+gnome-session-inhibit not found. Power lock skipped.
+[Eval Stack] Loading standalone SmolVLAPolicy for base policy evaluation...
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  10%|█         | 51/489 [00:00<00:00, 499.65it/s]Loading weights:  27%|██▋       | 131/489 [00:00<00:00, 659.55it/s]Loading weights:  41%|████      | 201/489 [00:00<00:00, 662.42it/s]Loading weights:  55%|█████▍    | 268/489 [00:00<00:00, 660.48it/s]Loading weights:  78%|███████▊  | 381/489 [00:00<00:00, 820.40it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 836.62it/s]
+[Eval Stack] Using LeRobot preprocessor/postprocessor for preflight/eval.
+[Eval Config] Saved evaluation config to: /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_config.json
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+--- Running Evaluation on Task 0: put both the alphabet soup and the tomato sauce in the basket ---
+Starting Episode 1/3 (Task 0, seed=0)...
+Eval Ep 1/3 | Success: False | Reward: 0.00 | Steps: 520
+Starting Episode 2/3 (Task 0, seed=1)...
+Eval Ep 2/3 | Success: True | Reward: 1.00 | Steps: 319
+Starting Episode 3/3 (Task 0, seed=2)...
+Eval Ep 3/3 | Success: True | Reward: 1.00 | Steps: 394
+
+Eval Complete | Accumulated Episodes: 3 | Overall Success Rate: 0.67 (66.7%)
+
+[Eval Results] Saved JSON results to: /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_results.json
+[Eval Results] Saved CSV summary to: /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_summary.csv
+Eval-only complete.
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /home/swagat/miniconda3/envs/lerobot_env/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+gnome-session-inhibit not found. Power lock skipped.
+[Eval Stack] Loading standalone SmolVLAPolicy for base policy evaluation...
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  54%|█████▎    | 262/489 [00:00<00:00, 2595.58it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 2813.17it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[Eval Stack] Using LeRobot preprocessor/postprocessor for preflight/eval.
+[Eval Config] Saved evaluation config to: /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_config.json
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[evaluate_in_environment] Loaded 3 existing episode records from /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_results.json
+
+--- Running Evaluation on Task 0: put both the alphabet soup and the tomato sauce in the basket ---
+Starting Episode 1/3 (Task 0, seed=3)...
+Eval Ep 1/3 | Success: False | Reward: 0.00 | Steps: 520
+Starting Episode 2/3 (Task 0, seed=4)...
+Eval Ep 2/3 | Success: True | Reward: 1.00 | Steps: 389
+Starting Episode 3/3 (Task 0, seed=5)...
+Eval Ep 3/3 | Success: False | Reward: 0.00 | Steps: 520
+
+Eval Complete | Accumulated Episodes: 6 | Overall Success Rate: 0.50 (50.0%)
+
+[Eval Results] Saved JSON results to: /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_results.json
+[Eval Results] Saved CSV summary to: /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_summary.csv
+Eval-only complete.
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /home/swagat/miniconda3/envs/lerobot_env/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+gnome-session-inhibit not found. Power lock skipped.
+[Eval Stack] Loading standalone SmolVLAPolicy for base policy evaluation...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  44%|████▍     | 214/489 [00:00<00:00, 2111.41it/s]Loading weights:  97%|█████████▋| 472/489 [00:00<00:00, 2384.80it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 2378.51it/s]
+[Eval Stack] Using LeRobot preprocessor/postprocessor for preflight/eval.
+[Eval Config] Saved evaluation config to: /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_config.json
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[evaluate_in_environment] Loaded 6 existing episode records from /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_results.json
+
+--- Running Evaluation on Task 0: put both the alphabet soup and the tomato sauce in the basket ---
+Starting Episode 1/3 (Task 0, seed=6)...
+Eval Ep 1/3 | Success: False | Reward: 0.00 | Steps: 520
+Starting Episode 2/3 (Task 0, seed=7)...
+Eval Ep 2/3 | Success: False | Reward: 0.00 | Steps: 520
+Starting Episode 3/3 (Task 0, seed=8)...
+Eval Ep 3/3 | Success: False | Reward: 0.00 | Steps: 520
+
+Eval Complete | Accumulated Episodes: 9 | Overall Success Rate: 0.33 (33.3%)
+
+[Eval Results] Saved JSON results to: /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_results.json
+[Eval Results] Saved CSV summary to: /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_summary.csv
+Eval-only complete.
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /home/swagat/miniconda3/envs/lerobot_env/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+gnome-session-inhibit not found. Power lock skipped.
+[Eval Stack] Loading standalone SmolVLAPolicy for base policy evaluation...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  50%|████▉     | 244/489 [00:00<00:00, 2432.18it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 2672.15it/s]
+[Eval Stack] Using LeRobot preprocessor/postprocessor for preflight/eval.
+[Eval Config] Saved evaluation config to: /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_config.json
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[evaluate_in_environment] Loaded 9 existing episode records from /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_results.json
+
+--- Running Evaluation on Task 0: put both the alphabet soup and the tomato sauce in the basket ---
+Starting Episode 1/3 (Task 0, seed=9)...
+Eval Ep 1/3 | Success: False | Reward: 0.00 | Steps: 520
+Starting Episode 2/3 (Task 0, seed=10)...
+Eval Ep 2/3 | Success: True | Reward: 1.00 | Steps: 305
+Starting Episode 3/3 (Task 0, seed=11)...
+Eval Ep 3/3 | Success: False | Reward: 0.00 | Steps: 520
+
+Eval Complete | Accumulated Episodes: 12 | Overall Success Rate: 0.33 (33.3%)
+
+[Eval Results] Saved JSON results to: /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_results.json
+[Eval Results] Saved CSV summary to: /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_summary.csv
+Eval-only complete.
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /home/swagat/miniconda3/envs/lerobot_env/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+gnome-session-inhibit not found. Power lock skipped.
+[Eval Stack] Loading standalone SmolVLAPolicy for base policy evaluation...
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  56%|█████▌    | 273/489 [00:00<00:00, 2713.03it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 3010.53it/s]
+[Eval Stack] Using LeRobot preprocessor/postprocessor for preflight/eval.
+[Eval Config] Saved evaluation config to: /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_config.json
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[evaluate_in_environment] Loaded 12 existing episode records from /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_results.json
+
+--- Running Evaluation on Task 0: put both the alphabet soup and the tomato sauce in the basket ---
+Starting Episode 1/3 (Task 0, seed=12)...
+Eval Ep 1/3 | Success: False | Reward: 0.00 | Steps: 520
+Starting Episode 2/3 (Task 0, seed=13)...
+Eval Ep 2/3 | Success: True | Reward: 1.00 | Steps: 309
+Starting Episode 3/3 (Task 0, seed=14)...
+Eval Ep 3/3 | Success: False | Reward: 0.00 | Steps: 520
+
+Eval Complete | Accumulated Episodes: 15 | Overall Success Rate: 0.33 (33.3%)
+
+[Eval Results] Saved JSON results to: /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_results.json
+[Eval Results] Saved CSV summary to: /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_summary.csv
+Eval-only complete.
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /home/swagat/miniconda3/envs/lerobot_env/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+gnome-session-inhibit not found. Power lock skipped.
+[Eval Stack] Loading standalone SmolVLAPolicy for base policy evaluation...
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  12%|█▏        | 59/489 [00:00<00:00, 585.50it/s]Loading weights:  27%|██▋       | 131/489 [00:00<00:00, 659.22it/s]Loading weights:  41%|████      | 199/489 [00:00<00:00, 644.22it/s]Loading weights:  56%|█████▌    | 274/489 [00:00<00:00, 676.30it/s]Loading weights:  80%|███████▉  | 391/489 [00:00<00:00, 843.97it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 851.63it/s]
+[Eval Stack] Using LeRobot preprocessor/postprocessor for preflight/eval.
+[Eval Config] Saved evaluation config to: /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_config.json
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[evaluate_in_environment] Loaded 15 existing episode records from /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_results.json
+
+--- Running Evaluation on Task 0: put both the alphabet soup and the tomato sauce in the basket ---
+Starting Episode 1/3 (Task 0, seed=15)...
+Eval Ep 1/3 | Success: True | Reward: 1.00 | Steps: 395
+Starting Episode 2/3 (Task 0, seed=16)...
+Eval Ep 2/3 | Success: False | Reward: 0.00 | Steps: 520
+Starting Episode 3/3 (Task 0, seed=17)...
+Eval Ep 3/3 | Success: False | Reward: 0.00 | Steps: 520
+
+Eval Complete | Accumulated Episodes: 18 | Overall Success Rate: 0.33 (33.3%)
+
+[Eval Results] Saved JSON results to: /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_results.json
+[Eval Results] Saved CSV summary to: /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_summary.csv
+Eval-only complete.
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /home/swagat/miniconda3/envs/lerobot_env/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+gnome-session-inhibit not found. Power lock skipped.
+[Eval Stack] Loading standalone SmolVLAPolicy for base policy evaluation...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  42%|████▏     | 204/489 [00:00<00:00, 2035.26it/s]Loading weights:  89%|████████▉ | 437/489 [00:00<00:00, 2194.09it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 2247.01it/s]
+[Eval Stack] Using LeRobot preprocessor/postprocessor for preflight/eval.
+[Eval Config] Saved evaluation config to: /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_config.json
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[evaluate_in_environment] Loaded 18 existing episode records from /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_results.json
+
+--- Running Evaluation on Task 0: put both the alphabet soup and the tomato sauce in the basket ---
+Starting Episode 1/3 (Task 0, seed=18)...
+Eval Ep 1/3 | Success: False | Reward: 0.00 | Steps: 520
+Starting Episode 2/3 (Task 0, seed=19)...
+Eval Ep 2/3 | Success: False | Reward: 0.00 | Steps: 520
+Starting Episode 3/3 (Task 0, seed=20)...
+Eval Ep 3/3 | Success: True | Reward: 1.00 | Steps: 346
+
+Eval Complete | Accumulated Episodes: 21 | Overall Success Rate: 0.33 (33.3%)
+
+[Eval Results] Saved JSON results to: /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_results.json
+[Eval Results] Saved CSV summary to: /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_summary.csv
+Eval-only complete.
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /home/swagat/miniconda3/envs/lerobot_env/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+gnome-session-inhibit not found. Power lock skipped.
+[Eval Stack] Loading standalone SmolVLAPolicy for base policy evaluation...
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  52%|█████▏    | 254/489 [00:00<00:00, 2483.92it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 2725.90it/s]
+[Eval Stack] Using LeRobot preprocessor/postprocessor for preflight/eval.
+[Eval Config] Saved evaluation config to: /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_config.json
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[evaluate_in_environment] Loaded 21 existing episode records from /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_results.json
+
+--- Running Evaluation on Task 0: put both the alphabet soup and the tomato sauce in the basket ---
+Starting Episode 1/3 (Task 0, seed=21)...
+Eval Ep 1/3 | Success: False | Reward: 0.00 | Steps: 520
+Starting Episode 2/3 (Task 0, seed=22)...
+Eval Ep 2/3 | Success: False | Reward: 0.00 | Steps: 520
+Starting Episode 3/3 (Task 0, seed=23)...
+Eval Ep 3/3 | Success: False | Reward: 0.00 | Steps: 520
+
+Eval Complete | Accumulated Episodes: 24 | Overall Success Rate: 0.29 (29.2%)
+
+[Eval Results] Saved JSON results to: /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_results.json
+[Eval Results] Saved CSV summary to: /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_summary.csv
+Eval-only complete.
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /home/swagat/miniconda3/envs/lerobot_env/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+gnome-session-inhibit not found. Power lock skipped.
+[Eval Stack] Loading standalone SmolVLAPolicy for base policy evaluation...
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  10%|▉         | 47/489 [00:00<00:01, 440.61it/s]Loading weights:  24%|██▍       | 118/489 [00:00<00:00, 572.19it/s]Loading weights:  37%|███▋      | 181/489 [00:00<00:00, 572.66it/s]Loading weights:  49%|████▉     | 239/489 [00:00<00:00, 563.88it/s]Loading weights:  61%|██████    | 296/489 [00:00<00:00, 563.37it/s]Loading weights:  85%|████████▌ | 417/489 [00:00<00:00, 767.03it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 717.05it/s]
+[Eval Stack] Using LeRobot preprocessor/postprocessor for preflight/eval.
+[Eval Config] Saved evaluation config to: /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_config.json
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[evaluate_in_environment] Loaded 24 existing episode records from /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_results.json
+
+--- Running Evaluation on Task 0: put both the alphabet soup and the tomato sauce in the basket ---
+Starting Episode 1/3 (Task 0, seed=24)...
+Eval Ep 1/3 | Success: False | Reward: 0.00 | Steps: 520
+Starting Episode 2/3 (Task 0, seed=25)...
+Eval Ep 2/3 | Success: False | Reward: 0.00 | Steps: 520
+Starting Episode 3/3 (Task 0, seed=26)...
+Eval Ep 3/3 | Success: True | Reward: 1.00 | Steps: 409
+
+Eval Complete | Accumulated Episodes: 27 | Overall Success Rate: 0.30 (29.6%)
+
+[Eval Results] Saved JSON results to: /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_results.json
+[Eval Results] Saved CSV summary to: /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_summary.csv
+Eval-only complete.
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /home/swagat/miniconda3/envs/lerobot_env/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+gnome-session-inhibit not found. Power lock skipped.
+[Eval Stack] Loading standalone SmolVLAPolicy for base policy evaluation...
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  36%|███▌      | 174/489 [00:00<00:00, 1735.53it/s]Loading weights:  86%|████████▌ | 419/489 [00:00<00:00, 2145.28it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 2204.16it/s]
+[Eval Stack] Using LeRobot preprocessor/postprocessor for preflight/eval.
+[Eval Config] Saved evaluation config to: /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_config.json
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[evaluate_in_environment] Loaded 27 existing episode records from /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_results.json
+
+--- Running Evaluation on Task 0: put both the alphabet soup and the tomato sauce in the basket ---
+Starting Episode 1/3 (Task 0, seed=27)...
+Eval Ep 1/3 | Success: False | Reward: 0.00 | Steps: 520
+Starting Episode 2/3 (Task 0, seed=28)...
+Eval Ep 2/3 | Success: False | Reward: 0.00 | Steps: 520
+Starting Episode 3/3 (Task 0, seed=29)...
+Eval Ep 3/3 | Success: False | Reward: 0.00 | Steps: 520
+
+Eval Complete | Accumulated Episodes: 30 | Overall Success Rate: 0.27 (26.7%)
+
+[Eval Results] Saved JSON results to: /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_results.json
+[Eval Results] Saved CSV summary to: /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_summary.csv
+Eval-only complete.
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /home/swagat/miniconda3/envs/lerobot_env/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+gnome-session-inhibit not found. Power lock skipped.
+[Eval Stack] Loading standalone SmolVLAPolicy for base policy evaluation...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  54%|█████▍    | 266/489 [00:00<00:00, 2633.03it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 2621.50it/s]
+[Eval Stack] Using LeRobot preprocessor/postprocessor for preflight/eval.
+[Eval Config] Saved evaluation config to: /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_config.json
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[evaluate_in_environment] Loaded 30 existing episode records from /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_results.json
+
+--- Running Evaluation on Task 0: put both the alphabet soup and the tomato sauce in the basket ---
+Starting Episode 1/3 (Task 0, seed=30)...
+Eval Ep 1/3 | Success: True | Reward: 1.00 | Steps: 304
+Starting Episode 2/3 (Task 0, seed=31)...
+Eval Ep 2/3 | Success: False | Reward: 0.00 | Steps: 520
+Starting Episode 3/3 (Task 0, seed=32)...
+Eval Ep 3/3 | Success: False | Reward: 0.00 | Steps: 520
+
+Eval Complete | Accumulated Episodes: 33 | Overall Success Rate: 0.27 (27.3%)
+
+[Eval Results] Saved JSON results to: /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_results.json
+[Eval Results] Saved CSV summary to: /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_summary.csv
+Eval-only complete.
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /home/swagat/miniconda3/envs/lerobot_env/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+gnome-session-inhibit not found. Power lock skipped.
+[Eval Stack] Loading standalone SmolVLAPolicy for base policy evaluation...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  50%|████▉     | 244/489 [00:00<00:00, 2436.31it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 2647.68it/s]
+[Eval Stack] Using LeRobot preprocessor/postprocessor for preflight/eval.
+[Eval Config] Saved evaluation config to: /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_config.json
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[evaluate_in_environment] Loaded 33 existing episode records from /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_results.json
+
+--- Running Evaluation on Task 0: put both the alphabet soup and the tomato sauce in the basket ---
+Starting Episode 1/3 (Task 0, seed=33)...
+Eval Ep 1/3 | Success: True | Reward: 1.00 | Steps: 295
+Starting Episode 2/3 (Task 0, seed=34)...
+Eval Ep 2/3 | Success: True | Reward: 1.00 | Steps: 515
+Starting Episode 3/3 (Task 0, seed=35)...
+Eval Ep 3/3 | Success: False | Reward: 0.00 | Steps: 520
+
+Eval Complete | Accumulated Episodes: 36 | Overall Success Rate: 0.31 (30.6%)
+
+[Eval Results] Saved JSON results to: /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_results.json
+[Eval Results] Saved CSV summary to: /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_summary.csv
+Eval-only complete.
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /home/swagat/miniconda3/envs/lerobot_env/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+gnome-session-inhibit not found. Power lock skipped.
+[Eval Stack] Loading standalone SmolVLAPolicy for base policy evaluation...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  50%|████▉     | 244/489 [00:00<00:00, 2426.87it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 2626.72it/s]
+[Eval Stack] Using LeRobot preprocessor/postprocessor for preflight/eval.
+[Eval Config] Saved evaluation config to: /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_config.json
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[evaluate_in_environment] Loaded 36 existing episode records from /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_results.json
+
+--- Running Evaluation on Task 0: put both the alphabet soup and the tomato sauce in the basket ---
+Starting Episode 1/3 (Task 0, seed=36)...
+Eval Ep 1/3 | Success: False | Reward: 0.00 | Steps: 520
+Starting Episode 2/3 (Task 0, seed=37)...
+Eval Ep 2/3 | Success: True | Reward: 1.00 | Steps: 424
+Starting Episode 3/3 (Task 0, seed=38)...
+Eval Ep 3/3 | Success: True | Reward: 1.00 | Steps: 409
+
+Eval Complete | Accumulated Episodes: 39 | Overall Success Rate: 0.33 (33.3%)
+
+[Eval Results] Saved JSON results to: /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_results.json
+[Eval Results] Saved CSV summary to: /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_summary.csv
+Eval-only complete.
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /home/swagat/miniconda3/envs/lerobot_env/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+gnome-session-inhibit not found. Power lock skipped.
+[Eval Stack] Loading standalone SmolVLAPolicy for base policy evaluation...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  50%|████▉     | 244/489 [00:00<00:00, 2424.80it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 2676.97it/s]
+[Eval Stack] Using LeRobot preprocessor/postprocessor for preflight/eval.
+[Eval Config] Saved evaluation config to: /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_config.json
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[evaluate_in_environment] Loaded 39 existing episode records from /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_results.json
+
+--- Running Evaluation on Task 0: put both the alphabet soup and the tomato sauce in the basket ---
+Starting Episode 1/3 (Task 0, seed=39)...
+Eval Ep 1/3 | Success: False | Reward: 0.00 | Steps: 520
+Starting Episode 2/3 (Task 0, seed=40)...
+Eval Ep 2/3 | Success: True | Reward: 1.00 | Steps: 359
+Starting Episode 3/3 (Task 0, seed=41)...
+Eval Ep 3/3 | Success: False | Reward: 0.00 | Steps: 520
+
+Eval Complete | Accumulated Episodes: 42 | Overall Success Rate: 0.33 (33.3%)
+
+[Eval Results] Saved JSON results to: /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_results.json
+[Eval Results] Saved CSV summary to: /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_summary.csv
+Eval-only complete.
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /home/swagat/miniconda3/envs/lerobot_env/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+gnome-session-inhibit not found. Power lock skipped.
+[Eval Stack] Loading standalone SmolVLAPolicy for base policy evaluation...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  53%|█████▎    | 259/489 [00:00<00:00, 2584.86it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 2729.48it/s]
+[Eval Stack] Using LeRobot preprocessor/postprocessor for preflight/eval.
+[Eval Config] Saved evaluation config to: /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_config.json
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[evaluate_in_environment] Loaded 42 existing episode records from /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_results.json
+
+--- Running Evaluation on Task 0: put both the alphabet soup and the tomato sauce in the basket ---
+Starting Episode 1/3 (Task 0, seed=42)...
+Eval Ep 1/3 | Success: False | Reward: 0.00 | Steps: 520
+Starting Episode 2/3 (Task 0, seed=43)...
+Eval Ep 2/3 | Success: False | Reward: 0.00 | Steps: 520
+Starting Episode 3/3 (Task 0, seed=44)...
+Eval Ep 3/3 | Success: False | Reward: 0.00 | Steps: 520
+
+Eval Complete | Accumulated Episodes: 45 | Overall Success Rate: 0.31 (31.1%)
+
+[Eval Results] Saved JSON results to: /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_results.json
+[Eval Results] Saved CSV summary to: /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_summary.csv
+Eval-only complete.
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /home/swagat/miniconda3/envs/lerobot_env/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+gnome-session-inhibit not found. Power lock skipped.
+[Eval Stack] Loading standalone SmolVLAPolicy for base policy evaluation...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  51%|█████     | 249/489 [00:00<00:00, 2485.88it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 2722.66it/s]
+[Eval Stack] Using LeRobot preprocessor/postprocessor for preflight/eval.
+[Eval Config] Saved evaluation config to: /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_config.json
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[evaluate_in_environment] Loaded 45 existing episode records from /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_results.json
+
+--- Running Evaluation on Task 0: put both the alphabet soup and the tomato sauce in the basket ---
+Starting Episode 1/3 (Task 0, seed=45)...
+Eval Ep 1/3 | Success: False | Reward: 0.00 | Steps: 520
+Starting Episode 2/3 (Task 0, seed=46)...
+Eval Ep 2/3 | Success: True | Reward: 1.00 | Steps: 408
+Starting Episode 3/3 (Task 0, seed=47)...
+Eval Ep 3/3 | Success: False | Reward: 0.00 | Steps: 520
+
+Eval Complete | Accumulated Episodes: 48 | Overall Success Rate: 0.31 (31.2%)
+
+[Eval Results] Saved JSON results to: /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_results.json
+[Eval Results] Saved CSV summary to: /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_summary.csv
+Eval-only complete.
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /home/swagat/miniconda3/envs/lerobot_env/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+gnome-session-inhibit not found. Power lock skipped.
+[Eval Stack] Loading standalone SmolVLAPolicy for base policy evaluation...
+Loading  HuggingFaceTB/SmolVLM2-500M-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  48%|████▊     | 236/489 [00:00<00:00, 2308.03it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 2492.02it/s]
+[Eval Stack] Using LeRobot preprocessor/postprocessor for preflight/eval.
+[Eval Config] Saved evaluation config to: /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_config.json
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[evaluate_in_environment] Loaded 48 existing episode records from /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_results.json
+
+--- Running Evaluation on Task 0: put both the alphabet soup and the tomato sauce in the basket ---
+Starting Episode 1/2 (Task 0, seed=48)...
+Eval Ep 1/2 | Success: True | Reward: 1.00 | Steps: 318
+Starting Episode 2/2 (Task 0, seed=49)...
+Eval Ep 2/2 | Success: False | Reward: 0.00 | Steps: 520
+
+Eval Complete | Accumulated Episodes: 50 | Overall Success Rate: 0.32 (32.0%)
+
+[Eval Results] Saved JSON results to: /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_results.json
+[Eval Results] Saved CSV summary to: /home/swagat/GIT/efficient_vla/hybrid_diffusion/outputs/task0_residual/eval_base/eval_summary.csv
+Eval-only complete.

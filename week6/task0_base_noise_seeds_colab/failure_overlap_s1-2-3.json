@@ -1,0 +1,67 @@
+{
+  "seeds": [
+    1,
+    2,
+    3
+  ],
+  "init_states": 50,
+  "success_per_seed": {
+    "1": 13,
+    "2": 9,
+    "3": 8
+  },
+  "single_seed_rate_mean": 0.2,
+  "states_failing_in_k_seeds": [
+    5,
+    2,
+    11,
+    32
+  ],
+  "expected_if_independent": [
+    0.3744,
+    4.7368,
+    19.4032,
+    25.485599999999998
+  ],
+  "always_failing_states": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    14,
+    15,
+    16,
+    17,
+    18,
+    20,
+    21,
+    22,
+    24,
+    25,
+    28,
+    29,
+    31,
+    32,
+    33,
+    34,
+    36,
+    37,
+    41,
+    42,
+    43,
+    47,
+    49
+  ],
+  "oracle_rate": 0.36,
+  "oracle_rate_if_independent": 0.49028800000000006,
+  "randomness_index": 0.5511767623876975,
+  "random_min": 0.6,
+  "systematic_max": 0.3,
+  "verdict": "mixed",
+  "permutation_p": 9.999000099990002e-05
+}

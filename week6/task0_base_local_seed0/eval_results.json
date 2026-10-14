@@ -1,0 +1,513 @@
+{
+  "overall_success_rate": 0.32,
+  "epoch": 0,
+  "policy_mode": "base",
+  "residual_alpha": 0.1,
+  "diffusion_steps": 10,
+  "eval_replan_each_step": true,
+  "tasks": {
+    "0": 0.32
+  },
+  "episodes": [
+    {
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "episode": 1,
+      "seed": 0,
+      "success": false,
+      "reward": 0.0,
+      "steps": 520
+    },
+    {
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "episode": 2,
+      "seed": 1,
+      "success": true,
+      "reward": 1.0,
+      "steps": 319
+    },
+    {
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "episode": 3,
+      "seed": 2,
+      "success": true,
+      "reward": 1.0,
+      "steps": 394
+    },
+    {
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "episode": 4,
+      "seed": 3,
+      "success": false,
+      "reward": 0.0,
+      "steps": 520
+    },
+    {
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "episode": 5,
+      "seed": 4,
+      "success": true,
+      "reward": 1.0,
+      "steps": 389
+    },
+    {
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "episode": 6,
+      "seed": 5,
+      "success": false,
+      "reward": 0.0,
+      "steps": 520
+    },
+    {
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "episode": 7,
+      "seed": 6,
+      "success": false,
+      "reward": 0.0,
+      "steps": 520
+    },
+    {
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "episode": 8,
+      "seed": 7,
+      "success": false,
+      "reward": 0.0,
+      "steps": 520
+    },
+    {
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "episode": 9,
+      "seed": 8,
+      "success": false,
+      "reward": 0.0,
+      "steps": 520
+    },
+    {
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "episode": 10,
+      "seed": 9,
+      "success": false,
+      "reward": 0.0,
+      "steps": 520
+    },
+    {
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "episode": 11,
+      "seed": 10,
+      "success": true,
+      "reward": 1.0,
+      "steps": 305
+    },
+    {
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "episode": 12,
+      "seed": 11,
+      "success": false,
+      "reward": 0.0,
+      "steps": 520
+    },
+    {
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "episode": 13,
+      "seed": 12,
+      "success": false,
+      "reward": 0.0,
+      "steps": 520
+    },
+    {
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "episode": 14,
+      "seed": 13,
+      "success": true,
+      "reward": 1.0,
+      "steps": 309
+    },
+    {
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "episode": 15,
+      "seed": 14,
+      "success": false,
+      "reward": 0.0,
+      "steps": 520
+    },
+    {
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "episode": 16,
+      "seed": 15,
+      "success": true,
+      "reward": 1.0,
+      "steps": 395
+    },
+    {
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "episode": 17,
+      "seed": 16,
+      "success": false,
+      "reward": 0.0,
+      "steps": 520
+    },
+    {
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "episode": 18,
+      "seed": 17,
+      "success": false,
+      "reward": 0.0,
+      "steps": 520
+    },
+    {
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "episode": 19,
+      "seed": 18,
+      "success": false,
+      "reward": 0.0,
+      "steps": 520
+    },
+    {
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "episode": 20,
+      "seed": 19,
+      "success": false,
+      "reward": 0.0,
+      "steps": 520
+    },
+    {
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "episode": 21,
+      "seed": 20,
+      "success": true,
+      "reward": 1.0,
+      "steps": 346
+    },
+    {
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "episode": 22,
+      "seed": 21,
+      "success": false,
+      "reward": 0.0,
+      "steps": 520
+    },
+    {
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "episode": 23,
+      "seed": 22,
+      "success": false,
+      "reward": 0.0,
+      "steps": 520
+    },
+    {
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "episode": 24,
+      "seed": 23,
+      "success": false,
+      "reward": 0.0,
+      "steps": 520
+    },
+    {
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "episode": 25,
+      "seed": 24,
+      "success": false,
+      "reward": 0.0,
+      "steps": 520
+    },
+    {
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "episode": 26,
+      "seed": 25,
+      "success": false,
+      "reward": 0.0,
+      "steps": 520
+    },
+    {
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "episode": 27,
+      "seed": 26,
+      "success": true,
+      "reward": 1.0,
+      "steps": 409
+    },
+    {
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "episode": 28,
+      "seed": 27,
+      "success": false,
+      "reward": 0.0,
+      "steps": 520
+    },
+    {
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "episode": 29,
+      "seed": 28,
+      "success": false,
+      "reward": 0.0,
+      "steps": 520
+    },
+    {
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "episode": 30,
+      "seed": 29,
+      "success": false,
+      "reward": 0.0,
+      "steps": 520
+    },
+    {
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "episode": 31,
+      "seed": 30,
+      "success": true,
+      "reward": 1.0,
+      "steps": 304
+    },
+    {
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "episode": 32,
+      "seed": 31,
+      "success": false,
+      "reward": 0.0,
+      "steps": 520
+    },
+    {
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "episode": 33,
+      "seed": 32,
+      "success": false,
+      "reward": 0.0,
+      "steps": 520
+    },
+    {
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "episode": 34,
+      "seed": 33,
+      "success": true,
+      "reward": 1.0,
+      "steps": 295
+    },
+    {
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "episode": 35,
+      "seed": 34,
+      "success": true,
+      "reward": 1.0,
+      "steps": 515
+    },
+    {
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "episode": 36,
+      "seed": 35,
+      "success": false,
+      "reward": 0.0,
+      "steps": 520
+    },
+    {
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "episode": 37,
+      "seed": 36,
+      "success": false,
+      "reward": 0.0,
+      "steps": 520
+    },
+    {
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "episode": 38,
+      "seed": 37,
+      "success": true,
+      "reward": 1.0,
+      "steps": 424
+    },
+    {
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "episode": 39,
+      "seed": 38,
+      "success": true,
+      "reward": 1.0,
+      "steps": 409
+    },
+    {
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "episode": 40,
+      "seed": 39,
+      "success": false,
+      "reward": 0.0,
+      "steps": 520
+    },
+    {
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "episode": 41,
+      "seed": 40,
+      "success": true,
+      "reward": 1.0,
+      "steps": 359
+    },
+    {
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "episode": 42,
+      "seed": 41,
+      "success": false,
+      "reward": 0.0,
+      "steps": 520
+    },
+    {
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "episode": 43,
+      "seed": 42,
+      "success": false,
+      "reward": 0.0,
+      "steps": 520
+    },
+    {
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "episode": 44,
+      "seed": 43,
+      "success": false,
+      "reward": 0.0,
+      "steps": 520
+    },
+    {
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "episode": 45,
+      "seed": 44,
+      "success": false,
+      "reward": 0.0,
+      "steps": 520
+    },
+    {
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "episode": 46,
+      "seed": 45,
+      "success": false,
+      "reward": 0.0,
+      "steps": 520
+    },
+    {
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "episode": 47,
+      "seed": 46,
+      "success": true,
+      "reward": 1.0,
+      "steps": 408
+    },
+    {
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "episode": 48,
+      "seed": 47,
+      "success": false,
+      "reward": 0.0,
+      "steps": 520
+    },
+    {
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "episode": 49,
+      "seed": 48,
+      "success": true,
+      "reward": 1.0,
+      "steps": 318
+    },
+    {
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "episode": 50,
+      "seed": 49,
+      "success": false,
+      "reward": 0.0,
+      "steps": 520
+    }
+  ]
+}
