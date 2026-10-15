@@ -1,0 +1,101 @@
+{
+  "per_task": [
+    {
+      "task_group": "libero_10",
+      "task_id": 9,
+      "metrics": {
+        "sum_rewards": [
+          1.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          1.0,
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "max_rewards": [
+          1.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          1.0,
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "successes": [
+          true,
+          false,
+          false,
+          true,
+          false,
+          true,
+          false,
+          true,
+          false,
+          true
+        ],
+        "video_paths": [
+          "/kaggle/working/baseline_lerobot_eval/task_9_seed_2/videos/libero_10_9/eval_episode_0.mp4",
+          "/kaggle/working/baseline_lerobot_eval/task_9_seed_2/videos/libero_10_9/eval_episode_1.mp4",
+          "/kaggle/working/baseline_lerobot_eval/task_9_seed_2/videos/libero_10_9/eval_episode_2.mp4",
+          "/kaggle/working/baseline_lerobot_eval/task_9_seed_2/videos/libero_10_9/eval_episode_3.mp4",
+          "/kaggle/working/baseline_lerobot_eval/task_9_seed_2/videos/libero_10_9/eval_episode_4.mp4",
+          "/kaggle/working/baseline_lerobot_eval/task_9_seed_2/videos/libero_10_9/eval_episode_5.mp4",
+          "/kaggle/working/baseline_lerobot_eval/task_9_seed_2/videos/libero_10_9/eval_episode_6.mp4",
+          "/kaggle/working/baseline_lerobot_eval/task_9_seed_2/videos/libero_10_9/eval_episode_7.mp4",
+          "/kaggle/working/baseline_lerobot_eval/task_9_seed_2/videos/libero_10_9/eval_episode_8.mp4",
+          "/kaggle/working/baseline_lerobot_eval/task_9_seed_2/videos/libero_10_9/eval_episode_9.mp4"
+        ],
+        "predicted_video_paths": []
+      }
+    }
+  ],
+  "per_group": {
+    "libero_10": {
+      "avg_sum_reward": 0.5,
+      "avg_max_reward": 0.5,
+      "pc_success": 50.0,
+      "n_episodes": 10,
+      "video_paths": [
+        "/kaggle/working/baseline_lerobot_eval/task_9_seed_2/videos/libero_10_9/eval_episode_0.mp4",
+        "/kaggle/working/baseline_lerobot_eval/task_9_seed_2/videos/libero_10_9/eval_episode_1.mp4",
+        "/kaggle/working/baseline_lerobot_eval/task_9_seed_2/videos/libero_10_9/eval_episode_2.mp4",
+        "/kaggle/working/baseline_lerobot_eval/task_9_seed_2/videos/libero_10_9/eval_episode_3.mp4",
+        "/kaggle/working/baseline_lerobot_eval/task_9_seed_2/videos/libero_10_9/eval_episode_4.mp4",
+        "/kaggle/working/baseline_lerobot_eval/task_9_seed_2/videos/libero_10_9/eval_episode_5.mp4",
+        "/kaggle/working/baseline_lerobot_eval/task_9_seed_2/videos/libero_10_9/eval_episode_6.mp4",
+        "/kaggle/working/baseline_lerobot_eval/task_9_seed_2/videos/libero_10_9/eval_episode_7.mp4",
+        "/kaggle/working/baseline_lerobot_eval/task_9_seed_2/videos/libero_10_9/eval_episode_8.mp4",
+        "/kaggle/working/baseline_lerobot_eval/task_9_seed_2/videos/libero_10_9/eval_episode_9.mp4"
+      ],
+      "predicted_video_paths": []
+    }
+  },
+  "overall": {
+    "avg_sum_reward": 0.5,
+    "avg_max_reward": 0.5,
+    "pc_success": 50.0,
+    "n_episodes": 10,
+    "eval_s": 3964.2167086601257,
+    "eval_ep_s": 396.4216709375381,
+    "video_paths": [
+      "/kaggle/working/baseline_lerobot_eval/task_9_seed_2/videos/libero_10_9/eval_episode_0.mp4",
+      "/kaggle/working/baseline_lerobot_eval/task_9_seed_2/videos/libero_10_9/eval_episode_1.mp4",
+      "/kaggle/working/baseline_lerobot_eval/task_9_seed_2/videos/libero_10_9/eval_episode_2.mp4",
+      "/kaggle/working/baseline_lerobot_eval/task_9_seed_2/videos/libero_10_9/eval_episode_3.mp4",
+      "/kaggle/working/baseline_lerobot_eval/task_9_seed_2/videos/libero_10_9/eval_episode_4.mp4",
+      "/kaggle/working/baseline_lerobot_eval/task_9_seed_2/videos/libero_10_9/eval_episode_5.mp4",
+      "/kaggle/working/baseline_lerobot_eval/task_9_seed_2/videos/libero_10_9/eval_episode_6.mp4",
+      "/kaggle/working/baseline_lerobot_eval/task_9_seed_2/videos/libero_10_9/eval_episode_7.mp4",
+      "/kaggle/working/baseline_lerobot_eval/task_9_seed_2/videos/libero_10_9/eval_episode_8.mp4",
+      "/kaggle/working/baseline_lerobot_eval/task_9_seed_2/videos/libero_10_9/eval_episode_9.mp4"
+    ],
+    "predicted_video_paths": []
+  }
+}

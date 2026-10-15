@@ -1,0 +1,70 @@
+Output directory: /kaggle/working/baseline_lerobot_eval
+0 runs already finished, 30 to run, 4 at a time
+[   0.0 min] task 0 seed 0: started on GPU 0
+[   0.1 min] task 0 seed 1: started on GPU 1
+[   0.2 min] task 0 seed 2: started on GPU 0
+[   0.3 min] task 1 seed 0: started on GPU 1
+[ 106.4 min] task 1 seed 0: done
+[ 106.4 min] task 1 seed 1: started on GPU 0
+[ 114.5 min] task 0 seed 0: done
+[ 114.5 min] task 1 seed 2: started on GPU 1
+[ 117.0 min] task 0 seed 1: done
+[ 117.0 min] task 2 seed 0: started on GPU 0
+[ 119.3 min] task 0 seed 2: done
+[ 119.3 min] task 2 seed 1: started on GPU 1
+[ 209.0 min] task 1 seed 1: done
+[ 209.0 min] task 2 seed 2: started on GPU 0
+[ 214.5 min] task 1 seed 2: done
+[ 214.5 min] task 3 seed 0: started on GPU 1
+[ 215.4 min] task 2 seed 0: done
+[ 215.4 min] task 3 seed 1: started on GPU 0
+[ 217.4 min] task 2 seed 1: done
+[ 217.4 min] task 3 seed 2: started on GPU 1
+[ 272.2 min] task 3 seed 1: done
+[ 272.2 min] task 4 seed 0: started on GPU 0
+[ 280.1 min] task 3 seed 0: done
+[ 280.1 min] task 4 seed 1: started on GPU 1
+[ 287.2 min] task 2 seed 2: done
+[ 287.2 min] task 4 seed 2: started on GPU 0
+[ 292.7 min] task 3 seed 2: done
+[ 292.7 min] task 5 seed 0: started on GPU 1
+[ 360.9 min] task 5 seed 0: done
+[ 360.9 min] task 5 seed 1: started on GPU 0
+[ 395.4 min] task 4 seed 0: done
+[ 395.4 min] task 5 seed 2: started on GPU 1
+[ 400.0 min] task 4 seed 1: done
+[ 400.0 min] task 6 seed 0: started on GPU 0
+[ 413.0 min] task 4 seed 2: done
+[ 413.0 min] task 6 seed 1: started on GPU 1
+[ 439.1 min] task 5 seed 1: done
+[ 439.1 min] task 6 seed 2: started on GPU 0
+[ 455.0 min] task 5 seed 2: done
+[ 455.0 min] task 7 seed 0: started on GPU 1
+[ 482.4 min] task 6 seed 0: done
+[ 482.4 min] task 7 seed 1: started on GPU 0
+[ 485.4 min] task 6 seed 1: done
+[ 485.4 min] task 7 seed 2: started on GPU 1
+[ 529.2 min] task 6 seed 2: done
+[ 529.2 min] task 8 seed 0: started on GPU 0
+[ 540.0 min] not starting 5 remaining runs (deadline or interrupt)
+[ 580.0 min] task 7 seed 0: done
+[ 594.9 min] task 7 seed 2: done
+[ 598.1 min] task 7 seed 1: done
+[ 628.4 min] task 8 seed 0: done
+
+Report: /kaggle/working/baseline_lerobot_eval/consolidated_summary.txt
+INCOMPLETE: 5 runs missing; run again with --resume_dir /kaggle/working/baseline_lerobot_eval to finish them.
+Output directory: /kaggle/working/baseline_lerobot_eval
+25 runs already finished, 5 to run, 4 at a time
+[   0.0 min] task 8 seed 1: started on GPU 0
+[   0.1 min] task 8 seed 2: started on GPU 1
+[   0.2 min] task 9 seed 0: started on GPU 0
+[   0.3 min] task 9 seed 1: started on GPU 1
+[  90.8 min] task 9 seed 1: done
+[  90.8 min] task 9 seed 2: started on GPU 0
+[ 101.1 min] task 9 seed 0: done
+[ 108.7 min] task 8 seed 2: done
+[ 112.3 min] task 8 seed 1: done
+[ 157.4 min] task 9 seed 2: done
+
+Report: /kaggle/working/baseline_lerobot_eval/consolidated_summary.txt

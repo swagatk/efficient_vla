@@ -33,6 +33,25 @@ INCOMPLETE in `consolidated_summary.txt` and left out of the means, and the scri
 `kaggle_baseline_lerobot_eval.ipynb` runs this protocol on Kaggle (2 x T4) and compares it per task and per
 init state with `results_300926`.
 
+### Reproduction on Kaggle (October 2026)
+
+The full protocol (10 tasks x seeds 0-2 x init states 0-9) was rerun on Kaggle with the notebook above at
+commit 74ad990 (clean tree), 2 x Tesla T4, lerobot 0.6.2 (b6ec0060), torch 2.11.0, MuJoCo 3.13.0, EGL, 4 runs at
+a time, in two sessions (25 runs, then the remaining 5 on resume). Results:
+[`week6/baseline_lerobot_eval_kaggle/`](../week6/baseline_lerobot_eval_kaggle/), comparison:
+[`comparison_with_results_300926.txt`](../week6/baseline_lerobot_eval_kaggle/comparison_with_results_300926.txt),
+produced by `python -S compare_per_state.py results_300926/per_episode.csv
+../week6/baseline_lerobot_eval_kaggle/per_episode.csv`.
+
+- Overall: Kaggle 131/300 (43.67%) vs local 122/300 (40.67%); paired exact McNemar p = 0.34. Per task the
+  difference is at most 3 of 30 episodes.
+- Per init state: 16 of 100 (task, init state) pairs were solved on one machine and never on the other; a
+  permutation test gives p = 0.89, so this is what sampling noise alone produces.
+
+The baseline therefore reproduces across machines through `lerobot-eval`. This does not explain the task 0
+difference between Colab and local runs of the custom harness (`week6/task0_base_noise_seeds_colab/`), which
+used a different machine and a different evaluation path.
+
 ### Why use `evaluate_all.py`?
 - **Process Isolation**: It launches each task and seed combination in its own completely isolated subprocess. This perfectly sidesteps known state-leakage and language-instruction caching bugs in `lerobot-eval` that cause 0% success rates when evaluating multiple tasks sequentially.
 - **Resiliency**: If a specific task triggers a MuJoCo 3.10 EGL rendering segmentation fault (e.g., Task 2 often crashes `mjr_readPixels` when turning on the stove), the script will simply catch the crash, report the run as missing, and continue with the next task instead of aborting the 24-hour run.
