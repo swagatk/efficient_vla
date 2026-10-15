@@ -25,13 +25,31 @@ the variation between init states. `results_300926/per_episode.csv` lists every 
 - `--launch_deadline_min`, `--hard_stop_min`: stop starting new runs, and kill unfinished ones, after that
   many minutes (for time-limited sessions). Killed runs are rerun on resume.
 - `--policy_path`, `--episode_length`, `--observation_size`, `--lerobot_eval`: defaults are the protocol above.
+- `--n_action_steps N`: override the checkpoint's value. `--rename_map JSON`: map LIBERO observation keys
+  onto a checkpoint with other camera names. Both are left out of the command unless given, so the
+  default command is unchanged. `lerobot/smolvla_libero` needs `--n_action_steps 1 --rename_map
+  '{"observation.images.image": "observation.images.camera1", "observation.images.image2": "observation.images.camera2"}'`.
+- `--order seed`: run all tasks of one seed before the next seed (default `task`: all seeds of one task first).
 
 Each run appends a record to `provenance.jsonl` (git commit and dirty flag, lerobot, torch, MuJoCo and
 robosuite versions, GPUs, render backend, arguments). Runs that crashed or did not finish are listed as
 INCOMPLETE in `consolidated_summary.txt` and left out of the means, and the script exits with code 2.
 
-`kaggle_baseline_lerobot_eval.ipynb` runs this protocol on Kaggle (2 x T4) and compares it per task and per
-init state with `results_300926`.
+`kaggle_baseline_lerobot_eval.ipynb` runs this protocol on Kaggle (2 x T4) for either checkpoint (`CHECKPOINT`
+in its first cell) and compares it per task and per init state with `results_300926` and with the external
+LIBERO-CTRL reference in [`reference_libero_ctrl/`](reference_libero_ctrl/).
+
+### Why `results_300926` is below the published SmolVLA number
+
+The SmolVLA paper reports 71% on LIBERO-Long; `results_300926` measures 40.67%. Two findings so far:
+
+- `HuggingFaceVLA/smolvla_libero`, the checkpoint used here, is not the checkpoint LIBERO-CTRL evaluated
+  (`lerobot/smolvla_libero`); they differ in weights and architecture (see `reference_libero_ctrl/README.md`).
+- LIBERO-CTRL measured `lerobot/smolvla_libero` at 56.8% on LIBERO-10 (284/500), 59/100 on init states 0-9,
+  and reports that this released checkpoint was trained on one eighth of the paper's sample budget.
+
+So part of the gap is the released checkpoints. Whether our evaluation path also loses performance is
+tested by running `lerobot/smolvla_libero` through it (the notebook's default); see the notebook's step 9.
 
 ### Reproduction on Kaggle (October 2026)
 

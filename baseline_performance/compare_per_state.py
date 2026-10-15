@@ -8,7 +8,8 @@ runs differ:
 - permutation test for per-state differences: within each (task, init state) the episodes of both runs are
   shuffled between the runs, and the number of states solved in only one run, and the summed absolute
   difference in successes per state, are compared with the observed values. A small p means the runs differ
-  on specific init states more than sampling noise explains (as task 0 did between Colab and local).
+  on specific init states more than sampling noise explains (as task 0 did between Colab and local). With
+  one episode per state in each run the shuffle cannot change these statistics, so the test is skipped.
 
 Reads CSV only: run with ``python -S`` so sitecustomize does not import MuJoCo.
 """
@@ -50,6 +51,8 @@ def compare(a_eps, b_eps, n_perm=20000, seed=0):
         raise ValueError("the two runs do not cover the same (task, seed, init_state) episodes")
     a, b = per_state(a_eps), per_state(b_eps)
     observed = state_stats(a, b)
+    if all(len(a[st]) == 1 and len(b[st]) == 1 for st in a):
+        n_perm = 0
     rng = random.Random(seed)
     exceed = [0, 0]
     for _ in range(n_perm):
@@ -76,7 +79,8 @@ def compare(a_eps, b_eps, n_perm=20000, seed=0):
         "n_episodes": len(a_eps), "a_successes": sum(a_eps.values()), "b_successes": sum(b_eps.values()),
         "episodes_a_only": a_only, "episodes_b_only": b_only, "mcnemar_p": mcnemar_exact(a_only, b_only),
         "states_one_run_only": observed[0], "state_absdiff": observed[1], "n_states": len(a),
-        "perm_p_one_run_only": (exceed[0] + 1) / (n_perm + 1), "perm_p_absdiff": (exceed[1] + 1) / (n_perm + 1),
+        "perm_p_one_run_only": (exceed[0] + 1) / (n_perm + 1) if n_perm else None,
+        "perm_p_absdiff": (exceed[1] + 1) / (n_perm + 1) if n_perm else None,
         "n_perm": n_perm, "per_task": per_task,
     }
 
@@ -93,11 +97,16 @@ def format_report(r, name_a, name_b):
         f"B {r['b_successes']}/{n} ({100 * r['b_successes'] / n:.2f}%)",
         f"episodes (paired by task, seed, init state) succeeding only in A: {r['episodes_a_only']}, only in B: "
         f"{r['episodes_b_only']}; exact McNemar p = {r['mcnemar_p']:.4f}",
-        f"init states solved in only one run: {r['states_one_run_only']} of {r['n_states']}; "
-        f"permutation p = {r['perm_p_one_run_only']:.4f}",
-        f"summed |successes A - successes B| per init state: {r['state_absdiff']}; "
-        f"permutation p = {r['perm_p_absdiff']:.4f} ({r['n_perm']} permutations)",
     ]
+    if r["n_perm"]:
+        lines += [
+            f"init states solved in only one run: {r['states_one_run_only']} of {r['n_states']}; "
+            f"permutation p = {r['perm_p_one_run_only']:.4f}",
+            f"summed |successes A - successes B| per init state: {r['state_absdiff']}; "
+            f"permutation p = {r['perm_p_absdiff']:.4f} ({r['n_perm']} permutations)",
+        ]
+    else:
+        lines.append("per-state permutation test: not applicable with one episode per init state in each run")
     return "\n".join(lines) + "\n"
 
 

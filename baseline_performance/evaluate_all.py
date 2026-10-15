@@ -21,9 +21,13 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 
 
 def build_command(task, seed, run_dir, lerobot_eval="lerobot-eval", policy_path="HuggingFaceVLA/smolvla_libero",
-                  n_episodes=10, episode_length=520, observation_size=256):
-    """lerobot-eval command for one (task, seed); the defaults are the protocol of results_300926."""
-    return [
+                  n_episodes=10, episode_length=520, observation_size=256, n_action_steps=None, rename_map=None):
+    """lerobot-eval command for one (task, seed); the defaults are the protocol of results_300926.
+
+    n_action_steps overrides the checkpoint's value; rename_map ({env key: policy key}) maps the LIBERO camera
+    keys onto a checkpoint that names its cameras differently. Neither is passed when left at None.
+    """
+    cmd = [
         lerobot_eval,
         f"--policy.path={policy_path}",
         "--policy.device=cuda",
@@ -41,6 +45,11 @@ def build_command(task, seed, run_dir, lerobot_eval="lerobot-eval", policy_path=
         f"--env.task_ids=[{task}]",
         f"--seed={seed}",
     ]
+    if n_action_steps is not None:
+        cmd.append(f"--policy.n_action_steps={n_action_steps}")
+    if rename_map:
+        cmd.append(f"--rename_map={json.dumps(rename_map)}")
+    return cmd
 
 
 def run_dir_for(output_root, task, seed):
@@ -106,15 +115,20 @@ def generate_report(output_root, tasks, seeds, n_episodes=None):
 
 
 def run_all(output_root, tasks, seeds, command_kwargs, jobs=1, gpus=None, launch_deadline_s=None,
-            hard_stop_s=None, launch_delay_s=5.0, poll_s=5.0, should_stop=lambda: False, log=print):
+            hard_stop_s=None, launch_delay_s=5.0, poll_s=5.0, should_stop=lambda: False, log=print, order="task"):
     """Run every unfinished (task, seed) as its own process, at most ``jobs`` at a time.
 
     Runs that already have eval_info.json are skipped, so calling this again resumes. No new run starts
     after ``launch_deadline_s`` seconds; runs still going at ``hard_stop_s`` are killed and stay unfinished.
-    GPUs in ``gpus`` are assigned round-robin through CUDA_VISIBLE_DEVICES. Returns {(task, seed): exit code}.
+    GPUs in ``gpus`` are assigned round-robin through CUDA_VISIBLE_DEVICES. ``order="seed"`` runs every task of
+    the first seed before the next seed, so a session cut short still covers all tasks once; the default
+    ``"task"`` runs all seeds of a task before the next task. Returns {(task, seed): exit code}.
     """
     output_root = Path(output_root)
-    pending = [(t, s) for t in tasks for s in seeds if load_successes(output_root, t, s) is None]
+    if order not in ("task", "seed"):
+        raise ValueError(f"order must be 'task' or 'seed', not {order!r}")
+    runs = [(t, s) for t in tasks for s in seeds] if order == "task" else [(t, s) for s in seeds for t in tasks]
+    pending = [(t, s) for t, s in runs if load_successes(output_root, t, s) is None]
     log(f"{len(tasks) * len(seeds) - len(pending)} runs already finished, {len(pending)} to run, {jobs} at a time")
     env = os.environ.copy()
     env["PYTHONPATH"] = f"{REPO_ROOT}:{env.get('PYTHONPATH', '')}"  # loads robosuite_mujoco_patch (FAIL-003)
@@ -176,6 +190,13 @@ def main():
     parser.add_argument("--episode_length", type=int, default=520)
     parser.add_argument("--observation_size", type=int, default=256)
     parser.add_argument("--lerobot_eval", type=str, default="lerobot-eval", help="lerobot-eval executable")
+    parser.add_argument("--n_action_steps", type=int, default=None,
+                        help="Override the checkpoint's n_action_steps (default: use the checkpoint's value)")
+    parser.add_argument("--rename_map", type=json.loads, default=None,
+                        help='JSON map from env observation keys to policy keys, e.g. '
+                             '\'{"observation.images.image": "observation.images.camera1"}\'')
+    parser.add_argument("--order", choices=["task", "seed"], default="task",
+                        help="Run all seeds of a task first (task, default) or all tasks of a seed first (seed)")
     parser.add_argument("--jobs", type=int, default=1, help="Runs in parallel (default: 1)")
     parser.add_argument("--gpus", type=str, default="", help="Comma-separated GPU ids assigned round-robin, e.g. 0,1")
     parser.add_argument("--launch_deadline_min", type=float, default=None, help="Start no new run after this many minutes")
@@ -210,13 +231,14 @@ def main():
     signal.signal(signal.SIGINT, on_sigint)
 
     command_kwargs = {"lerobot_eval": args.lerobot_eval, "policy_path": args.policy_path, "n_episodes": args.n_episodes,
-                      "episode_length": args.episode_length, "observation_size": args.observation_size}
+                      "episode_length": args.episode_length, "observation_size": args.observation_size,
+                      "n_action_steps": args.n_action_steps, "rename_map": args.rename_map}
     run_all(
         output_root, args.tasks, args.seeds, command_kwargs, jobs=args.jobs,
         gpus=[g for g in args.gpus.split(",") if g.strip()],
         launch_deadline_s=None if args.launch_deadline_min is None else 60 * args.launch_deadline_min,
         hard_stop_s=None if args.hard_stop_min is None else 60 * args.hard_stop_min,
-        should_stop=lambda: bool(interrupted), log=lambda m: print(m, flush=True),
+        should_stop=lambda: bool(interrupted), log=lambda m: print(m, flush=True), order=args.order,
     )
 
     missing = generate_report(output_root, args.tasks, args.seeds, args.n_episodes)

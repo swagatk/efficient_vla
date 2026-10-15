@@ -60,6 +60,23 @@ def test_default_command_matches_results_300926_protocol():
     ]
 
 
+def test_optional_policy_overrides_are_appended():
+    rename = {"observation.images.image": "observation.images.camera1"}
+    cmd = build_command(3, 1, "out", n_action_steps=1, rename_map=rename)
+    assert cmd[:16] == build_command(3, 1, "out")
+    assert cmd[16:] == ["--policy.n_action_steps=1", '--rename_map={"observation.images.image": "observation.images.camera1"}']
+
+
+def test_seed_major_order(tmp_path, fake_eval):
+    out = tmp_path / "out"
+    started = []
+    run_all(out, [0, 1], [0, 1], kwargs(fake_eval), launch_delay_s=0, poll_s=0.05, order="seed",
+            log=lambda m: started.append(m.split("] ")[1].split(":")[0]) if m.endswith("started") else None)
+    assert started == ["task 0 seed 0", "task 1 seed 0", "task 0 seed 1", "task 1 seed 1"]
+    with pytest.raises(ValueError):
+        run_all(out, [0], [0], kwargs(fake_eval), order="random")
+
+
 def test_run_report_and_resume(tmp_path, fake_eval):
     out = tmp_path / "out"
     codes = run_all(out, [0, 1], [0, 1], kwargs(fake_eval), jobs=3, launch_delay_s=0, poll_s=0.05, log=lambda m: None)

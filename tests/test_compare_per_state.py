@@ -37,3 +37,12 @@ def test_mismatched_episodes_rejected():
 def test_mcnemar_exact():
     assert mcnemar_exact(0, 0) == 1.0
     assert mcnemar_exact(0, 5) == pytest.approx(2 / 32)
+
+
+def test_single_episode_per_state_skips_permutation_test():
+    from compare_per_state import format_report
+    a = episodes(lambda t, s, i: i % 2, seeds=1)
+    b = episodes(lambda t, s, i: i % 3 == 0, seeds=1)
+    r = compare(a, b, n_perm=100)
+    assert r["n_perm"] == 0 and r["perm_p_one_run_only"] is None
+    assert "not applicable" in format_report(r, "a", "b")
