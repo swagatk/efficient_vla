@@ -1,0 +1,15 @@
+=== Baseline Evaluation Consolidated Summary ===
+
+Task  0 | Mean Success:   3.33% | Std:  5.77% | Seeds: 3
+Task  1 | Mean Success:  76.67% | Std:  5.77% | Seeds: 3
+Task  2 | Mean Success:  96.67% | Std:  5.77% | Seeds: 3
+Task  3 | Mean Success:  90.00% | Std: 10.00% | Seeds: 3
+Task  4 | Mean Success:  33.33% | Std: 11.55% | Seeds: 3
+Task  5 | Mean Success:  86.67% | Std:  5.77% | Seeds: 3
+Task  6 | Mean Success:  46.67% | Std: 20.82% | Seeds: 3
+Task  7 | Mean Success:  56.67% | Std:  5.77% | Seeds: 3
+Task  8 | Mean Success:   6.67% | Std:  5.77% | Seeds: 3
+Task  9 | Mean Success:  73.33% | Std: 15.28% | Seeds: 3
+
+----------------------------------------
+Overall Mean Success: 57.00%

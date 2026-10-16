@@ -1,0 +1,64 @@
+Output directory: /kaggle/working/smolvla_libero_lerobot_eval
+0 runs already finished, 30 to run, 4 at a time
+[   0.0 min] task 0 seed 0: started on GPU 0
+[   0.1 min] task 1 seed 0: started on GPU 1
+[   0.2 min] task 2 seed 0: started on GPU 0
+[   0.3 min] task 3 seed 0: started on GPU 1
+[  39.2 min] task 2 seed 0: done
+[  39.2 min] task 4 seed 0: started on GPU 0
+[  43.3 min] task 3 seed 0: done
+[  43.3 min] task 5 seed 0: started on GPU 1
+[  48.0 min] task 1 seed 0: done
+[  48.0 min] task 6 seed 0: started on GPU 0
+[  75.2 min] task 5 seed 0: done
+[  75.2 min] task 7 seed 0: started on GPU 1
+[  96.4 min] task 0 seed 0: done
+[  96.4 min] task 8 seed 0: started on GPU 0
+[ 121.6 min] task 7 seed 0: done
+[ 121.6 min] task 9 seed 0: started on GPU 1
+[ 129.1 min] task 4 seed 0: done
+[ 129.1 min] task 0 seed 1: started on GPU 0
+[ 150.4 min] task 6 seed 0: done
+[ 150.4 min] task 1 seed 1: started on GPU 1
+[ 159.0 min] task 9 seed 0: done
+[ 159.0 min] task 2 seed 1: started on GPU 0
+[ 195.9 min] task 1 seed 1: done
+[ 195.9 min] task 3 seed 1: started on GPU 1
+[ 206.8 min] task 8 seed 0: done
+[ 206.8 min] task 4 seed 1: started on GPU 0
+[ 215.9 min] task 2 seed 1: done
+[ 215.9 min] task 5 seed 1: started on GPU 1
+[ 234.1 min] task 0 seed 1: done
+[ 234.1 min] task 6 seed 1: started on GPU 0
+[ 243.4 min] task 3 seed 1: done
+[ 243.4 min] task 7 seed 1: started on GPU 1
+[ 252.2 min] task 5 seed 1: done
+[ 252.2 min] task 8 seed 1: started on GPU 0
+[ 284.1 min] task 4 seed 1: done
+[ 284.1 min] task 9 seed 1: started on GPU 1
+[ 298.9 min] task 7 seed 1: done
+[ 298.9 min] task 0 seed 2: started on GPU 0
+[ 305.0 min] task 6 seed 1: done
+[ 305.0 min] task 1 seed 2: started on GPU 1
+[ 336.5 min] task 9 seed 1: done
+[ 336.5 min] task 2 seed 2: started on GPU 0
+[ 349.2 min] task 8 seed 1: done
+[ 349.2 min] task 3 seed 2: started on GPU 1
+[ 352.7 min] task 1 seed 2: done
+[ 352.7 min] task 4 seed 2: started on GPU 0
+[ 380.3 min] task 3 seed 2: done
+[ 380.3 min] task 5 seed 2: started on GPU 1
+[ 395.4 min] task 2 seed 2: done
+[ 395.4 min] task 6 seed 2: started on GPU 0
+[ 397.3 min] task 0 seed 2: done
+[ 397.3 min] task 7 seed 2: started on GPU 1
+[ 411.8 min] task 5 seed 2: done
+[ 411.8 min] task 8 seed 2: started on GPU 0
+[ 449.5 min] task 7 seed 2: done
+[ 449.5 min] task 9 seed 2: started on GPU 1
+[ 454.5 min] task 4 seed 2: done
+[ 478.6 min] task 6 seed 2: done
+[ 489.7 min] task 9 seed 2: done
+[ 493.7 min] task 8 seed 2: done
+
+Report: /kaggle/working/smolvla_libero_lerobot_eval/consolidated_summary.txt

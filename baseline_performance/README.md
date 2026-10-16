@@ -48,8 +48,20 @@ The SmolVLA paper reports 71% on LIBERO-Long; `results_300926` measures 40.67%. 
 - LIBERO-CTRL measured `lerobot/smolvla_libero` at 56.8% on LIBERO-10 (284/500), 59/100 on init states 0-9,
   and reports that this released checkpoint was trained on one eighth of the paper's sample budget.
 
-So part of the gap is the released checkpoints. Whether our evaluation path also loses performance is
-tested by running `lerobot/smolvla_libero` through it (the notebook's default); see the notebook's step 9.
+So part of the gap is the released checkpoints. Whether our evaluation path also loses performance was
+tested by running `lerobot/smolvla_libero` through it (the notebook's default, Kaggle 2 x T4, commit 82df15a,
+clean tree): [`week6/smolvla_libero_lerobot_eval_kaggle/`](../week6/smolvla_libero_lerobot_eval_kaggle/),
+comparison in `comparison_with_results_300926_and_libero_ctrl.txt` there.
+
+- `lerobot/smolvla_libero`: 171/300 (57.00%; per seed 58, 58, 55 of 100) on init states 0-9, seeds 0-2.
+- Against LIBERO-CTRL on the same init states (59/100): exact McNemar p = 1.00, 1.00 and 0.45 for seeds 0, 1, 2.
+  Our evaluation path reproduces the external measurement; it does not lose performance.
+- Against `results_300926` on the same episodes: 171/300 vs 122/300, exact McNemar p < 0.0001 (34 episodes
+  succeed only with the old checkpoint, 83 only with the new one).
+
+The gap to the paper's 71% is therefore the checkpoints: `HuggingFaceVLA/smolvla_libero` is a weaker model,
+and the public `lerobot/smolvla_libero` was trained with one eighth of the paper's sample budget.
+`lerobot/smolvla_libero` (57.0%) is the stronger baseline for new methods.
 
 ### Reproduction on Kaggle (October 2026)
 
