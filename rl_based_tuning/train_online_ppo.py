@@ -2,6 +2,15 @@
 import os
 import argparse
 import sys
+
+RETIRED = """train_online_ppo.py is retired and refuses to run (October 2026 review, rl_based_tuning/README.md).
+It bypasses LeRobot's pre/post-processors, so the base policy gets an un-normalised 7-joint state instead of
+the eef-pos/axis-angle/gripper state, a mirrored image (vertical flip only) and its normalised actions are
+executed as env actions. Use train_online_sac.py, which runs the base policy through vla_core."""
+
+if __name__ == "__main__":
+    sys.exit(RETIRED)
+
 import torch
 import torch.nn as nn
 import torch.optim as optim

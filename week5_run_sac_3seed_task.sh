@@ -1,6 +1,17 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# This runner produced the week-5 SAC results with the pre-fix train_online_sac.py (last version at the repo
+# root: commit 85c02f8). That version added the residual to normalised actions and clamped them to +-1, which
+# also clipped the base policy's actions, and discarded the benchmark init states with a second env.reset(),
+# so the week-5 numbers do not measure residual SAC (see rl_based_tuning/README.md). The script now lives in
+# rl_based_tuning/ with a different interface; new runs use rl_based_tuning/run_sac_residual.sh. To rerun
+# week 5 exactly: git show 85c02f8:train_online_sac.py > train_online_sac.py, then ALLOW_LEGACY_SAC=1.
+if [[ "${ALLOW_LEGACY_SAC:-0}" != "1" ]]; then
+  echo "week5_run_sac_3seed_task.sh runs the pre-fix SAC; see the comment at the top of this file." >&2
+  exit 2
+fi
+
 # Ignore terminal job-control stop signals so long runs don't get suspended by
 # transient TTY state changes in some terminal environments.
 trap '' TTOU TTIN TSTP

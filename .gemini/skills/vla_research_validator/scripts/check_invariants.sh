@@ -44,18 +44,40 @@ if [[ -z "$PYTHON_BIN" ]]; then
   fi
 fi
 
+# A listed file that no longer exists fails the check, so a move cannot silently drop it from checking.
 for py_file in "$REPO_ROOT/hybrid_diffusion/hybrid_diffusion_agent.py" \
                "$REPO_ROOT/hybrid_diffusion/train_hybrid_diffusion.py" \
-               "$REPO_ROOT/train_online_ppo.py" \
-               "$REPO_ROOT/train_online_sac.py"; do
-  if [[ -f "$py_file" ]]; then
-    if "$PYTHON_BIN" -m py_compile "$py_file" 2>/dev/null; then
-      pass "Syntax valid: $(basename "$py_file")"
-    else
-      fail "Syntax error in: $py_file"
-    fi
+               "$REPO_ROOT/rl_based_tuning/train_online_ppo.py" \
+               "$REPO_ROOT/rl_based_tuning/train_online_sac.py" \
+               "$REPO_ROOT/rl_based_tuning/sac_residual.py" \
+               "$REPO_ROOT/vla_core/envs.py" \
+               "$REPO_ROOT/vla_core/policy.py" \
+               "$REPO_ROOT/vla_core/residual.py" \
+               "$REPO_ROOT/vla_core/evaluation.py"; do
+  if [[ ! -f "$py_file" ]]; then
+    fail "Checked file missing (moved or deleted? update this list): $py_file"
+  elif "$PYTHON_BIN" -m py_compile "$py_file" 2>/dev/null; then
+    pass "Syntax valid: ${py_file#$REPO_ROOT/}"
+  else
+    fail "Syntax error in: $py_file"
   fi
 done
+
+# Residual RL must run the base policy through vla_core (lerobot-eval's processing) and add the residual in
+# env action units; the pre-fix SAC clamped normalised actions and re-reset after set_init_state.
+SAC_FILE="$REPO_ROOT/rl_based_tuning/train_online_sac.py"
+if [[ -f "$SAC_FILE" ]]; then
+  if grep -q "from vla_core.policy import load_base_policy" "$SAC_FILE" && grep -q "from vla_core.residual import apply_residual" "$SAC_FILE"; then
+    pass "train_online_sac.py uses vla_core's base policy and apply_residual"
+  else
+    fail "train_online_sac.py does not use vla_core.policy.load_base_policy and vla_core.residual.apply_residual"
+  fi
+  if grep -qE "set_init_state|env\.reset\(" "$SAC_FILE"; then
+    fail "train_online_sac.py resets or sets init states itself; use vla_core.evaluation.run_episode"
+  else
+    pass "train_online_sac.py leaves resets and init states to vla_core"
+  fi
+fi
 
 # --- Check 2: robosuite_mujoco_patch Presence & Loading ---
 echo ""
