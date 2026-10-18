@@ -25,7 +25,7 @@ updates from the first full minibatch, soft resets.
 Fisher exact test against 16/40: p = 7.8e-08 (seed 0), p = 3.8e-04 (seed 1). Training episodes include
 exploration noise, but a drop from about 40% to 3-12% is far larger than noise around a near-zero residual
 should cause. Both seeds succeeded on their first episode (residual still about zero) and rarely afterwards.
-Losses stayed finite; the critic's mean Q rose while success stayed near zero (`logs/train_seed*.log`, W&B
+Losses stayed finite; the critic's mean Q rose while success stayed near zero (`train_seed*.log`, W&B
 summary at the end). The held-out `eval` stage was not run.
 
 ## Suspected causes (not yet separated)

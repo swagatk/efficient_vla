@@ -1,0 +1,154 @@
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /tmp/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+gnome-session-inhibit not found. Power lock skipped.
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+Loading  HuggingFaceTB/SmolVLM2-500M-Video-Instruct weights ...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  21%|██▏       | 105/489 [00:00<00:00, 1008.91it/s]Loading weights:  42%|████▏     | 206/489 [00:00<00:00, 659.27it/s] Loading weights:  57%|█████▋    | 279/489 [00:00<00:00, 592.51it/s]Loading weights:  79%|███████▉  | 386/489 [00:00<00:00, 736.74it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 822.47it/s]
+Reducing the number of VLM layers to 16 ...
+Loading weights from local directory
+Downloading: "https://download.pytorch.org/models/resnet18-f37072fd.pth" to /root/.cache/torch/hub/checkpoints/resnet18-f37072fd.pth
+  0%|          | 0.00/44.7M [00:00<?, ?B/s] 34%|███▍      | 15.1M/44.7M [00:00<00:00, 158MB/s] 74%|███████▍  | 33.1M/44.7M [00:00<00:00, 176MB/s]100%|██████████| 44.7M/44.7M [00:00<00:00, 166MB/s]
+[preflight] base success 1/3 on training init states
+wandb: WARNING `resume` will be ignored since W&B syncing is set to `offline`. Starting a new run with run id 99eb5b18.
+wandb: Tracking run with wandb version 0.30.0
+wandb: W&B syncing is set to `offline` in this directory. Run `wandb online` or set WANDB_MODE=online to enable cloud syncing.
+wandb: Run data is saved locally in /kaggle/working/sac_residual_task6/wandb/wandb/offline-run-20261017_205845-99eb5b18
+wandb: View this run in the terminal with `wandb leet`
+[train] ep 1/100 init 44: success=1 steps=325 mean20=1.00
+[train] ep 2/100 init 35: success=0 steps=520 mean20=0.50
+[train] ep 3/100 init 30: success=0 steps=520 mean20=0.33
+[train] ep 4/100 init 20: success=0 steps=520 mean20=0.25
+[train] ep 5/100 init 22: success=0 steps=520 mean20=0.20
+[train] ep 6/100 init 11: success=0 steps=520 mean20=0.17
+[train] ep 7/100 init 13: success=1 steps=292 mean20=0.29
+[train] ep 8/100 init 10: success=0 steps=520 mean20=0.25
+[train] ep 9/100 init 17: success=0 steps=520 mean20=0.22
+[train] ep 10/100 init 42: success=0 steps=520 mean20=0.20
+[train] ep 11/100 init 35: success=0 steps=520 mean20=0.18
+[train] ep 12/100 init 46: success=0 steps=520 mean20=0.17
+[train] ep 13/100 init 30: success=0 steps=520 mean20=0.15
+[train] ep 14/100 init 34: success=0 steps=520 mean20=0.14
+[train] ep 15/100 init 48: success=0 steps=520 mean20=0.13
+[train] ep 16/100 init 39: success=0 steps=520 mean20=0.12
+[train] ep 17/100 init 35: success=0 steps=520 mean20=0.12
+[train] ep 18/100 init 31: success=0 steps=520 mean20=0.11
+[train] ep 19/100 init 32: success=0 steps=520 mean20=0.11
+[train] ep 20/100 init 47: success=0 steps=520 mean20=0.10
+[train] ep 21/100 init 21: success=0 steps=520 mean20=0.05
+[train] ep 22/100 init 42: success=0 steps=520 mean20=0.05
+[train] ep 23/100 init 36: success=0 steps=520 mean20=0.05
+[train] ep 24/100 init 10: success=0 steps=520 mean20=0.05
+[train] ep 25/100 init 25: success=0 steps=520 mean20=0.05
+[train] ep 26/100 init 44: success=0 steps=520 mean20=0.05
+[train] ep 27/100 init 32: success=0 steps=520 mean20=0.00
+[train] ep 28/100 init 11: success=0 steps=520 mean20=0.00
+[train] ep 29/100 init 40: success=0 steps=520 mean20=0.00
+[train] ep 30/100 init 39: success=0 steps=520 mean20=0.00
+[train] ep 31/100 init 43: success=0 steps=520 mean20=0.00
+[train] ep 32/100 init 17: success=0 steps=520 mean20=0.00
+[train] ep 33/100 init 13: success=0 steps=520 mean20=0.00
+[train] ep 34/100 init 44: success=0 steps=520 mean20=0.00
+[train] ep 35/100 init 10: success=0 steps=520 mean20=0.00
+[train] ep 36/100 init 31: success=0 steps=520 mean20=0.00
+[train] ep 37/100 init 13: success=0 steps=520 mean20=0.00
+[train] ep 38/100 init 21: success=0 steps=520 mean20=0.00
+[train] ep 39/100 init 29: success=0 steps=520 mean20=0.00
+[train] ep 40/100 init 26: success=0 steps=520 mean20=0.00
+[train] ep 41/100 init 26: success=0 steps=520 mean20=0.00
+[train] ep 42/100 init 11: success=0 steps=520 mean20=0.00
+[train] ep 43/100 init 10: success=0 steps=520 mean20=0.00
+[train] ep 44/100 init 14: success=0 steps=520 mean20=0.00
+[train] ep 45/100 init 10: success=0 steps=520 mean20=0.00
+[train] ep 46/100 init 36: success=0 steps=520 mean20=0.00
+[train] ep 47/100 init 31: success=0 steps=520 mean20=0.00
+[train] ep 48/100 init 35: success=0 steps=520 mean20=0.00
+[train] ep 49/100 init 20: success=0 steps=520 mean20=0.00
+[train] ep 50/100 init 34: success=0 steps=520 mean20=0.00
+[train] ep 51/100 init 40: success=0 steps=520 mean20=0.00
+[train] ep 52/100 init 25: success=0 steps=520 mean20=0.00
+[train] ep 53/100 init 28: success=0 steps=520 mean20=0.00
+[train] ep 54/100 init 49: success=0 steps=520 mean20=0.00
+[train] ep 55/100 init 42: success=0 steps=520 mean20=0.00
+[train] ep 56/100 init 49: success=0 steps=520 mean20=0.00
+[train] ep 57/100 init 25: success=0 steps=520 mean20=0.00
+[train] ep 58/100 init 37: success=0 steps=520 mean20=0.00
+[train] ep 59/100 init 48: success=0 steps=520 mean20=0.00
+[train] ep 60/100 init 36: success=0 steps=520 mean20=0.00
+[train] ep 61/100 init 43: success=0 steps=520 mean20=0.00
+[train] ep 62/100 init 37: success=0 steps=520 mean20=0.00
+[train] ep 63/100 init 38: success=0 steps=520 mean20=0.00
+[train] ep 64/100 init 25: success=0 steps=520 mean20=0.00
+[train] ep 65/100 init 45: success=0 steps=520 mean20=0.00
+[train] ep 66/100 init 15: success=0 steps=520 mean20=0.00
+[train] ep 67/100 init 33: success=0 steps=520 mean20=0.00
+[train] ep 68/100 init 38: success=0 steps=520 mean20=0.00
+[train] ep 69/100 init 43: success=0 steps=520 mean20=0.00
+[train] ep 70/100 init 31: success=0 steps=520 mean20=0.00
+[train] ep 71/100 init 25: success=0 steps=520 mean20=0.00
+[train] ep 72/100 init 22: success=1 steps=227 mean20=0.05
+[train] ep 73/100 init 26: success=0 steps=520 mean20=0.05
+[train] ep 74/100 init 29: success=0 steps=520 mean20=0.05
+[train] ep 75/100 init 38: success=0 steps=520 mean20=0.05
+[train] ep 76/100 init 45: success=0 steps=520 mean20=0.05
+[train] ep 77/100 init 12: success=0 steps=520 mean20=0.05
+[train] ep 78/100 init 47: success=0 steps=520 mean20=0.05
+[train] ep 79/100 init 31: success=0 steps=520 mean20=0.05
+[train] ep 80/100 init 24: success=0 steps=520 mean20=0.05
+[train] ep 81/100 init 36: success=0 steps=520 mean20=0.05
+[train] ep 82/100 init 32: success=0 steps=520 mean20=0.05
+[train] ep 83/100 init 20: success=0 steps=520 mean20=0.05
+[train] ep 84/100 init 22: success=0 steps=520 mean20=0.05
+[train] ep 85/100 init 38: success=0 steps=520 mean20=0.05
+[train] ep 86/100 init 33: success=0 steps=520 mean20=0.05
+[train] ep 87/100 init 30: success=0 steps=520 mean20=0.05
+[train] ep 88/100 init 23: success=0 steps=520 mean20=0.05
+[train] ep 89/100 init 40: success=0 steps=520 mean20=0.05
+[train] ep 90/100 init 25: success=0 steps=520 mean20=0.05
+[train] ep 91/100 init 23: success=0 steps=520 mean20=0.05
+[train] ep 92/100 init 45: success=0 steps=520 mean20=0.00
+[train] ep 93/100 init 20: success=0 steps=520 mean20=0.00
+[train] ep 94/100 init 19: success=0 steps=520 mean20=0.00
+[train] ep 95/100 init 38: success=0 steps=520 mean20=0.00
+[train] ep 96/100 init 34: success=0 steps=520 mean20=0.00
+[train] ep 97/100 init 11: success=0 steps=520 mean20=0.00
+[train] ep 98/100 init 13: success=0 steps=520 mean20=0.00
+[train] ep 99/100 init 25: success=0 steps=520 mean20=0.00
+[train] ep 100/100 init 43: success=0 steps=520 mean20=0.00
+wandb: 
+wandb: Run history:
+wandb:          actor_loss █▇▆▅▆▅▄▄▄▃▂▁▁▂▁▄▄▄▄▄▅▅▅▅▅▅▄▄▄▄▄▄▄▄▄▃▃▃▃▃
+wandb:               alpha ▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb:         critic_loss █▅▂▁▂▂▂▂▃▂▂▁▁▁▁▁▁▁▁▁▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb:             entropy ▆▁▄▃▆▆▆▆▅▅▅▅▅▆▆▇▇▇▇▇█████████▇▇▇▆▆▇▇▇▇▇▇
+wandb:             episode ▁▁▁▁▂▂▂▂▂▃▃▃▄▄▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▆▆▇▇▇▇████
+wandb:          init_state ▇▆▂▇▆█▆▃▁▇▅▂▃▄▄▁▆▅▇▇▄▆▇▆▄▆▅▄▃▆█▅▆▃▆▃▆▅▁▇
+wandb:              q_mean ▁▃▃▄▄▅▆▆▆▆▇▇▇██▇▇██▇▅▅▄▄▄▄▄▄▄▄▄▅▅▅▅▅▅▅▅▅
+wandb:               steps ▁███████████████████████████████████████
+wandb:             success ▁█▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: success_buffer_size ▅▅▅▅██████████████▄▄▁▁▁▁▁▁▁▁▁▁▄▄▄▄▄▄▄▄▄▄
+wandb:                  +1 ...
+wandb: 
+wandb: Run summary:
+wandb:          actor_loss -3.11983
+wandb:               alpha 0.001
+wandb:         critic_loss 0.07034
+wandb:             entropy -1.97679
+wandb:             episode 99
+wandb:          init_state 43
+wandb:              q_mean 3.11961
+wandb:               steps 520
+wandb:             success 0
+wandb: success_buffer_size 227
+wandb:                  +1 ...
+wandb: 
+wandb: You can sync this run to the cloud by running:
+wandb: wandb sync /kaggle/working/sac_residual_task6/wandb/wandb/offline-run-20261017_205845-99eb5b18
+wandb: Find logs at: /kaggle/working/sac_residual_task6/wandb/wandb/offline-run-20261017_205845-99eb5b18/logs
