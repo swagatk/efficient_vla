@@ -1,0 +1,10 @@
+A = lerobot-eval (week6)
+B = RL evaluation path
+
+task | A successes | B successes | init states solved in A but never in B | in B but never in A
+   6 |  14/30 |  15/30 | [] | []
+
+overall: A 14/30 (46.67%), B 15/30 (50.00%)
+episodes (paired by task, seed, init state) succeeding only in A: 4, only in B: 5; exact McNemar p = 1.0000
+init states solved in only one run: 0 of 10; permutation p = 1.0000
+summed |successes A - successes B| per init state: 5; permutation p = 0.9210 (20000 permutations)

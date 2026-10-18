@@ -72,5 +72,6 @@ only because `reproduce_task.py` imports them.
 
 ## Status
 
-The fixed code has passed CPU tests (`tests/test_sac_residual.py`, `tests/test_vla_core_rl.py`) and a short
-real rollout; no training run has been made with it yet.
+- Pilot 1 (task 6, two seeds, 100 training episodes, commit `33f8740`): harness check passed (base 15/30
+  through `vla_core` vs 14/30 through lerobot-eval), but training success fell to 3/100 and 12/100 against
+  the base policy's 16/40 on the same init states. Negative result: `week6/sac_residual_task6_pilot1/`.
