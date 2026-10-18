@@ -1,0 +1,36 @@
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /tmp/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+Loading  HuggingFaceTB/SmolVLM2-500M-Video-Instruct weights ...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 7925.59it/s]
+Reducing the number of VLM layers to 16 ...
+Loading weights from local directory
+[diagnostic] base init 21: success=0 steps=520
+[diagnostic] base init 37: success=1 steps=229
+[diagnostic] base init 14: success=0 steps=520
+[diagnostic] base init 34: success=1 steps=372
+[diagnostic] base init 33: success=0 steps=520
+[diagnostic] base init 12: success=0 steps=520
+[diagnostic] base init 13: success=0 steps=520
+[diagnostic] base init 44: success=0 steps=520
+[diagnostic] base init 28: success=0 steps=520
+[diagnostic] base init 11: success=0 steps=520
+[diagnostic] base init 20: success=0 steps=520
+[diagnostic] base init 32: success=0 steps=520
+[diagnostic] base init 30: success=1 steps=232
+[diagnostic] base init 36: success=0 steps=520
+[diagnostic] base init 38: success=0 steps=520
+[diagnostic] base init 40: success=1 steps=222
+[diagnostic] base init 47: success=0 steps=520
+[diagnostic] base init 48: success=1 steps=233
+[diagnostic] base init 27: success=0 steps=520
+[diagnostic] base init 10: success=0 steps=520
+[diagnostic] base: 5/20 successes (/kaggle/working/sac_residual_task6/diagnostic/base_hard/diagnostic_base.csv)

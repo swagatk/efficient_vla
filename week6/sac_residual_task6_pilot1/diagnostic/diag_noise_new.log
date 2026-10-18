@@ -1,0 +1,37 @@
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /tmp/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+Loading  HuggingFaceTB/SmolVLM2-500M-Video-Instruct weights ...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 13272.77it/s]
+Reducing the number of VLM layers to 16 ...
+Loading weights from local directory
+[diagnostic] largest residual per action dimension (env units): [0.0502999983727932, 0.0568000003695488, 0.06669999659061432, 0.005900000222027302, 0.009499999694526196, 0.011699999682605267, 0.14980000257492065]
+[diagnostic] noise init 21: success=1 steps=232
+[diagnostic] noise init 37: success=0 steps=520
+[diagnostic] noise init 14: success=0 steps=520
+[diagnostic] noise init 34: success=0 steps=520
+[diagnostic] noise init 33: success=1 steps=224
+[diagnostic] noise init 12: success=0 steps=520
+[diagnostic] noise init 13: success=0 steps=520
+[diagnostic] noise init 44: success=0 steps=520
+[diagnostic] noise init 28: success=0 steps=520
+[diagnostic] noise init 11: success=0 steps=520
+[diagnostic] noise init 20: success=0 steps=520
+[diagnostic] noise init 32: success=0 steps=520
+[diagnostic] noise init 30: success=0 steps=520
+[diagnostic] noise init 36: success=1 steps=234
+[diagnostic] noise init 38: success=1 steps=484
+[diagnostic] noise init 40: success=1 steps=217
+[diagnostic] noise init 47: success=0 steps=520
+[diagnostic] noise init 48: success=1 steps=324
+[diagnostic] noise init 27: success=0 steps=520
+[diagnostic] noise init 10: success=0 steps=520
+[diagnostic] noise: 6/20 successes (/kaggle/working/sac_residual_task6/diagnostic/noise_new/diagnostic_noise.csv)

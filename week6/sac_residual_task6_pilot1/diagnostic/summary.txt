@@ -1,0 +1,33 @@
+base_soft: 5/20
+base_hard: 5/20
+noise_pilot1: 7/20
+noise_new: 6/20
+A = base_soft
+B = base_hard
+
+task | A successes | B successes | init states solved in A but never in B | in B but never in A
+   6 |   5/20 |   5/20 | [] | []
+
+overall: A 5/20 (25.00%), B 5/20 (25.00%)
+episodes (paired by task, seed, init state) succeeding only in A: 0, only in B: 0; exact McNemar p = 1.0000
+per-state permutation test: not applicable with one episode per init state in each run
+
+A = base_soft
+B = noise_pilot1
+
+task | A successes | B successes | init states solved in A but never in B | in B but never in A
+   6 |   5/20 |   7/20 | [30, 34, 37] | [11, 12, 28, 44, 47]
+
+overall: A 5/20 (25.00%), B 7/20 (35.00%)
+episodes (paired by task, seed, init state) succeeding only in A: 3, only in B: 5; exact McNemar p = 0.7266
+per-state permutation test: not applicable with one episode per init state in each run
+
+A = base_soft
+B = noise_new
+
+task | A successes | B successes | init states solved in A but never in B | in B but never in A
+   6 |   5/20 |   6/20 | [30, 34, 37] | [21, 33, 36, 38]
+
+overall: A 5/20 (25.00%), B 6/20 (30.00%)
+episodes (paired by task, seed, init state) succeeding only in A: 3, only in B: 4; exact McNemar p = 1.0000
+per-state permutation test: not applicable with one episode per init state in each run
