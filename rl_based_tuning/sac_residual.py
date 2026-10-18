@@ -217,7 +217,9 @@ class SACLearner:
     def alpha(self) -> float:
         return float(self.log_alpha.detach().exp().clamp(self.cfg.min_alpha, self.cfg.max_alpha))
 
-    def update(self, b: dict) -> dict:
+    def update(self, b: dict, update_actor: bool = True) -> dict:
+        """One SAC step on minibatch ``b``. ``update_actor=False`` trains only the critics (and moves the targets),
+        which is how the warm-up fits Q to the base policy's own behaviour before the actor may change it."""
         head, target, cfg = self.head, self.target, self.cfg
         alpha = self.alpha
         with torch.no_grad():
@@ -233,29 +235,29 @@ class SACLearner:
         self.critic_opt.zero_grad()
         critic_loss.backward()
         self.critic_opt.step()
+        out = {"critic_loss": critic_loss.item(), "alpha": alpha, "q_mean": q1.mean().item()}
 
-        feats = feats.detach()
-        delta, logp = head.sample(feats)
-        q_new = torch.min(*head.q_values(feats, delta))
-        l2 = cfg.action_l2_penalty_coef * delta.pow(2).sum(dim=-1).mean()
-        actor_loss = (alpha * logp - q_new).mean() + l2
-        self.actor_opt.zero_grad()
-        actor_loss.backward()
-        self.actor_opt.step()
-        # The actor step also put gradients on the critics; clear them so they never leak into a critic step.
-        head.q1.zero_grad(set_to_none=True)
-        head.q2.zero_grad(set_to_none=True)
-
-        out = {"critic_loss": critic_loss.item(), "actor_loss": actor_loss.item(), "alpha": alpha,
-               "q_mean": q1.mean().item(), "entropy": -logp.mean().item()}
-        if self.alpha_opt is not None:
-            alpha_loss = -(self.log_alpha * (logp.detach() + self.target_entropy)).mean()
-            self.alpha_opt.zero_grad()
-            alpha_loss.backward()
-            self.alpha_opt.step()
-            with torch.no_grad():
-                self.log_alpha.clamp_(float(np.log(cfg.min_alpha)), float(np.log(cfg.max_alpha)))
-            out["alpha_loss"] = alpha_loss.item()
+        if update_actor:
+            feats = feats.detach()
+            delta, logp = head.sample(feats)
+            q_new = torch.min(*head.q_values(feats, delta))
+            l2 = cfg.action_l2_penalty_coef * delta.pow(2).sum(dim=-1).mean()
+            actor_loss = (alpha * logp - q_new).mean() + l2
+            self.actor_opt.zero_grad()
+            actor_loss.backward()
+            self.actor_opt.step()
+            # The actor step also put gradients on the critics; clear them so they never leak into a critic step.
+            head.q1.zero_grad(set_to_none=True)
+            head.q2.zero_grad(set_to_none=True)
+            out.update(actor_loss=actor_loss.item(), entropy=-logp.mean().item())
+            if self.alpha_opt is not None:
+                alpha_loss = -(self.log_alpha * (logp.detach() + self.target_entropy)).mean()
+                self.alpha_opt.zero_grad()
+                alpha_loss.backward()
+                self.alpha_opt.step()
+                with torch.no_grad():
+                    self.log_alpha.clamp_(float(np.log(cfg.min_alpha)), float(np.log(cfg.max_alpha)))
+                out["alpha_loss"] = alpha_loss.item()
         soft_update(target, head, cfg.tau)
         return out
 

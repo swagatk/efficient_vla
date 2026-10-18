@@ -159,3 +159,40 @@ def test_cli_defaults_select_the_lerobot_base_policy():
     assert args.rename_map == t.DEFAULT_RENAME_MAP
     old = t.parse_args(["--policy_path", "HuggingFaceVLA/smolvla_libero", "--n_action_steps", "-1", "--rename_map", "{}"])
     assert old.n_action_steps is None and old.rename_map is None
+
+
+def test_critic_only_update_leaves_actor_unchanged():
+    head = make_head()
+    learner = SACLearner(head, SACConfig(auto_alpha=True))
+    actor0 = [p.clone() for m in (head.actor_net, head.actor_mean, head.actor_log_std) for p in m.parameters()]
+    critic0 = head.q1[0].weight.clone()
+    alpha0 = learner.log_alpha.item()
+    out = learner.update(batch(), update_actor=False)
+    after = [p for m in (head.actor_net, head.actor_mean, head.actor_log_std) for p in m.parameters()]
+    assert all(torch.equal(a, b) for a, b in zip(actor0, after))
+    assert not torch.equal(critic0, head.q1[0].weight)
+    assert learner.log_alpha.item() == alpha0 and "actor_loss" not in out
+    assert "actor_loss" in learner.update(batch())
+
+
+def test_per_dimension_residual_scale_and_flags():
+    import train_online_sac as t
+    std = np.array([0.34, 0.38, 0.44, 0.039, 0.063, 0.078, 1.0], dtype=np.float32)
+    args = t.parse_args([])
+    assert args.residual_scale is None and args.residual_scale_std == 0.15 and args.warmup_episodes == 5
+    assert np.allclose(t.max_residual_per_dim(args, std), 0.15 * std)
+    old = t.parse_args(["--residual_scale", "0.05"])
+    assert np.allclose(t.max_residual_per_dim(old, std), 0.05)
+    assert t.parse_args(["--hard_task_preset"]).residual_scale_std == 0.25
+    assert t.parse_args(["--diagnostic", "noise"]).diagnostic == "noise"
+
+
+def test_normaliser_stats_reads_pipeline_steps():
+    import types
+
+    import train_online_sac as t
+    step = types.SimpleNamespace(stats={"action": {"mean": [0.0] * 7, "std": [0.5] * 7}})
+    pipeline = types.SimpleNamespace(steps=[types.SimpleNamespace(stats=None), step])
+    mean, std = t.normaliser_stats(pipeline, "action")
+    assert mean.shape == (7,) and np.allclose(std, 0.5)
+    assert t.normaliser_stats(pipeline, "observation.state") is None

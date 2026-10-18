@@ -1,7 +1,9 @@
 # Residual RL on a frozen SmolVLA (LIBERO-10)
 
 A small residual head is trained with SAC on top of the frozen base policy. The head's correction is added
-to the base action in env action units, capped at `--residual_scale` per dimension.
+to the base action in env action units, capped per dimension at `--residual_scale_std` (default 0.15) times
+that dimension's action standard deviation in the base policy's training data, or at `--residual_scale` for
+every dimension if that is given.
 
 ## Hypothesis
 
@@ -37,6 +39,17 @@ before the first valid run; week 5's numbers are not a valid baseline for one (s
   rename map: 57.0% on LIBERO-10 through our evaluation path, matching LIBERO-CTRL
   (`week6/smolvla_libero_lerobot_eval_kaggle/`). `--policy_path HuggingFaceVLA/smolvla_libero
   --n_action_steps -1 --rename_map '{}'` selects the older checkpoint behind `results_300926`.
+- Residual size per dimension (after pilot 1): rotation actions have std 0.04-0.08 against 0.34-0.44 for
+  translation, so one cap for all dimensions is either useless for translation or large for rotation. The
+  default cap is 0.15 std: about 0.05-0.07 for translation, 0.006-0.012 for rotation, 0.15 for the gripper.
+- Critic warm-up (after pilot 1): the first `--warmup_episodes` (default 5) run the base policy alone and
+  update only the critic, so the actor does not follow an untrained critic and the buffer starts with the
+  base policy's own successes. Training logs the mean |delta| per dimension and the fraction of saturated
+  outputs per episode.
+- Diagnostics: `--diagnostic base|noise` runs `--diagnostic_episodes` distinct training init states in the
+  training environment without learning (base alone, or with the untrained head's exploration noise),
+  writing `diagnostic_<mode>.csv`; the notebook's `diagnose` stage compares soft/hard resets and both
+  residual sizes on the same episodes.
 - Multi-session runs: `--time_limit_hours` stops before a new episode once the limit is passed (exit code 3);
   the replay buffer is saved next to the checkpoint (`--save_replay 1`, about 2 GB) and restored on
   `--resume_training`.

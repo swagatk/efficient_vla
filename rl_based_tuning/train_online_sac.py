@@ -2,8 +2,12 @@
 """Residual SAC on a frozen SmolVLA base policy, on one LIBERO-10 task, and its paired evaluation.
 
 Training: episodes start from the benchmark init states in --train_init_states (default 10-49); the residual
-``delta`` in [-1, 1]^7 is added to the base policy's un-normalised action with weight --residual_scale
-(env action units, see vla_core/residual.py).
+``delta`` in [-1, 1]^7 is added to the base policy's un-normalised action, scaled per dimension to
+--residual_scale_std times that dimension's action std (or to --residual_scale everywhere; env action units,
+see vla_core/residual.py). The first --warmup_episodes run the base policy alone and train only the critic.
+
+Diagnostics (--diagnostic base|noise): episodes on distinct training init states without learning, the base
+policy alone or with the untrained head's exploration noise; see pilot 1 in week6/sac_residual_task6_pilot1/.
 
 Evaluation (--eval): the base policy and/or the trained residual on --eval_init_states (default 0-9, the
 init states of baseline_performance/results_300926) x --eval_seeds, with the same environment and noise seed
@@ -47,8 +51,13 @@ def parse_args(argv=None):
     p.add_argument("--rename_map", type=json.loads, default=DEFAULT_RENAME_MAP,
                    help="JSON env-key -> policy-key map; '{}' for checkpoints with LIBERO camera names")
     p.add_argument("--max_steps", type=int, default=520, help="Episode horizon")
-    p.add_argument("--residual_scale", type=float, default=0.05,
-                   help="Largest residual per action dimension, in env action units (actions lie in [-1, 1])")
+    p.add_argument("--residual_scale_std", type=float, default=0.15,
+                   help="Largest residual per action dimension as a fraction of that dimension's action std in the "
+                        "base policy's training data (rotation actions are ~10x smaller than translation ones)")
+    p.add_argument("--residual_scale", type=float, default=None,
+                   help="Instead: the same largest residual for every dimension, in env action units (pilot 1 used 0.05)")
+    p.add_argument("--warmup_episodes", type=int, default=5,
+                   help="First training episodes run the base policy alone (zero residual) and update only the critic")
     p.add_argument("--residual_image_size", type=int, default=128, help="Image size seen by the residual head")
     p.add_argument("--train_init_states", type=str, default="10-49", help="Init states used for training")
     p.add_argument("--train_hard_reset", type=int, default=0,
@@ -101,12 +110,18 @@ def parse_args(argv=None):
     p.add_argument("--use_dense_shaping", action="store_true",
                    help="Potential-based shaping on the gripper's distance to objects named in the instruction")
     p.add_argument("--hard_task_preset", action="store_true", help="Preset for tasks the base rarely solves")
+    # Diagnostics: run episodes on training init states in the training environment, without learning
+    p.add_argument("--diagnostic", choices=["base", "noise"], default=None,
+                   help="base: the base policy alone; noise: base + the untrained head's exploration noise. "
+                        "Writes <checkpoint_dir>/diagnostic_<mode>.csv")
+    p.add_argument("--diagnostic_episodes", type=int, default=20,
+                   help="Distinct training init states to run (the same ones for both modes with the same --seed)")
     p.add_argument("--use_visual_prompting", action="store_true", help=argparse.SUPPRESS)
     args = p.parse_args(argv)
     if args.use_visual_prompting:
         p.error("--use_visual_prompting is no longer supported (visual prompting degraded the base policy in weeks 2-3)")
     if args.hard_task_preset:
-        args.residual_scale = max(args.residual_scale, 0.1)
+        args.residual_scale_std = max(args.residual_scale_std, 0.25)
         args.alpha, args.auto_alpha, args.use_dense_shaping = 0.005, True, True
         args.success_replay_ratio = 0.25
         args.preflight_min_success = min(args.preflight_min_success, 0.1)
@@ -161,14 +176,34 @@ def _objects(sim_env):
     return list(objs.values()) if isinstance(objs, dict) else list(objs)
 
 
+def normaliser_stats(pipeline, key):
+    """(mean, std) of ``key`` from a LeRobot processor pipeline's (un)normaliser step, or None if not found."""
+    for step in getattr(pipeline, "steps", []):
+        stats = getattr(step, "stats", None) or {}
+        if key in stats and {"mean", "std"} <= set(stats[key]):
+            return (np.asarray(stats[key]["mean"], dtype=np.float32).reshape(-1),
+                    np.asarray(stats[key]["std"], dtype=np.float32).reshape(-1))
+    return None
+
+
 def state_stats(base):
     """Mean and std of observation.state from the base policy's normaliser, or None if not found."""
-    for step in getattr(base.preprocessor, "steps", []):
-        stats = getattr(step, "stats", None) or {}
-        if "observation.state" in stats and {"mean", "std"} <= set(stats["observation.state"]):
-            s = stats["observation.state"]
-            return np.asarray(s["mean"], dtype=np.float32), np.asarray(s["std"], dtype=np.float32)
-    return None
+    return normaliser_stats(base.preprocessor, "observation.state")
+
+
+def max_residual_per_dim(args, action_std):
+    """Largest residual per action dimension in env units: --residual_scale for every dimension if given,
+    otherwise --residual_scale_std times the dimension's action std."""
+    if args.residual_scale is not None:
+        return np.full(len(action_std), args.residual_scale, dtype=np.float32)
+    return (args.residual_scale_std * np.asarray(action_std, dtype=np.float32)).astype(np.float32)
+
+
+def base_action_std(base):
+    stats = normaliser_stats(base.postprocessor, "action")
+    if stats is None:
+        raise SystemExit("no action statistics in the base policy's postprocessor; pass --residual_scale instead")
+    return stats[1]
 
 
 def setup(args, hard_reset):
@@ -187,10 +222,11 @@ def setup(args, hard_reset):
 
 
 def make_actor(base, task, head, device, residual_scale, image_size, deterministic, record=None,
-               random_delta=lambda: False):
+               random_delta=lambda: False, zero_delta=lambda: False):
     """choose_action(obs) for vla_core.evaluation.run_episode. ``head=None`` runs the base policy alone.
 
-    ``record``, if given, receives (image, state, base_action, delta) for every executed step.
+    ``record``, if given, receives (image, state, base_action, delta) for every executed step. ``residual_scale``
+    is a scalar or one value per action dimension (env units).
     """
     import torch
 
@@ -204,7 +240,9 @@ def make_actor(base, task, head, device, residual_scale, image_size, determinist
             return base_action
         image = image_for_head(env_obs[AGENTVIEW_KEY], image_size)
         state = env_obs["observation.state"].detach().float().cpu()
-        if random_delta():
+        if zero_delta():
+            delta = np.zeros_like(base_action)
+        elif random_delta():
             delta = np.random.uniform(-1.0, 1.0, size=base_action.shape).astype(np.float32)
         else:
             with torch.no_grad():
@@ -252,7 +290,8 @@ def evaluate(args) -> int:
             check_same_base(ckpt["run_config"], args)
         env, base, device = setup(args, hard_reset=True)
         head = head_from_checkpoint(ckpt["learner"], device) if ckpt else None
-        scale = ckpt["run_config"]["residual_scale"] if ckpt else None
+        rc = ckpt["run_config"] if ckpt else {}
+        scale = np.asarray(rc.get("max_residual", rc.get("residual_scale")), dtype=np.float32) if ckpt else None
         image_size = ckpt["learner"]["head_config"]["image_size"] if ckpt else None
         try:
             for p, s, i in jobs[: args.max_episodes_per_process]:
@@ -308,10 +347,14 @@ def train(args) -> int:
         raise SystemExit(f"training and evaluation init states overlap: {sorted(overlap)}")
     os.makedirs(args.checkpoint_dir, exist_ok=True)
     run_config = {k: getattr(args, k) for k in ("task_id", "seed", "policy_path", "n_action_steps", "rename_map",
-                                                "residual_scale", "max_steps", "train_init_states")}
+                                                "residual_scale", "residual_scale_std", "warmup_episodes",
+                                                "max_steps", "train_init_states")}
 
     env, base, device = setup(args, hard_reset=bool(args.train_hard_reset))
     task = env.task_description
+    max_residual = max_residual_per_dim(args, base_action_std(base))
+    run_config["max_residual"] = max_residual.tolist()
+    print("[train] largest residual per action dimension (env units):", np.round(max_residual, 4).tolist())
     stats = state_stats(base)
     if stats is None:
         print("[warn] no observation.state statistics in the base preprocessor; the head sees raw state")
@@ -382,7 +425,8 @@ def train(args) -> int:
             timed_out = True
             break
         init_state = int(rng.choice(train_states))
-        indices, losses, shaping = [], [], []
+        indices, losses, shaping, deltas = [], [], [], []
+        warmup = episode < args.warmup_episodes
         pending = [None]  # (image, state, base_action, delta, reward, terminal) awaiting its next observation
         last = {}
 
@@ -392,6 +436,7 @@ def train(args) -> int:
                 indices.append(buffer.add(*pending[0][:5], image, state, base_action, pending[0][5]))
                 pending[0] = None
             last["inputs"] = (image, state, base_action, delta)
+            deltas.append(np.asarray(delta, dtype=np.float32))
 
         def on_reset(obs):
             if args.use_dense_shaping:
@@ -408,11 +453,13 @@ def train(args) -> int:
             global_step += 1
             if len(buffer) > args.batch_size and global_step > args.start_steps:
                 for _ in range(args.updates_per_step):
-                    losses.append(learner.update(buffer.sample(args.batch_size, args.success_replay_ratio, device)))
+                    losses.append(learner.update(buffer.sample(args.batch_size, args.success_replay_ratio, device),
+                                                 update_actor=not warmup))
 
         base.reset()
-        choose = make_actor(base, task, head, device, args.residual_scale, args.residual_image_size,
-                            deterministic=False, record=record, random_delta=lambda: global_step < args.start_steps)
+        choose = make_actor(base, task, head, device, max_residual, args.residual_image_size,
+                            deterministic=False, record=record, random_delta=lambda: global_step < args.start_steps,
+                            zero_delta=lambda: warmup)
         result = run_episode(env, init_state, 1_000_000 + args.seed * 10_000 + episode, choose, args.max_steps,
                              on_step=on_step, on_reset=on_reset)
         if pending[0] is not None:
@@ -427,11 +474,18 @@ def train(args) -> int:
         history.append(int(result["success"]))
         log = {"episode": episode, "init_state": init_state, "success": int(result["success"]), "steps": result["steps"],
                "success_mean20": float(np.mean(history[-20:])), "success_buffer_size": buffer.n_success()}
+        log["warmup"] = int(warmup)
         if losses:
-            log.update({k: float(np.mean([l[k] for l in losses])) for k in losses[0]})
+            for k in sorted({k for l in losses for k in l}):
+                log[k] = float(np.mean([l[k] for l in losses if k in l]))
+        if deltas:  # how far the residual moves each dimension, and how often tanh is saturated
+            d = np.abs(np.stack(deltas))
+            log.update({f"delta_abs_mean_{i}": float(v) for i, v in enumerate(d.mean(axis=0))})
+            log["delta_saturated_frac"] = float((d > 0.95).mean())
         wandb.log(log)
         print(f"[train] ep {episode + 1}/{args.num_episodes} init {init_state}: success={log['success']} "
-              f"steps={log['steps']} mean20={log['success_mean20']:.2f}", flush=True)
+              f"steps={log['steps']} mean20={log['success_mean20']:.2f}" + (" (warm-up)" if warmup else "")
+              + (f" |delta| {np.round(np.abs(np.stack(deltas)).mean(axis=0), 2).tolist()}" if deltas else ""), flush=True)
         if (episode + 1) % max(1, args.checkpoint_interval) == 0:
             save(episode)
     save(episode)
@@ -442,12 +496,51 @@ def train(args) -> int:
     return EXIT_MORE_EPISODES if timed_out else 0
 
 
+def diagnose(args) -> int:
+    """Episodes on distinct training init states in the training environment, without learning: the base policy
+    alone, or with the untrained head's exploration noise at the configured residual size."""
+    from sac_residual import HeadConfig, SACResidualHead
+    from vla_core.envs import parse_index_ranges
+    from vla_core.evaluation import append_episode_row, load_episode_rows, run_episode
+
+    states = parse_index_ranges(args.train_init_states)
+    chosen = [int(i) for i in np.random.default_rng(args.seed).permutation(states)[: args.diagnostic_episodes]]
+    out = Path(args.checkpoint_dir) / f"diagnostic_{args.diagnostic}.csv"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    done = load_episode_rows(out)
+    env, base, device = setup(args, hard_reset=bool(args.train_hard_reset))
+    head, scale = None, None
+    if args.diagnostic == "noise":
+        scale = max_residual_per_dim(args, base_action_std(base))
+        print("[diagnostic] largest residual per action dimension (env units):", np.round(scale, 4).tolist())
+        head = SACResidualHead(HeadConfig(image_size=args.residual_image_size, pretrained_vision=False)).to(device)
+    try:
+        for i in chosen:
+            if (args.seed, i) in done:
+                continue
+            base.reset()
+            choose = make_actor(base, env.task_description, head, device, scale, args.residual_image_size,
+                                deterministic=False)
+            r = run_episode(env, i, 2_000_000 + args.seed, choose, args.max_steps)
+            append_episode_row(out, {"task_id": args.task_id, "seed": args.seed, "init_state": i,
+                                     "success": int(r["success"]), "steps": r["steps"]})
+            print(f"[diagnostic] {args.diagnostic} init {i}: success={int(r['success'])} steps={r['steps']}", flush=True)
+    finally:
+        env.close()
+    rows = load_episode_rows(out)
+    n = sum(int(r["success"]) for r in rows.values())
+    print(f"[diagnostic] {args.diagnostic}: {n}/{len(rows)} successes ({out})")
+    return 0
+
+
 def main(argv=None) -> int:
     args = parse_args(argv)
     require_mujoco_patch()
     sys.path.insert(0, str(Path(__file__).resolve().parent))
     if args.eval:
         return evaluate(args)
+    if args.diagnostic:
+        return diagnose(args)
     try:
         from linux_inhibit import LinuxInhibit
     except ImportError:
