@@ -88,3 +88,7 @@ only because `reproduce_task.py` imports them.
 - Pilot 1 (task 6, two seeds, 100 training episodes, commit `33f8740`): harness check passed (base 15/30
   through `vla_core` vs 14/30 through lerobot-eval), but training success fell to 3/100 and 12/100 against
   the base policy's 16/40 on the same init states. Negative result: `week6/sac_residual_task6_pilot1/`.
+  Its diagnostic found the environment and the exploration noise harmless, so the learned residual caused it.
+- Pilot 2 (commit `85c1e5e`, per-dimension cap 0.15 std, 5 warm-up episodes): training success 22/100 and
+  29/100, near base + noise, but held-out evaluation (init states 0-9 x 3 seeds) fell from 15/30 to 3/30 and
+  6/30 (pooled exact McNemar p = 0.0003). Negative result: `week6/sac_residual_task6_pilot2/`.

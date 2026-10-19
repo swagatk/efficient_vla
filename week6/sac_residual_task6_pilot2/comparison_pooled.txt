@@ -1,0 +1,10 @@
+A = base
+B = residual, all training seeds
+
+task | A successes | B successes | init states solved in A but never in B | in B but never in A
+   6 |  30/60 |   9/60 | [0, 2, 7, 9] | [8]
+
+overall: A 30/60 (50.00%), B 9/60 (15.00%)
+episodes (paired by task, seed, init state) succeeding only in A: 27, only in B: 6; exact McNemar p = 0.0003
+init states solved in only one run: 5 of 10; permutation p = 0.0002
+summed |successes A - successes B| per init state: 27; permutation p = 0.0000 (20000 permutations)

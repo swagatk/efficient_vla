@@ -72,4 +72,4 @@ untrained with a zero-initialised mean, so the only change to the base action is
   sizes. Task-6 outcomes flip under small perturbations, so per-episode rewards are noisy and 20 paired
   episodes detect only large effects such as pilot 1's.
 
-Next: pilot 2 (`STAGE = "train"`, `RUN_NAME = "pilot2"`) with the warm-up and per-dimension cap.
+Next: pilot 2 with the warm-up and per-dimension cap; results in `week6/sac_residual_task6_pilot2/`.

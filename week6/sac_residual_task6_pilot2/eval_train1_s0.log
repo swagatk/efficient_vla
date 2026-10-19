@@ -1,0 +1,38 @@
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /tmp/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+[eval] 10 episodes to run in /kaggle/working/sac_residual_task6/pilot2/seed_1/eval/seed0
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+Loading  HuggingFaceTB/SmolVLM2-500M-Video-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  22%|██▏       | 109/489 [00:00<00:00, 1019.69it/s]Loading weights:  45%|████▌     | 221/489 [00:00<00:00, 1066.81it/s]Loading weights:  72%|███████▏  | 351/489 [00:00<00:00, 1168.73it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 1308.23it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Reducing the number of VLM layers to 16 ...
+Loading weights from local directory
+[eval] residual seed 0 init 0: success=0 steps=520
+[eval] residual seed 0 init 1: success=1 steps=402
+[eval] residual seed 0 init 2: success=0 steps=520
+[eval] residual seed 0 init 3: success=0 steps=520
+[eval] residual seed 0 init 4: success=0 steps=520
+[eval] residual seed 0 init 5: success=0 steps=520
+[eval] residual seed 0 init 6: success=1 steps=220
+[eval] residual seed 0 init 7: success=0 steps=520
+[eval] residual seed 0 init 8: success=1 steps=213
+[eval] residual seed 0 init 9: success=0 steps=520
+[eval] base: 5/10 = 50.0%
+[eval] residual: 3/10 = 30.0%
+A = base
+B = residual
+
+task | A successes | B successes | init states solved in A but never in B | in B but never in A
+   6 |   5/10 |   3/10 | [2, 5, 7] | [8]
+
+overall: A 5/10 (50.00%), B 3/10 (30.00%)
+episodes (paired by task, seed, init state) succeeding only in A: 3, only in B: 1; exact McNemar p = 0.6250
+per-state permutation test: not applicable with one episode per init state in each run
+
