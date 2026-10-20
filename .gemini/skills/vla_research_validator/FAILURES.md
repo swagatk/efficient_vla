@@ -12,6 +12,7 @@ This file is automatically updated by `record_failure.py`. Before modifying agen
 | **FAIL-006** | 2026-10-07 | LeRobot make_env Wrapper Degradation & Batch 2 Segfault | Task 3 baseline evaluation resulted in 0.00% success rate (i... | Always evaluate LIBERO policies using direct OffScreenRender... |
 | **FAIL-007** | 2026-10-10 | Stacked mj_fullM Patches Corrupt OSC Mass Matrix (0% Base Success in Hybrid Harness) | Frozen base SmolVLA scored 0/10 on Task 3 through train_hybr... | Only robosuite_mujoco_patch.py may patch mujoco.mj_fullM. No... |
 | **FAIL-008** | 2026-10-11 | Runner Aborted by Segfault in a Helper Python Call (sitecustomize imports torch) | run_task3_residual.sh died with 'Fatal Python error: Segment... | Helper Python calls in runner scripts that do not need torch... |
+| **FAIL-009** | 2026-10-19 | sitecustomize + pyGLFW Library Probe Recursion Fills RAM (MUJOCO_GL unset) | 'python rl_based_tuning/train_online_sac.py --help' with the... | sitecustomize must never load robosuite_mujoco_patch into py... |
 
 ---
 
@@ -78,4 +79,12 @@ This file is automatically updated by `record_failure.py`. Before modifying agen
 - **Root Cause**: The crash was not in an evaluation process. Between batches the runner calls a one-line 'python -c' to count finished seeds in eval_results.json. With the repo root on PYTHONPATH, every interpreter start runs sitecustomize, which imports torch and patches MuJoCo; that import segfaulted once (transient, right after a GPU/EGL process exited under WSL2). The call sat in a command substitution under 'set -e', so one helper crash aborted the whole multi-hour run.
 - **Resolution**: The resume check now runs with 'python -S' (no sitecustomize, stdlib only) and falls back to 0 on any failure; each eval batch is retried up to 3 times until its seeds are present in eval_results.json. The run was resumed from the saved episode records.
 - **Mandatory Invariant**: `Helper Python calls in runner scripts that do not need torch/MuJoCo must use 'python -S', and no single helper or batch failure may abort a resumable run under set -e.`
+
+### [FAIL-009] sitecustomize + pyGLFW Library Probe Recursion Fills RAM (MUJOCO_GL unset)
+
+- **Date**: 2026-10-19
+- **Symptom**: 'python rl_based_tuning/train_online_sac.py --help' with the repo root on PYTHONPATH but MUJOCO_GL unset never returned; a chain of ~190 python processes (one new every ~30 s, ~190 MB each) took memory used from 8 to 27.1 of 28 GB and pushed another user job into swap (logs/crash_monitor/monitor.log, 2026-10-19 22:00-22:28).
+- **Root Cause**: With MUJOCO_GL not egl, importing MuJoCo/robosuite imports pyGLFW, which checks candidate libraries by running 'python -c <source calling glfwGetVersion>'. The child inherits PYTHONPATH, so sitecustomize loaded robosuite_mujoco_patch there, which imported GLFW again and started the next probe, without end.
+- **Resolution**: sitecustomize.py skips the patch when sys.orig_argv contains glfwGetVersion (only pyGLFW's probe source does). Regression test tests/test_sitecustomize.py fails before the fix; the original command now exits in seconds with no probe processes left.
+- **Mandatory Invariant**: `sitecustomize must never load robosuite_mujoco_patch into pyGLFW probe processes (tests/test_sitecustomize.py). Run simulator code with MUJOCO_GL=egl, as the runner scripts do.`
 

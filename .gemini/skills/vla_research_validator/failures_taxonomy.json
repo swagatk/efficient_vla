@@ -124,5 +124,21 @@
       "resume",
       "wsl2"
     ]
+  },
+  {
+    "id": "FAIL-009",
+    "date": "2026-10-19",
+    "title": "sitecustomize + pyGLFW Library Probe Recursion Fills RAM (MUJOCO_GL unset)",
+    "symptom": "'python rl_based_tuning/train_online_sac.py --help' with the repo root on PYTHONPATH but MUJOCO_GL unset never returned; a chain of ~190 python processes (one new every ~30 s, ~190 MB each) took memory used from 8 to 27.1 of 28 GB and pushed another user job into swap (logs/crash_monitor/monitor.log, 2026-10-19 22:00-22:28).",
+    "root_cause": "With MUJOCO_GL not egl, importing MuJoCo/robosuite imports pyGLFW, which checks candidate libraries by running 'python -c <source calling glfwGetVersion>'. The child inherits PYTHONPATH, so sitecustomize loaded robosuite_mujoco_patch there, which imported GLFW again and started the next probe, without end.",
+    "resolution": "sitecustomize.py skips the patch when sys.orig_argv contains glfwGetVersion (only pyGLFW's probe source does). Regression test tests/test_sitecustomize.py fails before the fix; the original command now exits in seconds with no probe processes left.",
+    "invariant": "sitecustomize must never load robosuite_mujoco_patch into pyGLFW probe processes (tests/test_sitecustomize.py). Run simulator code with MUJOCO_GL=egl, as the runner scripts do.",
+    "tags": [
+      "sitecustomize",
+      "glfw",
+      "process-recursion",
+      "memory",
+      "wsl"
+    ]
   }
 ]
