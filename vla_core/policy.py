@@ -23,6 +23,10 @@ from vla_core.envs import add_batch_dim
 
 # The LIBERO env key of the third-person camera; after the env processor it is the first image the policy sees.
 AGENTVIEW_KEY = "observation.images.image"
+# lerobot/smolvla_libero (the default base policy) names its cameras camera1/camera2; the older
+# HuggingFaceVLA/smolvla_libero uses the LIBERO names and needs no renaming.
+DEFAULT_RENAME_MAP = {"observation.images.image": "observation.images.camera1",
+                      "observation.images.image2": "observation.images.camera2"}
 
 
 @dataclass

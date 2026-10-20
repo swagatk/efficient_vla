@@ -31,10 +31,10 @@ from pathlib import Path
 
 import numpy as np
 
+from vla_core.policy import DEFAULT_RENAME_MAP
+
 REPO_ROOT = Path(__file__).resolve().parent.parent
 EXIT_MORE_EPISODES = 3
-DEFAULT_RENAME_MAP = {"observation.images.image": "observation.images.camera1",
-                      "observation.images.image2": "observation.images.camera2"}
 
 
 def parse_args(argv=None):
