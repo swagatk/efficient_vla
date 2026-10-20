@@ -1,5 +1,10 @@
 # Supervised Task-Specific LoRA Adapters for SmolVLA
 
+> **Status (October 2026 review):** `eval_lora_policy.py` is retired. It re-patched `mujoco.mj_fullM` on top of
+> `robosuite_mujoco_patch` (FAIL-007) and never reproduced the base policy's success rate, so the task-1 result
+> that ended this line of work (0/30 vs the base's 11/30) does not measure LoRA. Reusable LoRA helpers, rewritten and tested, are
+> in `vla_core/lora.py` (`train_supervised_lora.py` has not been migrated to them); see `self_filtered_bc/README.md` for the full review and the work that replaces this.
+
 This module implements **Supervised Task-Specific Low-Rank Adaptation (LoRA)** on SmolVLA for the LIBERO-10 benchmark.
 
 Instead of training external residual networks or diffusion heads, this approach applies LoRA adapters ($r=16, \alpha=32$) directly to the linear projections of SmolVLA's Action Expert (`lm_expert`), preserving full token-level vision-language cross-attention while adapting trajectory generation to task geometry with **zero added inference latency**.

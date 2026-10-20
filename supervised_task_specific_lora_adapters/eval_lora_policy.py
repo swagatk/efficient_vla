@@ -6,6 +6,17 @@ import os
 os.environ["MUJOCO_GL"] = os.environ.get("MUJOCO_GL", "egl")
 os.environ["PYOPENGL_PLATFORM"] = os.environ.get("PYOPENGL_PLATFORM", "egl")
 import sys
+
+RETIRED = """eval_lora_policy.py is retired and refuses to run (October 2026 review, supervised_task_specific_lora_adapters/README.md).
+It re-patched mujoco.mj_fullM on top of robosuite_mujoco_patch (FAIL-007, wrong OSC mass matrix), builds its own
+OffScreenRenderEnv pipeline instead of vla_core's, never seeds the environment, and never reproduced the base
+policy's success rate. Its only saved result (task 1: 0/30 in the gitignored outputs/eval_results_task1/,
+against the base's 11/30 in baseline_performance/results_300926) therefore does not measure LoRA. Evaluate
+through vla_core instead (self_filtered_bc/)."""
+
+if __name__ == "__main__":
+    sys.exit(RETIRED)
+
 from pathlib import Path
 project_root = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(project_root))
@@ -118,145 +129,8 @@ try:
     import robosuite.utils.binding_utils as bu
     import mujoco
 
-    # Fix for NumPy 2.x & MuJoCo 3.x enum/scalar comparison in robosuite binding_utils
-    def _create_patched_qpos(orig_fn):
-        def _patched(self, name):
-            joint_id = self.joint_name2id(name)
-            if joint_id < 0:
-                for alt_name in [f"robot0_{name}", name.replace("robot0_", "")]:
-                    alt_id = self.joint_name2id(alt_name)
-                    if alt_id >= 0:
-                        joint_id = alt_id
-                        break
-            if joint_id < 0:
-                raise KeyError(f"Joint '{name}' not found in MuJoCo model.")
-            joint_type = int(self.jnt_type[joint_id])
-            joint_addr = int(self.jnt_qposadr[joint_id])
-            if joint_type == int(mujoco.mjtJoint.mjJNT_FREE):
-                ndim = 7
-            elif joint_type == int(mujoco.mjtJoint.mjJNT_BALL):
-                ndim = 4
-            else:
-                assert joint_type in (int(mujoco.mjtJoint.mjJNT_HINGE), int(mujoco.mjtJoint.mjJNT_SLIDE)), \
-                    f"Joint '{name}' (id {joint_id}) has unsupported type {joint_type}"
-                ndim = 1
-
-            if ndim == 1:
-                return joint_addr
-            return (joint_addr, joint_addr + ndim)
-        return _patched
-
-    def _create_patched_qvel(orig_fn):
-        def _patched(self, name):
-            joint_id = self.joint_name2id(name)
-            if joint_id < 0:
-                for alt_name in [f"robot0_{name}", name.replace("robot0_", "")]:
-                    alt_id = self.joint_name2id(alt_name)
-                    if alt_id >= 0:
-                        joint_id = alt_id
-                        break
-            if joint_id < 0:
-                raise KeyError(f"Joint '{name}' not found in MuJoCo model.")
-            joint_type = int(self.jnt_type[joint_id])
-            joint_addr = int(self.jnt_dofadr[joint_id])
-            if joint_type == int(mujoco.mjtJoint.mjJNT_FREE):
-                ndim = 6
-            elif joint_type == int(mujoco.mjtJoint.mjJNT_BALL):
-                ndim = 3
-            else:
-                assert joint_type in (int(mujoco.mjtJoint.mjJNT_HINGE), int(mujoco.mjtJoint.mjJNT_SLIDE)), \
-                    f"Joint '{name}' (id {joint_id}) has unsupported type {joint_type}"
-                ndim = 1
-
-            if ndim == 1:
-                return joint_addr
-            return (joint_addr, joint_addr + ndim)
-        return _patched
-
-    for target in [bu, getattr(bu, "MjModel", None), getattr(bu, "MjModelWrapper", None)]:
-        if target is not None:
-            if hasattr(target, "get_joint_qpos_addr"):
-                target.get_joint_qpos_addr = _create_patched_qpos(target.get_joint_qpos_addr)
-            if hasattr(target, "get_joint_qvel_addr"):
-                target.get_joint_qvel_addr = _create_patched_qvel(target.get_joint_qvel_addr)
-
-    # Fix for MuJoCo 3.10+ where qM was renamed to M in MjData
-    class _MArray(np.ndarray):
-        """NumPy array view that retains a reference to the MjData struct."""
-        _mj_data = None
-
-    def _get_qM(self):
-        d = getattr(self, "_data", self)
-        raw = getattr(d, "M", None)
-        if raw is None:
-            raw = getattr(d, "qM", None)
-        if raw is None:
-            raise AttributeError("'MjData' object has no attribute 'qM' or 'M'")
-        arr = np.asarray(raw).view(_MArray)
-        arr._mj_data = d
-        return arr
-
-    for data_cls in [getattr(bu, "MjData", None), getattr(bu, "MjDataWrapper", None), getattr(mujoco, "MjData", None)]:
-        if data_cls is not None:
-            try:
-                setattr(data_cls, "qM", property(_get_qM))
-            except Exception:
-                pass
-
-    _orig_mj_fullM = mujoco.mj_fullM
-
-    def _patched_mj_fullM(*args, **kwargs):
-        if len(args) == 3:
-            m, a1, a2 = args
-            model = getattr(m, "_model", m)
-
-            # Case 1: mj_fullM(model, data, dst)
-            if not isinstance(a1, np.ndarray) and isinstance(a2, np.ndarray):
-                dst = a2
-                d = getattr(a1, "_data", getattr(a1, "_mj_data", a1))
-                try:
-                    return _orig_mj_fullM(model, d, dst)
-                except Exception:
-                    pass
-
-            # Case 2: mj_fullM(model, dst, qM) [Robosuite 1.4 API]
-            if isinstance(a1, np.ndarray) and isinstance(a2, np.ndarray):
-                dst = a1
-                
-                # Extract MjData using stack inspection (for Robosuite's base_controller.py)
-                d = None
-                try:
-                    import sys
-                    frame = sys._getframe(1)
-                    for _ in range(3):
-                        if frame is None:
-                            break
-                        if 'self' in frame.f_locals:
-                            s = frame.f_locals['self']
-                            if hasattr(s, 'sim') and hasattr(s.sim, 'data'):
-                                d = s.sim.data
-                                break
-                        frame = frame.f_back
-                except Exception:
-                    pass
-
-                if d is not None:
-                    try:
-                        raw_d = getattr(d, "_data", getattr(d, "_mj_data", d))
-                        return _orig_mj_fullM(model, raw_d, dst)
-                    except Exception:
-                        pass
-
-        elif len(args) == 2:
-            m, a1 = args
-            model = getattr(m, "_model", m)
-            if hasattr(a1, "_data") or hasattr(a1, "_mj_data") or hasattr(a1, "qpos"):
-                d = getattr(a1, "_data", getattr(a1, "_mj_data", a1))
-                return _orig_mj_fullM(model, d)
-
-        return _orig_mj_fullM(*args, **kwargs)
-
-    mujoco.mj_fullM = _patched_mj_fullM
+    # The robosuite/MuJoCo compatibility patches that were copied here were removed: stacked on
+    # robosuite_mujoco_patch (loaded by sitecustomize) they corrupt the OSC mass matrix (FAIL-007).
 except ImportError as _err:
     print("=" * 80)
     print(f"⚠️ ERROR: Missing simulation dependency ({_err}).")

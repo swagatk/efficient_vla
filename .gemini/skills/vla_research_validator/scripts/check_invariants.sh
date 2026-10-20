@@ -117,7 +117,9 @@ if [[ -f "$REPO_ROOT/hybrid_diffusion/train_hybrid_diffusion.py" ]]; then
 fi
 
 # Only robosuite_mujoco_patch.py may wrap mujoco.mj_fullM; stacked wrappers corrupt the OSC mass matrix (FAIL-007)
-DUP_FULLM=$(grep -lE "^[[:space:]]*mujoco\.mj_fullM[[:space:]]*=" "$REPO_ROOT"/*.py "$REPO_ROOT"/hybrid_diffusion/*.py 2>/dev/null | grep -v "/robosuite_mujoco_patch.py$" || true)
+# Every tracked Python file is scanned: supervised_task_specific_lora_adapters/eval_lora_policy.py carried such a
+# wrapper unnoticed while only the root and hybrid_diffusion/ were checked.
+DUP_FULLM=$(git -C "$REPO_ROOT" ls-files -z -- '*.py' | (cd "$REPO_ROOT" && xargs -0 grep -lE "^[[:space:]]*mujoco\.mj_fullM[[:space:]]*=" 2>/dev/null) | grep -v "^robosuite_mujoco_patch.py$" || true)
 if [[ -z "$DUP_FULLM" ]]; then
   pass "mujoco.mj_fullM is patched only in robosuite_mujoco_patch.py"
 else
