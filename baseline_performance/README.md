@@ -35,8 +35,8 @@ Each run appends a record to `provenance.jsonl` (git commit and dirty flag, lero
 robosuite versions, GPUs, render backend, arguments). Runs that crashed or did not finish are listed as
 INCOMPLETE in `consolidated_summary.txt` and left out of the means, and the script exits with code 2.
 
-`kaggle_baseline_lerobot_eval.ipynb` runs this protocol on Kaggle (2 x T4) for either checkpoint (`CHECKPOINT`
-in its first cell) and compares it per task and per init state with `results_300926` and with the external
+`kaggle_baseline_lerobot_eval.ipynb` runs this protocol on Kaggle (2 x T4) for either checkpoint, or for a
+checkpoint from `continued_training/` uploaded as a Kaggle dataset (`CHECKPOINT` in its first cell) and compares it per task and per init state with `results_300926` and with the external
 LIBERO-CTRL reference in [`reference_libero_ctrl/`](reference_libero_ctrl/).
 
 ### Why `results_300926` is below the published SmolVLA number
