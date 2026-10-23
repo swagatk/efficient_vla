@@ -1,0 +1,86 @@
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /tmp/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+[07:50:21 maxrss 0.8GB] [eval] done so far: base 10, lora 0
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+Loading  HuggingFaceTB/SmolVLM2-500M-Video-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  24%|██▎       | 115/489 [00:00<00:00, 1143.56it/s]Loading weights:  47%|████▋     | 230/489 [00:00<00:00, 1065.14it/s]Loading weights:  71%|███████▏  | 349/489 [00:00<00:00, 1109.63it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 1292.65it/s]
+Reducing the number of VLM layers to 16 ...
+Loading weights from local directory
+[08:02:10 maxrss 4.2GB] [eval] lora seed 0 init 0: success=0 steps=520
+[08:12:49 maxrss 4.4GB] [eval] lora seed 0 init 1: success=0 steps=520
+[08:23:00 maxrss 4.6GB] [eval] lora seed 0 init 2: success=0 steps=520
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /tmp/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+[08:24:39 maxrss 0.8GB] [eval] done so far: base 10, lora 3
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+Loading  HuggingFaceTB/SmolVLM2-500M-Video-Instruct weights ...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  22%|██▏       | 106/489 [00:00<00:00, 1031.48it/s]Loading weights:  43%|████▎     | 210/489 [00:00<00:00, 681.47it/s] Loading weights:  58%|█████▊    | 285/489 [00:00<00:00, 627.16it/s]Loading weights:  78%|███████▊  | 381/489 [00:00<00:00, 716.86it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 779.24it/s]
+Reducing the number of VLM layers to 16 ...
+Loading weights from local directory
+[08:35:54 maxrss 4.2GB] [eval] lora seed 0 init 3: success=0 steps=520
+[08:46:12 maxrss 4.3GB] [eval] lora seed 0 init 4: success=0 steps=520
+[08:56:28 maxrss 4.5GB] [eval] lora seed 0 init 5: success=1 steps=496
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /tmp/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+[08:57:59 maxrss 0.8GB] [eval] done so far: base 10, lora 6
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+Loading  HuggingFaceTB/SmolVLM2-500M-Video-Instruct weights ...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  18%|█▊        | 86/489 [00:00<00:00, 845.74it/s]Loading weights:  35%|███▍      | 171/489 [00:00<00:00, 591.55it/s]Loading weights:  48%|████▊     | 235/489 [00:00<00:00, 539.28it/s]Loading weights:  60%|█████▉    | 292/489 [00:00<00:00, 543.94it/s]Loading weights:  85%|████████▍ | 415/489 [00:00<00:00, 733.12it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 732.34it/s]
+Reducing the number of VLM layers to 16 ...
+Loading weights from local directory
+[09:02:26 maxrss 4.2GB] [eval] lora seed 0 init 6: success=1 steps=238
+[09:07:35 maxrss 4.3GB] [eval] lora seed 0 init 7: success=1 steps=260
+[09:18:09 maxrss 4.5GB] [eval] lora seed 0 init 8: success=0 steps=520
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /tmp/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+[09:19:29 maxrss 0.8GB] [eval] done so far: base 10, lora 9
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+Loading  HuggingFaceTB/SmolVLM2-500M-Video-Instruct weights ...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  18%|█▊        | 86/489 [00:00<00:00, 813.95it/s]Loading weights:  34%|███▍      | 168/489 [00:00<00:00, 721.78it/s]Loading weights:  49%|████▉     | 241/489 [00:00<00:00, 678.13it/s]Loading weights:  63%|██████▎   | 310/489 [00:00<00:00, 677.18it/s]Loading weights:  91%|█████████ | 445/489 [00:00<00:00, 871.47it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 855.20it/s]
+Reducing the number of VLM layers to 16 ...
+Loading weights from local directory
+[09:25:15 maxrss 4.2GB] [eval] lora seed 0 init 9: success=1 steps=252
+[09:25:15 maxrss 4.2GB] [eval] base: 5/10 = 50.0%
+[09:25:15 maxrss 4.2GB] [eval] lora: 4/10 = 40.0%
+A = base
+B = lora
+
+task | A successes | B successes | init states solved in A but never in B | in B but never in A
+   6 |   5/10 |   4/10 | [1, 2] | [9]
+
+overall: A 5/10 (50.00%), B 4/10 (40.00%)
+episodes (paired by task, seed, init state) succeeding only in A: 2, only in B: 1; exact McNemar p = 1.0000
+per-state permutation test: not applicable with one episode per init state in each run
+

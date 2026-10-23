@@ -80,6 +80,10 @@ could not have measured LoRA:
 
 ## Status
 
+**Negative result on task 6 (October 2026):** pooled over 3 training seeds the method scored 46/90 against
+the base's 45/90 (19, 13 and 14 of 30 per seed); the unfiltered control scored 29/90, worse than both.
+Numbers, tests and interpretation: `week6/self_filtered_bc_task6/README.md`.
+
 Code and CPU tests written (October 2026). Local smoke run (`SMOKE=1`, shared GPU and CPU, low priority)
 completed every stage. The runs are functional checks, not results:
 

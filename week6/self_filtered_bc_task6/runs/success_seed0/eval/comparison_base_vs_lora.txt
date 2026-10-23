@@ -1,0 +1,10 @@
+A = base
+B = LoRA (success, training seed 0)
+
+task | A successes | B successes | init states solved in A but never in B | in B but never in A
+   6 |  15/30 |  19/30 | [] | [3]
+
+overall: A 15/30 (50.00%), B 19/30 (63.33%)
+episodes (paired by task, seed, init state) succeeding only in A: 4, only in B: 8; exact McNemar p = 0.3877
+init states solved in only one run: 1 of 10; permutation p = 0.8040
+summed |successes A - successes B| per init state: 6; permutation p = 0.8832 (20000 permutations)

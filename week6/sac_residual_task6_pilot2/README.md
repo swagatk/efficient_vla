@@ -64,3 +64,4 @@ the checkpoints were not inspected (they stay in the Kaggle output, not in this 
 Further 100-episode sessions of this setup are not planned: seed 1 got worse with training, and each
 session costs about 10 GPU hours. Next candidate: supervised learning on the base policy's own successful
 noisy rollouts (success-filtered imitation), to be specified with a hypothesis before any code changes.
+It was run as `self_filtered_bc/` and did not help either (`week6/self_filtered_bc_task6/`).

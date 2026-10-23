@@ -1,0 +1,10 @@
+A = week6/self_filtered_bc_task6/pooled/per_episode_base.csv
+B = week6/self_filtered_bc_task6/pooled/per_episode_all_matched.csv
+
+task | A successes | B successes | init states solved in A but never in B | in B but never in A
+   6 |  45/90 |  29/90 | [0] | []
+
+overall: A 45/90 (50.00%), B 29/90 (32.22%)
+episodes (paired by task, seed, init state) succeeding only in A: 23, only in B: 7; exact McNemar p = 0.0052
+init states solved in only one run: 1 of 10; permutation p = 0.2904
+summed |successes A - successes B| per init state: 16; permutation p = 0.1770 (20000 permutations)

@@ -1,0 +1,47 @@
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /tmp/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+[20:28:09 maxrss 0.9GB] [collect] 0 episodes done, 30 to run in /kaggle/working/self_filtered_bc_task6/data/part3
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+Loading  HuggingFaceTB/SmolVLM2-500M-Video-Instruct weights ...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  12%|█▏        | 61/489 [00:00<00:00, 600.55it/s]Loading weights:  25%|██▍       | 122/489 [00:00<00:00, 505.50it/s]Loading weights:  36%|███▋      | 178/489 [00:00<00:00, 517.02it/s]Loading weights:  47%|████▋     | 232/489 [00:00<00:00, 518.59it/s]Loading weights:  58%|█████▊    | 285/489 [00:00<00:00, 488.88it/s]Loading weights:  84%|████████▍ | 413/489 [00:00<00:00, 726.92it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 690.62it/s]
+Reducing the number of VLM layers to 16 ...
+Loading weights from local directory
+[20:32:53 maxrss 4.2GB] [collect] seed 0 init 40: success=1 steps=257 (259s)
+[20:41:06 maxrss 4.2GB] [collect] seed 0 init 41: success=0 steps=520 (493s)
+[20:49:30 maxrss 4.2GB] [collect] seed 0 init 42: success=0 steps=520 (505s)
+[20:58:01 maxrss 4.2GB] [collect] seed 0 init 43: success=0 steps=520 (511s)
+[21:01:50 maxrss 4.2GB] [collect] seed 0 init 44: success=1 steps=235 (229s)
+[21:05:31 maxrss 4.2GB] [collect] seed 0 init 45: success=1 steps=226 (222s)
+[21:14:00 maxrss 4.2GB] [collect] seed 0 init 46: success=0 steps=520 (509s)
+[21:22:31 maxrss 4.2GB] [collect] seed 0 init 47: success=0 steps=520 (510s)
+[21:27:39 maxrss 4.2GB] [collect] seed 0 init 48: success=1 steps=311 (309s)
+[21:35:56 maxrss 4.2GB] [collect] seed 0 init 49: success=0 steps=520 (497s)
+[21:39:33 maxrss 4.2GB] [collect] seed 1 init 40: success=1 steps=234 (217s)
+[21:47:32 maxrss 4.2GB] [collect] seed 1 init 41: success=0 steps=520 (478s)
+[21:55:28 maxrss 4.2GB] [collect] seed 1 init 42: success=0 steps=520 (477s)
+[22:03:29 maxrss 4.2GB] [collect] seed 1 init 43: success=0 steps=520 (480s)
+[22:11:20 maxrss 4.2GB] [collect] seed 1 init 44: success=0 steps=520 (472s)
+[22:14:40 maxrss 4.2GB] [collect] seed 1 init 45: success=1 steps=217 (200s)
+[22:21:18 maxrss 4.2GB] [collect] seed 1 init 46: success=1 steps=427 (397s)
+[22:29:18 maxrss 4.2GB] [collect] seed 1 init 47: success=0 steps=520 (480s)
+[22:37:44 maxrss 4.2GB] [collect] seed 1 init 48: success=0 steps=520 (506s)
+[22:46:08 maxrss 4.2GB] [collect] seed 1 init 49: success=0 steps=520 (504s)
+[22:54:13 maxrss 4.2GB] [collect] seed 2 init 40: success=0 steps=520 (485s)
+[23:02:09 maxrss 4.2GB] [collect] seed 2 init 41: success=0 steps=520 (476s)
+[23:10:06 maxrss 4.2GB] [collect] seed 2 init 42: success=0 steps=520 (477s)
+[23:18:06 maxrss 4.2GB] [collect] seed 2 init 43: success=0 steps=520 (479s)
+[23:26:06 maxrss 4.2GB] [collect] seed 2 init 44: success=0 steps=520 (480s)
+[23:34:04 maxrss 4.2GB] [collect] seed 2 init 45: success=0 steps=520 (478s)
+[23:37:47 maxrss 4.2GB] [collect] seed 2 init 46: success=1 steps=248 (224s)
+[23:45:45 maxrss 4.2GB] [collect] seed 2 init 47: success=0 steps=520 (478s)
+[23:50:28 maxrss 4.2GB] [collect] seed 2 init 48: success=1 steps=307 (283s)
+[23:58:19 maxrss 4.3GB] [collect] seed 2 init 49: success=0 steps=520 (471s)
+[23:58:20 maxrss 4.3GB] [collect] 9/30 successful so far

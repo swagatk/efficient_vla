@@ -1,0 +1,54 @@
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /tmp/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Loading  HuggingFaceTB/SmolVLM2-500M-Video-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  21%|██▏       | 105/489 [00:00<00:00, 1018.56it/s]Loading weights:  42%|████▏     | 207/489 [00:00<00:00, 865.31it/s] Loading weights:  65%|██████▍   | 317/489 [00:00<00:00, 944.28it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 1156.82it/s]
+Reducing the number of VLM layers to 16 ...
+Loading weights from local directory
+[17:53:11 maxrss 4.1GB] [train] 30 training episodes (all_matched), 6 validation episodes, 3,416,064 trainable parameters
+[17:53:28 maxrss 4.9GB] [train] 6814 training frames, 870 validation frames
+[17:53:33 maxrss 5.4GB] [train] step=1 loss=3.54 grad_norm=2.727 lr=2e-06 sec_per_step=4.855
+[17:57:23 maxrss 5.4GB] [train] step=50 loss=0.9919 grad_norm=1.392 lr=5.092e-05 sec_per_step=4.708
+[18:01:39 maxrss 5.4GB] [train] step=100 loss=0.3129 grad_norm=0.6 lr=9.938e-05 sec_per_step=4.915
+[18:05:57 maxrss 5.4GB] [train] step=150 loss=0.1348 grad_norm=0.3585 lr=9.862e-05 sec_per_step=4.994
+[18:10:15 maxrss 5.4GB] [train] step=200 loss=0.1485 grad_norm=0.3851 lr=9.755e-05 sec_per_step=5.036
+[18:14:34 maxrss 5.4GB] [train] step=250 loss=0.133 grad_norm=0.5274 lr=9.619e-05 sec_per_step=5.063
+[18:18:52 maxrss 5.4GB] [train] step=300 loss=0.1108 grad_norm=0.2518 lr=9.455e-05 sec_per_step=5.081
+[18:23:11 maxrss 5.4GB] [train] step=350 loss=0.1384 grad_norm=0.6247 lr=9.263e-05 sec_per_step=5.094
+[18:27:30 maxrss 5.4GB] [train] step=400 loss=0.1504 grad_norm=0.4232 lr=9.045e-05 sec_per_step=5.105
+[18:31:49 maxrss 5.4GB] [train] step=450 loss=0.1481 grad_norm=0.3656 lr=8.802e-05 sec_per_step=5.114
+[18:40:15 maxrss 5.5GB] [train] step=500 loss=0.1197 grad_norm=0.538 lr=8.536e-05 sec_per_step=5.12 val_loss=0.2072
+[18:44:32 maxrss 5.5GB] [train] step=550 loss=0.2124 grad_norm=0.3592 lr=8.247e-05 sec_per_step=5.571
+[18:48:51 maxrss 5.5GB] [train] step=600 loss=0.09553 grad_norm=0.6419 lr=7.939e-05 sec_per_step=5.538
+[18:53:10 maxrss 5.5GB] [train] step=650 loss=0.1647 grad_norm=0.4695 lr=7.612e-05 sec_per_step=5.51
+[18:57:27 maxrss 5.5GB] [train] step=700 loss=0.1223 grad_norm=0.4704 lr=7.27e-05 sec_per_step=5.485
+[19:01:46 maxrss 5.5GB] [train] step=750 loss=0.0875 grad_norm=0.2346 lr=6.913e-05 sec_per_step=5.464
+[19:06:04 maxrss 5.5GB] [train] step=800 loss=0.1051 grad_norm=0.2242 lr=6.545e-05 sec_per_step=5.445
+[19:10:22 maxrss 5.5GB] [train] step=850 loss=0.08108 grad_norm=0.2992 lr=6.167e-05 sec_per_step=5.428
+[19:14:41 maxrss 5.5GB] [train] step=900 loss=0.09262 grad_norm=0.4375 lr=5.782e-05 sec_per_step=5.415
+[19:19:00 maxrss 5.5GB] [train] step=950 loss=0.1026 grad_norm=0.3403 lr=5.392e-05 sec_per_step=5.402
+[19:27:25 maxrss 5.5GB] [train] step=1000 loss=0.06991 grad_norm=0.4634 lr=5e-05 sec_per_step=5.39 val_loss=0.1829
+[19:31:43 maxrss 5.5GB] [train] step=1050 loss=0.1251 grad_norm=0.2902 lr=4.608e-05 sec_per_step=5.614
+[19:36:02 maxrss 5.5GB] [train] step=1100 loss=0.09779 grad_norm=0.5134 lr=4.218e-05 sec_per_step=5.595
+[19:40:20 maxrss 5.5GB] [train] step=1150 loss=0.186 grad_norm=1.12 lr=3.833e-05 sec_per_step=5.576
+[19:44:38 maxrss 5.5GB] [train] step=1200 loss=0.09366 grad_norm=0.7912 lr=3.455e-05 sec_per_step=5.558
+[19:48:57 maxrss 5.5GB] [train] step=1250 loss=0.05734 grad_norm=0.3546 lr=3.087e-05 sec_per_step=5.543
+[19:53:16 maxrss 5.5GB] [train] step=1300 loss=0.06967 grad_norm=0.3646 lr=2.73e-05 sec_per_step=5.529
+[19:57:34 maxrss 5.5GB] [train] step=1350 loss=0.04701 grad_norm=0.2042 lr=2.388e-05 sec_per_step=5.515
+[20:01:53 maxrss 5.5GB] [train] step=1400 loss=0.09609 grad_norm=0.3418 lr=2.061e-05 sec_per_step=5.503
+[20:06:11 maxrss 5.5GB] [train] step=1450 loss=0.05304 grad_norm=0.204 lr=1.753e-05 sec_per_step=5.492
+[20:14:37 maxrss 5.5GB] [train] step=1500 loss=0.139 grad_norm=0.313 lr=1.464e-05 sec_per_step=5.481 val_loss=0.1743
+[20:18:55 maxrss 5.5GB] [train] step=1550 loss=0.09298 grad_norm=0.6112 lr=1.198e-05 sec_per_step=5.631
+[20:23:13 maxrss 5.5GB] [train] step=1600 loss=0.07227 grad_norm=0.4125 lr=9.549e-06 sec_per_step=5.616
+[20:27:33 maxrss 5.5GB] [train] step=1650 loss=0.07536 grad_norm=0.5475 lr=7.368e-06 sec_per_step=5.603
+[20:31:52 maxrss 5.5GB] [train] step=1700 loss=0.0751 grad_norm=0.3565 lr=5.45e-06 sec_per_step=5.591
+[20:36:11 maxrss 5.5GB] [train] step=1750 loss=0.09678 grad_norm=0.2762 lr=3.806e-06 sec_per_step=5.579
+[20:40:29 maxrss 5.5GB] [train] step=1800 loss=0.09325 grad_norm=0.2564 lr=2.447e-06 sec_per_step=5.567
+[20:44:48 maxrss 5.5GB] [train] step=1850 loss=0.1427 grad_norm=0.8863 lr=1.382e-06 sec_per_step=5.557
+[20:49:07 maxrss 5.5GB] [train] step=1900 loss=0.06495 grad_norm=0.2449 lr=6.156e-07 sec_per_step=5.547
+[20:53:30 maxrss 5.5GB] [train] step=1950 loss=0.1483 grad_norm=0.2386 lr=1.541e-07 sec_per_step=5.539
+[21:02:05 maxrss 5.5GB] [train] step=2000 loss=0.1469 grad_norm=0.4042 lr=0 sec_per_step=5.532 val_loss=0.1763
+[21:02:05 maxrss 5.5GB] [train] saved /kaggle/working/self_filtered_bc_task6/runs/all_matched_seed2/adapter; peak GPU memory 4.2 GB
