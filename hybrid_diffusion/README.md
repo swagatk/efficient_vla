@@ -92,9 +92,13 @@ The Colab base rate matches the reference baseline for task 0 (16.7 +- 5.8 %,
 
 Unplanned comparison, not part of the decision rule: the local seed-0 run solved 8 of the 32 init states
 that Colab never solved in 96 episodes (states 1, 2, 4, 15, 20, 33, 34, 37; 8/32 against 0/96, Fisher
-exact p = 7.4e-6). With the same code, init states and pinned packages, which states succeed depends on
-the machine, so the 32 states are not shown to be unsolvable. The local side is a single 50-episode run.
-Planned check: base on the local GPU with noise seed 1, compared per init state with Colab seed 1.
+exact p = 7.4e-6). That test is biased: the 32 states were selected because Colab failed on them, so any
+new run would solve some of them. The 32 states are not shown to be unsolvable.
+
+Planned check, done (`week6/task0_base_local_seed1/`): base on the local GPU with noise seed 1 against
+Colab seed 1, paired by init state: 14/50 against 13/50, 5 and 4 discordant states, exact McNemar p = 1.0.
+No evidence that which states succeed depends on the machine. The local GPU run was on the laptop with
+the CPU fault.
 
 ## Task 0
 

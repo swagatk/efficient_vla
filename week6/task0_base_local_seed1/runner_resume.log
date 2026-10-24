@@ -1,0 +1,19 @@
+=== seed 1: eval_base (2026-10-23T22:10:13+01:00) ===
+[eval:base] seeds 18..20 (attempt 1)
+[eval:base] seeds 21..23 (attempt 1)
+[eval:base] seeds 24..26 (attempt 1)
+[eval:base] seeds 27..29 (attempt 1)
+[eval:base] seeds 30..32 (attempt 1)
+[eval:base] seeds 33..35 (attempt 1)
+[eval:base] seeds 36..38 (attempt 1)
+[eval:base] seeds 39..41 (attempt 1)
+[eval:base] seeds 42..44 (attempt 1)
+[eval:base] seeds 45..47 (attempt 1)
+[eval:base] seeds 48..49 (attempt 1)
+task_id,task_name,success_rate,avg_reward,num_episodes
+0,LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket,0.2800,0.2800,50
+usage: failure_overlap.py [-h] --out_root OUT_ROOT --seeds SEEDS [SEEDS ...]
+                          [--episodes EPISODES] [--random_min RANDOM_MIN]
+                          [--systematic_max SYSTEMATIC_MAX] [--n_perm N_PERM]
+                          [--perm_seed PERM_SEED]
+failure_overlap.py: error: need at least two seeds to compare failures across seeds
