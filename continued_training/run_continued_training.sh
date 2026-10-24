@@ -70,8 +70,11 @@ sync_last() {
 TRAIN_LOG="${OUT_DIR%/}.train.log"
 
 if [[ "$RESUME" == 1 ]]; then
-  if [[ ! -e "$OUT_DIR/checkpoints/last" && -n "$SYNC_DIR" && -f "$SYNC_DIR/last_step" ]]; then
-    step="$(cat "$SYNC_DIR/last_step")"
+  STEP_JSON="$SYNC_DIR/last/training_state/training_step.json"
+  if [[ ! -e "$OUT_DIR/checkpoints/last" && -n "$SYNC_DIR" && -f "$STEP_JSON" ]]; then
+    # Take the step from the checkpoint, not from last_step: on Google Drive last_step can lag behind last/
+    # when a runtime dies mid-upload (2026-10-23: last_step said 012500, last/ held step 15000).
+    step="$(printf '%06d' "$("$PYTHON_BIN" -c "import json, sys; print(json.load(open(sys.argv[1]))['step'])" "$STEP_JSON")")"
     mkdir -p "$OUT_DIR/checkpoints/$step"
     rsync -a "$SYNC_DIR/last/" "$OUT_DIR/checkpoints/$step/"
     ln -sfn "$step" "$OUT_DIR/checkpoints/last"

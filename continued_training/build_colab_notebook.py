@@ -38,11 +38,13 @@ Kaggle with `baseline_performance/kaggle_baseline_lerobot_eval.ipynb` (`CHECKPOI
   mirrored there while training runs, and the final model (0.9 GB) is copied there at the end.
 
 **How to run.** Run the cells in order. Step 7 measures the training speed over 100 steps and sets the number of
-steps so that training takes about `TRAIN_HOURS`. Step 8 starts training in the background, so the browser can
-be closed for a while, but Colab stops idle runtimes, so check on it with step 9 now and then.
+steps so that training takes about `TRAIN_HOURS`. Step 8 starts training in the background and step 9b keeps a
+cell running until it ends, so Colab does not treat the runtime as idle. Keep the tab open and the computer awake:
+closing the laptop lid ended the runtime once.
 
-**If the runtime is lost:** run steps 1 to 6 again, then step 8. It restores the last mirrored checkpoint from
-Drive and resumes (at most `SAVE_FREQ` steps are repeated). Step 7 is skipped on resume.
+**If the runtime is lost:** run steps 1 to 8 again. Step 7 then reads the step budget from Drive instead of
+measuring it, and step 8 restores the last mirrored checkpoint and resumes (at most `SAVE_FREQ` steps are
+repeated).
 ''')
 
 md("## 1. Settings")
@@ -242,6 +244,23 @@ print("running:", bool(subprocess.run(["pgrep", "-f", "lerobot[-]train"], captur
 sh(f"cat '{SYNC_DIR}/last_step'", check=False)
 sh(f"tail -n 3 '{SYNC_DIR}/runner.log'", check=False)
 sh("nvidia-smi --query-gpu=memory.used,utilization.gpu --format=csv,noheader", check=False)
+''')
+
+md('''
+## 9b. Wait until training ends
+
+Prints progress every 5 minutes until the runner script exits (it waits on the script, not on `lerobot-train`, so
+the checkpoint restore at the start of a resume counts). Interrupting this cell does not stop training.
+''')
+code('''
+log_path = f"{OUT_DIR}.train.log"
+while subprocess.run(["pgrep", "-f", "run_continued_[t]raining"], capture_output=True).stdout:
+    lines = [l for l in open(log_path).read().splitlines() if " step:" in l] if os.path.exists(log_path) else []
+    print(time.strftime("%H:%M"), lines[-1][lines[-1].index("step:"):][:120] if lines else "restoring / starting",
+          flush=True)
+    time.sleep(300)
+print("runner finished")
+sh(f"tail -n 3 '{SYNC_DIR}/runner.log'", check=False)
 ''')
 
 md('''
