@@ -1,0 +1,64 @@
+Output directory: /kaggle/working/continued_libero10_eval
+0 runs already finished, 30 to run, 4 at a time
+[   0.0 min] task 0 seed 0: started on GPU 0
+[   0.1 min] task 1 seed 0: started on GPU 1
+[   0.2 min] task 2 seed 0: started on GPU 0
+[   0.3 min] task 3 seed 0: started on GPU 1
+[  40.3 min] task 2 seed 0: done
+[  40.3 min] task 4 seed 0: started on GPU 0
+[  44.2 min] task 3 seed 0: done
+[  44.2 min] task 5 seed 0: started on GPU 1
+[  45.5 min] task 1 seed 0: done
+[  45.5 min] task 6 seed 0: started on GPU 0
+[  76.3 min] task 5 seed 0: done
+[  76.3 min] task 7 seed 0: started on GPU 1
+[ 101.0 min] task 0 seed 0: done
+[ 101.0 min] task 8 seed 0: started on GPU 0
+[ 121.8 min] task 7 seed 0: done
+[ 121.8 min] task 9 seed 0: started on GPU 1
+[ 135.4 min] task 4 seed 0: done
+[ 135.4 min] task 0 seed 1: started on GPU 0
+[ 140.0 min] task 6 seed 0: done
+[ 140.0 min] task 1 seed 1: started on GPU 1
+[ 172.0 min] task 9 seed 0: done
+[ 172.0 min] task 2 seed 1: started on GPU 0
+[ 180.9 min] task 1 seed 1: done
+[ 180.9 min] task 3 seed 1: started on GPU 1
+[ 206.7 min] task 8 seed 0: done
+[ 206.7 min] task 4 seed 1: started on GPU 0
+[ 219.2 min] task 3 seed 1: done
+[ 219.2 min] task 5 seed 1: started on GPU 1
+[ 228.4 min] task 2 seed 1: done
+[ 228.4 min] task 6 seed 1: started on GPU 0
+[ 242.0 min] task 0 seed 1: done
+[ 242.0 min] task 7 seed 1: started on GPU 1
+[ 246.3 min] task 5 seed 1: done
+[ 246.3 min] task 8 seed 1: started on GPU 0
+[ 285.8 min] task 7 seed 1: done
+[ 285.8 min] task 9 seed 1: started on GPU 1
+[ 300.8 min] task 4 seed 1: done
+[ 300.8 min] task 0 seed 2: started on GPU 0
+[ 317.8 min] task 6 seed 1: done
+[ 317.8 min] task 1 seed 2: started on GPU 1
+[ 333.4 min] task 9 seed 1: done
+[ 333.4 min] task 2 seed 2: started on GPU 0
+[ 359.5 min] task 8 seed 1: done
+[ 359.5 min] task 3 seed 2: started on GPU 1
+[ 364.8 min] task 1 seed 2: done
+[ 364.8 min] task 4 seed 2: started on GPU 0
+[ 389.1 min] task 2 seed 2: done
+[ 389.1 min] task 5 seed 2: started on GPU 1
+[ 390.7 min] task 3 seed 2: done
+[ 390.7 min] task 6 seed 2: started on GPU 0
+[ 411.4 min] task 0 seed 2: done
+[ 411.4 min] task 7 seed 2: started on GPU 1
+[ 417.9 min] task 5 seed 2: done
+[ 417.9 min] task 8 seed 2: started on GPU 0
+[ 458.0 min] task 7 seed 2: done
+[ 458.0 min] task 9 seed 2: started on GPU 1
+[ 462.9 min] task 4 seed 2: done
+[ 488.1 min] task 6 seed 2: done
+[ 495.2 min] task 9 seed 2: done
+[ 504.1 min] task 8 seed 2: done
+
+Report: /kaggle/working/continued_libero10_eval/consolidated_summary.txt

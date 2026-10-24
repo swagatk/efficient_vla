@@ -42,7 +42,7 @@ Settings marked * differ from the checkpoint's own `train_config.json`.
 | Data* | `lerobot/libero@a1aaacb7f6`, episodes 0-378 only: the 10 LIBERO-10 tasks (`task_index` 0-9), 379 episodes, 101,469 frames |
 | Normalisation | the dataset's `meta/stats.json`, identical to the checkpoint's state and action stats (checked) |
 | Batch size | 32 |
-| Steps* | set by the notebook from the measured speed, so that training fits about 3 hours, at most 30,000 |
+| Steps* | 25,000, set before training from the measured speed (0.537 s per step on an A100) to fit about 4 hours |
 | Learning rate* | peak 5e-5 (checkpoint: 1e-4), 500 warm-up steps (checkpoint: 1000), cosine decay to 2.5e-6 over the run |
 | Camera names | `image`/`image2` renamed to `camera1`/`camera2`, as the checkpoint |
 | Seed* | 0 (checkpoint: 1000) |
@@ -50,7 +50,7 @@ Settings marked * differ from the checkpoint's own `train_config.json`.
 - **Learning rate:** the lower peak is a guess. The run starts from trained weights, so a full warm-up back to
   1e-4 could undo part of what was learned. No learning rate was tuned.
 - **Data volume:** the checkpoint saw about 300,000 LIBERO-10 samples (25,000 x 32 x 101,469 / 273,465).
-  20,000 steps at batch 32 add 640,000, about 6.3 passes over LIBERO-10.
+  25,000 steps at batch 32 add 800,000, about 7.9 passes over LIBERO-10.
 - **Evaluation:** `baseline_performance/kaggle_baseline_lerobot_eval.ipynb` with `CHECKPOINT = "continued"`,
   the same notebook, GPUs and settings as the 57.0% baseline (`n_action_steps=1`, 520 steps, 256x256). It
   compares with the baseline episode by episode. The baseline run took 8.2 h for 300 episodes on 2 x T4
@@ -79,8 +79,20 @@ environment cell verbatim from the Kaggle baseline notebook, so both install the
 
 ## Status
 
-Code written and smoke-tested locally (October 2026), on lerobot `b6ec006` and an RTX 4090 laptop GPU shared
-with another job. These runs are functional checks, not results:
+**Negative result** (October 2026): 174/300 (58.0%) against the base's 171/300 (57.0%), exact McNemar
+p = 0.79. Records: `week6/continued_training_colab/` (training) and `week6/continued_training_kaggle/`
+(evaluation, with the README that discusses the result).
+
+- By the rule above, 174 falls in the inconclusive band. A check added after the run: the exact 95% interval
+  for the paired difference is -4.1 to +6.0 percentage points, which excludes the hypothesised +8 points
+  (195/300), so more training seeds are not recommended.
+- **Training (Colab A100):** 25,000 steps, commit `643773a` with a clean tree; training loss fell from 0.112
+  to 0.046. The runtime was lost after the step-15,000 checkpoint, and the run resumed from it on a new runtime.
+  The step budget was raised from 20,000 to 25,000 before training started, when the compute budget turned
+  out to be larger than first thought; nothing had been evaluated by then.
+- **Evaluation (Kaggle, 2 x T4):** the same notebook and settings as the base, 504 minutes.
+
+Local smoke tests of the code (lerobot `b6ec006`, RTX 4090 laptop GPU), functional checks only:
 
 - **Training:** `SMOKE=1` ran 4 steps at batch 2 on episodes 0-1 (498 frames, 393M trainable parameters,
   4.2 GB peak). Checkpoints were saved and mirrored.
@@ -88,8 +100,8 @@ with another job. These runs are functional checks, not results:
   normaliser stats were identical to the base checkpoint's, and the saved config uses the camera names
   `camera1` and `camera2`.
 - **Resume:** with the local folder deleted, `RESUME=1` restored the checkpoint from the mirror and resumed
-  at step 4.
+  at step 4. After the Colab run, the restore takes the step from the checkpoint's `training_step.json`
+  instead of `last_step`, which on Drive had lagged behind the mirrored checkpoint (tested with a stub
+  `lerobot-train`: a mirror holding step 15,000 with `last_step` 012500 is restored as 015000).
 - **Rollout:** one rollout of the 4-step checkpoint through `evaluate_all.py` (task 3, seed 0, init state 0,
   `n_action_steps=1`) succeeded.
-
-Not yet run: the Colab training and the Kaggle evaluation.

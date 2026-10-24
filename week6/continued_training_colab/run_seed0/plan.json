@@ -1,0 +1,10 @@
+{
+ "steps": 25000,
+ "sec_per_step": 0.537,
+ "train_hours": 4.0,
+ "batch_size": 32,
+ "save_freq": 2500,
+ "seed": 0,
+ "gpu": "NVIDIA A100-SXM4-40GB",
+ "trial_minutes": 3.0
+}

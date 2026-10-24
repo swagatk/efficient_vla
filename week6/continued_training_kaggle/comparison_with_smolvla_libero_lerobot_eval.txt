@@ -1,0 +1,19 @@
+A = lerobot/smolvla_libero (Kaggle)
+B = continued training
+
+task | A successes | B successes | init states solved in A but never in B | in B but never in A
+   0 |   1/30 |   0/30 | [9] | []
+   1 |  23/30 |  25/30 | [] | [4]
+   2 |  29/30 |  30/30 | [] | []
+   3 |  27/30 |  27/30 | [] | []
+   4 |  10/30 |  11/30 | [0, 6] | [3, 8]
+   5 |  26/30 |  26/30 | [1] | []
+   6 |  14/30 |  11/30 | [0] | []
+   7 |  17/30 |  20/30 | [] | [3]
+   8 |   2/30 |   1/30 | [9] | [0]
+   9 |  22/30 |  23/30 | [8, 9] | [7]
+
+overall: A 171/300 (57.00%), B 174/300 (58.00%)
+episodes (paired by task, seed, init state) succeeding only in A: 26, only in B: 29; exact McNemar p = 0.7877
+init states solved in only one run: 14 of 100; permutation p = 0.0906
+summed |successes A - successes B| per init state: 49; permutation p = 0.0344 (20000 permutations)
