@@ -1,0 +1,47 @@
+{
+  "per_task": [
+    {
+      "task_group": "libero_10",
+      "task_id": 3,
+      "metrics": {
+        "sum_rewards": [
+          1.0
+        ],
+        "max_rewards": [
+          1.0
+        ],
+        "successes": [
+          true
+        ],
+        "video_paths": [
+          "/kaggle/working/smolvla_libero_lerobot_eval_nas10/_timing/task_3_seed_0/videos/libero_10_3/eval_episode_0.mp4"
+        ],
+        "predicted_video_paths": []
+      }
+    }
+  ],
+  "per_group": {
+    "libero_10": {
+      "avg_sum_reward": 1.0,
+      "avg_max_reward": 1.0,
+      "pc_success": 100.0,
+      "n_episodes": 1,
+      "video_paths": [
+        "/kaggle/working/smolvla_libero_lerobot_eval_nas10/_timing/task_3_seed_0/videos/libero_10_3/eval_episode_0.mp4"
+      ],
+      "predicted_video_paths": []
+    }
+  },
+  "overall": {
+    "avg_sum_reward": 1.0,
+    "avg_max_reward": 1.0,
+    "pc_success": 100.0,
+    "n_episodes": 1,
+    "eval_s": 40.92103838920593,
+    "eval_ep_s": 40.92103862762451,
+    "video_paths": [
+      "/kaggle/working/smolvla_libero_lerobot_eval_nas10/_timing/task_3_seed_0/videos/libero_10_3/eval_episode_0.mp4"
+    ],
+    "predicted_video_paths": []
+  }
+}

@@ -1,7 +1,8 @@
 # Which failures can a frozen SmolVLA fix by itself?
 
-Base policy `lerobot/smolvla_libero@a24f1f3804` on LIBERO-10, 171/300 (57.0%) through
-`baseline_performance/evaluate_all.py` on Kaggle 2 x T4 (`week6/smolvla_libero_lerobot_eval_kaggle/`).
+Base policy `lerobot/smolvla_libero@a24f1f3804` on LIBERO-10 through `baseline_performance/evaluate_all.py`
+on Kaggle 2 x T4: 171/300 (57.0%) with `n_action_steps=1` (`week6/smolvla_libero_lerobot_eval_kaggle/`), and
+216/300 (72.0%) with `n_action_steps=10`, the setting chosen in step 0 (`week6/noise_reachability_step0_kaggle/`).
 
 SmolVLA generates each action chunk by integrating a flow from Gaussian noise. Some failures go away
 when only that noise changes; others repeat on the same init states whatever the noise. On task 0 (Colab,
@@ -45,11 +46,23 @@ setting).
   unless it is behind 171/300 with paired p < 0.05 (a gain on weak tasks bought with losses elsewhere).
 - Otherwise `n_action_steps=1` stays the setting and its 171/300 stays the baseline.
 
+**Result (October 2026): `n_action_steps=10`, 216/300 (72.0%).** Weak tasks: 57/120 at 10 (+25.0 points,
+exact 95% interval +13.6 to +33.3, p < 0.0001) and 37/120 at 50 (p = 0.14, does not qualify). All 10 tasks
+at 10: 216/300 against 171/300, p < 0.0001, no task lower. The hypothesis is supported, and the base policy
+for steps 1-4 is `lerobot/smolvla_libero` with `n_action_steps=10`. Records and discussion:
+`week6/noise_reachability_step0_kaggle/`.
+
 ## Step 1: per-state reachability (pass@k)
 
-Base policy only, at the step-0 setting: tasks 0, 1, 4, 6, 8, 9 (the four weak tasks and two with room in
-both directions) x init states 0-9 x noise seeds 0-15 (960 episodes, Kaggle; seeds 0-2 are reused if the
-setting is unchanged), plus a repeat of seed 0 on the same 60 states to measure run-to-run nondeterminism.
+*Changed after step 0, before step 1 ran.* The first plan took tasks 0, 1, 4, 6, 8, 9: the four tasks then
+weakest, and two with room in both directions. At `n_action_steps=10` tasks 1 and 9 succeed in 28/30 and
+27/30 episodes, leaving little to measure, and task 7 (18/30) has become one of the weakest. Step 1 therefore
+takes the five tasks below 70% at the new baseline: 0, 4, 6, 7, 8 (7, 14, 20, 18 and 15 of 30;
+`week6/noise_reachability_step0_kaggle/nas10_all_tasks/`). These are "the weak tasks" from here on.
+
+Base policy only, `n_action_steps=10`: tasks 0, 4, 6, 7, 8 x init states 0-9 x noise seeds 0-15 (800
+episodes, Kaggle; seeds 0-2 are reused from `nas10_all_tasks/`), plus a repeat of seed 0 on the same 50 states
+to measure run-to-run nondeterminism (step 0 already gave one: 115 of 120 weak-task episodes repeated).
 
 Per (task, init state): successes out of 16, pass@k for k = 1..16 (unbiased estimator), and the class
 *reachable* (pass@16 > 0) or *systematic* (pass@16 = 0).
@@ -93,15 +106,14 @@ lowering success on their reachable states by more than 5.
 
 ## Compute
 
-Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a month) for steps 2-4. The
-`n_action_steps=1` weak-task runs took about 100 minutes per (task, seed) of 10 episodes with four runs at a
-time (`week6/smolvla_libero_lerobot_eval_kaggle/evaluate_all.runner.log`), so each step-0 setting needs at
-most about 5 hours; settings that re-plan less often should be faster.
+Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a month) for steps 2-4. At
+`n_action_steps=10` the 12 weak-task runs of step 0 (120 episodes) took 32 minutes on Kaggle and all 10 tasks
+65 minutes (`week6/noise_reachability_step0_kaggle/`).
 
 | Step | Where | Estimate |
 |---|---|---|
-| 0 | Kaggle | at most 10 h, plus up to 9 h for the 300-episode run of a winner |
-| 1 | Kaggle | about 40 h at `n_action_steps=1`, less at a larger setting |
+| 0 | Kaggle | done: about 2 h over three versions |
+| 1 | Kaggle | 700 new episodes (seeds 3-15 and the repeat), roughly 3 h at `n_action_steps=10` |
 | 2 | Colab A100 | to be measured; 8 samples per inference in one batch |
 | 3 | Colab A100 | 3,000 training episodes x 2 tasks |
 | 4 | Colab A100 | after step 3 |
@@ -113,7 +125,9 @@ most about 5 hours; settings that re-plan less often should be faster.
 
 ## Status
 
-Step 0 not yet run. Smoke tests on the local RTX 4090 (shared with another job), one episode each of task 0,
+Step 0 done (above). Step 1 not yet run.
+
+Before step 0 ran, smoke tests on the local RTX 4090 (shared with another job), one episode each of task 0,
 seed 0, init state 0: `n_action_steps=10` through `evaluate_all.py` and `n_action_steps=50` through
 `run_step0_action_steps.sh` (`SMOKE=1`). Both ran the full 520 steps with the setting applied (it appears in
 the policy config printed in `eval.log`) and failed, about 3 minutes each including the model load. They

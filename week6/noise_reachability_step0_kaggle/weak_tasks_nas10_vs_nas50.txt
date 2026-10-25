@@ -1,0 +1,13 @@
+A = week6/noise_reachability_step0_kaggle/nas10_weak_tasks/per_episode.csv
+B = week6/noise_reachability_step0_kaggle/nas50_weak_tasks/per_episode.csv
+
+task | A successes | B successes | init states solved in A but never in B | in B but never in A
+   0 |   7/30 |   5/30 | [3, 4] | [2, 5]
+   4 |  14/30 |  11/30 | [3, 5, 7] | [6]
+   6 |  20/30 |  12/30 | [0, 4, 6, 9] | [1]
+   8 |  16/30 |   9/30 | [1, 9] | [2, 4]
+
+overall: A 57/120 (47.50%), B 37/120 (30.83%)
+episodes (paired by task, seed, init state) succeeding only in A: 33, only in B: 13; exact McNemar p = 0.0045
+init states solved in only one run: 17 of 40; permutation p = 0.0000
+summed |successes A - successes B| per init state: 42; permutation p = 0.0001 (20000 permutations)

@@ -1,0 +1,86 @@
+{
+  "alpha": 0.025,
+  "baseline": "/tmp/efficient_vla/week6/smolvla_libero_lerobot_eval_kaggle/per_episode.csv",
+  "runs": {
+    "50": "/kaggle/working/smolvla_libero_lerobot_eval_nas50/per_episode.csv"
+  },
+  "decision": 1,
+  "results": {
+    "50": {
+      "n_episodes": 120,
+      "a_successes": 27,
+      "b_successes": 37,
+      "episodes_a_only": 14,
+      "episodes_b_only": 24,
+      "mcnemar_p": 0.14330665429588407,
+      "states_one_run_only": 19,
+      "state_absdiff": 36,
+      "n_states": 40,
+      "perm_p_one_run_only": 0.0011499425028748563,
+      "perm_p_absdiff": 0.00034998250087495624,
+      "n_perm": 20000,
+      "diff_ci95": [
+        -0.02536956891452264,
+        0.17852081110577045
+      ],
+      "qualifies": false,
+      "per_task": {
+        "0": {
+          "a": 1,
+          "b": 5,
+          "n": 30,
+          "only_a": [
+            9
+          ],
+          "only_b": [
+            1,
+            2,
+            5
+          ]
+        },
+        "4": {
+          "a": 10,
+          "b": 11,
+          "n": 30,
+          "only_a": [
+            7
+          ],
+          "only_b": [
+            8
+          ]
+        },
+        "6": {
+          "a": 14,
+          "b": 12,
+          "n": 30,
+          "only_a": [
+            0,
+            4,
+            6,
+            9
+          ],
+          "only_b": [
+            3
+          ]
+        },
+        "8": {
+          "a": 2,
+          "b": 9,
+          "n": 30,
+          "only_a": [
+            9
+          ],
+          "only_b": [
+            0,
+            2,
+            4,
+            5,
+            6,
+            7,
+            8
+          ]
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,24 @@
+===== n_action_steps=10 against n_action_steps=1 =====
+A = n_action_steps=1 (week6/smolvla_libero_lerobot_eval_kaggle/per_episode.csv)
+B = n_action_steps=10 (week6/noise_reachability_step0_kaggle/nas10_all_tasks/per_episode.csv)
+
+task | A successes | B successes | init states solved in A but never in B | in B but never in A
+   0 |   1/30 |   7/30 | [9] | [1, 3, 4]
+   1 |  23/30 |  28/30 | [] | [4]
+   2 |  29/30 |  30/30 | [] | []
+   3 |  27/30 |  29/30 | [] | []
+   4 |  10/30 |  14/30 | [6] | [3, 5, 8]
+   5 |  26/30 |  28/30 | [] | []
+   6 |  14/30 |  20/30 | [1] | [3]
+   7 |  17/30 |  18/30 | [2] | [3]
+   8 |   2/30 |  15/30 | [] | [0, 1, 5, 6, 7, 8]
+   9 |  22/30 |  27/30 | [] | [7]
+
+overall: A 171/300 (57.00%), B 216/300 (72.00%)
+episodes (paired by task, seed, init state) succeeding only in A: 17, only in B: 62; exact McNemar p = 0.0000
+init states solved in only one run: 20 of 100; permutation p = 0.0000
+summed |successes A - successes B| per init state: 75; permutation p = 0.0000 (20000 permutations)
+paired difference B - A: +15.0 points, exact 95% interval +9.4 to +19.5
+qualifies (ahead with p < 0.05): yes
+
+DECISION: n_action_steps=10 (run it on all 10 tasks before adopting it, README.md)
