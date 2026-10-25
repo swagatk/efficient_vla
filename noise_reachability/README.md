@@ -67,10 +67,20 @@ to measure run-to-run nondeterminism (step 0 already gave one: 115 of 120 weak-t
 Per (task, init state): successes out of 16, pass@k for k = 1..16 (unbiased estimator), and the class
 *reachable* (pass@16 > 0) or *systematic* (pass@16 = 0).
 
-**Hypothesis.** On the weak tasks pooled, pass@16 is at least twice pass@1, and at least a quarter of their
-init states are systematic. Both are needed for steps 2-4 to be informative: the first means there is
-headroom for noise selection, the second that there are failures it cannot reach. The repeat of seed 0
-gives the share of outcome changes that is run-to-run nondeterminism, which is reported next to pass@k.
+**Hypothesis** (*restated after step 0, before step 1 ran*: the first version, "pass@16 at least twice pass@1
+and at least a quarter of states systematic", was written for a 22% baseline; at the new one pass@1 is about
+0.49, so the two parts could not both hold). On the weak tasks pooled:
+
+- *headroom* = (pass@16 - pass@1) / (1 - pass@1), the share of single-sample failures that some noise seed
+  fixes, is at least 0.5; and
+- at least 5 of the 50 init states (10%) are systematic.
+
+Consequences, fixed now: headroom below 0.5 means noise-space methods have little to gain, and steps 2-3 are
+reconsidered before they run; fewer than 5 systematic states means step 4 is dropped.
+
+Run-to-run nondeterminism: the repeat of seed 0 gives the share of episodes whose outcome changes with
+nothing changed, reported against the share expected to change under a fresh noise seed (2p(1-p) per state,
+p its success rate over the 16 seeds). `reachability.py` computes all of this.
 
 ## Step 2: training-free noise selection per chunk
 
@@ -122,6 +132,7 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
 
 - `run_step0_action_steps.sh`: step 0 on a Colab or local GPU (`N_ACTION_STEPS`, `OUT_DIR`).
 - `compare_action_steps.py`: step-0 comparison and decision against the `n_action_steps=1` run.
+- `reachability.py`: step-1 pass@k per init state, headroom, systematic states and the repeat check.
 
 ## Status
 
