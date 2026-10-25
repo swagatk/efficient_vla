@@ -59,9 +59,17 @@ comparison in `comparison_with_results_300926_and_libero_ctrl.txt` there.
 - Against `results_300926` on the same episodes: 171/300 vs 122/300, exact McNemar p < 0.0001 (34 episodes
   succeed only with the old checkpoint, 83 only with the new one).
 
-The gap to the paper's 71% is therefore the checkpoints: `HuggingFaceVLA/smolvla_libero` is a weaker model,
-and the public `lerobot/smolvla_libero` was trained with one eighth of the paper's sample budget.
-`lerobot/smolvla_libero` (57.0%) is the stronger baseline for new methods.
+This paragraph first concluded that the rest of the gap was the checkpoint's smaller training budget. **That
+was wrong** (October 2026): the rest of the gap was `n_action_steps=1`, the setting we took over from
+LIBERO-CTRL. With 10 actions executed per inference and nothing else changed, `lerobot/smolvla_libero` scores
+216/300 (72.0%; per seed 73, 71, 72 of 100) against 171/300 on the same episodes, exact McNemar p < 0.0001
+(62 episodes succeed only at 10, 17 only at 1), and no task is lower; 50 actions per inference is worse than
+10 ([`week6/noise_reachability_step0_kaggle/`](../week6/noise_reachability_step0_kaggle/)). Our evaluation
+path is sound; the setting was not.
+
+`HuggingFaceVLA/smolvla_libero` is still the weaker checkpoint. The baseline for new methods is
+`lerobot/smolvla_libero` with `--n_action_steps 10`, 216/300 (72.0%). Comparisons made at `n_action_steps=1`
+(171/300) hold for that setting only.
 
 ### Reproduction on Kaggle (October 2026)
 

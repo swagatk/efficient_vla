@@ -39,6 +39,10 @@ raise success. Together with self-filtered BC (`week6/self_filtered_bc_task6/`),
 data does not close the gap to the paper's 71%. The checkpoint's smaller training budget alone does not
 explain that gap.
 
+Later finding: the gap was the evaluation setting. With `n_action_steps=10` the base scores 216/300 (72.0%)
+(`week6/noise_reachability_step0_kaggle/`). Both models here were evaluated at `n_action_steps=1`; the
+continued model was not evaluated at 10.
+
 ## Files
 
 - `per_episode.csv`, `consolidated_summary.txt`, `consolidated_report.csv`: 300 episodes.

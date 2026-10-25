@@ -85,6 +85,10 @@ only because `reproduce_task.py` imports them.
 
 ## Status
 
+Later finding: both pilots used the base with `n_action_steps=1`. With 10 actions per inference the base
+scores 216/300 (72.0%) on LIBERO-10 instead of 171/300 (`week6/noise_reachability_step0_kaggle/`); new runs
+should use `--n_action_steps 10`.
+
 - Pilot 1 (task 6, two seeds, 100 training episodes, commit `33f8740`): harness check passed (base 15/30
   through `vla_core` vs 14/30 through lerobot-eval), but training success fell to 3/100 and 12/100 against
   the base policy's 16/40 on the same init states. Negative result: `week6/sac_residual_task6_pilot1/`.

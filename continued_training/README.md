@@ -79,6 +79,12 @@ environment cell verbatim from the Kaggle baseline notebook, so both install the
 
 ## Status
 
+**Later finding:** the base and the continued model were both evaluated with `n_action_steps=1`. With 10
+actions per inference the base scores 216/300 (72.0%), the paper's level
+(`week6/noise_reachability_step0_kaggle/`), so the premise above (an under-trained checkpoint behind the gap)
+does not hold. The result below compares the two models at `n_action_steps=1` only; the continued model was not
+evaluated at 10.
+
 **Negative result** (October 2026): 174/300 (58.0%) against the base's 171/300 (57.0%), exact McNemar
 p = 0.79. Records: `week6/continued_training_colab/` (training) and `week6/continued_training_kaggle/`
 (evaluation, with the README that discusses the result).

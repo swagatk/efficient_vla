@@ -80,6 +80,10 @@ could not have measured LoRA:
 
 ## Status
 
+Later finding: all of this ran the base with `n_action_steps=1`. With 10 actions per inference the base solves
+task 6 in 20/30 episodes instead of 14/30 on init states 0-9 x seeds 0-2 (`week6/noise_reachability_step0_kaggle/`).
+The result below holds for `n_action_steps=1`.
+
 **Negative result on task 6 (October 2026):** pooled over 3 training seeds the method scored 46/90 against
 the base's 45/90 (19, 13 and 14 of 30 per seed); the unfiltered control scored 29/90, worse than both.
 Numbers, tests and interpretation: `week6/self_filtered_bc_task6/README.md`.
