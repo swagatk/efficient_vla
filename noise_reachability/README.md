@@ -100,6 +100,31 @@ points (paired exact McNemar p < 0.05), and its gain lands on reachable states: 
 the systematic episodes. Selection per chunk can combine chunks that no single sampled trajectory produced,
 so systematic states solved here are reported as a finding in their own right.
 
+*Protocol, fixed after step 1 and before step 2 ran.*
+
+- **Harness.** `eval_noise_selection.py` runs the base and the selectors through `vla_core` (LeRobot's
+  `LiberoEnv` and processors, hard resets), not through lerobot-eval: the selector replaces SmolVLA's
+  `sample_actions` on the policy instance (`noise_selection.py`), so it cannot run inside `lerobot-eval`. The
+  base is therefore re-run in this harness on the same episodes, with the same environment and torch seed per
+  (seed, init state), and "the step-0 baseline" above means this paired base. Its success on init states 0-9 x
+  seeds 0-2 is compared with step 0's lerobot-eval run on those episodes (74/150, different noise draws, so not
+  paired); a gap of more than 17 episodes (about two standard errors of the difference) means the harness is
+  investigated before any selector result is read.
+- **Selectors.** Scores in the policy's normalised action space, on the 10 executed actions and the 7 real
+  action dimensions: `accel` (summed squared change of the denoising velocity between Euler steps; smallest
+  wins) and `medoid` (smallest summed distance to the other samples). `first_n8` executes sample 0 of 8, the
+  same computation without selection: a check that batching alone does not change success.
+- **Selection stage.** Tasks 0, 4, 6, 7, 8 x init states 10-19 x seeds 0-1 (100 episodes per policy):
+  `base`, `first_n8`, `medoid_n8`, `accel_n8`, `medoid_n16`, `accel_n16` (600 episodes). Rule: the
+  `accel`/`medoid` policy with the most successes, ties to the smaller N and then to `medoid`. If it is not
+  ahead of `base` on these episodes, step 2 is recorded as negative and the report stage does not run.
+- **Report stage.** `base` and the chosen policy on tasks 0, 4, 6, 7, 8 x init states 0-9 x seeds 0-2
+  (150 paired episodes each). "Systematic episodes" are the 8 step-1 systematic states x 3 seeds (24).
+  `analyze_step2.py` computes both stages.
+- **Checks before running** (local RTX 4090, shared): with one sample the wrapper returns the base policy's
+  chunk bit for bit; 8 batched chunks match 8 single-sample calls with the same noise to 0.011 (bfloat16;
+  the spread between samples is 0.35); one inference took 740 ms with 1 sample and 816 ms with 8.
+
 ## Step 3: a learned noise policy (DSRL-style), small budget
 
 A small actor maps the frozen policy's features to the noise fed into the flow, trained with SAC on task
@@ -130,7 +155,7 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
 |---|---|---|
 | 0 | Kaggle | done: about 2 h over three versions |
 | 1 | Kaggle | done: 170 min (seeds 3-15) and 16 min (repeat), plus 9.6 h lost to a version at the wrong setting |
-| 2 | Colab A100 | to be measured; 8 samples per inference in one batch |
+| 2 | Colab A100 | 600 (selection) + 300 (report) episodes; one process per task in parallel |
 | 3 | Colab A100 | 3,000 training episodes x 2 tasks |
 | 4 | Colab A100 | after step 3 |
 
@@ -139,10 +164,14 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
 - `run_step0_action_steps.sh`: step 0 on a Colab or local GPU (`N_ACTION_STEPS`, `OUT_DIR`).
 - `compare_action_steps.py`: step-0 comparison and decision against the `n_action_steps=1` run.
 - `reachability.py`: step-1 pass@k per init state, headroom, systematic states and the repeat check.
+- `noise_selection.py`: step-2 selectors (scores, and the wrapper around SmolVLA's `sample_actions`).
+- `eval_noise_selection.py`, `run_step2_noise_selection.sh`: step-2 paired evaluation (`STAGE=select|report`,
+  `SMOKE=1`); `colab_step2_noise_selection.ipynb` runs it on Colab.
+- `analyze_step2.py`: step-2 selection rule and report.
 
 ## Status
 
-Steps 0 and 1 done (above). Step 2 not yet written.
+Steps 0 and 1 done (above). Step 2 code written and checked locally (above); not yet run.
 
 Before step 0 ran, smoke tests on the local RTX 4090 (shared with another job), one episode each of task 0,
 seed 0, init state 0: `n_action_steps=10` through `evaluate_all.py` and `n_action_steps=50` through
