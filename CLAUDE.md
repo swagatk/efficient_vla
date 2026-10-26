@@ -75,6 +75,7 @@ Nothing is committed or pushed until all of the following have been run on the c
 2. `pytest tests/ -q` passes.
 3. Every changed entry point has actually been executed on a short smoke run (one task, minimal steps/episodes), not just compiled. For anything touching the model forward pass, observation pipeline or eval loop, that smoke run is a real rollout.
 4. If the change could affect reported numbers, the baseline has been re-evaluated through the changed path and still matches.
+5. For code that produces reported numbers or is about to run on Kaggle or Colab, the gates of `.claude/skills/research-code-check/SKILL.md` (mutation check with `tools/mutation_check.py`, a fresh-context review, launch-config check); results from a finished run are checked with `tools/validate_run.py` before any number is read.
 
 If a step cannot be run (GPU busy, long run in progress), say so explicitly and do not describe the change as verified. Never weaken, skip or delete a failing check to get a commit through; fix the cause or report it.
 
