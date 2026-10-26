@@ -102,4 +102,14 @@ To prevent regressions, broken forward passes, and repeated cycles of fixing and
 bash .gemini/skills/vla_research_validator/scripts/check_invariants.sh
 ```
 
+The same checker and `pytest tests/ -q` also run as a git pre-commit hook on the staged files
+(`tools/git-hooks/pre-commit`; enable once per clone with `git config core.hooksPath tools/git-hooks`). Do not
+bypass it with `--no-verify`.
+
+For code that produces reported numbers or is about to run on Kaggle or Colab, also follow the gates of
+[.claude/skills/research-code-check/SKILL.md](.claude/skills/research-code-check/SKILL.md): tests that fail when
+the code is wrong plus `tools/mutation_check.py`, a switched-off equivalence check and a smoke run through the
+real entry point, a fresh-context review, and a launch-config check against the README protocol. Check every
+finished run with `tools/validate_run.py` before reading any number from it.
+
 Consult [.gemini/skills/vla_research_validator/FAILURES.md](.gemini/skills/vla_research_validator/FAILURES.md) to review documented past failures (such as VLM conditioning corruption, submodule eval recursion segfaults, and EGL buffer exhaustion) before debugging performance drops.

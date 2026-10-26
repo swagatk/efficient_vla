@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+# Pre-commit gate (CLAUDE.md, "Verification before commit"): the invariant checker and `pytest tests/ -q`, run on
+# the staged files exported to a temporary folder, so what is checked is exactly what will be committed (unstaged
+# edits and untracked files do not count). Commits that touch only Markdown, week*/ results or latex/ skip it.
+#
+# Enable once per clone:  git config core.hooksPath tools/git-hooks
+# PYTHON_BIN overrides the interpreter. Do not bypass with --no-verify: fix the cause (CLAUDE.md).
+set -uo pipefail
+
+PYTHON_BIN="${PYTHON_BIN:-/home/swagat/miniconda3/envs/lerobot_env/bin/python}"
+
+code_changes=$(git diff --cached --name-only --diff-filter=ACMRD | grep -vE '\.md$|^week[0-9]+/|^latex/' || true)
+if [[ -z "$code_changes" ]]; then
+  echo "[pre-commit] only Markdown, week*/ or latex/ files staged: checks skipped"
+  exit 0
+fi
+if [[ ! -x "$PYTHON_BIN" ]]; then
+  echo "[pre-commit] interpreter $PYTHON_BIN not found; set PYTHON_BIN" >&2
+  exit 1
+fi
+
+tmp="$(mktemp -d "${TMPDIR:-/tmp}/precommit_XXXXXX")"
+trap 'rm -rf "$tmp" "$tmp.invariants.log"' EXIT
+git checkout-index -a --prefix="$tmp/"
+# Git gives hooks a relative GIT_INDEX_FILE (.git/index), which points nowhere from $tmp; from here on the export
+# is its own throwaway repository holding exactly the staged files, so `git ls-files` in the checker and the
+# provenance test see the staged tree.
+unset GIT_INDEX_FILE GIT_DIR GIT_WORK_TREE GIT_PREFIX
+(cd "$tmp" && git init -q && git add -A -f && \
+  git -c user.name=pre-commit -c user.email=pre-commit@localhost -c core.hooksPath=/dev/null commit -q -m staged) \
+  || { echo "[pre-commit] could not build the staged copy" >&2; exit 1; }
+
+echo "[pre-commit] invariant checker on the staged tree"
+if ! (cd "$tmp" && bash .gemini/skills/vla_research_validator/scripts/check_invariants.sh > "$tmp.invariants.log" 2>&1); then
+  grep -E "FAIL|Error" "$tmp.invariants.log" | tail -n 20
+  echo "[pre-commit] invariant checker FAILED: commit refused" >&2
+  exit 1
+fi
+tail -n 2 "$tmp.invariants.log"
+
+echo "[pre-commit] pytest tests/ -q on the staged tree"
+if ! (cd "$tmp" && PYTHONDONTWRITEBYTECODE=1 "$PYTHON_BIN" -m pytest tests/ -q -p no:cacheprovider 2>&1 | tail -n 15; \
+      exit "${PIPESTATUS[0]}"); then
+  echo "[pre-commit] tests FAILED: commit refused" >&2
+  exit 1
+fi
+echo "[pre-commit] checks passed"

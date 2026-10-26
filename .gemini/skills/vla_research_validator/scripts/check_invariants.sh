@@ -119,8 +119,12 @@ fi
 # Only robosuite_mujoco_patch.py may wrap mujoco.mj_fullM; stacked wrappers corrupt the OSC mass matrix (FAIL-007)
 # Every tracked Python file is scanned: supervised_task_specific_lora_adapters/eval_lora_policy.py carried such a
 # wrapper unnoticed while only the root and hybrid_diffusion/ were checked.
-DUP_FULLM=$(git -C "$REPO_ROOT" ls-files -z -- '*.py' | (cd "$REPO_ROOT" && xargs -0 grep -lE "^[[:space:]]*mujoco\.mj_fullM[[:space:]]*=" 2>/dev/null) | grep -v "^robosuite_mujoco_patch.py$" || true)
-if [[ -z "$DUP_FULLM" ]]; then
+# Fail closed: an empty or failed file listing (e.g. no git index visible) must not pass this check silently.
+TRACKED_PY=$(git -C "$REPO_ROOT" ls-files -- '*.py' 2>/dev/null || true)
+DUP_FULLM=$(git -C "$REPO_ROOT" ls-files -z -- '*.py' 2>/dev/null | (cd "$REPO_ROOT" && xargs -0 grep -lE "^[[:space:]]*mujoco\.mj_fullM[[:space:]]*=" 2>/dev/null) | grep -v "^robosuite_mujoco_patch.py$" || true)
+if [[ -z "$TRACKED_PY" ]]; then
+  fail "could not list tracked Python files with git in $REPO_ROOT, so the mj_fullM scan did not run"
+elif [[ -z "$DUP_FULLM" ]]; then
   pass "mujoco.mj_fullM is patched only in robosuite_mujoco_patch.py"
 else
   fail "mujoco.mj_fullM is re-patched outside robosuite_mujoco_patch.py: $DUP_FULLM"

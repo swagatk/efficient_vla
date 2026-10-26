@@ -77,6 +77,8 @@ Nothing is committed or pushed until all of the following have been run on the c
 4. If the change could affect reported numbers, the baseline has been re-evaluated through the changed path and still matches.
 5. For code that produces reported numbers or is about to run on Kaggle or Colab, the gates of `.claude/skills/research-code-check/SKILL.md` (mutation check with `tools/mutation_check.py`, a fresh-context review, launch-config check); results from a finished run are checked with `tools/validate_run.py` before any number is read.
 
+Steps 1 and 2 also run automatically as a git pre-commit hook on the staged files (`tools/git-hooks/pre-commit`; enable once per clone with `git config core.hooksPath tools/git-hooks`). Never bypass it with `--no-verify`.
+
 If a step cannot be run (GPU busy, long run in progress), say so explicitly and do not describe the change as verified. Never weaken, skip or delete a failing check to get a commit through; fix the cause or report it.
 
 Git rules:
