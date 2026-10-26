@@ -30,6 +30,7 @@ from noise_selection import parse_policy_label  # noqa: E402
 ALPHA = 0.05
 MIN_GAIN = 0.10
 MAX_SYSTEMATIC_RATE = 0.10
+HARNESS_MAX_GAP = 17   # episodes, about two standard errors of the difference on 150 (README.md)
 
 
 def load_policy(root, tasks, policy):
@@ -73,6 +74,9 @@ def select_stage(episodes):
 
 
 def report_stage(base, chosen, systematic_states, lerobot_eval=None):
+    if set(base) != set(chosen):
+        raise ValueError(f"base has {len(base)} episodes and the chosen policy {len(chosen)}, not the same set: "
+                         "finish the run before reporting")
     r = compare_setting(base, chosen, ALPHA)
     n = r["n_episodes"]
     gain = (r["b_successes"] - r["a_successes"]) / n
@@ -84,8 +88,11 @@ def report_stage(base, chosen, systematic_states, lerobot_eval=None):
                           "systematic_ok": sys_n == 0 or sys_ok / sys_n <= MAX_SYSTEMATIC_RATE}}
     if lerobot_eval is not None:
         same = {k: v for k, v in lerobot_eval.items() if k in base}
+        if set(same) != set(base):
+            raise ValueError(f"the lerobot-eval run covers {len(same)} of the {len(base)} episodes")
+        gap = abs(sum(base.values()) - sum(same.values()))
         out["harness_check"] = {"base_here": sum(base.values()), "lerobot_eval": sum(same.values()),
-                                "episodes": len(same)}
+                                "episodes": len(same), "gap_ok": gap <= HARNESS_MAX_GAP}
     return out
 
 
@@ -114,7 +121,8 @@ def format_report_stage(r, name):
     if "harness_check" in r:
         h = r["harness_check"]
         lines.append(f"harness check: base {h['base_here']} here, {h['lerobot_eval']} through lerobot-eval on the same "
-                     f"{h['episodes']} (task, seed, init state) episodes (different noise draws, not paired)")
+                     f"{h['episodes']} (task, seed, init state) episodes (different noise draws, not paired); "
+                     f"gap <= {HARNESS_MAX_GAP}: {'yes' if h['gap_ok'] else 'NO: investigate the harness before reading the result'}")
     return "\n".join(lines) + "\n"
 
 

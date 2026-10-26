@@ -75,6 +75,9 @@ def test_acceleration_score_is_zero_for_a_straight_flow_and_ignores_unexecuted_p
     s = acceleration_score(vel, 2, ACT_DIM)
     assert s[0] == 0 and s[1] == pytest.approx(2.0)      # +1 then -1 at the next step
     assert select_index("accel", None, vel, 2, ACT_DIM) == 0
+    assert acceleration_score(vel[:2], 2, ACT_DIM).shape == (2,)    # two Euler steps are enough
+    with pytest.raises(ValueError):
+        acceleration_score(vel[:1], 2, ACT_DIM)
 
 
 def test_medoid_picks_the_central_chunk_on_executed_actions():
@@ -120,6 +123,15 @@ def test_n_samples_return_the_chosen_row_of_one_batched_call_and_uninstall_resto
     assert sel.chosen == [i] and torch.allclose(out[0], full[i])
 
 
+def test_first_returns_exactly_one_chunk_sample_zero():
+    policy, args = fake_policy(), inputs()
+    policy.model._n = 3
+    install(policy, 3, "first")
+    torch.manual_seed(5)
+    out = call(policy, args)
+    assert out.shape == (1, CHUNK, MAX_DIM)
+
+
 def test_accel_selection_matches_recorded_velocities():
     policy, args = fake_policy(), inputs()
     policy.model._n = 5
@@ -139,6 +151,7 @@ def test_accel_selection_matches_recorded_velocities():
 
 def test_labels_and_bad_arguments():
     assert parse_policy_label("base") is None and parse_policy_label("accel_n8") == (8, "accel")
+    assert parse_policy_label("medoid_n1") == (1, "medoid")
     for bad in ("medoid", "foo_n8", "medoid_n0", "medoid_nx"):
         with pytest.raises(ValueError):
             parse_policy_label(bad)

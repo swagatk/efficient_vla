@@ -18,6 +18,7 @@ def test_choose_prefers_most_successes_then_smaller_n_then_medoid():
     assert choose({"base": 5, "first_n8": 9, "medoid_n8": 6, "accel_n8": 7}) == ("accel_n8", True)
     assert choose({"base": 5, "medoid_n16": 7, "accel_n8": 7}) == ("accel_n8", True)
     assert choose({"base": 5, "medoid_n8": 7, "accel_n8": 7}) == ("medoid_n8", True)
+    assert choose({"base": 5, "accel_n8": 7, "medoid_n8": 7}) == ("medoid_n8", True)   # not by dict order
     assert choose({"base": 7, "medoid_n8": 7}) == ("medoid_n8", False)   # a tie with base is not ahead
 
 
@@ -38,7 +39,30 @@ def test_report_stage_gain_and_systematic_states():
     assert r["gain"] == pytest.approx(0.6) and r["hypothesis"]["gain_ok"]
     assert systematic_rate(chosen, systematic) == (1, 2)
     assert r["systematic"] == {"chosen": 1, "base": 0, "episodes": 2} and not r["hypothesis"]["systematic_ok"]
-    assert r["harness_check"] == {"base_here": 4, "lerobot_eval": 5, "episodes": 20}
+    assert r["harness_check"] == {"base_here": 4, "lerobot_eval": 5, "episodes": 20, "gap_ok": True}
+    assert not report_stage(eps(0), eps(0), set(), lerobot_eval=eps(18))["harness_check"]["gap_ok"]  # 18 > 17
+    assert report_stage(eps(0), eps(0), set(), lerobot_eval=eps(17))["harness_check"]["gap_ok"]
+    assert report_stage(eps(10), eps(10), set(), lerobot_eval=eps(10))["harness_check"]["gap_ok"]  # a gap, not a sum
+
+
+def test_report_stage_thresholds_at_their_edges():
+    two_hundred = {(0, s, i): 0 for s in range(2) for i in range(100)}
+    gain = {**two_hundred, **{(0, 0, i): 1 for i in range(20)}}          # exactly +10 points, p < 0.05
+    assert report_stage(two_hundred, gain, set())["hypothesis"]["gain_ok"]
+    assert not report_stage(two_hundred, {**two_hundred, **{(0, 0, i): 1 for i in range(19)}},
+                            set())["hypothesis"]["gain_ok"]                  # 9.5 points
+    ten = {(0, s, 0): int(s == 0) for s in range(10)}                       # 1 in 10 systematic episodes
+    assert report_stage(dict.fromkeys(ten, 0), ten, {(0, 0)})["hypothesis"]["systematic_ok"]
+    assert not report_stage(dict.fromkeys(ten, 0), {**ten, (0, 1, 0): 1}, {(0, 0)})["hypothesis"]["systematic_ok"]
+
+
+def test_report_stage_refuses_unequal_episode_sets():
+    short = eps(4)
+    short.pop((0, 1, 9))
+    with pytest.raises(ValueError):
+        report_stage(eps(4), short, set())
+    with pytest.raises(ValueError):
+        report_stage(eps(4), eps(4), set(), lerobot_eval=short)
 
 
 def test_load_policy_reads_per_task_files(tmp_path):
