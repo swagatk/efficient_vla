@@ -1,0 +1,112 @@
+=== Baseline Evaluation Consolidated Summary ===
+
+Task  0 | Mean Success:   5.00% | Std:  5.77% | Seeds: 4
+Task  1 | Mean Success:  80.00% | Std:  8.16% | Seeds: 4
+Task  2 | Mean Success:  95.00% | Std:  5.77% | Seeds: 4
+Task  3 | Mean Success:  97.50% | Std:  5.00% | Seeds: 4
+Task  4 | Mean Success:  32.50% | Std: 12.58% | Seeds: 4
+Task  5 | Mean Success:  83.33% | Std:  5.77% | Seeds: 3
+Task  6 | Mean Success:  33.33% | Std: 15.28% | Seeds: 3
+Task  7 | Mean Success:  63.33% | Std:  5.77% | Seeds: 3
+Task  8 | Mean Success:   6.67% | Std:  5.77% | Seeds: 3
+Task  9 | Mean Success:  73.33% | Std:  5.77% | Seeds: 3
+
+----------------------------------------
+Overall Mean Success: 57.71%
+
+INCOMPLETE: 95 of 130 runs missing, not included above:
+  task 0 seed 7
+  task 0 seed 8
+  task 0 seed 9
+  task 0 seed 10
+  task 0 seed 11
+  task 0 seed 12
+  task 0 seed 13
+  task 0 seed 14
+  task 0 seed 15
+  task 1 seed 7
+  task 1 seed 8
+  task 1 seed 9
+  task 1 seed 10
+  task 1 seed 11
+  task 1 seed 12
+  task 1 seed 13
+  task 1 seed 14
+  task 1 seed 15
+  task 2 seed 7
+  task 2 seed 8
+  task 2 seed 9
+  task 2 seed 10
+  task 2 seed 11
+  task 2 seed 12
+  task 2 seed 13
+  task 2 seed 14
+  task 2 seed 15
+  task 3 seed 7
+  task 3 seed 8
+  task 3 seed 9
+  task 3 seed 10
+  task 3 seed 11
+  task 3 seed 12
+  task 3 seed 13
+  task 3 seed 14
+  task 3 seed 15
+  task 4 seed 7
+  task 4 seed 8
+  task 4 seed 9
+  task 4 seed 10
+  task 4 seed 11
+  task 4 seed 12
+  task 4 seed 13
+  task 4 seed 14
+  task 4 seed 15
+  task 5 seed 6
+  task 5 seed 7
+  task 5 seed 8
+  task 5 seed 9
+  task 5 seed 10
+  task 5 seed 11
+  task 5 seed 12
+  task 5 seed 13
+  task 5 seed 14
+  task 5 seed 15
+  task 6 seed 6
+  task 6 seed 7
+  task 6 seed 8
+  task 6 seed 9
+  task 6 seed 10
+  task 6 seed 11
+  task 6 seed 12
+  task 6 seed 13
+  task 6 seed 14
+  task 6 seed 15
+  task 7 seed 6
+  task 7 seed 7
+  task 7 seed 8
+  task 7 seed 9
+  task 7 seed 10
+  task 7 seed 11
+  task 7 seed 12
+  task 7 seed 13
+  task 7 seed 14
+  task 7 seed 15
+  task 8 seed 6
+  task 8 seed 7
+  task 8 seed 8
+  task 8 seed 9
+  task 8 seed 10
+  task 8 seed 11
+  task 8 seed 12
+  task 8 seed 13
+  task 8 seed 14
+  task 8 seed 15
+  task 9 seed 6
+  task 9 seed 7
+  task 9 seed 8
+  task 9 seed 9
+  task 9 seed 10
+  task 9 seed 11
+  task 9 seed 12
+  task 9 seed 13
+  task 9 seed 14
+  task 9 seed 15

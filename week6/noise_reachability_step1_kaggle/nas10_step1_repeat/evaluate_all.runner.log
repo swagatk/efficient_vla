@@ -1,0 +1,14 @@
+Output directory: /kaggle/working/smolvla_libero_lerobot_eval_nas10_step1_repeat
+0 runs already finished, 5 to run, 4 at a time
+[   0.0 min] task 0 seed 0: started on GPU 0
+[   0.1 min] task 4 seed 0: started on GPU 1
+[   0.2 min] task 6 seed 0: started on GPU 0
+[   0.3 min] task 7 seed 0: started on GPU 1
+[   9.1 min] task 6 seed 0: done
+[   9.1 min] task 8 seed 0: started on GPU 0
+[   9.9 min] task 4 seed 0: done
+[  10.1 min] task 7 seed 0: done
+[  11.0 min] task 0 seed 0: done
+[  15.8 min] task 8 seed 0: done
+
+Report: /kaggle/working/smolvla_libero_lerobot_eval_nas10_step1_repeat/consolidated_summary.txt

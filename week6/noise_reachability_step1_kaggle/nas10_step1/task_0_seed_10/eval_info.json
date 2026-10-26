@@ -1,0 +1,101 @@
+{
+  "per_task": [
+    {
+      "task_group": "libero_10",
+      "task_id": 0,
+      "metrics": {
+        "sum_rewards": [
+          1.0,
+          1.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "max_rewards": [
+          1.0,
+          1.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "successes": [
+          true,
+          true,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "video_paths": [
+          "/kaggle/working/smolvla_libero_lerobot_eval_nas10_step1/task_0_seed_10/videos/libero_10_0/eval_episode_0.mp4",
+          "/kaggle/working/smolvla_libero_lerobot_eval_nas10_step1/task_0_seed_10/videos/libero_10_0/eval_episode_1.mp4",
+          "/kaggle/working/smolvla_libero_lerobot_eval_nas10_step1/task_0_seed_10/videos/libero_10_0/eval_episode_2.mp4",
+          "/kaggle/working/smolvla_libero_lerobot_eval_nas10_step1/task_0_seed_10/videos/libero_10_0/eval_episode_3.mp4",
+          "/kaggle/working/smolvla_libero_lerobot_eval_nas10_step1/task_0_seed_10/videos/libero_10_0/eval_episode_4.mp4",
+          "/kaggle/working/smolvla_libero_lerobot_eval_nas10_step1/task_0_seed_10/videos/libero_10_0/eval_episode_5.mp4",
+          "/kaggle/working/smolvla_libero_lerobot_eval_nas10_step1/task_0_seed_10/videos/libero_10_0/eval_episode_6.mp4",
+          "/kaggle/working/smolvla_libero_lerobot_eval_nas10_step1/task_0_seed_10/videos/libero_10_0/eval_episode_7.mp4",
+          "/kaggle/working/smolvla_libero_lerobot_eval_nas10_step1/task_0_seed_10/videos/libero_10_0/eval_episode_8.mp4",
+          "/kaggle/working/smolvla_libero_lerobot_eval_nas10_step1/task_0_seed_10/videos/libero_10_0/eval_episode_9.mp4"
+        ],
+        "predicted_video_paths": []
+      }
+    }
+  ],
+  "per_group": {
+    "libero_10": {
+      "avg_sum_reward": 0.3,
+      "avg_max_reward": 0.3,
+      "pc_success": 30.0,
+      "n_episodes": 10,
+      "video_paths": [
+        "/kaggle/working/smolvla_libero_lerobot_eval_nas10_step1/task_0_seed_10/videos/libero_10_0/eval_episode_0.mp4",
+        "/kaggle/working/smolvla_libero_lerobot_eval_nas10_step1/task_0_seed_10/videos/libero_10_0/eval_episode_1.mp4",
+        "/kaggle/working/smolvla_libero_lerobot_eval_nas10_step1/task_0_seed_10/videos/libero_10_0/eval_episode_2.mp4",
+        "/kaggle/working/smolvla_libero_lerobot_eval_nas10_step1/task_0_seed_10/videos/libero_10_0/eval_episode_3.mp4",
+        "/kaggle/working/smolvla_libero_lerobot_eval_nas10_step1/task_0_seed_10/videos/libero_10_0/eval_episode_4.mp4",
+        "/kaggle/working/smolvla_libero_lerobot_eval_nas10_step1/task_0_seed_10/videos/libero_10_0/eval_episode_5.mp4",
+        "/kaggle/working/smolvla_libero_lerobot_eval_nas10_step1/task_0_seed_10/videos/libero_10_0/eval_episode_6.mp4",
+        "/kaggle/working/smolvla_libero_lerobot_eval_nas10_step1/task_0_seed_10/videos/libero_10_0/eval_episode_7.mp4",
+        "/kaggle/working/smolvla_libero_lerobot_eval_nas10_step1/task_0_seed_10/videos/libero_10_0/eval_episode_8.mp4",
+        "/kaggle/working/smolvla_libero_lerobot_eval_nas10_step1/task_0_seed_10/videos/libero_10_0/eval_episode_9.mp4"
+      ],
+      "predicted_video_paths": []
+    }
+  },
+  "overall": {
+    "avg_sum_reward": 0.3,
+    "avg_max_reward": 0.3,
+    "pc_success": 30.0,
+    "n_episodes": 10,
+    "eval_s": 620.0338509082794,
+    "eval_ep_s": 62.00338518619537,
+    "video_paths": [
+      "/kaggle/working/smolvla_libero_lerobot_eval_nas10_step1/task_0_seed_10/videos/libero_10_0/eval_episode_0.mp4",
+      "/kaggle/working/smolvla_libero_lerobot_eval_nas10_step1/task_0_seed_10/videos/libero_10_0/eval_episode_1.mp4",
+      "/kaggle/working/smolvla_libero_lerobot_eval_nas10_step1/task_0_seed_10/videos/libero_10_0/eval_episode_2.mp4",
+      "/kaggle/working/smolvla_libero_lerobot_eval_nas10_step1/task_0_seed_10/videos/libero_10_0/eval_episode_3.mp4",
+      "/kaggle/working/smolvla_libero_lerobot_eval_nas10_step1/task_0_seed_10/videos/libero_10_0/eval_episode_4.mp4",
+      "/kaggle/working/smolvla_libero_lerobot_eval_nas10_step1/task_0_seed_10/videos/libero_10_0/eval_episode_5.mp4",
+      "/kaggle/working/smolvla_libero_lerobot_eval_nas10_step1/task_0_seed_10/videos/libero_10_0/eval_episode_6.mp4",
+      "/kaggle/working/smolvla_libero_lerobot_eval_nas10_step1/task_0_seed_10/videos/libero_10_0/eval_episode_7.mp4",
+      "/kaggle/working/smolvla_libero_lerobot_eval_nas10_step1/task_0_seed_10/videos/libero_10_0/eval_episode_8.mp4",
+      "/kaggle/working/smolvla_libero_lerobot_eval_nas10_step1/task_0_seed_10/videos/libero_10_0/eval_episode_9.mp4"
+    ],
+    "predicted_video_paths": []
+  }
+}

@@ -82,6 +82,12 @@ Run-to-run nondeterminism: the repeat of seed 0 gives the share of episodes whos
 nothing changed, reported against the share expected to change under a fresh noise seed (2p(1-p) per state,
 p its success rate over the 16 seeds). `reachability.py` computes all of this.
 
+**Result (October 2026): both parts hold.** Pooled pass@1 0.471 (377/800), pass@16 0.840, headroom 0.697;
+8 of 50 init states systematic (task 0: 5; tasks 4, 6, 8: 1 each; task 7: none). Steps 2-4 go ahead as planned.
+The repeat of seed 0 changed 0 of 50 outcomes against 12.4 expected under a fresh seed. Step-3 tasks by the
+rule of step 3: 7 (most reachable states) and 0 (most systematic). Records and discussion:
+`week6/noise_reachability_step1_kaggle/`.
+
 ## Step 2: training-free noise selection per chunk
 
 At each inference draw N = 8 noise samples in one batch, generate 8 chunks and execute the one a score
@@ -123,7 +129,7 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
 | Step | Where | Estimate |
 |---|---|---|
 | 0 | Kaggle | done: about 2 h over three versions |
-| 1 | Kaggle | 700 new episodes (seeds 3-15 and the repeat), roughly 3 h at `n_action_steps=10` |
+| 1 | Kaggle | done: 170 min (seeds 3-15) and 16 min (repeat), plus 9.6 h lost to a version at the wrong setting |
 | 2 | Colab A100 | to be measured; 8 samples per inference in one batch |
 | 3 | Colab A100 | 3,000 training episodes x 2 tasks |
 | 4 | Colab A100 | after step 3 |
@@ -136,7 +142,7 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
 
 ## Status
 
-Step 0 done (above). Step 1 not yet run.
+Steps 0 and 1 done (above). Step 2 not yet written.
 
 Before step 0 ran, smoke tests on the local RTX 4090 (shared with another job), one episode each of task 0,
 seed 0, init state 0: `n_action_steps=10` through `evaluate_all.py` and `n_action_steps=50` through

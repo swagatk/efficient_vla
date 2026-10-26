@@ -1,0 +1,13 @@
+50 init states x 16 noise seeds
+
+task | successes | pass@1 | pass@16 | systematic init states (0 of 16)
+   0 |  41/160 | 0.256 | 0.500 | [2, 5, 6, 7, 8]
+   4 |  79/160 | 0.494 | 0.900 | [2]
+   6 |  97/160 | 0.606 | 0.900 | [8]
+   7 |  90/160 | 0.562 | 1.000 | []
+   8 |  70/160 | 0.438 | 0.900 | [4]
+
+pooled pass@k: k=1: 0.471, k=2: 0.604, k=4: 0.719, k=8: 0.795, k=16: 0.840
+headroom (pass@16 - pass@1) / (1 - pass@1) = 0.697 (hypothesis >= 0.5: yes)
+systematic states: 8 of 50 (hypothesis >= 5: yes)
+repeat of one seed: 0 of 50 episodes changed outcome; 12.4 expected under a fresh noise seed (ratio 0.00)

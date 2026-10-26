@@ -1,0 +1,6 @@
+=== Baseline Evaluation Consolidated Summary ===
+
+Task  3 | Mean Success: 100.00% | Std:  0.00% | Seeds: 1
+
+----------------------------------------
+Overall Mean Success: 100.00%

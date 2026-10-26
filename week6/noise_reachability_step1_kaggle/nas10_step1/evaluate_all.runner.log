@@ -1,0 +1,134 @@
+Output directory: /kaggle/working/smolvla_libero_lerobot_eval_nas10_step1
+0 runs already finished, 65 to run, 4 at a time
+[   0.0 min] task 0 seed 3: started on GPU 0
+[   0.1 min] task 4 seed 3: started on GPU 1
+[   0.2 min] task 6 seed 3: started on GPU 0
+[   0.3 min] task 7 seed 3: started on GPU 1
+[   9.0 min] task 4 seed 3: done
+[   9.0 min] task 8 seed 3: started on GPU 0
+[   9.8 min] task 7 seed 3: done
+[   9.8 min] task 0 seed 4: started on GPU 1
+[  10.3 min] task 6 seed 3: done
+[  10.3 min] task 4 seed 4: started on GPU 0
+[  12.0 min] task 0 seed 3: done
+[  12.0 min] task 6 seed 4: started on GPU 1
+[  18.8 min] task 4 seed 4: done
+[  18.8 min] task 7 seed 4: started on GPU 0
+[  20.5 min] task 8 seed 3: done
+[  20.5 min] task 8 seed 4: started on GPU 1
+[  21.0 min] task 0 seed 4: done
+[  21.0 min] task 0 seed 5: started on GPU 0
+[  21.1 min] task 6 seed 4: done
+[  21.1 min] task 4 seed 5: started on GPU 1
+[  28.3 min] task 7 seed 4: done
+[  28.3 min] task 6 seed 5: started on GPU 0
+[  30.0 min] task 4 seed 5: done
+[  30.0 min] task 7 seed 5: started on GPU 1
+[  31.8 min] task 8 seed 4: done
+[  31.8 min] task 8 seed 5: started on GPU 0
+[  32.5 min] task 0 seed 5: done
+[  32.5 min] task 0 seed 6: started on GPU 1
+[  36.4 min] task 6 seed 5: done
+[  36.4 min] task 4 seed 6: started on GPU 0
+[  39.2 min] task 7 seed 5: done
+[  39.2 min] task 6 seed 6: started on GPU 1
+[  43.0 min] task 8 seed 5: done
+[  43.0 min] task 7 seed 6: started on GPU 0
+[  44.0 min] task 0 seed 6: done
+[  44.0 min] task 8 seed 6: started on GPU 1
+[  46.5 min] task 4 seed 6: done
+[  46.5 min] task 0 seed 7: started on GPU 0
+[  48.3 min] task 6 seed 6: done
+[  48.3 min] task 4 seed 7: started on GPU 1
+[  51.5 min] task 7 seed 6: done
+[  51.5 min] task 6 seed 7: started on GPU 0
+[  55.5 min] task 8 seed 6: done
+[  55.5 min] task 7 seed 7: started on GPU 1
+[  58.3 min] task 0 seed 7: done
+[  58.3 min] task 8 seed 7: started on GPU 0
+[  58.4 min] task 4 seed 7: done
+[  58.4 min] task 0 seed 8: started on GPU 1
+[  60.9 min] task 6 seed 7: done
+[  60.9 min] task 4 seed 8: started on GPU 0
+[  64.3 min] task 7 seed 7: done
+[  64.3 min] task 6 seed 8: started on GPU 1
+[  69.8 min] task 0 seed 8: done
+[  69.8 min] task 7 seed 8: started on GPU 0
+[  69.9 min] task 8 seed 7: done
+[  69.9 min] task 8 seed 8: started on GPU 1
+[  71.5 min] task 4 seed 8: done
+[  71.5 min] task 0 seed 9: started on GPU 0
+[  73.4 min] task 6 seed 8: done
+[  73.4 min] task 4 seed 9: started on GPU 1
+[  79.8 min] task 7 seed 8: done
+[  79.8 min] task 6 seed 9: started on GPU 0
+[  81.4 min] task 8 seed 8: done
+[  81.4 min] task 7 seed 9: started on GPU 1
+[  83.3 min] task 0 seed 9: done
+[  83.3 min] task 8 seed 9: started on GPU 0
+[  83.8 min] task 4 seed 9: done
+[  83.8 min] task 0 seed 10: started on GPU 1
+[  89.2 min] task 6 seed 9: done
+[  89.2 min] task 4 seed 10: started on GPU 0
+[  91.4 min] task 7 seed 9: done
+[  91.4 min] task 6 seed 10: started on GPU 1
+[  94.5 min] task 8 seed 9: done
+[  94.5 min] task 7 seed 10: started on GPU 0
+[  94.8 min] task 0 seed 10: done
+[  94.8 min] task 8 seed 10: started on GPU 1
+[  98.7 min] task 6 seed 10: done
+[  98.7 min] task 0 seed 11: started on GPU 0
+[  98.9 min] task 4 seed 10: done
+[  98.9 min] task 4 seed 11: started on GPU 1
+[ 103.3 min] task 7 seed 10: done
+[ 103.3 min] task 6 seed 11: started on GPU 0
+[ 106.3 min] task 8 seed 10: done
+[ 106.3 min] task 7 seed 11: started on GPU 1
+[ 109.2 min] task 4 seed 11: done
+[ 109.2 min] task 8 seed 11: started on GPU 0
+[ 110.1 min] task 0 seed 11: done
+[ 110.1 min] task 0 seed 12: started on GPU 1
+[ 113.1 min] task 6 seed 11: done
+[ 113.1 min] task 4 seed 12: started on GPU 0
+[ 116.0 min] task 7 seed 11: done
+[ 116.0 min] task 6 seed 12: started on GPU 1
+[ 120.3 min] task 8 seed 11: done
+[ 120.3 min] task 7 seed 12: started on GPU 0
+[ 122.0 min] task 0 seed 12: done
+[ 122.0 min] task 4 seed 12: done
+[ 122.0 min] task 8 seed 12: started on GPU 1
+[ 122.1 min] task 0 seed 13: started on GPU 0
+[ 124.0 min] task 6 seed 12: done
+[ 124.0 min] task 4 seed 13: started on GPU 1
+[ 130.1 min] task 7 seed 12: done
+[ 130.1 min] task 6 seed 13: started on GPU 0
+[ 133.3 min] task 0 seed 13: done
+[ 133.3 min] task 7 seed 13: started on GPU 1
+[ 133.6 min] task 8 seed 12: done
+[ 133.6 min] task 8 seed 13: started on GPU 0
+[ 135.2 min] task 4 seed 13: done
+[ 135.2 min] task 0 seed 14: started on GPU 1
+[ 140.3 min] task 6 seed 13: done
+[ 140.3 min] task 4 seed 14: started on GPU 0
+[ 142.3 min] task 7 seed 13: done
+[ 142.3 min] task 6 seed 14: started on GPU 1
+[ 145.0 min] task 8 seed 13: done
+[ 145.0 min] task 7 seed 14: started on GPU 0
+[ 146.8 min] task 0 seed 14: done
+[ 146.8 min] task 8 seed 14: started on GPU 1
+[ 150.8 min] task 4 seed 14: done
+[ 150.8 min] task 0 seed 15: started on GPU 0
+[ 151.7 min] task 6 seed 14: done
+[ 151.7 min] task 4 seed 15: started on GPU 1
+[ 155.6 min] task 7 seed 14: done
+[ 155.6 min] task 6 seed 15: started on GPU 0
+[ 158.3 min] task 8 seed 14: done
+[ 158.3 min] task 7 seed 15: started on GPU 1
+[ 161.6 min] task 4 seed 15: done
+[ 161.6 min] task 8 seed 15: started on GPU 0
+[ 163.1 min] task 0 seed 15: done
+[ 164.0 min] task 6 seed 15: done
+[ 166.6 min] task 7 seed 15: done
+[ 170.3 min] task 8 seed 15: done
+
+Report: /kaggle/working/smolvla_libero_lerobot_eval_nas10_step1/consolidated_summary.txt

@@ -1,0 +1,12 @@
+50 init states x 6 noise seeds
+
+task | successes | pass@1 | pass@6 | systematic init states (0 of 6)
+   0 |   3/60 | 0.050 | 0.100 | [0, 1, 2, 3, 4, 5, 6, 7, 8]
+   4 |  18/60 | 0.300 | 0.500 | [1, 2, 3, 5, 8]
+   6 |  24/60 | 0.400 | 0.800 | [3, 8]
+   7 |  36/60 | 0.600 | 0.900 | [5]
+   8 |   4/60 | 0.067 | 0.300 | [0, 1, 2, 3, 4, 5, 7]
+
+pooled pass@k: k=1: 0.283, k=2: 0.376, k=4: 0.464, k=6: 0.520
+headroom (pass@6 - pass@1) / (1 - pass@1) = 0.330 (hypothesis >= 0.5: no)
+systematic states: 24 of 50 (hypothesis >= 5: yes)
