@@ -142,6 +142,43 @@ episodes per task (Colab A100), far below the roughly 240,000 rollouts of arXiv:
 **Hypothesis.** On each task the actor raises success by at least 10 points over the base (paired p < 0.05),
 and on systematic states its success stays below a third of its success on reachable states.
 
+*Protocol, fixed after step 2 and before step 3 ran.* Tasks 7 and 0 (step 1). Systematic states exist only on
+task 0 (init states 2, 5, 6, 7, 8), so the second part of the hypothesis is tested on task 0 alone.
+
+- **Decision and action.** One decision per inference, that is per executed chunk of 10 actions. The actor
+  chooses the initial noise of the 10 executed positions on the 7 real action dimensions (70 numbers); the
+  remaining entries of SmolVLA's 50 x 32 noise are drawn from N(0, 1) as usual. The actor's output is
+  `noise_scale * tanh(x)` with `noise_scale = 2.5`, x Gaussian (SAC's squashed Gaussian), and its initial
+  spread (std 0.45 before the tanh) makes an untrained actor's noise close to N(0, 1).
+- **Observation.** The frozen policy's own prefix features: the VLM output over the image, language and state
+  tokens, averaged over valid tokens (960 numbers), plus the first 8 entries of the normalised state. One extra
+  prefix pass per inference computes them; the chunk itself comes from SmolVLA's unchanged `sample_actions`
+  with the chosen noise. Nothing in SmolVLA trains.
+- **Reward and MDP.** Reward 1 on the decision whose chunk reaches success, which ends the episode (terminal);
+  0 otherwise. Discount 0.99 per decision. At the 520-step limit the last transition bootstraps from the
+  final observation (not terminal).
+- **SAC.** Twin Q and a tanh-Gaussian actor, MLPs of 3 x 256 with layer-normalised inputs, Adam 3e-4, batch
+  256, tau 0.005, automatic entropy temperature starting at 0.01 with target entropy -70, 8 gradient updates per
+  decision collected, done after each episode once the replay holds a batch. Replay holds every transition of
+  the run. The first 20 episodes are warm-up: the executed noise is
+  the base's own N(0, 1) draw clipped to +-0.999 * noise_scale, and only the critics train.
+- **Training.** Init states 10-49, uniformly at random per episode; soft resets (`vla_core/envs.py`);
+  `n_action_steps=10`; 1,500 episodes per task, one training seed, the two tasks in parallel on one A100.
+  Training runs in processes of 25 episodes; each saves the learner, the log and its own new transitions as
+  a replay part (parts are never rewritten), and the next process resumes. A crashed process is retried from
+  the last save, at most 3 times in a row. These settings are not tuned: no run's result changes them.
+- **Report.** The final actor, deterministic (`noise_scale * tanh(mean)`), and the base, on init states 0-9 x
+  seeds 0-2 (30 paired episodes per task), hard resets, same environment and torch seed per (seed, init
+  state). Exact McNemar and the exact 95% interval of the paired difference per task. Task 0 systematic
+  episodes: init states 2, 5, 6, 7, 8 x seeds 0-2 (15), reachable: the other 15. "Below a third" is strict,
+  so if the actor solves no reachable episode the second part counts as not met.
+- **Checks before running.** CPU tests: the chosen noise replaces exactly the executed part of the drawn
+  noise; the training loop, with a fake environment and policy, stores the transitions it executed (features,
+  noise, reward, bootstrap) across a resume. On the real model (`check_step3_steering.py`, the notebook's step
+  5): the wrapper with no chosen noise reproduces the base chunk bit for bit, passing the drawn noise back
+  unchanged does too, and a fixed chosen noise gives the same chunk twice. Then a smoke run of 3 training
+  episodes and 1 evaluation episode per policy through the runner (step 6).
+
 ## Step 4: a weight update aimed at systematic states
 
 Only if steps 1-3 confirm that the noise-space methods leave the systematic states unsolved. A LoRA update
@@ -162,7 +199,7 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
 | 0 | Kaggle | done: about 2 h over three versions |
 | 1 | Kaggle | done: 170 min (seeds 3-15) and 16 min (repeat), plus 9.6 h lost to a version at the wrong setting |
 | 2 | Colab A100 | done: 600 (selection) + 300 (report) episodes, one process per task in parallel; the last processes started 82 and 37 minutes after launch |
-| 3 | Colab A100 | 3,000 training episodes x 2 tasks |
+| 3 | Colab A100 | 1,500 training episodes x 2 tasks in parallel, then 120 evaluation episodes; estimated 20-30 h wall clock from the step-2 episode times (not measured yet) |
 | 4 | Colab A100 | after step 3 |
 
 ## Files
@@ -174,10 +211,15 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
 - `eval_noise_selection.py`, `run_step2_noise_selection.sh`: step-2 paired evaluation (`STAGE=select|report`,
   `SMOKE=1`); `colab_step2_noise_selection.ipynb` runs it on Colab.
 - `analyze_step2.py`: step-2 selection rule and report.
+- `noise_sac.py` (actor, critics, replay, transitions), `noise_steering.py` (the wrapper that lets the actor
+  choose the noise), `train_noise_sac.py` and `run_step3_noise_sac.sh`: step-3 training and paired evaluation;
+  `check_step3_steering.py`: the real-model checks; `colab_step3_noise_sac.ipynb` runs it all on Colab;
+  `analyze_step3.py`: step-3 report.
 
 ## Status
 
-Steps 0, 1 and 2 done (above); step 2 is a negative result. Step 3 next.
+Steps 0, 1 and 2 done (above); step 2 is a negative result. Step 3 code written and checked on CPU (above); the
+real-model checks and the smoke run run on Colab before training (the local GPU was busy); not yet run.
 
 Before step 0 ran, smoke tests on the local RTX 4090 (shared with another job), one episode each of task 0,
 seed 0, init state 0: `n_action_steps=10` through `evaluate_all.py` and `n_action_steps=50` through
