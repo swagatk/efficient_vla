@@ -1,0 +1,306 @@
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /content/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+[eval] task 0: 120 episodes to run in /content/drive/MyDrive/efficient_vla_runs/noise_selection/select/task_0
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading  HuggingFaceTB/SmolVLM2-500M-Video-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  28%|██▊       | 139/489 [00:00<00:00, 1377.25it/s]Loading weights:  57%|█████▋    | 277/489 [00:00<00:00, 1076.85it/s]Loading weights:  88%|████████▊ | 429/489 [00:00<00:00, 1245.72it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 1309.76it/s]
+Reducing the number of VLM layers to 16 ...
+[eval] base task 0 seed 0 init 10: success=1 steps=264 time=29s
+[eval] first_n8 task 0 seed 0 init 10: success=0 steps=520 time=48s inferences=52 chosen_per_sample=[52, 0, 0, 0, 0, 0, 0, 0]
+[eval] medoid_n8 task 0 seed 0 init 10: success=1 steps=269 time=27s inferences=27 chosen_per_sample=[6, 8, 1, 6, 1, 4, 1, 0]
+[eval] accel_n8 task 0 seed 0 init 10: success=1 steps=267 time=28s inferences=27 chosen_per_sample=[2, 0, 7, 5, 4, 4, 4, 1]
+[eval] medoid_n16 task 0 seed 0 init 10: success=1 steps=269 time=30s inferences=27 chosen_per_sample=[2, 3, 0, 1, 1, 2, 2, 1, 2, 3, 1, 2, 2, 0, 4, 1]
+[eval] accel_n16 task 0 seed 0 init 10: success=1 steps=328 time=35s inferences=33 chosen_per_sample=[1, 3, 2, 1, 2, 3, 2, 0, 4, 3, 3, 2, 3, 1, 1, 2]
+[eval] base task 0 seed 0 init 11: success=0 steps=520 time=48s
+[eval] first_n8 task 0 seed 0 init 11: success=0 steps=520 time=50s inferences=52 chosen_per_sample=[52, 0, 0, 0, 0, 0, 0, 0]
+[eval] medoid_n8 task 0 seed 0 init 11: success=0 steps=520 time=47s inferences=52 chosen_per_sample=[5, 4, 7, 9, 10, 4, 7, 6]
+[eval] accel_n8 task 0 seed 0 init 11: success=0 steps=520 time=48s inferences=52 chosen_per_sample=[7, 8, 9, 5, 2, 10, 6, 5]
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /content/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+[eval] task 0: 110 episodes to run in /content/drive/MyDrive/efficient_vla_runs/noise_selection/select/task_0
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading  HuggingFaceTB/SmolVLM2-500M-Video-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  40%|████      | 196/489 [00:00<00:00, 1904.02it/s]Loading weights:  83%|████████▎ | 405/489 [00:00<00:00, 1993.41it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 2061.34it/s]
+Reducing the number of VLM layers to 16 ...
+[eval] medoid_n16 task 0 seed 0 init 11: success=0 steps=520 time=63s inferences=52 chosen_per_sample=[2, 3, 2, 2, 9, 1, 6, 5, 2, 3, 3, 2, 4, 2, 6, 0]
+[eval] accel_n16 task 0 seed 0 init 11: success=0 steps=520 time=49s inferences=52 chosen_per_sample=[2, 4, 9, 2, 2, 3, 3, 5, 4, 1, 6, 1, 2, 4, 3, 1]
+[eval] base task 0 seed 0 init 12: success=1 steps=251 time=24s
+[eval] first_n8 task 0 seed 0 init 12: success=1 steps=250 time=26s inferences=25 chosen_per_sample=[25, 0, 0, 0, 0, 0, 0, 0]
+[eval] medoid_n8 task 0 seed 0 init 12: success=1 steps=249 time=26s inferences=25 chosen_per_sample=[3, 3, 2, 2, 4, 3, 4, 4]
+[eval] accel_n8 task 0 seed 0 init 12: success=1 steps=251 time=25s inferences=26 chosen_per_sample=[3, 6, 2, 2, 4, 3, 1, 5]
+[eval] medoid_n16 task 0 seed 0 init 12: success=1 steps=249 time=27s inferences=25 chosen_per_sample=[0, 2, 1, 2, 3, 2, 3, 3, 1, 1, 1, 1, 1, 2, 0, 2]
+[eval] accel_n16 task 0 seed 0 init 12: success=1 steps=250 time=28s inferences=25 chosen_per_sample=[2, 3, 0, 1, 4, 1, 1, 1, 0, 1, 1, 2, 0, 5, 2, 1]
+[eval] base task 0 seed 0 init 13: success=0 steps=520 time=45s
+[eval] first_n8 task 0 seed 0 init 13: success=0 steps=520 time=47s inferences=52 chosen_per_sample=[52, 0, 0, 0, 0, 0, 0, 0]
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /content/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+[eval] task 0: 100 episodes to run in /content/drive/MyDrive/efficient_vla_runs/noise_selection/select/task_0
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading  HuggingFaceTB/SmolVLM2-500M-Video-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  32%|███▏      | 158/489 [00:00<00:00, 1573.85it/s]Loading weights:  65%|██████▌   | 320/489 [00:00<00:00, 1598.27it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 1815.77it/s]
+Reducing the number of VLM layers to 16 ...
+[eval] medoid_n8 task 0 seed 0 init 13: success=0 steps=520 time=57s inferences=52 chosen_per_sample=[8, 1, 8, 5, 4, 11, 9, 6]
+[eval] accel_n8 task 0 seed 0 init 13: success=0 steps=520 time=48s inferences=52 chosen_per_sample=[6, 8, 5, 6, 8, 6, 3, 10]
+[eval] medoid_n16 task 0 seed 0 init 13: success=0 steps=520 time=54s inferences=52 chosen_per_sample=[4, 2, 3, 2, 3, 0, 5, 1, 2, 7, 2, 4, 3, 4, 4, 6]
+[eval] accel_n16 task 0 seed 0 init 13: success=0 steps=520 time=54s inferences=52 chosen_per_sample=[3, 3, 5, 2, 4, 2, 5, 3, 4, 0, 2, 6, 1, 2, 4, 6]
+[eval] base task 0 seed 0 init 14: success=0 steps=520 time=46s
+[eval] first_n8 task 0 seed 0 init 14: success=0 steps=520 time=49s inferences=52 chosen_per_sample=[52, 0, 0, 0, 0, 0, 0, 0]
+[eval] medoid_n8 task 0 seed 0 init 14: success=0 steps=520 time=50s inferences=52 chosen_per_sample=[9, 8, 6, 10, 7, 3, 5, 4]
+[eval] accel_n8 task 0 seed 0 init 14: success=0 steps=520 time=45s inferences=52 chosen_per_sample=[8, 10, 11, 3, 3, 5, 5, 7]
+[eval] medoid_n16 task 0 seed 0 init 14: success=1 steps=342 time=38s inferences=35 chosen_per_sample=[3, 3, 1, 2, 3, 3, 0, 2, 3, 1, 3, 2, 2, 2, 0, 5]
+[eval] accel_n16 task 0 seed 0 init 14: success=0 steps=520 time=54s inferences=52 chosen_per_sample=[7, 7, 4, 3, 2, 2, 1, 3, 2, 4, 3, 0, 2, 2, 4, 6]
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /content/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+[eval] task 0: 90 episodes to run in /content/drive/MyDrive/efficient_vla_runs/noise_selection/select/task_0
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading  HuggingFaceTB/SmolVLM2-500M-Video-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  32%|███▏      | 158/489 [00:00<00:00, 1565.06it/s]Loading weights:  68%|██████▊   | 333/489 [00:00<00:00, 1657.12it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 1767.95it/s]
+Reducing the number of VLM layers to 16 ...
+[eval] base task 0 seed 0 init 15: success=0 steps=520 time=50s
+[eval] first_n8 task 0 seed 0 init 15: success=0 steps=520 time=49s inferences=52 chosen_per_sample=[52, 0, 0, 0, 0, 0, 0, 0]
+[eval] medoid_n8 task 0 seed 0 init 15: success=0 steps=520 time=46s inferences=52 chosen_per_sample=[5, 4, 7, 12, 2, 8, 7, 7]
+[eval] accel_n8 task 0 seed 0 init 15: success=0 steps=520 time=46s inferences=52 chosen_per_sample=[3, 7, 7, 6, 5, 6, 9, 9]
+[eval] medoid_n16 task 0 seed 0 init 15: success=0 steps=520 time=54s inferences=52 chosen_per_sample=[2, 4, 4, 6, 1, 4, 1, 2, 1, 5, 3, 5, 3, 3, 5, 3]
+[eval] accel_n16 task 0 seed 0 init 15: success=0 steps=520 time=55s inferences=52 chosen_per_sample=[1, 2, 4, 1, 2, 5, 2, 3, 6, 10, 5, 2, 2, 3, 1, 3]
+[eval] base task 0 seed 0 init 16: success=1 steps=268 time=25s
+[eval] first_n8 task 0 seed 0 init 16: success=1 steps=269 time=27s inferences=27 chosen_per_sample=[27, 0, 0, 0, 0, 0, 0, 0]
+[eval] medoid_n8 task 0 seed 0 init 16: success=1 steps=268 time=28s inferences=27 chosen_per_sample=[2, 4, 4, 1, 5, 3, 2, 6]
+[eval] accel_n8 task 0 seed 0 init 16: success=1 steps=269 time=28s inferences=27 chosen_per_sample=[4, 2, 5, 2, 6, 3, 2, 3]
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /content/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+[eval] task 0: 80 episodes to run in /content/drive/MyDrive/efficient_vla_runs/noise_selection/select/task_0
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading  HuggingFaceTB/SmolVLM2-500M-Video-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  32%|███▏      | 155/489 [00:00<00:00, 1528.55it/s]Loading weights:  63%|██████▎   | 308/489 [00:00<00:00, 1456.85it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 1744.39it/s]
+Reducing the number of VLM layers to 16 ...
+[eval] medoid_n16 task 0 seed 0 init 16: success=0 steps=520 time=54s inferences=52 chosen_per_sample=[0, 1, 2, 5, 4, 2, 5, 3, 3, 4, 6, 3, 4, 2, 3, 5]
+[eval] accel_n16 task 0 seed 0 init 16: success=1 steps=260 time=28s inferences=26 chosen_per_sample=[2, 3, 1, 1, 0, 2, 2, 2, 1, 2, 2, 2, 1, 0, 2, 3]
+[eval] base task 0 seed 0 init 17: success=1 steps=264 time=25s
+[eval] first_n8 task 0 seed 0 init 17: success=0 steps=520 time=48s inferences=52 chosen_per_sample=[52, 0, 0, 0, 0, 0, 0, 0]
+[eval] medoid_n8 task 0 seed 0 init 17: success=0 steps=520 time=46s inferences=52 chosen_per_sample=[7, 8, 5, 8, 5, 7, 8, 4]
+[eval] accel_n8 task 0 seed 0 init 17: success=0 steps=520 time=51s inferences=52 chosen_per_sample=[3, 9, 6, 9, 6, 5, 9, 5]
+[eval] medoid_n16 task 0 seed 0 init 17: success=0 steps=520 time=51s inferences=52 chosen_per_sample=[8, 1, 5, 5, 0, 2, 6, 3, 2, 3, 6, 3, 2, 3, 2, 1]
+[eval] accel_n16 task 0 seed 0 init 17: success=1 steps=271 time=34s inferences=28 chosen_per_sample=[0, 1, 2, 2, 1, 2, 4, 3, 1, 4, 3, 2, 0, 2, 1, 0]
+[eval] base task 0 seed 0 init 18: success=0 steps=520 time=49s
+[eval] first_n8 task 0 seed 0 init 18: success=0 steps=520 time=48s inferences=52 chosen_per_sample=[52, 0, 0, 0, 0, 0, 0, 0]
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /content/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+[eval] task 0: 70 episodes to run in /content/drive/MyDrive/efficient_vla_runs/noise_selection/select/task_0
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+Loading  HuggingFaceTB/SmolVLM2-500M-Video-Instruct weights ...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  34%|███▎      | 164/489 [00:00<00:00, 1602.81it/s]Loading weights:  72%|███████▏  | 351/489 [00:00<00:00, 1757.35it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 1946.02it/s]
+Reducing the number of VLM layers to 16 ...
+[eval] medoid_n8 task 0 seed 0 init 18: success=0 steps=520 time=52s inferences=52 chosen_per_sample=[10, 9, 7, 6, 5, 4, 6, 5]
+[eval] accel_n8 task 0 seed 0 init 18: success=0 steps=520 time=51s inferences=52 chosen_per_sample=[10, 5, 5, 9, 7, 6, 6, 4]
+[eval] medoid_n16 task 0 seed 0 init 18: success=0 steps=520 time=54s inferences=52 chosen_per_sample=[6, 3, 1, 3, 5, 2, 4, 5, 1, 1, 3, 1, 5, 6, 4, 2]
+[eval] accel_n16 task 0 seed 0 init 18: success=0 steps=520 time=55s inferences=52 chosen_per_sample=[5, 5, 3, 4, 3, 5, 2, 2, 4, 1, 2, 4, 7, 3, 2, 0]
+[eval] base task 0 seed 0 init 19: success=1 steps=333 time=30s
+[eval] first_n8 task 0 seed 0 init 19: success=0 steps=520 time=49s inferences=52 chosen_per_sample=[52, 0, 0, 0, 0, 0, 0, 0]
+[eval] medoid_n8 task 0 seed 0 init 19: success=1 steps=306 time=32s inferences=31 chosen_per_sample=[3, 10, 1, 2, 2, 3, 7, 3]
+[eval] accel_n8 task 0 seed 0 init 19: success=0 steps=520 time=50s inferences=52 chosen_per_sample=[4, 5, 7, 7, 6, 6, 8, 9]
+[eval] medoid_n16 task 0 seed 0 init 19: success=1 steps=395 time=39s inferences=40 chosen_per_sample=[3, 4, 0, 2, 0, 4, 4, 3, 3, 6, 1, 3, 3, 0, 1, 3]
+[eval] accel_n16 task 0 seed 0 init 19: success=0 steps=520 time=56s inferences=52 chosen_per_sample=[4, 4, 1, 4, 3, 2, 4, 3, 4, 4, 6, 6, 0, 1, 3, 3]
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /content/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+[eval] task 0: 60 episodes to run in /content/drive/MyDrive/efficient_vla_runs/noise_selection/select/task_0
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading  HuggingFaceTB/SmolVLM2-500M-Video-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  36%|███▌      | 177/489 [00:00<00:00, 1737.92it/s]Loading weights:  78%|███████▊  | 383/489 [00:00<00:00, 1925.45it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 2010.02it/s]
+Reducing the number of VLM layers to 16 ...
+[eval] base task 0 seed 1 init 10: success=1 steps=276 time=30s
+[eval] first_n8 task 0 seed 1 init 10: success=1 steps=280 time=24s inferences=28 chosen_per_sample=[28, 0, 0, 0, 0, 0, 0, 0]
+[eval] medoid_n8 task 0 seed 1 init 10: success=1 steps=273 time=25s inferences=28 chosen_per_sample=[5, 4, 1, 5, 5, 3, 3, 2]
+[eval] accel_n8 task 0 seed 1 init 10: success=1 steps=266 time=27s inferences=27 chosen_per_sample=[3, 3, 1, 4, 3, 4, 3, 6]
+[eval] medoid_n16 task 0 seed 1 init 10: success=1 steps=275 time=32s inferences=28 chosen_per_sample=[0, 1, 0, 2, 1, 1, 1, 2, 4, 2, 1, 3, 2, 1, 6, 1]
+[eval] accel_n16 task 0 seed 1 init 10: success=1 steps=261 time=30s inferences=27 chosen_per_sample=[0, 2, 1, 3, 4, 0, 0, 3, 1, 2, 2, 1, 1, 3, 3, 1]
+[eval] base task 0 seed 1 init 11: success=0 steps=520 time=49s
+[eval] first_n8 task 0 seed 1 init 11: success=0 steps=520 time=50s inferences=52 chosen_per_sample=[52, 0, 0, 0, 0, 0, 0, 0]
+[eval] medoid_n8 task 0 seed 1 init 11: success=0 steps=520 time=48s inferences=52 chosen_per_sample=[10, 6, 3, 5, 5, 7, 10, 6]
+[eval] accel_n8 task 0 seed 1 init 11: success=0 steps=520 time=50s inferences=52 chosen_per_sample=[6, 8, 7, 5, 7, 9, 5, 5]
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /content/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+[eval] task 0: 50 episodes to run in /content/drive/MyDrive/efficient_vla_runs/noise_selection/select/task_0
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading  HuggingFaceTB/SmolVLM2-500M-Video-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  35%|███▍      | 169/489 [00:00<00:00, 1687.52it/s]Loading weights:  70%|██████▉   | 341/489 [00:00<00:00, 1702.35it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 1883.23it/s]
+Reducing the number of VLM layers to 16 ...
+[eval] medoid_n16 task 0 seed 1 init 11: success=0 steps=520 time=54s inferences=52 chosen_per_sample=[3, 3, 4, 5, 2, 1, 5, 3, 3, 2, 5, 0, 6, 4, 2, 4]
+[eval] accel_n16 task 0 seed 1 init 11: success=0 steps=520 time=48s inferences=52 chosen_per_sample=[1, 3, 4, 3, 1, 3, 5, 1, 4, 2, 2, 6, 9, 2, 4, 2]
+[eval] base task 0 seed 1 init 12: success=1 steps=250 time=23s
+[eval] first_n8 task 0 seed 1 init 12: success=1 steps=250 time=24s inferences=25 chosen_per_sample=[25, 0, 0, 0, 0, 0, 0, 0]
+[eval] medoid_n8 task 0 seed 1 init 12: success=1 steps=250 time=24s inferences=25 chosen_per_sample=[9, 1, 5, 0, 0, 6, 2, 2]
+[eval] accel_n8 task 0 seed 1 init 12: success=1 steps=250 time=25s inferences=25 chosen_per_sample=[6, 3, 3, 2, 2, 3, 5, 1]
+[eval] medoid_n16 task 0 seed 1 init 12: success=1 steps=250 time=28s inferences=25 chosen_per_sample=[5, 1, 0, 1, 1, 2, 1, 2, 0, 0, 2, 2, 2, 2, 4, 0]
+[eval] accel_n16 task 0 seed 1 init 12: success=1 steps=259 time=28s inferences=26 chosen_per_sample=[1, 1, 1, 0, 1, 3, 4, 1, 2, 2, 2, 2, 3, 1, 2, 0]
+[eval] base task 0 seed 1 init 13: success=0 steps=520 time=48s
+[eval] first_n8 task 0 seed 1 init 13: success=0 steps=520 time=49s inferences=52 chosen_per_sample=[52, 0, 0, 0, 0, 0, 0, 0]
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /content/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+[eval] task 0: 40 episodes to run in /content/drive/MyDrive/efficient_vla_runs/noise_selection/select/task_0
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading  HuggingFaceTB/SmolVLM2-500M-Video-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  39%|███▉      | 192/489 [00:00<00:00, 1919.16it/s]Loading weights:  82%|████████▏ | 402/489 [00:00<00:00, 2022.89it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 2107.69it/s]
+Reducing the number of VLM layers to 16 ...
+[eval] medoid_n8 task 0 seed 1 init 13: success=0 steps=520 time=56s inferences=52 chosen_per_sample=[4, 7, 8, 8, 8, 6, 3, 8]
+[eval] accel_n8 task 0 seed 1 init 13: success=0 steps=520 time=44s inferences=52 chosen_per_sample=[8, 5, 9, 3, 7, 9, 4, 7]
+[eval] medoid_n16 task 0 seed 1 init 13: success=0 steps=520 time=47s inferences=52 chosen_per_sample=[1, 1, 2, 1, 4, 5, 2, 4, 2, 1, 4, 3, 8, 7, 4, 3]
+[eval] accel_n16 task 0 seed 1 init 13: success=0 steps=520 time=54s inferences=52 chosen_per_sample=[6, 6, 3, 2, 3, 4, 3, 3, 1, 3, 3, 4, 1, 3, 2, 5]
+[eval] base task 0 seed 1 init 14: success=0 steps=520 time=47s
+[eval] first_n8 task 0 seed 1 init 14: success=0 steps=520 time=49s inferences=52 chosen_per_sample=[52, 0, 0, 0, 0, 0, 0, 0]
+[eval] medoid_n8 task 0 seed 1 init 14: success=0 steps=520 time=46s inferences=52 chosen_per_sample=[3, 8, 4, 5, 8, 7, 7, 10]
+[eval] accel_n8 task 0 seed 1 init 14: success=0 steps=520 time=47s inferences=52 chosen_per_sample=[6, 5, 5, 4, 9, 13, 5, 5]
+[eval] medoid_n16 task 0 seed 1 init 14: success=0 steps=520 time=55s inferences=52 chosen_per_sample=[1, 5, 4, 1, 2, 3, 5, 2, 4, 6, 1, 6, 5, 3, 3, 1]
+[eval] accel_n16 task 0 seed 1 init 14: success=0 steps=520 time=58s inferences=52 chosen_per_sample=[1, 5, 1, 4, 1, 3, 5, 3, 3, 3, 2, 5, 5, 3, 8, 0]
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /content/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+[eval] task 0: 30 episodes to run in /content/drive/MyDrive/efficient_vla_runs/noise_selection/select/task_0
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+Loading  HuggingFaceTB/SmolVLM2-500M-Video-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  37%|███▋      | 181/489 [00:00<00:00, 1807.29it/s]Loading weights:  75%|███████▍  | 365/489 [00:00<00:00, 1818.44it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 1891.53it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Reducing the number of VLM layers to 16 ...
+[eval] base task 0 seed 1 init 15: success=0 steps=520 time=48s
+[eval] first_n8 task 0 seed 1 init 15: success=0 steps=520 time=39s inferences=52 chosen_per_sample=[52, 0, 0, 0, 0, 0, 0, 0]
+[eval] medoid_n8 task 0 seed 1 init 15: success=0 steps=520 time=42s inferences=52 chosen_per_sample=[8, 6, 6, 9, 4, 6, 3, 10]
+[eval] accel_n8 task 0 seed 1 init 15: success=0 steps=520 time=45s inferences=52 chosen_per_sample=[3, 4, 7, 11, 8, 4, 6, 9]
+[eval] medoid_n16 task 0 seed 1 init 15: success=0 steps=520 time=46s inferences=52 chosen_per_sample=[5, 5, 2, 3, 2, 4, 4, 5, 3, 0, 2, 3, 3, 3, 3, 5]
+[eval] accel_n16 task 0 seed 1 init 15: success=0 steps=520 time=47s inferences=52 chosen_per_sample=[2, 2, 2, 6, 3, 3, 2, 3, 3, 2, 3, 5, 6, 5, 3, 2]
+[eval] base task 0 seed 1 init 16: success=0 steps=520 time=42s
+[eval] first_n8 task 0 seed 1 init 16: success=1 steps=269 time=22s inferences=27 chosen_per_sample=[27, 0, 0, 0, 0, 0, 0, 0]
+[eval] medoid_n8 task 0 seed 1 init 16: success=0 steps=520 time=44s inferences=52 chosen_per_sample=[6, 7, 4, 7, 11, 8, 3, 6]
+[eval] accel_n8 task 0 seed 1 init 16: success=1 steps=336 time=29s inferences=34 chosen_per_sample=[6, 7, 4, 4, 2, 3, 2, 6]
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /content/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+[eval] task 0: 20 episodes to run in /content/drive/MyDrive/efficient_vla_runs/noise_selection/select/task_0
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+Loading  HuggingFaceTB/SmolVLM2-500M-Video-Instruct weights ...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  44%|████▍     | 217/489 [00:00<00:00, 2150.85it/s]Loading weights:  96%|█████████▌| 469/489 [00:00<00:00, 2358.66it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 2342.19it/s]
+Reducing the number of VLM layers to 16 ...
+[eval] medoid_n16 task 0 seed 1 init 16: success=1 steps=267 time=31s inferences=27 chosen_per_sample=[4, 3, 0, 6, 0, 1, 2, 1, 3, 1, 0, 1, 1, 3, 0, 1]
+[eval] accel_n16 task 0 seed 1 init 16: success=1 steps=327 time=35s inferences=33 chosen_per_sample=[5, 6, 2, 2, 2, 1, 0, 3, 0, 1, 2, 1, 4, 2, 1, 1]
+[eval] base task 0 seed 1 init 17: success=0 steps=520 time=41s
+[eval] first_n8 task 0 seed 1 init 17: success=0 steps=520 time=43s inferences=52 chosen_per_sample=[52, 0, 0, 0, 0, 0, 0, 0]
+[eval] medoid_n8 task 0 seed 1 init 17: success=1 steps=267 time=24s inferences=27 chosen_per_sample=[3, 2, 5, 2, 4, 3, 4, 4]
+[eval] accel_n8 task 0 seed 1 init 17: success=0 steps=520 time=44s inferences=52 chosen_per_sample=[7, 6, 6, 10, 6, 4, 7, 6]
+[eval] medoid_n16 task 0 seed 1 init 17: success=1 steps=268 time=25s inferences=27 chosen_per_sample=[2, 5, 0, 2, 1, 1, 1, 3, 2, 1, 1, 4, 1, 0, 1, 2]
+[eval] accel_n16 task 0 seed 1 init 17: success=0 steps=520 time=49s inferences=52 chosen_per_sample=[3, 4, 3, 2, 2, 1, 2, 6, 4, 3, 1, 5, 3, 4, 4, 5]
+[eval] base task 0 seed 1 init 18: success=0 steps=520 time=41s
+[eval] first_n8 task 0 seed 1 init 18: success=0 steps=520 time=40s inferences=52 chosen_per_sample=[52, 0, 0, 0, 0, 0, 0, 0]
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /content/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+[eval] task 0: 10 episodes to run in /content/drive/MyDrive/efficient_vla_runs/noise_selection/select/task_0
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading  HuggingFaceTB/SmolVLM2-500M-Video-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  43%|████▎     | 212/489 [00:00<00:00, 2117.74it/s]Loading weights:  94%|█████████▍| 461/489 [00:00<00:00, 2333.56it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 2364.96it/s]
+Reducing the number of VLM layers to 16 ...
+[eval] medoid_n8 task 0 seed 1 init 18: success=0 steps=520 time=44s inferences=52 chosen_per_sample=[8, 3, 9, 7, 5, 8, 7, 5]
+[eval] accel_n8 task 0 seed 1 init 18: success=0 steps=520 time=40s inferences=52 chosen_per_sample=[6, 5, 11, 6, 5, 5, 7, 7]
+[eval] medoid_n16 task 0 seed 1 init 18: success=0 steps=520 time=45s inferences=52 chosen_per_sample=[5, 5, 4, 5, 2, 3, 2, 2, 1, 4, 6, 3, 1, 2, 4, 3]
+[eval] accel_n16 task 0 seed 1 init 18: success=0 steps=520 time=45s inferences=52 chosen_per_sample=[5, 0, 3, 5, 3, 1, 6, 2, 2, 4, 4, 0, 6, 3, 2, 6]
+[eval] base task 0 seed 1 init 19: success=1 steps=330 time=24s
+[eval] first_n8 task 0 seed 1 init 19: success=1 steps=331 time=25s inferences=34 chosen_per_sample=[34, 0, 0, 0, 0, 0, 0, 0]
+[eval] medoid_n8 task 0 seed 1 init 19: success=1 steps=318 time=24s inferences=32 chosen_per_sample=[4, 3, 4, 3, 2, 6, 4, 6]
+[eval] accel_n8 task 0 seed 1 init 19: success=1 steps=360 time=27s inferences=36 chosen_per_sample=[5, 7, 7, 4, 3, 2, 4, 4]
+[eval] medoid_n16 task 0 seed 1 init 19: success=0 steps=520 time=40s inferences=52 chosen_per_sample=[4, 1, 8, 1, 2, 1, 2, 3, 1, 4, 5, 3, 2, 6, 5, 4]
+[eval] accel_n16 task 0 seed 1 init 19: success=1 steps=279 time=22s inferences=28 chosen_per_sample=[4, 2, 3, 2, 0, 0, 3, 3, 3, 2, 1, 1, 0, 0, 1, 3]
+[eval] task 0 base: 8/20 = 40.0%
+[eval] task 0 first_n8: 6/20 = 30.0%
+[eval] task 0 medoid_n8: 8/20 = 40.0%
+[eval] task 0 accel_n8: 7/20 = 35.0%
+[eval] task 0 medoid_n16: 8/20 = 40.0%
+[eval] task 0 accel_n16: 8/20 = 40.0%

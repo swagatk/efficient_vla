@@ -1,0 +1,352 @@
+{
+  "n_episodes": 100,
+  "successes": {
+    "base": 52,
+    "first_n8": 54,
+    "medoid_n8": 53,
+    "accel_n8": 55,
+    "medoid_n16": 48,
+    "accel_n16": 55
+  },
+  "chosen": "accel_n8",
+  "chosen_ahead_of_base": true,
+  "comparisons": {
+    "first_n8": {
+      "n_episodes": 100,
+      "a_successes": 52,
+      "b_successes": 54,
+      "episodes_a_only": 10,
+      "episodes_b_only": 12,
+      "mcnemar_p": 0.8318119049072266,
+      "states_one_run_only": 9,
+      "state_absdiff": 18,
+      "n_states": 50,
+      "perm_p_one_run_only": 0.7673616319184041,
+      "perm_p_absdiff": 0.7673616319184041,
+      "n_perm": 20000,
+      "per_task": {
+        "0": {
+          "a": 8,
+          "b": 6,
+          "n": 20,
+          "only_a": [
+            17
+          ],
+          "only_b": []
+        },
+        "4": {
+          "a": 10,
+          "b": 12,
+          "n": 20,
+          "only_a": [],
+          "only_b": [
+            13
+          ]
+        },
+        "6": {
+          "a": 8,
+          "b": 8,
+          "n": 20,
+          "only_a": [
+            11
+          ],
+          "only_b": [
+            19
+          ]
+        },
+        "7": {
+          "a": 17,
+          "b": 17,
+          "n": 20,
+          "only_a": [],
+          "only_b": []
+        },
+        "8": {
+          "a": 9,
+          "b": 11,
+          "n": 20,
+          "only_a": [
+            13,
+            15
+          ],
+          "only_b": [
+            10,
+            14,
+            18
+          ]
+        }
+      },
+      "diff_ci95": [
+        -0.07827390799660441,
+        0.11270077899387274
+      ],
+      "qualifies": false
+    },
+    "medoid_n8": {
+      "n_episodes": 100,
+      "a_successes": 52,
+      "b_successes": 53,
+      "episodes_a_only": 11,
+      "episodes_b_only": 12,
+      "mcnemar_p": 1.0,
+      "states_one_run_only": 8,
+      "state_absdiff": 19,
+      "n_states": 50,
+      "perm_p_one_run_only": 0.8011599420028999,
+      "perm_p_absdiff": 0.8011599420028999,
+      "n_perm": 20000,
+      "per_task": {
+        "0": {
+          "a": 8,
+          "b": 8,
+          "n": 20,
+          "only_a": [],
+          "only_b": []
+        },
+        "4": {
+          "a": 10,
+          "b": 13,
+          "n": 20,
+          "only_a": [],
+          "only_b": [
+            13,
+            17
+          ]
+        },
+        "6": {
+          "a": 8,
+          "b": 8,
+          "n": 20,
+          "only_a": [
+            11,
+            13,
+            15
+          ],
+          "only_b": [
+            19
+          ]
+        },
+        "7": {
+          "a": 17,
+          "b": 15,
+          "n": 20,
+          "only_a": [],
+          "only_b": []
+        },
+        "8": {
+          "a": 9,
+          "b": 9,
+          "n": 20,
+          "only_a": [
+            12,
+            13
+          ],
+          "only_b": []
+        }
+      },
+      "diff_ci95": [
+        -0.08929611931396822,
+        0.10662975435924549
+      ],
+      "qualifies": false
+    },
+    "accel_n8": {
+      "n_episodes": 100,
+      "a_successes": 52,
+      "b_successes": 55,
+      "episodes_a_only": 7,
+      "episodes_b_only": 10,
+      "mcnemar_p": 0.629058837890625,
+      "states_one_run_only": 6,
+      "state_absdiff": 15,
+      "n_states": 50,
+      "perm_p_one_run_only": 0.9386530673466327,
+      "perm_p_absdiff": 0.9386530673466327,
+      "n_perm": 20000,
+      "per_task": {
+        "0": {
+          "a": 8,
+          "b": 7,
+          "n": 20,
+          "only_a": [
+            17
+          ],
+          "only_b": []
+        },
+        "4": {
+          "a": 10,
+          "b": 9,
+          "n": 20,
+          "only_a": [
+            12
+          ],
+          "only_b": []
+        },
+        "6": {
+          "a": 8,
+          "b": 9,
+          "n": 20,
+          "only_a": [],
+          "only_b": []
+        },
+        "7": {
+          "a": 17,
+          "b": 17,
+          "n": 20,
+          "only_a": [],
+          "only_b": []
+        },
+        "8": {
+          "a": 9,
+          "b": 13,
+          "n": 20,
+          "only_a": [
+            12
+          ],
+          "only_b": [
+            10,
+            14,
+            18
+          ]
+        }
+      },
+      "diff_ci95": [
+        -0.058055967658102524,
+        0.10729143299345811
+      ],
+      "qualifies": false
+    },
+    "medoid_n16": {
+      "n_episodes": 100,
+      "a_successes": 52,
+      "b_successes": 48,
+      "episodes_a_only": 16,
+      "episodes_b_only": 12,
+      "mcnemar_p": 0.5715881884098053,
+      "states_one_run_only": 8,
+      "state_absdiff": 16,
+      "n_states": 50,
+      "perm_p_one_run_only": 0.9470526473676316,
+      "perm_p_absdiff": 0.9470526473676316,
+      "n_perm": 20000,
+      "per_task": {
+        "0": {
+          "a": 8,
+          "b": 8,
+          "n": 20,
+          "only_a": [],
+          "only_b": [
+            14
+          ]
+        },
+        "4": {
+          "a": 10,
+          "b": 8,
+          "n": 20,
+          "only_a": [
+            19
+          ],
+          "only_b": []
+        },
+        "6": {
+          "a": 8,
+          "b": 6,
+          "n": 20,
+          "only_a": [
+            15
+          ],
+          "only_b": []
+        },
+        "7": {
+          "a": 17,
+          "b": 14,
+          "n": 20,
+          "only_a": [],
+          "only_b": []
+        },
+        "8": {
+          "a": 9,
+          "b": 12,
+          "n": 20,
+          "only_a": [
+            12,
+            15
+          ],
+          "only_b": [
+            10,
+            14,
+            18
+          ]
+        }
+      },
+      "diff_ci95": [
+        -0.143010595670798,
+        0.07179556797722626
+      ],
+      "qualifies": false
+    },
+    "accel_n16": {
+      "n_episodes": 100,
+      "a_successes": 52,
+      "b_successes": 55,
+      "episodes_a_only": 9,
+      "episodes_b_only": 12,
+      "mcnemar_p": 0.6636238098144531,
+      "states_one_run_only": 4,
+      "state_absdiff": 15,
+      "n_states": 50,
+      "perm_p_one_run_only": 0.8555572221388931,
+      "perm_p_absdiff": 0.8555572221388931,
+      "n_perm": 20000,
+      "per_task": {
+        "0": {
+          "a": 8,
+          "b": 8,
+          "n": 20,
+          "only_a": [],
+          "only_b": []
+        },
+        "4": {
+          "a": 10,
+          "b": 10,
+          "n": 20,
+          "only_a": [],
+          "only_b": []
+        },
+        "6": {
+          "a": 8,
+          "b": 7,
+          "n": 20,
+          "only_a": [
+            13
+          ],
+          "only_b": []
+        },
+        "7": {
+          "a": 17,
+          "b": 17,
+          "n": 20,
+          "only_a": [],
+          "only_b": []
+        },
+        "8": {
+          "a": 9,
+          "b": 13,
+          "n": 20,
+          "only_a": [
+            12
+          ],
+          "only_b": [
+            10,
+            14
+          ]
+        }
+      },
+      "diff_ci95": [
+        -0.06711335010228466,
+        0.11835732010824529
+      ],
+      "qualifies": false
+    }
+  }
+}

@@ -125,6 +125,12 @@ so systematic states solved here are reported as a finding in their own right.
   chunk bit for bit; 8 batched chunks match 8 single-sample calls with the same noise to 0.011 (bfloat16;
   the spread between samples is 0.35); one inference took 740 ms with 1 sample and 816 ms with 8.
 
+**Result (October 2026): not supported.** The selection stage chose `accel_n8` (55 of 100 against base 52;
+`first_n8`, no selection, 54). On the report episodes base 64/150, `accel_n8` 71/150: +4.7 points, exact 95%
+interval -3.5 to +11.9, McNemar p = 0.30. Systematic episodes: 0 of 24 for both. Harness check: base 64 here
+against 74 through lerobot-eval, within the 17 allowed. Step 3 goes ahead as planned. Records and discussion:
+`week6/noise_reachability_step2_colab/`.
+
 ## Step 3: a learned noise policy (DSRL-style), small budget
 
 A small actor maps the frozen policy's features to the noise fed into the flow, trained with SAC on task
@@ -155,7 +161,7 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
 |---|---|---|
 | 0 | Kaggle | done: about 2 h over three versions |
 | 1 | Kaggle | done: 170 min (seeds 3-15) and 16 min (repeat), plus 9.6 h lost to a version at the wrong setting |
-| 2 | Colab A100 | 600 (selection) + 300 (report) episodes; one process per task in parallel |
+| 2 | Colab A100 | done: 600 (selection) + 300 (report) episodes, one process per task in parallel; the last processes started 82 and 37 minutes after launch |
 | 3 | Colab A100 | 3,000 training episodes x 2 tasks |
 | 4 | Colab A100 | after step 3 |
 
@@ -171,7 +177,7 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
 
 ## Status
 
-Steps 0 and 1 done (above). Step 2 code written and checked locally (above); not yet run.
+Steps 0, 1 and 2 done (above); step 2 is a negative result. Step 3 next.
 
 Before step 0 ran, smoke tests on the local RTX 4090 (shared with another job), one episode each of task 0,
 seed 0, init state 0: `n_action_steps=10` through `evaluate_all.py` and `n_action_steps=50` through

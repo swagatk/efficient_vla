@@ -1,0 +1,84 @@
+{
+  "comparison": {
+    "n_episodes": 150,
+    "a_successes": 64,
+    "b_successes": 71,
+    "episodes_a_only": 13,
+    "episodes_b_only": 20,
+    "mcnemar_p": 0.296206368599087,
+    "states_one_run_only": 5,
+    "state_absdiff": 19,
+    "n_states": 50,
+    "perm_p_one_run_only": 0.9845507724613769,
+    "perm_p_absdiff": 0.9592020398980051,
+    "n_perm": 20000,
+    "per_task": {
+      "0": {
+        "a": 5,
+        "b": 7,
+        "n": 30,
+        "only_a": [],
+        "only_b": [
+          4
+        ]
+      },
+      "4": {
+        "a": 16,
+        "b": 16,
+        "n": 30,
+        "only_a": [
+          1
+        ],
+        "only_b": []
+      },
+      "6": {
+        "a": 16,
+        "b": 17,
+        "n": 30,
+        "only_a": [],
+        "only_b": []
+      },
+      "7": {
+        "a": 18,
+        "b": 19,
+        "n": 30,
+        "only_a": [],
+        "only_b": [
+          5
+        ]
+      },
+      "8": {
+        "a": 9,
+        "b": 12,
+        "n": 30,
+        "only_a": [
+          8
+        ],
+        "only_b": [
+          5
+        ]
+      }
+    },
+    "diff_ci95": [
+      -0.03458676258916989,
+      0.11921085511975164
+    ],
+    "qualifies": false
+  },
+  "gain": 0.04666666666666667,
+  "systematic": {
+    "chosen": 0,
+    "base": 0,
+    "episodes": 24
+  },
+  "hypothesis": {
+    "gain_ok": false,
+    "systematic_ok": true
+  },
+  "harness_check": {
+    "base_here": 64,
+    "lerobot_eval": 74,
+    "episodes": 150,
+    "gap_ok": true
+  }
+}

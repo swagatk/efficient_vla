@@ -1,0 +1,15 @@
+report stage: base vs accel_n8, 150 paired episodes
+
+base 64, accel_n8 71; only base 13, only accel_n8 20; exact McNemar p = 0.2962
+paired difference +4.7 points, exact 95% interval -3.5 to +11.9
+
+task | base | accel_n8
+0 | 5/30 | 7/30
+4 | 16/30 | 16/30
+6 | 16/30 | 17/30
+7 | 18/30 | 19/30
+8 | 9/30 | 12/30
+
+step-1 systematic states: accel_n8 0/24, base 0/24
+hypothesis: gain >= 10 points with p < 0.05: no; systematic episodes solved <= 10%: yes
+harness check: base 64 here, 74 through lerobot-eval on the same 150 (task, seed, init state) episodes (different noise draws, not paired); gap <= 17: yes

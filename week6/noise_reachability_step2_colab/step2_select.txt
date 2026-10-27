@@ -1,0 +1,11 @@
+select stage: 100 episodes per policy
+
+policy | successes | only base | only policy | McNemar p
+base | 52 | | |
+first_n8 | 54 | 10 | 12 | 0.8318
+medoid_n8 | 53 | 11 | 12 | 1.0000
+accel_n8 | 55 | 7 | 10 | 0.6291
+medoid_n16 | 48 | 16 | 12 | 0.5716
+accel_n16 | 55 | 9 | 12 | 0.6636
+
+chosen: accel_n8 (ahead of base: run the report stage)
