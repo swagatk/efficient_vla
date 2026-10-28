@@ -1,0 +1,30 @@
+## Colab run: critic and temperature during training (train_log.csv, mean over the episode's updates)
+
+| Task | Episode | Q mean | Alpha | Entropy | Critic loss |
+|---|---|---|---|---|---|
+| 7 | 20 | 5.86 | 0.00968 | 35.0 | 0.0427 |
+| 7 | 60 | 14.2 | 0.000805 | -72.1 | 0.096 |
+| 7 | 100 | 113 | 0.0105 | -71.9 | 7.32 |
+| 7 | 300 | 1.7e+05 | 10.9 | -70.6 | 2.27e+07 |
+| 7 | 800 | 1.96e+09 | 9.6e+04 | -70.5 | 1.07e+16 |
+| 7 | 1499 | 1.04e+11 | 5.25e+06 | -70.0 | 6.63e+19 |
+| 0 | 20 | 6.31 | 0.0094 | 38.9 | 0.0237 |
+| 0 | 60 | 31.3 | 0.00223 | -80.1 | 0.272 |
+| 0 | 100 | 443 | 0.0424 | -73.8 | 121 |
+| 0 | 300 | 1.35e+07 | 725 | -70.4 | 3.03e+11 |
+| 0 | 800 | 1.25e+10 | 5.72e+05 | -70.2 | 1.02e+18 |
+| 0 | 1499 | 3.97e+12 | 8.73e+07 | -70.0 | 9.17e+22 |
+
+## Offline critics on the task-7 replay (held-out: every 5th episode)
+
+| Variant | Episodes | Q mean at end | Success AUC: best, end | Action AUC: min-max, end | Held-out Q, success / failure |
+|---|---|---|---|---|---|
+| TD, 8 updates/decision (the run's settings) | 86 (stopped: Q > 1e4) | 1.05e+04 | 0.480, 0.480 | 0.437-0.610, 0.437 | 4.15e+03 / 4.29e+03 |
+| TD, 1 update/decision | 300 | 10.6 | 0.625, 0.328 | 0.392-0.664, 0.392 | 10.2 / 10.8 |
+| TD, 1 update/decision, no entropy term in the target | 300 | 1.35 | 0.882, 0.328 | 0.401-0.593, 0.464 | 1.28 / 1.39 |
+| TD target clipped to [0, 1], 8 updates/decision | 300 | 1 | 0.688, 0.540 | 0.459-0.698, 0.459 | 0.997 / 0.996 |
+| TD target clipped to [0, 1], 1 update/decision | 300 | 1 | 0.702, 0.541 | 0.436-0.676, 0.437 | 0.992 / 0.991 |
+| clipped, 1 update/decision, fixed alpha 0.001 | 300 | 1 | 0.734, 0.539 | 0.407-0.599, 0.407 | 0.995 / 0.994 |
+| Monte Carlo return, 1 update/decision | 300 | 0.446 | 0.885, 0.882 | 0.451-0.519, 0.500 | 0.736 / 0.173 |
+| Monte Carlo return, 8 updates/decision | 300 | 0.443 | 0.880, 0.880 | 0.456-0.512, 0.464 | 0.715 / 0.165 |
+| Monte Carlo return, critic only, all 1500 episodes | 1500 | 0.385 | 0.907, 0.887 | 0.474-0.587, 0.581 | 0.641 / 0.0779 |

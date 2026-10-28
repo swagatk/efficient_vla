@@ -1,0 +1,122 @@
+{
+  "7": {
+    "comparison": {
+      "n_episodes": 30,
+      "a_successes": 18,
+      "b_successes": 11,
+      "episodes_a_only": 10,
+      "episodes_b_only": 3,
+      "mcnemar_p": 0.09228515625,
+      "states_one_run_only": 4,
+      "state_absdiff": 11,
+      "n_states": 10,
+      "perm_p_one_run_only": 0.0511974401279936,
+      "perm_p_absdiff": 0.16909154542272886,
+      "n_perm": 20000,
+      "per_task": {
+        "7": {
+          "a": 18,
+          "b": 11,
+          "n": 30,
+          "only_a": [
+            3,
+            4,
+            6,
+            7
+          ],
+          "only_b": []
+        }
+      },
+      "diff_ci95": [
+        -0.38966973630766866,
+        0.03304733400283544
+      ],
+      "qualifies": false
+    },
+    "gain": -0.23333333333333334,
+    "gain_ok": false,
+    "train": {
+      "episodes": 1500,
+      "warmup": [
+        11,
+        20
+      ],
+      "first_after_warmup": [
+        69,
+        100
+      ],
+      "last": [
+        46,
+        100
+      ]
+    }
+  },
+  "0": {
+    "comparison": {
+      "n_episodes": 30,
+      "a_successes": 5,
+      "b_successes": 8,
+      "episodes_a_only": 0,
+      "episodes_b_only": 3,
+      "mcnemar_p": 0.25,
+      "states_one_run_only": 1,
+      "state_absdiff": 3,
+      "n_states": 10,
+      "perm_p_one_run_only": 0.40507974601269936,
+      "perm_p_absdiff": 0.40507974601269936,
+      "n_perm": 20000,
+      "per_task": {
+        "0": {
+          "a": 5,
+          "b": 8,
+          "n": 30,
+          "only_a": [],
+          "only_b": [
+            9
+          ]
+        }
+      },
+      "diff_ci95": [
+        -0.041519645235742725,
+        0.1
+      ],
+      "qualifies": false
+    },
+    "gain": 0.1,
+    "gain_ok": false,
+    "systematic": {
+      "actor": [
+        0,
+        15
+      ],
+      "actor_reachable": [
+        8,
+        15
+      ],
+      "base": [
+        0,
+        15
+      ],
+      "base_reachable": [
+        5,
+        15
+      ],
+      "ok": true
+    },
+    "train": {
+      "episodes": 1500,
+      "warmup": [
+        9,
+        20
+      ],
+      "first_after_warmup": [
+        37,
+        100
+      ],
+      "last": [
+        38,
+        100
+      ]
+    }
+  }
+}

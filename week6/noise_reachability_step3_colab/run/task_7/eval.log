@@ -1,0 +1,158 @@
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /content/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+[eval] task 7: 60 episodes to run in /content/drive/MyDrive/efficient_vla_runs/noise_sac/run/task_7/eval
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+Loading  HuggingFaceTB/SmolVLM2-500M-Video-Instruct weights ...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  49%|████▉     | 239/489 [00:00<00:00, 2361.12it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 2613.57it/s]
+Reducing the number of VLM layers to 16 ...
+[eval] base task 7 seed 0 init 0: success=0 steps=520 time=39s
+[eval] actor task 7 seed 0 init 0: success=0 steps=520 time=37s inferences=52
+[eval] base task 7 seed 0 init 1: success=1 steps=237 time=16s
+[eval] actor task 7 seed 0 init 1: success=1 steps=268 time=20s inferences=27
+[eval] base task 7 seed 0 init 2: success=1 steps=429 time=28s
+[eval] actor task 7 seed 0 init 2: success=1 steps=323 time=23s inferences=33
+[eval] base task 7 seed 0 init 3: success=1 steps=330 time=22s
+[eval] actor task 7 seed 0 init 3: success=0 steps=520 time=38s inferences=52
+[eval] base task 7 seed 0 init 4: success=0 steps=520 time=35s
+[eval] actor task 7 seed 0 init 4: success=0 steps=520 time=36s inferences=52
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /content/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+[eval] task 7: 50 episodes to run in /content/drive/MyDrive/efficient_vla_runs/noise_sac/run/task_7/eval
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading  HuggingFaceTB/SmolVLM2-500M-Video-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  49%|████▉     | 239/489 [00:00<00:00, 2381.33it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 2712.85it/s]
+Reducing the number of VLM layers to 16 ...
+[eval] base task 7 seed 0 init 5: success=0 steps=520 time=38s
+[eval] actor task 7 seed 0 init 5: success=0 steps=520 time=37s inferences=52
+[eval] base task 7 seed 0 init 6: success=1 steps=230 time=16s
+[eval] actor task 7 seed 0 init 6: success=0 steps=520 time=36s inferences=52
+[eval] base task 7 seed 0 init 7: success=1 steps=228 time=16s
+[eval] actor task 7 seed 0 init 7: success=0 steps=520 time=36s inferences=52
+[eval] base task 7 seed 0 init 8: success=0 steps=520 time=33s
+[eval] actor task 7 seed 0 init 8: success=1 steps=238 time=18s inferences=24
+[eval] base task 7 seed 0 init 9: success=1 steps=308 time=21s
+[eval] actor task 7 seed 0 init 9: success=1 steps=272 time=20s inferences=28
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /content/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+[eval] task 7: 40 episodes to run in /content/drive/MyDrive/efficient_vla_runs/noise_sac/run/task_7/eval
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading  HuggingFaceTB/SmolVLM2-500M-Video-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  51%|█████     | 248/489 [00:00<00:00, 2456.84it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 2781.37it/s]
+Reducing the number of VLM layers to 16 ...
+[eval] base task 7 seed 1 init 0: success=1 steps=263 time=22s
+[eval] actor task 7 seed 1 init 0: success=1 steps=254 time=19s inferences=26
+[eval] base task 7 seed 1 init 1: success=1 steps=238 time=16s
+[eval] actor task 7 seed 1 init 1: success=1 steps=248 time=18s inferences=25
+[eval] base task 7 seed 1 init 2: success=0 steps=520 time=33s
+[eval] actor task 7 seed 1 init 2: success=0 steps=520 time=36s inferences=52
+[eval] base task 7 seed 1 init 3: success=1 steps=386 time=26s
+[eval] actor task 7 seed 1 init 3: success=0 steps=520 time=39s inferences=52
+[eval] base task 7 seed 1 init 4: success=1 steps=247 time=17s
+[eval] actor task 7 seed 1 init 4: success=0 steps=520 time=37s inferences=52
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /content/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+[eval] task 7: 30 episodes to run in /content/drive/MyDrive/efficient_vla_runs/noise_sac/run/task_7/eval
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading  HuggingFaceTB/SmolVLM2-500M-Video-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  49%|████▉     | 240/489 [00:00<00:00, 2390.89it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 2634.45it/s]
+Reducing the number of VLM layers to 16 ...
+[eval] base task 7 seed 1 init 5: success=0 steps=520 time=37s
+[eval] actor task 7 seed 1 init 5: success=0 steps=520 time=37s inferences=52
+[eval] base task 7 seed 1 init 6: success=0 steps=520 time=34s
+[eval] actor task 7 seed 1 init 6: success=0 steps=520 time=38s inferences=52
+[eval] base task 7 seed 1 init 7: success=1 steps=237 time=17s
+[eval] actor task 7 seed 1 init 7: success=0 steps=520 time=36s inferences=52
+[eval] base task 7 seed 1 init 8: success=1 steps=233 time=17s
+[eval] actor task 7 seed 1 init 8: success=0 steps=520 time=37s inferences=52
+[eval] base task 7 seed 1 init 9: success=1 steps=232 time=17s
+[eval] actor task 7 seed 1 init 9: success=0 steps=520 time=37s inferences=52
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /content/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+[eval] task 7: 20 episodes to run in /content/drive/MyDrive/efficient_vla_runs/noise_sac/run/task_7/eval
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+Loading  HuggingFaceTB/SmolVLM2-500M-Video-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  49%|████▉     | 239/489 [00:00<00:00, 2319.66it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 2634.52it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Reducing the number of VLM layers to 16 ...
+[eval] base task 7 seed 2 init 0: success=1 steps=486 time=36s
+[eval] actor task 7 seed 2 init 0: success=1 steps=248 time=19s inferences=25
+[eval] base task 7 seed 2 init 1: success=1 steps=229 time=16s
+[eval] actor task 7 seed 2 init 1: success=1 steps=249 time=18s inferences=25
+[eval] base task 7 seed 2 init 2: success=0 steps=520 time=33s
+[eval] actor task 7 seed 2 init 2: success=1 steps=368 time=26s inferences=37
+[eval] base task 7 seed 2 init 3: success=1 steps=441 time=31s
+[eval] actor task 7 seed 2 init 3: success=0 steps=520 time=38s inferences=52
+[eval] base task 7 seed 2 init 4: success=0 steps=520 time=34s
+[eval] actor task 7 seed 2 init 4: success=0 steps=520 time=36s inferences=52
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /content/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+[eval] task 7: 10 episodes to run in /content/drive/MyDrive/efficient_vla_runs/noise_sac/run/task_7/eval
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+Loading  HuggingFaceTB/SmolVLM2-500M-Video-Instruct weights ...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  49%|████▊     | 238/489 [00:00<00:00, 2378.22it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 2690.41it/s]
+Reducing the number of VLM layers to 16 ...
+[eval] base task 7 seed 2 init 5: success=0 steps=520 time=37s
+[eval] actor task 7 seed 2 init 5: success=0 steps=520 time=36s inferences=52
+[eval] base task 7 seed 2 init 6: success=0 steps=520 time=35s
+[eval] actor task 7 seed 2 init 6: success=0 steps=520 time=38s inferences=52
+[eval] base task 7 seed 2 init 7: success=1 steps=235 time=16s
+[eval] actor task 7 seed 2 init 7: success=0 steps=520 time=36s inferences=52
+[eval] base task 7 seed 2 init 8: success=0 steps=520 time=33s
+[eval] actor task 7 seed 2 init 8: success=1 steps=241 time=18s inferences=25
+[eval] base task 7 seed 2 init 9: success=1 steps=240 time=17s
+[eval] actor task 7 seed 2 init 9: success=1 steps=239 time=18s inferences=24
+[eval] task 7 base: 18/30 = 60.0%
+[eval] task 7 actor: 11/30 = 36.7%
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /content/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+[eval] task 7: 0 episodes to run in /content/drive/MyDrive/efficient_vla_runs/noise_sac/run/task_7/eval
+[eval] task 7 base: 18/30 = 60.0%
+[eval] task 7 actor: 11/30 = 36.7%

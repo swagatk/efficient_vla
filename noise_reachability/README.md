@@ -179,6 +179,15 @@ task 0 (init states 2, 5, 6, 7, 8), so the second part of the hypothesis is test
   unchanged does too, and a fixed chosen noise gives the same chunk twice. Then a smoke run of 3 training
   episodes and 1 evaluation episode per policy through the runner (step 6).
 
+**Result (October 2026): not a test of the hypothesis; SAC's critic diverged.** Q passed 100 by episode
+100 on both tasks (rewards are 0 or 1) and ended at 1.0e11 (task 7) and 4.0e12 (task 0), with the
+automatic temperature at 5.2e6 and 8.7e7. As measured, the final actors against the paired base: task 7
+11/30 vs 18/30 (McNemar p = 0.092), task 0 8/30 vs 5/30 (p = 0.25), task 0 systematic episodes 0/15 for
+both. Offline re-runs on the recorded task-7 replay reproduce the divergence; a critic regressed on Monte
+Carlo returns is stable and predicts success (held-out AUC 0.89), but no critic separated noises clearly,
+and the run's data cannot test that cleanly because the stored noise depends on the state. Records,
+diagnosis and offline runs: `week6/noise_reachability_step3_colab/`.
+
 ## Step 4: a weight update aimed at systematic states
 
 Only if steps 1-3 confirm that the noise-space methods leave the systematic states unsolved. A LoRA update
@@ -199,7 +208,7 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
 | 0 | Kaggle | done: about 2 h over three versions |
 | 1 | Kaggle | done: 170 min (seeds 3-15) and 16 min (repeat), plus 9.6 h lost to a version at the wrong setting |
 | 2 | Colab A100 | done: 600 (selection) + 300 (report) episodes, one process per task in parallel; the last processes started 82 and 37 minutes after launch |
-| 3 | Colab A100 | 1,500 training episodes x 2 tasks in parallel, then 120 evaluation episodes; estimated 20-30 h wall clock from the step-2 episode times (not measured yet) |
+| 3 | Colab A100 | done: 1,500 training episodes x 2 tasks in parallel (episode time summed to 13.7 h and 15.9 h), then 120 evaluation episodes; launched 2026-10-27 14:13 UTC, last evaluation process started 2026-10-28 09:18 UTC, including a disconnect of about 2 h |
 | 4 | Colab A100 | after step 3 |
 
 ## Files
@@ -218,8 +227,9 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
 
 ## Status
 
-Steps 0, 1 and 2 done (above); step 2 is a negative result. Step 3 code written and checked on CPU (above); the
-real-model checks and the smoke run run on Colab before training (the local GPU was busy); not yet run.
+Steps 0, 1 and 2 done (above); step 2 is a negative result. Step 3 ran on Colab and failed as a test: the
+critic diverged (above). Next, before any further RL: check on base-policy rollouts, whose noise is independent
+of the state, whether a Monte Carlo critic can tell noises apart at all. Step 4 waits on that.
 
 Before step 0 ran, smoke tests on the local RTX 4090 (shared with another job), one episode each of task 0,
 seed 0, init state 0: `n_action_steps=10` through `evaluate_all.py` and `n_action_steps=50` through

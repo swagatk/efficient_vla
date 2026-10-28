@@ -1,0 +1,4 @@
+{"episode": 24, "replay": 801, "auc_q": 0.4489, "auc_action": 0.6103, "q_held_succ": 8.2327, "q_held_fail": 8.4289, "n_held": 222, "q_mean": 7.9891, "critic_loss": 0.0065, "entropy": 13.5611, "alpha": 0.0068} 41s
+{"episode": 49, "replay": 1515, "auc_q": 0.4274, "auc_action": 0.5255, "q_held_succ": 400.3557, "q_held_fail": 414.4707, "n_held": 359, "q_mean": 388.0936, "critic_loss": 12.5642, "entropy": -132.5398, "alpha": 0.0255} 125s
+{"episode": 74, "replay": 2173, "auc_q": 0.4799, "auc_action": 0.4373, "q_held_succ": 4151.5625, "q_held_fail": 4294.0474, "n_held": 507, "q_mean": 4110.1131, "critic_loss": 865.8896, "entropy": -120.7922, "alpha": 0.1705} 201s
+stopped: |Q mean| 1.05e+04 > 10000.0 at episode 85

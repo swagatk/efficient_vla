@@ -1,0 +1,12 @@
+{"episode": 24, "replay": 801, "auc_q": 0.4835, "auc_action": 0.424, "q_held_succ": 0.2759, "q_held_fail": 0.2044, "n_held": 222, "q_mean": 0.2509, "critic_loss": 0.0011, "entropy": -7.7172, "alpha": 0.001} 6s
+{"episode": 49, "replay": 1515, "auc_q": 0.6592, "auc_action": 0.4387, "q_held_succ": 0.7947, "q_held_fail": 0.7087, "n_held": 359, "q_mean": 0.7396, "critic_loss": 0.0008, "entropy": -7.1309, "alpha": 0.001} 15s
+{"episode": 74, "replay": 2173, "auc_q": 0.7343, "auc_action": 0.4157, "q_held_succ": 0.9788, "q_held_fail": 0.9444, "n_held": 507, "q_mean": 0.9665, "critic_loss": 0.0002, "entropy": 26.4353, "alpha": 0.001} 24s
+{"episode": 99, "replay": 2914, "auc_q": 0.7129, "auc_action": 0.5989, "q_held_succ": 1.0004, "q_held_fail": 0.9938, "n_held": 689, "q_mean": 0.9999, "critic_loss": 0.0, "entropy": 40.6919, "alpha": 0.001} 35s
+{"episode": 124, "replay": 3709, "auc_q": 0.6433, "auc_action": 0.5671, "q_held_succ": 0.994, "q_held_fail": 0.9898, "n_held": 831, "q_mean": 1.0, "critic_loss": 0.0, "entropy": 41.9179, "alpha": 0.001} 46s
+{"episode": 149, "replay": 4536, "auc_q": 0.6043, "auc_action": 0.4891, "q_held_succ": 0.9975, "q_held_fail": 0.9953, "n_held": 1071, "q_mean": 0.9999, "critic_loss": 0.0, "entropy": 42.5627, "alpha": 0.001} 59s
+{"episode": 174, "replay": 5276, "auc_q": 0.6039, "auc_action": 0.4998, "q_held_succ": 0.9918, "q_held_fail": 0.9899, "n_held": 1258, "q_mean": 1.0, "critic_loss": 0.0, "entropy": 43.297, "alpha": 0.001} 69s
+{"episode": 199, "replay": 5938, "auc_q": 0.5857, "auc_action": 0.5143, "q_held_succ": 0.9935, "q_held_fail": 0.9923, "n_held": 1465, "q_mean": 1.0, "critic_loss": 0.0, "entropy": 43.6338, "alpha": 0.001} 79s
+{"episode": 224, "replay": 6666, "auc_q": 0.579, "auc_action": 0.4956, "q_held_succ": 0.9998, "q_held_fail": 0.9985, "n_held": 1618, "q_mean": 1.0, "critic_loss": 0.0, "entropy": 44.0135, "alpha": 0.001} 90s
+{"episode": 249, "replay": 7343, "auc_q": 0.5756, "auc_action": 0.4773, "q_held_succ": 0.9943, "q_held_fail": 0.9929, "n_held": 1835, "q_mean": 1.0, "critic_loss": 0.0, "entropy": 44.22, "alpha": 0.001} 100s
+{"episode": 274, "replay": 7979, "auc_q": 0.591, "auc_action": 0.4394, "q_held_succ": 0.9986, "q_held_fail": 0.997, "n_held": 1989, "q_mean": 1.0, "critic_loss": 0.0, "entropy": 44.4589, "alpha": 0.001} 109s
+{"episode": 299, "replay": 8839, "auc_q": 0.5388, "auc_action": 0.4068, "q_held_succ": 0.9948, "q_held_fail": 0.9943, "n_held": 2159, "q_mean": 1.0001, "critic_loss": 0.0, "entropy": 44.6314, "alpha": 0.001} 121s

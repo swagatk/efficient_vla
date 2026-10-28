@@ -1,0 +1,11 @@
+step 3: noise policy (SAC) vs base, paired episodes per task
+
+task | base | actor | only base | only actor | McNemar p | difference (95% interval) | +10 points, p < 0.05
+7 | 18/30 | 11/30 | 10 | 3 | 0.0923 | -23.3 (-39.0 to +3.3) | no
+0 | 5/30 | 8/30 | 0 | 3 | 0.2500 | +10.0 (-4.2 to +10.0) | no
+
+task 0 systematic states: actor 0/15, reachable 8/15 (base 0/15 and 5/15); systematic below a third of reachable: yes
+
+task 7 training (1500 episodes, stochastic actor, init states 10-49): warm-up 11/20, first 100 after warm-up 69/100, last 100 46/100
+
+task 0 training (1500 episodes, stochastic actor, init states 10-49): warm-up 9/20, first 100 after warm-up 37/100, last 100 38/100
