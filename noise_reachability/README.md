@@ -188,6 +188,49 @@ Carlo returns is stable and predicts success (held-out AUC 0.89), but no critic 
 and the run's data cannot test that cleanly because the stored noise depends on the state. Records,
 diagnosis and offline runs: `week6/noise_reachability_step3_colab/`.
 
+## Step 3b: is there a noise signal a critic can learn?
+
+Step 3's data cannot say whether the executed noise affects success in a way a critic can learn from the
+policy's features: after warm-up its noise came from the actor, a function of the state. Here the noise is
+the base policy's own N(0, 1) draw, independent of the state, so any held-out link between noise and success
+is the noise's effect. No RL: base rollouts are logged, then a critic is fitted offline.
+
+**Hypothesis.** On task 7 a critic regressed on Monte Carlo returns ranks held-out transitions of successful
+episodes above failed ones by the noise's part of its value with AUC at least 0.55, and the 95% interval's
+lower end is above 0.5. (0.55 is a judgement of the smallest signal worth a causal test, not derived.) If
+so, the next test is causal: a critic-guided choice among sampled noises against the paired base on init
+states 0-9 x seeds 0-2. If not, noise-space learning on task 7 has no detectable signal at this data size,
+and step 4 follows.
+
+*Protocol, fixed before the run.*
+
+- **Data.** `lerobot/smolvla_libero` at revision `a24f1f3804` (as steps 0-1), `n_action_steps=10`, 520
+  steps, the camera rename map, soft resets; task 7, init states 10-49 drawn per episode as in step 3 (none
+  of the report states 0-9). 4 collection streams (`--seed` 0-3) x 250 episodes = 1,000 episodes, through
+  `train_noise_sac.py` with every episode a warm-up episode and no updates (`--warmup_episodes 250
+  --num_episodes 250 --updates_per_decision 0`). Per inference it stores the features (step 3's 968) and
+  the executed noise of the 70 executed entries, scaled by `--noise_scale 5`: the clip at 0.999 x 5 touches
+  only draws beyond 4.995 (about 2 of the run's roughly 3 million entries, expected), and the others equal
+  the base's draw up to float rounding. Kaggle 2 x T4, two streams per GPU.
+- **Split.** Episodes whose index in their stream is 4 mod 5 are held out (200 episodes); the critics train on
+  the other 800. Nothing is tuned on the held-out episodes.
+- **Critic.** Step 3's twin critic (3 x 256, layer-normalised input), min of the two heads, regressed by MSE
+  on the Monte Carlo return of each decision (0.99^(decisions to the end) if the episode succeeded, else 0),
+  Adam 3e-4, batch 256, as many updates as training transitions; 3 critics with seeds 0-2, averaged.
+- **Measure.** For a held-out transition, the noise's part of its value is Q(s, a) minus the mean of Q(s, a_k)
+  over 8 noises a_k drawn like the base's. Action AUC: the probability that this score is higher for a
+  transition of a successful episode than of a failed one. 95% interval: percentile bootstrap over held-out
+  episodes (2,000 resamples). Also reported: success AUC of Q(s, a) itself (whether the critic learned the
+  state value at all), and a control with the noises shuffled across training transitions, which should give
+  an action AUC near 0.5; if the control's interval excludes 0.5 the measure is biased and the result is not
+  read.
+- **Checks before running.** CPU tests of the analysis on synthetic data with and without a noise effect;
+  on 10 synthetic datasets without one, 1 of the 20 intervals (critic and control) excluded 0.5
+  (`calibration/step3b_null_calibration.json`; small critics on 4 features, so a sanity check of the
+  measure, not an estimate of its error rate in the real run). The collection path is step 3's warm-up; on Kaggle the
+  notebook repeats `check_step3_steering.py` (no chosen noise reproduces the base chunk bit for bit) and a
+  2-episode smoke run through the runner before launch (the local GPU was busy).
+
 ## Step 4: a weight update aimed at systematic states
 
 Only if steps 1-3 confirm that the noise-space methods leave the systematic states unsolved. A LoRA update
@@ -209,6 +252,7 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
 | 1 | Kaggle | done: 170 min (seeds 3-15) and 16 min (repeat), plus 9.6 h lost to a version at the wrong setting |
 | 2 | Colab A100 | done: 600 (selection) + 300 (report) episodes, one process per task in parallel; the last processes started 82 and 37 minutes after launch |
 | 3 | Colab A100 | done: 1,500 training episodes x 2 tasks in parallel (episode time summed to 13.7 h and 15.9 h), then 120 evaluation episodes; launched 2026-10-27 14:13 UTC, last evaluation process started 2026-10-28 09:18 UTC, including a disconnect of about 2 h |
+| 3b | Kaggle 2 x T4 | 1,000 base episodes in 4 streams, then 6 critic fits; time per episode on a T4 not measured yet (the notebook prints it after 10 minutes) |
 | 4 | Colab A100 | after step 3 |
 
 ## Files
@@ -224,6 +268,8 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
   choose the noise), `train_noise_sac.py` and `run_step3_noise_sac.sh`: step-3 training and paired evaluation;
   `check_step3_steering.py`: the real-model checks; `colab_step3_noise_sac.ipynb` runs it all on Colab;
   `analyze_step3.py`: step-3 report.
+- `analyze_noise_signal.py`: step-3b critics, action AUC and decision; `kaggle_step3b_noise_signal.ipynb` runs the
+  collection and the analysis on Kaggle; `calibration/step3b_null_calibration.py`: the intervals' false-positive check.
 
 ## Status
 
