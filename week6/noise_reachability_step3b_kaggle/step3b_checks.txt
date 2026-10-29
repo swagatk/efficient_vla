@@ -1,0 +1,32 @@
+## Collection streams (run/seed_<s>/task_7/)
+
+| Seed | Episodes (0-249 once, in order) | Successes | Decisions | Records | Commit | Dirty | Settings as protocol | Episode time (h) | First record (UTC) | Last record | Tracebacks |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 0 | 250 (yes) | 167 | 9181 | 10 | 47cb550 | False | True | 4.02 | 2026-10-28T19:51 | 2026-10-28T23:33 | 0 |
+| 1 | 250 (yes) | 174 | 9074 | 10 | 47cb550 | False | True | 3.89 | 2026-10-28T19:52 | 2026-10-28T23:28 | 0 |
+| 2 | 250 (yes) | 171 | 8980 | 10 | 47cb550 | False | True | 3.97 | 2026-10-28T19:53 | 2026-10-28T23:31 | 0 |
+| 3 | 250 (yes) | 167 | 9053 | 10 | 47cb550 | False | True | 3.88 | 2026-10-28T19:54 | 2026-10-28T23:30 | 0 |
+
+## Analysis: Kaggle against the local re-run
+
+| Measure | Kaggle (Tesla T4, Tesla T4; 47cb550, dirty False) | Local (NVIDIA GeForce RTX 4090 Laptop GPU; 47cb550, dirty False) | Difference |
+|---|---|---|---|
+| critic action AUC | 0.5660 (0.5489 to 0.5833) | 0.5701 (0.5525 to 0.5874) | +0.0041 |
+| critic success AUC | 0.9301 | 0.9289 | -0.0012 |
+| control action AUC | 0.5468 (0.5315 to 0.5621) | 0.5567 (0.5419 to 0.5717) | +0.0099 |
+| control success AUC | 0.9248 | 0.9322 | +0.0074 |
+| critic minus control, action AUC | +0.0191 | +0.0134 | |
+| decision | not read (control biased) | not read (control biased) | |
+
+Data: 200 held-out episodes, 7513 held-out transitions, 28775 training transitions (local: 200, 7513, 28775); same settings: True; same stream counts: True.
+
+## Replay data and checkpoints (--replay, not in git)
+
+| Seed | Checkpoint episodes | Parts listed / on disk | Transitions | Logged decisions | Terminal rewards | Logged successes | Logs equal to run/ |
+|---|---|---|---|---|---|---|---|
+| 0 | 250 | 10 / 10 | 9181 | 9181 | 167 | 167 | True |
+| 1 | 250 | 10 / 10 | 9074 | 9074 | 174 | 174 | True |
+| 2 | 250 | 10 / 10 | 8980 | 8980 | 171 | 171 | True |
+| 3 | 250 | 10 / 10 | 9053 | 9053 | 167 | 167 | True |
+
+Stored noise x 5 (36288 decisions x 70 entries): mean 0.0003, std 1.0003, skew -0.0007, excess kurtosis 0.0012, max |u| 0.9645; KS against N(0, 1) on the first 200,000 entries: D 0.0024, p 0.20; repeated rows: 0.

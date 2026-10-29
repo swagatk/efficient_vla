@@ -231,6 +231,12 @@ and step 4 follows.
   notebook repeats `check_step3_steering.py` (no chosen noise reproduces the base chunk bit for bit) and a
   2-episode smoke run through the runner before launch (the local GPU was busy).
 
+**Result (2026-10-29): not read.** The shuffled-noise control's action AUC was 0.547 (95% interval 0.532 to
+0.562), so its interval excludes 0.5 and the measure is biased on this data; the critic's action AUC was 0.566
+(0.549 to 0.583), success AUC 0.930. A local re-run of the analysis on the same files and commit gave 0.570 and
+0.557 (not bit-identical across GPUs), with the same decision. Under the protocol, step 4 follows. Records and
+checks: `week6/noise_reachability_step3b_kaggle/`.
+
 ## Step 4: a weight update aimed at systematic states
 
 Only if steps 1-3 confirm that the noise-space methods leave the systematic states unsolved. A LoRA update
@@ -252,7 +258,7 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
 | 1 | Kaggle | done: 170 min (seeds 3-15) and 16 min (repeat), plus 9.6 h lost to a version at the wrong setting |
 | 2 | Colab A100 | done: 600 (selection) + 300 (report) episodes, one process per task in parallel; the last processes started 82 and 37 minutes after launch |
 | 3 | Colab A100 | done: 1,500 training episodes x 2 tasks in parallel (episode time summed to 13.7 h and 15.9 h), then 120 evaluation episodes; launched 2026-10-27 14:13 UTC, last evaluation process started 2026-10-28 09:18 UTC, including a disconnect of about 2 h |
-| 3b | Kaggle 2 x T4 | 1,000 base episodes in 4 streams, then 6 critic fits; time per episode on a T4 not measured yet (the notebook prints it after 10 minutes) |
+| 3b | Kaggle 2 x T4 | done: 1,000 base episodes in 4 streams (3.9-4.0 h of episode time per stream, two streams per T4), then 6 critic fits; launched 2026-10-28 19:51 UTC, analysis at 2026-10-29 00:13 UTC |
 | 4 | Colab A100 | after step 3 |
 
 ## Files
@@ -274,8 +280,8 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
 ## Status
 
 Steps 0, 1 and 2 done (above); step 2 is a negative result. Step 3 ran on Colab and failed as a test: the
-critic diverged (above). Next, before any further RL: check on base-policy rollouts, whose noise is independent
-of the state, whether a Monte Carlo critic can tell noises apart at all. Step 4 waits on that.
+critic diverged (above). Step 3b (whether a Monte Carlo critic can tell the base's own noises apart) ran on
+Kaggle and is not read: its shuffled-noise control was biased (above). Next: step 4.
 
 Before step 0 ran, smoke tests on the local RTX 4090 (shared with another job), one episode each of task 0,
 seed 0, init state 0: `n_action_steps=10` through `evaluate_all.py` and `n_action_steps=50` through

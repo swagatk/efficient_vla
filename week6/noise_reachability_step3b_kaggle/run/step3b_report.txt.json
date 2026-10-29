@@ -1,0 +1,111 @@
+{
+ "args": {
+  "roots": [
+   "/kaggle/working/noise_signal_step3b/seed_0/task_7",
+   "/kaggle/working/noise_signal_step3b/seed_1/task_7",
+   "/kaggle/working/noise_signal_step3b/seed_2/task_7",
+   "/kaggle/working/noise_signal_step3b/seed_3/task_7"
+  ],
+  "out": "/kaggle/working/noise_signal_step3b/step3b_report.txt",
+  "n_critics": 3,
+  "n_boot": 2000,
+  "device": "cuda"
+ },
+ "settings": {
+  "task_id": 7,
+  "policy_path": "/root/.cache/huggingface/hub/models--lerobot--smolvla_libero/snapshots/a24f1f380461b665158d52acd140152c79e8b36d",
+  "n_action_steps": 10,
+  "rename_map": {
+   "observation.images.image": "observation.images.camera1",
+   "observation.images.image2": "observation.images.camera2"
+  },
+  "max_steps": 520,
+  "train_init_states": "10-49",
+  "num_episodes": 250,
+  "warmup_episodes": 250,
+  "updates_per_decision": 0,
+  "noise_scale": 5.0,
+  "gamma": 0.99,
+  "train_hard_reset": 0
+ },
+ "streams": {
+  "0": [
+   250,
+   167
+  ],
+  "1": [
+   250,
+   174
+  ],
+  "2": [
+   250,
+   171
+  ],
+  "3": [
+   250,
+   167
+  ]
+ },
+ "collection_commit": "47cb55087981347c07cbb38007e1fcd703fa5ad2",
+ "analysis_provenance": {
+  "date": "2026-10-29T00:13:31+00:00",
+  "host": "1e48e6d60617",
+  "git_commit": "47cb55087981347c07cbb38007e1fcd703fa5ad2",
+  "git_dirty": false,
+  "packages": {
+   "torch": {
+    "version": "2.11.0",
+    "commit": null
+   },
+   "numpy": {
+    "version": "2.2.6",
+    "commit": null
+   },
+   "scipy": {
+    "version": "1.17.1",
+    "commit": null
+   }
+  },
+  "gpus": [
+   "Tesla T4",
+   "Tesla T4"
+  ],
+  "env": {
+   "MUJOCO_GL": "egl",
+   "PYOPENGL_PLATFORM": "egl"
+  },
+  "settings": {
+   "roots": [
+    "/kaggle/working/noise_signal_step3b/seed_0/task_7",
+    "/kaggle/working/noise_signal_step3b/seed_1/task_7",
+    "/kaggle/working/noise_signal_step3b/seed_2/task_7",
+    "/kaggle/working/noise_signal_step3b/seed_3/task_7"
+   ],
+   "out": "/kaggle/working/noise_signal_step3b/step3b_report.txt",
+   "n_critics": 3,
+   "n_boot": 2000,
+   "device": "cuda"
+  }
+ },
+ "n_train_transitions": 28775,
+ "n_held_transitions": 7513,
+ "n_held_episodes": 200,
+ "n_updates": 28775,
+ "critic": {
+  "action_auc": 0.5659591550002508,
+  "action_ci": [
+   0.5488616785230599,
+   0.5832810849477071
+  ],
+  "success_auc": 0.9301257458327344
+ },
+ "control": {
+  "action_auc": 0.5468467437935746,
+  "action_ci": [
+   0.5315494476312533,
+   0.5621470276206662
+  ],
+  "success_auc": 0.9247568274152904
+ },
+ "decision": "not read (control biased)"
+}

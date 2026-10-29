@@ -1,0 +1,110 @@
+{
+ "args": {
+  "roots": [
+   "outputs/step3b_kaggle/analysis/seed_0/task_7",
+   "outputs/step3b_kaggle/analysis/seed_1/task_7",
+   "outputs/step3b_kaggle/analysis/seed_2/task_7",
+   "outputs/step3b_kaggle/analysis/seed_3/task_7"
+  ],
+  "out": "outputs/step3b_kaggle/local_rerun/step3b_report.txt",
+  "n_critics": 3,
+  "n_boot": 2000,
+  "device": "cuda"
+ },
+ "settings": {
+  "task_id": 7,
+  "policy_path": "/root/.cache/huggingface/hub/models--lerobot--smolvla_libero/snapshots/a24f1f380461b665158d52acd140152c79e8b36d",
+  "n_action_steps": 10,
+  "rename_map": {
+   "observation.images.image": "observation.images.camera1",
+   "observation.images.image2": "observation.images.camera2"
+  },
+  "max_steps": 520,
+  "train_init_states": "10-49",
+  "num_episodes": 250,
+  "warmup_episodes": 250,
+  "updates_per_decision": 0,
+  "noise_scale": 5.0,
+  "gamma": 0.99,
+  "train_hard_reset": 0
+ },
+ "streams": {
+  "0": [
+   250,
+   167
+  ],
+  "1": [
+   250,
+   174
+  ],
+  "2": [
+   250,
+   171
+  ],
+  "3": [
+   250,
+   167
+  ]
+ },
+ "collection_commit": "47cb55087981347c07cbb38007e1fcd703fa5ad2",
+ "analysis_provenance": {
+  "date": "2026-10-29T09:29:51+00:00",
+  "host": "aliensk",
+  "git_commit": "47cb55087981347c07cbb38007e1fcd703fa5ad2",
+  "git_dirty": false,
+  "packages": {
+   "torch": {
+    "version": "2.11.0",
+    "commit": null
+   },
+   "numpy": {
+    "version": "2.2.6",
+    "commit": null
+   },
+   "scipy": {
+    "version": "1.17.1",
+    "commit": null
+   }
+  },
+  "gpus": [
+   "NVIDIA GeForce RTX 4090 Laptop GPU"
+  ],
+  "env": {
+   "MUJOCO_GL": "egl",
+   "PYOPENGL_PLATFORM": null
+  },
+  "settings": {
+   "roots": [
+    "outputs/step3b_kaggle/analysis/seed_0/task_7",
+    "outputs/step3b_kaggle/analysis/seed_1/task_7",
+    "outputs/step3b_kaggle/analysis/seed_2/task_7",
+    "outputs/step3b_kaggle/analysis/seed_3/task_7"
+   ],
+   "out": "outputs/step3b_kaggle/local_rerun/step3b_report.txt",
+   "n_critics": 3,
+   "n_boot": 2000,
+   "device": "cuda"
+  }
+ },
+ "n_train_transitions": 28775,
+ "n_held_transitions": 7513,
+ "n_held_episodes": 200,
+ "n_updates": 28775,
+ "critic": {
+  "action_auc": 0.5701070013236255,
+  "action_ci": [
+   0.5525148941700314,
+   0.5873662352970056
+  ],
+  "success_auc": 0.9288876642022683
+ },
+ "control": {
+  "action_auc": 0.5567338911894287,
+  "action_ci": [
+   0.5419157011677523,
+   0.5717255169437147
+  ],
+  "success_auc": 0.9321895695821862
+ },
+ "decision": "not read (control biased)"
+}

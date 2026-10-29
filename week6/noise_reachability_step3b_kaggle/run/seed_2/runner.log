@@ -1,0 +1,420 @@
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /tmp/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+Loading  HuggingFaceTB/SmolVLM2-500M-Video-Instruct weights ...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  18%|█▊        | 88/489 [00:00<00:00, 877.30it/s]Loading weights:  36%|███▌      | 176/489 [00:00<00:00, 793.10it/s]Loading weights:  52%|█████▏    | 256/489 [00:00<00:00, 693.78it/s]Loading weights:  71%|███████▏  | 349/489 [00:00<00:00, 747.89it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 893.27it/s]
+Reducing the number of VLM layers to 16 ...
+Loading weights from local directory
+[train] task 7: episodes 0-24 of 250, replay 0 transitions
+[train] task 7 ep 1/250 init 43: success=1 steps=252 decisions=26 updates=0 alpha= q= |noise|=0.802 mean50=1.00 time=46.7s (warm-up)
+[train] task 7 ep 2/250 init 21: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.813 mean50=0.50 time=86.1s (warm-up)
+[train] task 7 ep 3/250 init 30: success=1 steps=240 decisions=24 updates=0 alpha= q= |noise|=0.7827 mean50=0.67 time=38.9s (warm-up)
+[train] task 7 ep 4/250 init 47: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.7929 mean50=0.50 time=83.5s (warm-up)
+[train] task 7 ep 5/250 init 43: success=1 steps=247 decisions=25 updates=0 alpha= q= |noise|=0.7814 mean50=0.60 time=40.3s (warm-up)
+[train] task 7 ep 6/250 init 40: success=1 steps=408 decisions=41 updates=0 alpha= q= |noise|=0.8018 mean50=0.67 time=65.4s (warm-up)
+[train] task 7 ep 7/250 init 18: success=1 steps=231 decisions=24 updates=0 alpha= q= |noise|=0.8049 mean50=0.71 time=37.6s (warm-up)
+[train] task 7 ep 8/250 init 36: success=1 steps=377 decisions=38 updates=0 alpha= q= |noise|=0.8133 mean50=0.75 time=61.0s (warm-up)
+[train] task 7 ep 9/250 init 30: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.7848 mean50=0.67 time=82.3s (warm-up)
+[train] task 7 ep 10/250 init 47: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.7862 mean50=0.60 time=83.6s (warm-up)
+[train] task 7 ep 11/250 init 41: success=1 steps=307 decisions=31 updates=0 alpha= q= |noise|=0.8072 mean50=0.64 time=50.3s (warm-up)
+[train] task 7 ep 12/250 init 31: success=1 steps=232 decisions=24 updates=0 alpha= q= |noise|=0.7768 mean50=0.67 time=37.8s (warm-up)
+[train] task 7 ep 13/250 init 32: success=1 steps=489 decisions=49 updates=0 alpha= q= |noise|=0.8058 mean50=0.69 time=77.9s (warm-up)
+[train] task 7 ep 14/250 init 42: success=1 steps=238 decisions=24 updates=0 alpha= q= |noise|=0.7793 mean50=0.71 time=38.1s (warm-up)
+[train] task 7 ep 15/250 init 44: success=1 steps=378 decisions=38 updates=0 alpha= q= |noise|=0.8165 mean50=0.73 time=60.9s (warm-up)
+[train] task 7 ep 16/250 init 47: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.7771 mean50=0.69 time=84.0s (warm-up)
+[train] task 7 ep 17/250 init 10: success=1 steps=331 decisions=34 updates=0 alpha= q= |noise|=0.7902 mean50=0.71 time=53.9s (warm-up)
+[train] task 7 ep 18/250 init 11: success=1 steps=254 decisions=26 updates=0 alpha= q= |noise|=0.7681 mean50=0.72 time=41.8s (warm-up)
+[train] task 7 ep 19/250 init 24: success=1 steps=241 decisions=25 updates=0 alpha= q= |noise|=0.7986 mean50=0.74 time=39.6s (warm-up)
+[train] task 7 ep 20/250 init 47: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.8003 mean50=0.70 time=83.9s (warm-up)
+[train] task 7 ep 21/250 init 22: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.7951 mean50=0.67 time=82.8s (warm-up)
+[train] task 7 ep 22/250 init 17: success=1 steps=228 decisions=23 updates=0 alpha= q= |noise|=0.7976 mean50=0.68 time=33.9s (warm-up)
+[train] task 7 ep 23/250 init 27: success=1 steps=262 decisions=27 updates=0 alpha= q= |noise|=0.78 mean50=0.70 time=43.2s (warm-up)
+[train] task 7 ep 24/250 init 38: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.8099 mean50=0.67 time=83.8s (warm-up)
+[train] task 7 ep 25/250 init 31: success=1 steps=245 decisions=25 updates=0 alpha= q= |noise|=0.8172 mean50=0.68 time=39.8s (warm-up)
+[train] task 7: saved after 25 episodes, replay 920
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /tmp/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+Loading  HuggingFaceTB/SmolVLM2-500M-Video-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  16%|█▌        | 77/489 [00:00<00:00, 753.22it/s]Loading weights:  31%|███▏      | 153/489 [00:00<00:00, 736.31it/s]Loading weights:  46%|████▋     | 227/489 [00:00<00:00, 706.55it/s]Loading weights:  61%|██████    | 298/489 [00:00<00:00, 624.49it/s]Loading weights:  84%|████████▍ | 413/489 [00:00<00:00, 780.39it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 788.88it/s]
+Reducing the number of VLM layers to 16 ...
+Loading weights from local directory
+[train] task 7: episodes 25-49 of 250, replay 920 transitions
+[train] task 7 ep 26/250 init 39: success=1 steps=236 decisions=24 updates=0 alpha= q= |noise|=0.7818 mean50=0.69 time=43.8s (warm-up)
+[train] task 7 ep 27/250 init 26: success=1 steps=243 decisions=25 updates=0 alpha= q= |noise|=0.7962 mean50=0.70 time=40.3s (warm-up)
+[train] task 7 ep 28/250 init 37: success=1 steps=267 decisions=27 updates=0 alpha= q= |noise|=0.8002 mean50=0.71 time=42.8s (warm-up)
+[train] task 7 ep 29/250 init 21: success=1 steps=349 decisions=35 updates=0 alpha= q= |noise|=0.7863 mean50=0.72 time=55.5s (warm-up)
+[train] task 7 ep 30/250 init 14: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.7868 mean50=0.70 time=83.7s (warm-up)
+[train] task 7 ep 31/250 init 20: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.8027 mean50=0.68 time=85.0s (warm-up)
+[train] task 7 ep 32/250 init 12: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.7868 mean50=0.66 time=82.5s (warm-up)
+[train] task 7 ep 33/250 init 32: success=1 steps=288 decisions=29 updates=0 alpha= q= |noise|=0.785 mean50=0.67 time=46.4s (warm-up)
+[train] task 7 ep 34/250 init 10: success=1 steps=237 decisions=24 updates=0 alpha= q= |noise|=0.8003 mean50=0.68 time=37.6s (warm-up)
+[train] task 7 ep 35/250 init 12: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.8058 mean50=0.66 time=84.6s (warm-up)
+[train] task 7 ep 36/250 init 40: success=1 steps=340 decisions=34 updates=0 alpha= q= |noise|=0.8244 mean50=0.67 time=54.0s (warm-up)
+[train] task 7 ep 37/250 init 14: success=1 steps=427 decisions=43 updates=0 alpha= q= |noise|=0.8055 mean50=0.68 time=68.4s (warm-up)
+[train] task 7 ep 38/250 init 48: success=1 steps=353 decisions=36 updates=0 alpha= q= |noise|=0.8087 mean50=0.68 time=56.5s (warm-up)
+[train] task 7 ep 39/250 init 28: success=1 steps=287 decisions=29 updates=0 alpha= q= |noise|=0.7748 mean50=0.69 time=45.8s (warm-up)
+[train] task 7 ep 40/250 init 35: success=1 steps=367 decisions=37 updates=0 alpha= q= |noise|=0.7999 mean50=0.70 time=58.9s (warm-up)
+[train] task 7 ep 41/250 init 34: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.8061 mean50=0.68 time=84.8s (warm-up)
+[train] task 7 ep 42/250 init 34: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.7831 mean50=0.67 time=85.6s (warm-up)
+[train] task 7 ep 43/250 init 26: success=1 steps=237 decisions=24 updates=0 alpha= q= |noise|=0.8042 mean50=0.67 time=37.9s (warm-up)
+[train] task 7 ep 44/250 init 19: success=1 steps=234 decisions=24 updates=0 alpha= q= |noise|=0.8146 mean50=0.68 time=37.7s (warm-up)
+[train] task 7 ep 45/250 init 13: success=1 steps=246 decisions=25 updates=0 alpha= q= |noise|=0.7697 mean50=0.69 time=39.8s (warm-up)
+[train] task 7 ep 46/250 init 13: success=1 steps=235 decisions=24 updates=0 alpha= q= |noise|=0.7791 mean50=0.70 time=37.2s (warm-up)
+[train] task 7 ep 47/250 init 13: success=1 steps=322 decisions=33 updates=0 alpha= q= |noise|=0.8046 mean50=0.70 time=52.8s (warm-up)
+[train] task 7 ep 48/250 init 15: success=1 steps=233 decisions=24 updates=0 alpha= q= |noise|=0.7804 mean50=0.71 time=38.3s (warm-up)
+[train] task 7 ep 49/250 init 12: success=1 steps=369 decisions=37 updates=0 alpha= q= |noise|=0.7969 mean50=0.71 time=59.6s (warm-up)
+[train] task 7 ep 50/250 init 36: success=1 steps=280 decisions=28 updates=0 alpha= q= |noise|=0.7925 mean50=0.72 time=43.8s (warm-up)
+[train] task 7: saved after 50 episodes, replay 1794
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /tmp/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+Loading  HuggingFaceTB/SmolVLM2-500M-Video-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  14%|█▍        | 68/489 [00:00<00:00, 617.49it/s]Loading weights:  29%|██▉       | 143/489 [00:00<00:00, 674.71it/s]Loading weights:  43%|████▎     | 211/489 [00:00<00:00, 587.69it/s]Loading weights:  55%|█████▌    | 271/489 [00:00<00:00, 558.23it/s]Loading weights:  77%|███████▋  | 375/489 [00:00<00:00, 713.47it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 740.81it/s]
+Reducing the number of VLM layers to 16 ...
+Loading weights from local directory
+[train] task 7: episodes 50-74 of 250, replay 1794 transitions
+[train] task 7 ep 51/250 init 12: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.8038 mean50=0.70 time=91.0s (warm-up)
+[train] task 7 ep 52/250 init 16: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.7863 mean50=0.70 time=82.9s (warm-up)
+[train] task 7 ep 53/250 init 15: success=1 steps=230 decisions=23 updates=0 alpha= q= |noise|=0.78 mean50=0.70 time=36.4s (warm-up)
+[train] task 7 ep 54/250 init 14: success=1 steps=345 decisions=35 updates=0 alpha= q= |noise|=0.8118 mean50=0.72 time=56.8s (warm-up)
+[train] task 7 ep 55/250 init 30: success=1 steps=281 decisions=29 updates=0 alpha= q= |noise|=0.7969 mean50=0.72 time=46.2s (warm-up)
+[train] task 7 ep 56/250 init 27: success=1 steps=289 decisions=29 updates=0 alpha= q= |noise|=0.8055 mean50=0.72 time=46.3s (warm-up)
+[train] task 7 ep 57/250 init 12: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.7949 mean50=0.70 time=84.6s (warm-up)
+[train] task 7 ep 58/250 init 30: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.802 mean50=0.68 time=83.1s (warm-up)
+[train] task 7 ep 59/250 init 43: success=1 steps=289 decisions=29 updates=0 alpha= q= |noise|=0.7956 mean50=0.70 time=47.0s (warm-up)
+[train] task 7 ep 60/250 init 13: success=1 steps=249 decisions=25 updates=0 alpha= q= |noise|=0.8093 mean50=0.72 time=40.6s (warm-up)
+[train] task 7 ep 61/250 init 27: success=1 steps=238 decisions=24 updates=0 alpha= q= |noise|=0.7932 mean50=0.72 time=38.2s (warm-up)
+[train] task 7 ep 62/250 init 11: success=1 steps=257 decisions=26 updates=0 alpha= q= |noise|=0.8196 mean50=0.72 time=41.2s (warm-up)
+[train] task 7 ep 63/250 init 46: success=1 steps=234 decisions=24 updates=0 alpha= q= |noise|=0.8193 mean50=0.72 time=38.0s (warm-up)
+[train] task 7 ep 64/250 init 26: success=1 steps=237 decisions=24 updates=0 alpha= q= |noise|=0.7922 mean50=0.72 time=37.8s (warm-up)
+[train] task 7 ep 65/250 init 12: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.8027 mean50=0.70 time=93.7s (warm-up)
+[train] task 7 ep 66/250 init 42: success=1 steps=340 decisions=34 updates=0 alpha= q= |noise|=0.7967 mean50=0.72 time=53.8s (warm-up)
+[train] task 7 ep 67/250 init 38: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.7941 mean50=0.70 time=84.2s (warm-up)
+[train] task 7 ep 68/250 init 24: success=1 steps=238 decisions=24 updates=0 alpha= q= |noise|=0.8096 mean50=0.70 time=39.5s (warm-up)
+[train] task 7 ep 69/250 init 36: success=1 steps=307 decisions=31 updates=0 alpha= q= |noise|=0.7909 mean50=0.70 time=49.2s (warm-up)
+[train] task 7 ep 70/250 init 43: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.7846 mean50=0.70 time=82.5s (warm-up)
+[train] task 7 ep 71/250 init 15: success=1 steps=231 decisions=24 updates=0 alpha= q= |noise|=0.8118 mean50=0.72 time=38.0s (warm-up)
+[train] task 7 ep 72/250 init 32: success=1 steps=377 decisions=38 updates=0 alpha= q= |noise|=0.8234 mean50=0.72 time=59.4s (warm-up)
+[train] task 7 ep 73/250 init 28: success=1 steps=338 decisions=34 updates=0 alpha= q= |noise|=0.7962 mean50=0.72 time=54.2s (warm-up)
+[train] task 7 ep 74/250 init 31: success=1 steps=245 decisions=25 updates=0 alpha= q= |noise|=0.8023 mean50=0.74 time=39.6s (warm-up)
+[train] task 7 ep 75/250 init 40: success=1 steps=282 decisions=29 updates=0 alpha= q= |noise|=0.8163 mean50=0.74 time=41.1s (warm-up)
+[train] task 7: saved after 75 episodes, replay 2665
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /tmp/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+Loading  HuggingFaceTB/SmolVLM2-500M-Video-Instruct weights ...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  14%|█▍        | 68/489 [00:00<00:00, 620.20it/s]Loading weights:  27%|██▋       | 131/489 [00:00<00:00, 553.60it/s]Loading weights:  38%|███▊      | 187/489 [00:00<00:00, 556.22it/s]Loading weights:  50%|████▉     | 243/489 [00:00<00:00, 541.54it/s]Loading weights:  65%|██████▍   | 317/489 [00:00<00:00, 594.93it/s]Loading weights:  94%|█████████▍| 461/489 [00:00<00:00, 845.78it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 738.64it/s]
+Reducing the number of VLM layers to 16 ...
+Loading weights from local directory
+[train] task 7: episodes 75-99 of 250, replay 2665 transitions
+[train] task 7 ep 76/250 init 15: success=1 steps=229 decisions=23 updates=0 alpha= q= |noise|=0.8145 mean50=0.74 time=42.8s (warm-up)
+[train] task 7 ep 77/250 init 15: success=1 steps=229 decisions=23 updates=0 alpha= q= |noise|=0.8105 mean50=0.74 time=35.8s (warm-up)
+[train] task 7 ep 78/250 init 47: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.8006 mean50=0.72 time=82.2s (warm-up)
+[train] task 7 ep 79/250 init 21: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.7924 mean50=0.70 time=84.6s (warm-up)
+[train] task 7 ep 80/250 init 43: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.785 mean50=0.70 time=84.0s (warm-up)
+[train] task 7 ep 81/250 init 36: success=1 steps=259 decisions=26 updates=0 alpha= q= |noise|=0.7773 mean50=0.72 time=41.4s (warm-up)
+[train] task 7 ep 82/250 init 24: success=1 steps=243 decisions=25 updates=0 alpha= q= |noise|=0.8046 mean50=0.74 time=39.1s (warm-up)
+[train] task 7 ep 83/250 init 24: success=1 steps=249 decisions=25 updates=0 alpha= q= |noise|=0.7747 mean50=0.74 time=40.0s (warm-up)
+[train] task 7 ep 84/250 init 23: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.781 mean50=0.72 time=83.0s (warm-up)
+[train] task 7 ep 85/250 init 12: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.7903 mean50=0.72 time=82.8s (warm-up)
+[train] task 7 ep 86/250 init 17: success=1 steps=237 decisions=24 updates=0 alpha= q= |noise|=0.7751 mean50=0.72 time=38.1s (warm-up)
+[train] task 7 ep 87/250 init 49: success=1 steps=238 decisions=24 updates=0 alpha= q= |noise|=0.7827 mean50=0.72 time=37.8s (warm-up)
+[train] task 7 ep 88/250 init 41: success=1 steps=310 decisions=31 updates=0 alpha= q= |noise|=0.8082 mean50=0.72 time=48.6s (warm-up)
+[train] task 7 ep 89/250 init 49: success=1 steps=237 decisions=24 updates=0 alpha= q= |noise|=0.8118 mean50=0.72 time=37.7s (warm-up)
+[train] task 7 ep 90/250 init 10: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.797 mean50=0.70 time=82.2s (warm-up)
+[train] task 7 ep 91/250 init 32: success=1 steps=368 decisions=37 updates=0 alpha= q= |noise|=0.8054 mean50=0.72 time=58.1s (warm-up)
+[train] task 7 ep 92/250 init 24: success=1 steps=240 decisions=24 updates=0 alpha= q= |noise|=0.7911 mean50=0.74 time=37.4s (warm-up)
+[train] task 7 ep 93/250 init 27: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.7858 mean50=0.72 time=84.7s (warm-up)
+[train] task 7 ep 94/250 init 14: success=1 steps=407 decisions=41 updates=0 alpha= q= |noise|=0.7914 mean50=0.72 time=65.5s (warm-up)
+[train] task 7 ep 95/250 init 15: success=1 steps=233 decisions=24 updates=0 alpha= q= |noise|=0.7885 mean50=0.72 time=37.8s (warm-up)
+[train] task 7 ep 96/250 init 43: success=1 steps=239 decisions=24 updates=0 alpha= q= |noise|=0.7894 mean50=0.72 time=38.3s (warm-up)
+[train] task 7 ep 97/250 init 46: success=1 steps=230 decisions=23 updates=0 alpha= q= |noise|=0.8229 mean50=0.72 time=36.9s (warm-up)
+[train] task 7 ep 98/250 init 37: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.8033 mean50=0.70 time=83.5s (warm-up)
+[train] task 7 ep 99/250 init 24: success=1 steps=238 decisions=24 updates=0 alpha= q= |noise|=0.8032 mean50=0.70 time=38.4s (warm-up)
+[train] task 7 ep 100/250 init 46: success=1 steps=235 decisions=24 updates=0 alpha= q= |noise|=0.8034 mean50=0.70 time=37.7s (warm-up)
+[train] task 7: saved after 100 episodes, replay 3527
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /tmp/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+Loading  HuggingFaceTB/SmolVLM2-500M-Video-Instruct weights ...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  16%|█▌        | 79/489 [00:00<00:00, 754.07it/s]Loading weights:  32%|███▏      | 155/489 [00:00<00:00, 662.95it/s]Loading weights:  45%|████▌     | 222/489 [00:00<00:00, 652.36it/s]Loading weights:  59%|█████▉    | 288/489 [00:00<00:00, 623.07it/s]Loading weights:  84%|████████▍ | 413/489 [00:00<00:00, 831.64it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 815.10it/s]
+Reducing the number of VLM layers to 16 ...
+Loading weights from local directory
+[train] task 7: episodes 100-124 of 250, replay 3527 transitions
+[train] task 7 ep 101/250 init 11: success=1 steps=251 decisions=26 updates=0 alpha= q= |noise|=0.7806 mean50=0.72 time=44.3s (warm-up)
+[train] task 7 ep 102/250 init 36: success=1 steps=318 decisions=32 updates=0 alpha= q= |noise|=0.7958 mean50=0.74 time=51.8s (warm-up)
+[train] task 7 ep 103/250 init 19: success=1 steps=237 decisions=24 updates=0 alpha= q= |noise|=0.7956 mean50=0.74 time=37.6s (warm-up)
+[train] task 7 ep 104/250 init 41: success=1 steps=298 decisions=30 updates=0 alpha= q= |noise|=0.797 mean50=0.74 time=46.7s (warm-up)
+[train] task 7 ep 105/250 init 38: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.7967 mean50=0.72 time=82.8s (warm-up)
+[train] task 7 ep 106/250 init 22: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.805 mean50=0.70 time=83.4s (warm-up)
+[train] task 7 ep 107/250 init 38: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.7912 mean50=0.70 time=83.4s (warm-up)
+[train] task 7 ep 108/250 init 48: success=1 steps=411 decisions=42 updates=0 alpha= q= |noise|=0.804 mean50=0.72 time=65.5s (warm-up)
+[train] task 7 ep 109/250 init 23: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.8027 mean50=0.70 time=81.9s (warm-up)
+[train] task 7 ep 110/250 init 32: success=1 steps=447 decisions=45 updates=0 alpha= q= |noise|=0.7968 mean50=0.70 time=71.0s (warm-up)
+[train] task 7 ep 111/250 init 28: success=1 steps=275 decisions=28 updates=0 alpha= q= |noise|=0.7935 mean50=0.70 time=44.0s (warm-up)
+[train] task 7 ep 112/250 init 33: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.7933 mean50=0.68 time=81.6s (warm-up)
+[train] task 7 ep 113/250 init 39: success=1 steps=237 decisions=24 updates=0 alpha= q= |noise|=0.7847 mean50=0.68 time=38.1s (warm-up)
+[train] task 7 ep 114/250 init 22: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.7856 mean50=0.66 time=82.6s (warm-up)
+[train] task 7 ep 115/250 init 29: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.8 mean50=0.66 time=84.1s (warm-up)
+[train] task 7 ep 116/250 init 23: success=1 steps=252 decisions=26 updates=0 alpha= q= |noise|=0.7907 mean50=0.66 time=41.7s (warm-up)
+[train] task 7 ep 117/250 init 43: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.8035 mean50=0.66 time=83.9s (warm-up)
+[train] task 7 ep 118/250 init 14: success=1 steps=267 decisions=27 updates=0 alpha= q= |noise|=0.794 mean50=0.66 time=42.9s (warm-up)
+[train] task 7 ep 119/250 init 26: success=1 steps=235 decisions=24 updates=0 alpha= q= |noise|=0.8046 mean50=0.66 time=38.9s (warm-up)
+[train] task 7 ep 120/250 init 37: success=1 steps=377 decisions=38 updates=0 alpha= q= |noise|=0.7851 mean50=0.68 time=60.0s (warm-up)
+[train] task 7 ep 121/250 init 28: success=1 steps=293 decisions=30 updates=0 alpha= q= |noise|=0.8139 mean50=0.68 time=46.7s (warm-up)
+[train] task 7 ep 122/250 init 45: success=1 steps=254 decisions=26 updates=0 alpha= q= |noise|=0.7721 mean50=0.68 time=41.7s (warm-up)
+[train] task 7 ep 123/250 init 21: success=1 steps=388 decisions=39 updates=0 alpha= q= |noise|=0.8112 mean50=0.68 time=62.3s (warm-up)
+[train] task 7 ep 124/250 init 39: success=1 steps=235 decisions=24 updates=0 alpha= q= |noise|=0.7877 mean50=0.68 time=37.7s (warm-up)
+[train] task 7 ep 125/250 init 13: success=1 steps=327 decisions=33 updates=0 alpha= q= |noise|=0.8059 mean50=0.68 time=52.3s (warm-up)
+[train] task 7: saved after 125 episodes, replay 4461
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /tmp/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+Loading  HuggingFaceTB/SmolVLM2-500M-Video-Instruct weights ...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  14%|█▍        | 70/489 [00:00<00:00, 688.33it/s]Loading weights:  28%|██▊       | 139/489 [00:00<00:00, 655.98it/s]Loading weights:  42%|████▏     | 205/489 [00:00<00:00, 596.20it/s]Loading weights:  54%|█████▍    | 266/489 [00:00<00:00, 556.65it/s]Loading weights:  72%|███████▏  | 354/489 [00:00<00:00, 661.79it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 745.71it/s]
+Reducing the number of VLM layers to 16 ...
+Loading weights from local directory
+[train] task 7: episodes 125-149 of 250, replay 4461 transitions
+[train] task 7 ep 126/250 init 43: success=1 steps=296 decisions=30 updates=0 alpha= q= |noise|=0.7764 mean50=0.68 time=47.7s (warm-up)
+[train] task 7 ep 127/250 init 45: success=1 steps=260 decisions=26 updates=0 alpha= q= |noise|=0.8301 mean50=0.68 time=40.7s (warm-up)
+[train] task 7 ep 128/250 init 34: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.7835 mean50=0.68 time=83.1s (warm-up)
+[train] task 7 ep 129/250 init 29: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.8049 mean50=0.68 time=85.2s (warm-up)
+[train] task 7 ep 130/250 init 42: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.794 mean50=0.68 time=83.2s (warm-up)
+[train] task 7 ep 131/250 init 31: success=1 steps=248 decisions=25 updates=0 alpha= q= |noise|=0.7983 mean50=0.68 time=40.1s (warm-up)
+[train] task 7 ep 132/250 init 39: success=1 steps=237 decisions=24 updates=0 alpha= q= |noise|=0.7976 mean50=0.68 time=37.8s (warm-up)
+[train] task 7 ep 133/250 init 11: success=1 steps=248 decisions=25 updates=0 alpha= q= |noise|=0.8261 mean50=0.68 time=39.4s (warm-up)
+[train] task 7 ep 134/250 init 34: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.7886 mean50=0.68 time=82.8s (warm-up)
+[train] task 7 ep 135/250 init 11: success=1 steps=251 decisions=26 updates=0 alpha= q= |noise|=0.797 mean50=0.70 time=40.5s (warm-up)
+[train] task 7 ep 136/250 init 49: success=1 steps=236 decisions=24 updates=0 alpha= q= |noise|=0.7775 mean50=0.70 time=38.8s (warm-up)
+[train] task 7 ep 137/250 init 15: success=1 steps=230 decisions=23 updates=0 alpha= q= |noise|=0.8028 mean50=0.70 time=35.8s (warm-up)
+[train] task 7 ep 138/250 init 43: success=1 steps=350 decisions=35 updates=0 alpha= q= |noise|=0.8187 mean50=0.70 time=55.4s (warm-up)
+[train] task 7 ep 139/250 init 39: success=1 steps=238 decisions=24 updates=0 alpha= q= |noise|=0.8033 mean50=0.70 time=37.9s (warm-up)
+[train] task 7 ep 140/250 init 29: success=1 steps=342 decisions=35 updates=0 alpha= q= |noise|=0.8121 mean50=0.72 time=54.4s (warm-up)
+[train] task 7 ep 141/250 init 12: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.7954 mean50=0.70 time=82.0s (warm-up)
+[train] task 7 ep 142/250 init 38: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.8018 mean50=0.68 time=82.2s (warm-up)
+[train] task 7 ep 143/250 init 22: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.802 mean50=0.68 time=83.3s (warm-up)
+[train] task 7 ep 144/250 init 13: success=1 steps=468 decisions=47 updates=0 alpha= q= |noise|=0.7928 mean50=0.68 time=75.4s (warm-up)
+[train] task 7 ep 145/250 init 30: success=1 steps=448 decisions=45 updates=0 alpha= q= |noise|=0.814 mean50=0.68 time=70.3s (warm-up)
+[train] task 7 ep 146/250 init 44: success=1 steps=467 decisions=47 updates=0 alpha= q= |noise|=0.8029 mean50=0.68 time=74.3s (warm-up)
+[train] task 7 ep 147/250 init 11: success=1 steps=254 decisions=26 updates=0 alpha= q= |noise|=0.7999 mean50=0.68 time=40.8s (warm-up)
+[train] task 7 ep 148/250 init 14: success=1 steps=427 decisions=43 updates=0 alpha= q= |noise|=0.8149 mean50=0.70 time=67.6s (warm-up)
+[train] task 7 ep 149/250 init 15: success=1 steps=232 decisions=24 updates=0 alpha= q= |noise|=0.8092 mean50=0.70 time=37.3s (warm-up)
+[train] task 7 ep 150/250 init 48: success=1 steps=231 decisions=24 updates=0 alpha= q= |noise|=0.8061 mean50=0.70 time=37.3s (warm-up)
+[train] task 7: saved after 150 episodes, replay 5378
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /tmp/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+Loading  HuggingFaceTB/SmolVLM2-500M-Video-Instruct weights ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  23%|██▎       | 111/489 [00:00<00:00, 1106.29it/s]Loading weights:  45%|████▌     | 222/489 [00:00<00:00, 788.92it/s] Loading weights:  63%|██████▎   | 307/489 [00:00<00:00, 723.05it/s]Loading weights:  84%|████████▍ | 413/489 [00:00<00:00, 826.34it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 889.63it/s]
+Reducing the number of VLM layers to 16 ...
+Loading weights from local directory
+[train] task 7: episodes 150-174 of 250, replay 5378 transitions
+[train] task 7 ep 151/250 init 15: success=1 steps=228 decisions=23 updates=0 alpha= q= |noise|=0.8131 mean50=0.70 time=41.4s (warm-up)
+[train] task 7 ep 152/250 init 18: success=1 steps=240 decisions=24 updates=0 alpha= q= |noise|=0.7967 mean50=0.70 time=37.9s (warm-up)
+[train] task 7 ep 153/250 init 24: success=1 steps=240 decisions=24 updates=0 alpha= q= |noise|=0.793 mean50=0.70 time=34.2s (warm-up)
+[train] task 7 ep 154/250 init 25: success=1 steps=244 decisions=25 updates=0 alpha= q= |noise|=0.8293 mean50=0.70 time=38.8s (warm-up)
+[train] task 7 ep 155/250 init 26: success=1 steps=259 decisions=26 updates=0 alpha= q= |noise|=0.8026 mean50=0.72 time=42.1s (warm-up)
+[train] task 7 ep 156/250 init 35: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.7964 mean50=0.72 time=84.7s (warm-up)
+[train] task 7 ep 157/250 init 37: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.7861 mean50=0.72 time=81.7s (warm-up)
+[train] task 7 ep 158/250 init 39: success=1 steps=237 decisions=24 updates=0 alpha= q= |noise|=0.7842 mean50=0.72 time=38.2s (warm-up)
+[train] task 7 ep 159/250 init 27: success=1 steps=240 decisions=24 updates=0 alpha= q= |noise|=0.8028 mean50=0.74 time=38.0s (warm-up)
+[train] task 7 ep 160/250 init 29: success=1 steps=351 decisions=36 updates=0 alpha= q= |noise|=0.8071 mean50=0.74 time=56.6s (warm-up)
+[train] task 7 ep 161/250 init 28: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.7949 mean50=0.72 time=81.7s (warm-up)
+[train] task 7 ep 162/250 init 18: success=1 steps=228 decisions=23 updates=0 alpha= q= |noise|=0.7929 mean50=0.74 time=35.8s (warm-up)
+[train] task 7 ep 163/250 init 29: success=1 steps=513 decisions=52 updates=0 alpha= q= |noise|=0.8018 mean50=0.74 time=80.8s (warm-up)
+[train] task 7 ep 164/250 init 19: success=1 steps=233 decisions=24 updates=0 alpha= q= |noise|=0.8079 mean50=0.76 time=37.7s (warm-up)
+[train] task 7 ep 165/250 init 20: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.8015 mean50=0.76 time=82.2s (warm-up)
+[train] task 7 ep 166/250 init 24: success=1 steps=239 decisions=24 updates=0 alpha= q= |noise|=0.7969 mean50=0.76 time=37.9s (warm-up)
+[train] task 7 ep 167/250 init 39: success=1 steps=236 decisions=24 updates=0 alpha= q= |noise|=0.7746 mean50=0.78 time=37.4s (warm-up)
+[train] task 7 ep 168/250 init 23: success=1 steps=260 decisions=26 updates=0 alpha= q= |noise|=0.8016 mean50=0.78 time=41.0s (warm-up)
+[train] task 7 ep 169/250 init 14: success=1 steps=377 decisions=38 updates=0 alpha= q= |noise|=0.7925 mean50=0.78 time=60.8s (warm-up)
+[train] task 7 ep 170/250 init 21: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.7827 mean50=0.76 time=83.1s (warm-up)
+[train] task 7 ep 171/250 init 32: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.8043 mean50=0.74 time=83.6s (warm-up)
+[train] task 7 ep 172/250 init 47: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.7949 mean50=0.72 time=84.2s (warm-up)
+[train] task 7 ep 173/250 init 17: success=1 steps=235 decisions=24 updates=0 alpha= q= |noise|=0.76 mean50=0.72 time=37.4s (warm-up)
+[train] task 7 ep 174/250 init 33: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.7785 mean50=0.70 time=83.2s (warm-up)
+[train] task 7 ep 175/250 init 35: success=1 steps=304 decisions=31 updates=0 alpha= q= |noise|=0.8025 mean50=0.70 time=49.5s (warm-up)
+[train] task 7: saved after 175 episodes, replay 6266
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /tmp/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+Loading  HuggingFaceTB/SmolVLM2-500M-Video-Instruct weights ...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  16%|█▌        | 77/489 [00:00<00:00, 765.66it/s]Loading weights:  31%|███▏      | 154/489 [00:00<00:00, 652.58it/s]Loading weights:  45%|████▌     | 221/489 [00:00<00:00, 538.61it/s]Loading weights:  57%|█████▋    | 277/489 [00:00<00:00, 534.79it/s]Loading weights:  75%|███████▍  | 365/489 [00:00<00:00, 625.88it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 702.82it/s]
+Reducing the number of VLM layers to 16 ...
+Loading weights from local directory
+[train] task 7: episodes 175-199 of 250, replay 6266 transitions
+[train] task 7 ep 176/250 init 13: success=1 steps=242 decisions=25 updates=0 alpha= q= |noise|=0.8019 mean50=0.70 time=44.1s (warm-up)
+[train] task 7 ep 177/250 init 46: success=1 steps=234 decisions=24 updates=0 alpha= q= |noise|=0.8137 mean50=0.70 time=38.4s (warm-up)
+[train] task 7 ep 178/250 init 30: success=1 steps=231 decisions=24 updates=0 alpha= q= |noise|=0.8155 mean50=0.72 time=37.8s (warm-up)
+[train] task 7 ep 179/250 init 29: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.8054 mean50=0.72 time=78.2s (warm-up)
+[train] task 7 ep 180/250 init 33: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.8011 mean50=0.72 time=83.0s (warm-up)
+[train] task 7 ep 181/250 init 44: success=1 steps=339 decisions=34 updates=0 alpha= q= |noise|=0.7997 mean50=0.72 time=53.3s (warm-up)
+[train] task 7 ep 182/250 init 24: success=1 steps=242 decisions=25 updates=0 alpha= q= |noise|=0.7838 mean50=0.72 time=38.9s (warm-up)
+[train] task 7 ep 183/250 init 45: success=1 steps=251 decisions=26 updates=0 alpha= q= |noise|=0.7918 mean50=0.72 time=40.8s (warm-up)
+[train] task 7 ep 184/250 init 38: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.7899 mean50=0.72 time=83.6s (warm-up)
+[train] task 7 ep 185/250 init 13: success=1 steps=247 decisions=25 updates=0 alpha= q= |noise|=0.8045 mean50=0.72 time=39.3s (warm-up)
+[train] task 7 ep 186/250 init 49: success=1 steps=239 decisions=24 updates=0 alpha= q= |noise|=0.8193 mean50=0.72 time=38.2s (warm-up)
+[train] task 7 ep 187/250 init 15: success=1 steps=231 decisions=24 updates=0 alpha= q= |noise|=0.7944 mean50=0.72 time=37.0s (warm-up)
+[train] task 7 ep 188/250 init 11: success=1 steps=258 decisions=26 updates=0 alpha= q= |noise|=0.8102 mean50=0.72 time=40.4s (warm-up)
+[train] task 7 ep 189/250 init 28: success=1 steps=287 decisions=29 updates=0 alpha= q= |noise|=0.8046 mean50=0.72 time=45.7s (warm-up)
+[train] task 7 ep 190/250 init 24: success=1 steps=245 decisions=25 updates=0 alpha= q= |noise|=0.7846 mean50=0.72 time=39.5s (warm-up)
+[train] task 7 ep 191/250 init 23: success=1 steps=253 decisions=26 updates=0 alpha= q= |noise|=0.8034 mean50=0.74 time=40.4s (warm-up)
+[train] task 7 ep 192/250 init 23: success=1 steps=255 decisions=26 updates=0 alpha= q= |noise|=0.8024 mean50=0.76 time=40.2s (warm-up)
+[train] task 7 ep 193/250 init 36: success=1 steps=267 decisions=27 updates=0 alpha= q= |noise|=0.7903 mean50=0.78 time=42.2s (warm-up)
+[train] task 7 ep 194/250 init 33: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.8066 mean50=0.76 time=82.4s (warm-up)
+[train] task 7 ep 195/250 init 44: success=1 steps=240 decisions=24 updates=0 alpha= q= |noise|=0.7882 mean50=0.76 time=38.6s (warm-up)
+[train] task 7 ep 196/250 init 36: success=1 steps=222 decisions=23 updates=0 alpha= q= |noise|=0.7732 mean50=0.76 time=35.5s (warm-up)
+[train] task 7 ep 197/250 init 24: success=1 steps=244 decisions=25 updates=0 alpha= q= |noise|=0.7864 mean50=0.76 time=39.1s (warm-up)
+[train] task 7 ep 198/250 init 47: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.8148 mean50=0.74 time=82.7s (warm-up)
+[train] task 7 ep 199/250 init 28: success=1 steps=275 decisions=28 updates=0 alpha= q= |noise|=0.8006 mean50=0.74 time=43.6s (warm-up)
+[train] task 7 ep 200/250 init 17: success=1 steps=239 decisions=24 updates=0 alpha= q= |noise|=0.7938 mean50=0.74 time=38.5s (warm-up)
+[train] task 7: saved after 200 episodes, replay 7040
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /tmp/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+Loading  HuggingFaceTB/SmolVLM2-500M-Video-Instruct weights ...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  14%|█▍        | 68/489 [00:00<00:00, 662.04it/s]Loading weights:  28%|██▊       | 135/489 [00:00<00:00, 625.15it/s]Loading weights:  40%|████      | 198/489 [00:00<00:00, 589.52it/s]Loading weights:  53%|█████▎    | 258/489 [00:00<00:00, 560.11it/s]Loading weights:  71%|███████▏  | 349/489 [00:00<00:00, 674.18it/s]Loading weights:  98%|█████████▊| 477/489 [00:00<00:00, 864.90it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 751.50it/s]
+Reducing the number of VLM layers to 16 ...
+Loading weights from local directory
+[train] task 7: episodes 200-224 of 250, replay 7040 transitions
+[train] task 7 ep 201/250 init 46: success=1 steps=230 decisions=23 updates=0 alpha= q= |noise|=0.7853 mean50=0.74 time=41.3s (warm-up)
+[train] task 7 ep 202/250 init 30: success=1 steps=237 decisions=24 updates=0 alpha= q= |noise|=0.8276 mean50=0.74 time=37.2s (warm-up)
+[train] task 7 ep 203/250 init 30: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.7871 mean50=0.72 time=81.9s (warm-up)
+[train] task 7 ep 204/250 init 28: success=1 steps=289 decisions=29 updates=0 alpha= q= |noise|=0.7828 mean50=0.72 time=45.4s (warm-up)
+[train] task 7 ep 205/250 init 14: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.7854 mean50=0.70 time=82.8s (warm-up)
+[train] task 7 ep 206/250 init 22: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.8009 mean50=0.70 time=78.1s (warm-up)
+[train] task 7 ep 207/250 init 34: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.8108 mean50=0.70 time=82.5s (warm-up)
+[train] task 7 ep 208/250 init 40: success=1 steps=349 decisions=35 updates=0 alpha= q= |noise|=0.804 mean50=0.70 time=54.5s (warm-up)
+[train] task 7 ep 209/250 init 25: success=1 steps=241 decisions=25 updates=0 alpha= q= |noise|=0.8193 mean50=0.70 time=38.4s (warm-up)
+[train] task 7 ep 210/250 init 22: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.7952 mean50=0.68 time=81.0s (warm-up)
+[train] task 7 ep 211/250 init 44: success=1 steps=428 decisions=43 updates=0 alpha= q= |noise|=0.7807 mean50=0.70 time=68.0s (warm-up)
+[train] task 7 ep 212/250 init 17: success=1 steps=235 decisions=24 updates=0 alpha= q= |noise|=0.7784 mean50=0.70 time=37.2s (warm-up)
+[train] task 7 ep 213/250 init 13: success=1 steps=333 decisions=34 updates=0 alpha= q= |noise|=0.8115 mean50=0.70 time=52.3s (warm-up)
+[train] task 7 ep 214/250 init 37: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.7897 mean50=0.68 time=82.4s (warm-up)
+[train] task 7 ep 215/250 init 28: success=1 steps=276 decisions=28 updates=0 alpha= q= |noise|=0.809 mean50=0.70 time=43.5s (warm-up)
+[train] task 7 ep 216/250 init 44: success=1 steps=337 decisions=34 updates=0 alpha= q= |noise|=0.8005 mean50=0.70 time=52.8s (warm-up)
+[train] task 7 ep 217/250 init 35: success=1 steps=334 decisions=34 updates=0 alpha= q= |noise|=0.8145 mean50=0.70 time=52.1s (warm-up)
+[train] task 7 ep 218/250 init 36: success=1 steps=385 decisions=39 updates=0 alpha= q= |noise|=0.7984 mean50=0.70 time=60.9s (warm-up)
+[train] task 7 ep 219/250 init 18: success=1 steps=229 decisions=23 updates=0 alpha= q= |noise|=0.7728 mean50=0.70 time=36.0s (warm-up)
+[train] task 7 ep 220/250 init 46: success=1 steps=234 decisions=24 updates=0 alpha= q= |noise|=0.7856 mean50=0.72 time=37.0s (warm-up)
+[train] task 7 ep 221/250 init 20: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.7906 mean50=0.72 time=82.9s (warm-up)
+[train] task 7 ep 222/250 init 22: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.798 mean50=0.72 time=82.1s (warm-up)
+[train] task 7 ep 223/250 init 21: success=1 steps=353 decisions=36 updates=0 alpha= q= |noise|=0.8047 mean50=0.72 time=56.1s (warm-up)
+[train] task 7 ep 224/250 init 33: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.8205 mean50=0.72 time=82.8s (warm-up)
+[train] task 7 ep 225/250 init 47: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.7937 mean50=0.70 time=83.6s (warm-up)
+[train] task 7: saved after 225 episodes, replay 8015
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /tmp/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+Loading  HuggingFaceTB/SmolVLM2-500M-Video-Instruct weights ...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  19%|█▉        | 95/489 [00:00<00:00, 853.75it/s]Loading weights:  37%|███▋      | 181/489 [00:00<00:00, 720.22it/s]Loading weights:  52%|█████▏    | 254/489 [00:00<00:00, 613.26it/s]Loading weights:  65%|██████▍   | 317/489 [00:00<00:00, 605.31it/s]Loading weights:  92%|█████████▏| 448/489 [00:00<00:00, 821.96it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 792.65it/s]
+Reducing the number of VLM layers to 16 ...
+Loading weights from local directory
+[train] task 7: episodes 225-249 of 250, replay 8015 transitions
+[train] task 7 ep 226/250 init 42: success=1 steps=241 decisions=25 updates=0 alpha= q= |noise|=0.7991 mean50=0.70 time=43.2s (warm-up)
+[train] task 7 ep 227/250 init 19: success=1 steps=236 decisions=24 updates=0 alpha= q= |noise|=0.8097 mean50=0.70 time=37.9s (warm-up)
+[train] task 7 ep 228/250 init 26: success=1 steps=242 decisions=25 updates=0 alpha= q= |noise|=0.8069 mean50=0.70 time=37.9s (warm-up)
+[train] task 7 ep 229/250 init 41: success=1 steps=303 decisions=31 updates=0 alpha= q= |noise|=0.7849 mean50=0.72 time=43.3s (warm-up)
+[train] task 7 ep 230/250 init 16: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.7987 mean50=0.72 time=80.9s (warm-up)
+[train] task 7 ep 231/250 init 40: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.7866 mean50=0.70 time=81.2s (warm-up)
+[train] task 7 ep 232/250 init 19: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.7845 mean50=0.68 time=82.1s (warm-up)
+[train] task 7 ep 233/250 init 36: success=1 steps=277 decisions=28 updates=0 alpha= q= |noise|=0.7831 mean50=0.68 time=43.9s (warm-up)
+[train] task 7 ep 234/250 init 41: success=1 steps=301 decisions=31 updates=0 alpha= q= |noise|=0.7995 mean50=0.70 time=48.3s (warm-up)
+[train] task 7 ep 235/250 init 28: success=1 steps=289 decisions=29 updates=0 alpha= q= |noise|=0.799 mean50=0.70 time=44.9s (warm-up)
+[train] task 7 ep 236/250 init 30: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.8152 mean50=0.68 time=82.2s (warm-up)
+[train] task 7 ep 237/250 init 38: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.8 mean50=0.66 time=81.8s (warm-up)
+[train] task 7 ep 238/250 init 20: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.792 mean50=0.64 time=81.9s (warm-up)
+[train] task 7 ep 239/250 init 17: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.8297 mean50=0.62 time=81.5s (warm-up)
+[train] task 7 ep 240/250 init 22: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.783 mean50=0.60 time=81.9s (warm-up)
+[train] task 7 ep 241/250 init 40: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.7984 mean50=0.58 time=82.3s (warm-up)
+[train] task 7 ep 242/250 init 12: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.7918 mean50=0.56 time=84.0s (warm-up)
+[train] task 7 ep 243/250 init 24: success=1 steps=242 decisions=25 updates=0 alpha= q= |noise|=0.7904 mean50=0.56 time=39.0s (warm-up)
+[train] task 7 ep 244/250 init 15: success=1 steps=227 decisions=23 updates=0 alpha= q= |noise|=0.7768 mean50=0.58 time=36.4s (warm-up)
+[train] task 7 ep 245/250 init 12: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.7931 mean50=0.56 time=86.4s (warm-up)
+[train] task 7 ep 246/250 init 13: success=1 steps=248 decisions=25 updates=0 alpha= q= |noise|=0.7879 mean50=0.56 time=37.7s (warm-up)
+[train] task 7 ep 247/250 init 23: success=1 steps=269 decisions=27 updates=0 alpha= q= |noise|=0.8045 mean50=0.56 time=39.7s (warm-up)
+[train] task 7 ep 248/250 init 49: success=1 steps=234 decisions=24 updates=0 alpha= q= |noise|=0.8254 mean50=0.58 time=34.9s (warm-up)
+[train] task 7 ep 249/250 init 49: success=1 steps=237 decisions=24 updates=0 alpha= q= |noise|=0.7928 mean50=0.58 time=35.4s (warm-up)
+[train] task 7 ep 250/250 init 22: success=0 steps=520 decisions=52 updates=0 alpha= q= |noise|=0.8012 mean50=0.56 time=77.1s (warm-up)
+[train] task 7: saved after 250 episodes, replay 8980

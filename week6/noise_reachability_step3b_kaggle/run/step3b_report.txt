@@ -1,0 +1,7 @@
+step 3b: noise signal on base rollouts (Monte Carlo critic, held-out episodes)
+task 7, successes per stream: seed 0: 167/250, seed 1: 174/250, seed 2: 171/250, seed 3: 167/250
+held out: 200 episodes, 7513 transitions; trained on 28775 transitions, 28775 updates per critic
+success AUC of Q(s, a): 0.930
+action AUC: 0.566 (95% interval 0.549 to 0.583)
+control (noises shuffled): action AUC 0.547 (0.532 to 0.562), success AUC 0.925
+hypothesis (action AUC >= 0.55, lower end > 0.5): not read (control biased)
