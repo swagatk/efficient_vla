@@ -34,9 +34,10 @@ Step 4 of `noise_reachability/README.md` (design fixed 2026-10-29). Base `lerobo
 - **C**: the same LoRA training on the 33 task-0 demonstrations of `lerobot/libero`, training seeds 0-2;
 - **B**: the continued-training checkpoint (`continued_training/`), as it is.
 
-**Before the first version:** upload the `smolvla_libero10_continued_final/` folder from Google Drive as a
-private Kaggle dataset and add it as input (**Add Input > Your Datasets**). Step 7 finds it and refuses to run
-without it.
+**Before the first version:** add the continued-training checkpoint (`smolvla_libero10_continued_final/` from
+Google Drive, uploaded as a private Kaggle dataset; the continued-training evaluation used the same dataset) as
+input (**Add Input > Your Datasets**). Step 7 finds it by the job name in its `train_config.json`, whatever the
+folder is called, and refuses to run without it.
 
 **Run with Save & Run All (Accelerator: GPU T4 x2, Internet on).** Nothing needs editing. Each version does
 whatever is not done yet, in this order, and stops before the session limit:
@@ -72,7 +73,7 @@ PY = f"{VENV}/bin/python"
 
 # The protocol of README.md step 4; nothing here is meant to be edited.
 CHECKPOINT_REPO, CHECKPOINT_REVISION = "lerobot/smolvla_libero", "a24f1f380461b665158d52acd140152c79e8b36d"
-B_FOLDER = "smolvla_libero10_continued_final"   # arm B, from a Kaggle dataset input
+B_JOB_NAME = "smolvla_libero10_continued"     # arm B: the dataset-input folder whose train_config.json names this job
 TASK = 0
 N_ACTION_STEPS = 10
 COLLECT_PARTS = ["10-19", "20-29", "30-39", "40-49"]   # init states, one collection process each
@@ -178,10 +179,11 @@ md("""
 ## 7. Arm B's checkpoint (Kaggle dataset input)
 """)
 code('''
-found = [p for p in glob.glob(f"/kaggle/input/**/{B_FOLDER}", recursive=True)
-         if os.path.exists(f"{p}/config.json") and os.path.exists(f"{p}/model.safetensors")]
-assert len(found) == 1, (f"found {len(found)} folders named {B_FOLDER} with config.json and model.safetensors under "
-                         "/kaggle/input: add the continued-training checkpoint as a dataset input (see the top)")
+# As baseline_performance/kaggle_baseline_lerobot_eval.ipynb: found by its training job, whatever the folder is called.
+found = [str(Path(f).parent) for f in glob.glob("/kaggle/input/**/train_config.json", recursive=True)
+         if json.load(open(f)).get("job_name") == B_JOB_NAME and Path(f).with_name("model.safetensors").exists()]
+assert len(found) == 1, (f"need exactly one input folder whose train_config.json has job_name {B_JOB_NAME} and a "
+                         f"model.safetensors, found {found}: add the continued-training checkpoint as a dataset input")
 B_PATH = found[0]
 h = hashlib.sha256()
 with open(f"{B_PATH}/model.safetensors", "rb") as f:
