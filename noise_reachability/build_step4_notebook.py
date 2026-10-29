@@ -65,7 +65,7 @@ from pathlib import Path
 
 T_SESSION = time.time()
 REPO_URL = "https://github.com/swagatk/efficient_vla.git"
-REPO_REF = "main"
+REPO_REF = "9318dd507a3cc3413577e64b514a694aa47c0ffd"  # the reviewed step-4 commit
 REPO = "/tmp/efficient_vla"        # code and venv live outside /kaggle/working, so they are not saved as output
 VENV = "/tmp/venv"
 PY = f"{VENV}/bin/python"
