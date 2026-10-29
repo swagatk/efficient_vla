@@ -66,6 +66,9 @@ def parse_args(argv=None):
     p.add_argument("--selection", choices=SELECTIONS, default="success")
     p.add_argument("--val_init_states", type=str, default="",
                    help="Training init states whose episodes are held out of training for the validation loss")
+    p.add_argument("--val_demo_every", type=int, default=0,
+                   help="Hold out demonstration episodes (noise_reachability/demo_episodes.py) whose demo_index "
+                        "is N-1 mod N for the validation loss; 0 = none")
     p.add_argument("--output_dir", type=str, default="checkpoints_sfbc/task_6/success_seed0")
     p.add_argument("--train_steps", type=int, default=2000)
     p.add_argument("--batch_size", type=int, default=16)
@@ -183,14 +186,33 @@ def collect(args) -> int:
 
 # ------------------------------------------------------------------------------------------------------- train
 
-def split_episodes(data_dir, selection, val_init_states, seed):
+def is_demo(meta) -> bool:
+    return meta.get("source") == "demonstration"
+
+
+def is_validation(meta, val_init_states, val_demo_every=0) -> bool:
+    """Rollouts: init state in ``val_init_states``. Demonstrations (no init state): demo_index N-1 mod N."""
+    if is_demo(meta):
+        return val_demo_every > 0 and meta["demo_index"] % val_demo_every == val_demo_every - 1
+    return meta["init_state"] in val_init_states
+
+
+def check_episode_metas(metas, args) -> None:
+    """Every episode is of the training task; rollouts were collected by the policy being fine-tuned."""
+    for m in metas:
+        for key in ("task_id",) if is_demo(m) else ("policy_path", "task_id"):
+            if m[key] != getattr(args, key):
+                raise SystemExit(f"episode collected with {key}={m[key]!r}, training has {getattr(args, key)!r}")
+
+
+def split_episodes(data_dir, selection, val_init_states, seed, val_demo_every=0):
     """(training paths, validation paths) for --selection; validation episodes come from held-out training
-    init states and are never trained on."""
+    init states (or held-out demonstrations) and are never trained on."""
     paths = sorted((Path(data_dir) / "episodes").glob("*.npz"))
     if not paths:
         raise SystemExit(f"no episodes in {data_dir}/episodes; run --stage collect first")
     metas = [load_meta(p) for p in paths]
-    val = [k for k, m in enumerate(metas) if m["init_state"] in val_init_states]
+    val = [k for k, m in enumerate(metas) if is_validation(m, val_init_states, val_demo_every)]
     rest = [k for k in range(len(paths)) if k not in set(val)]
     chosen = select_episodes([metas[k] for k in rest], selection, seed=seed)
     val_chosen = select_episodes([metas[k] for k in val], "success", seed=seed) if val else []
@@ -244,17 +266,17 @@ def train(args) -> int:
 
     seed_everything(args.seed)
     val_states = set(parse_index_ranges(args.val_init_states)) if args.val_init_states else set()
-    train_paths, val_paths, metas = split_episodes(args.data_dir, args.selection, val_states, args.seed)
+    train_paths, val_paths, metas = split_episodes(args.data_dir, args.selection, val_states, args.seed,
+                                                   args.val_demo_every)
     if not train_paths:
         raise SystemExit(f"selection {args.selection!r} gives no training episodes")
-    for m in metas:
-        for key in ("policy_path", "task_id"):
-            if m[key] != getattr(args, key):
-                raise SystemExit(f"episode collected with {key}={m[key]!r}, training has {getattr(args, key)!r}")
+    check_episode_metas(metas, args)
     out = Path(args.output_dir)
     out.mkdir(parents=True, exist_ok=True)
     data_info = {"train_episodes": [p.name for p in train_paths], "val_episodes": [p.name for p in val_paths],
-                 "n_collected": len(metas), "n_collected_success": sum(m["success"] for m in metas)}
+                 "n_collected": len(metas), "n_collected_success": sum(m["success"] for m in metas),
+                 "n_demonstrations": sum(map(is_demo, metas)),
+                 "demo_datasets": sorted({f"{m['dataset']}@{m['dataset_revision']}" for m in metas if is_demo(m)})}
     write_provenance(out, args, {"stage": "train", **data_info})
 
     device = "cuda" if torch.cuda.is_available() else "cpu"

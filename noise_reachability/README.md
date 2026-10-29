@@ -246,6 +246,164 @@ or the step-3 actor, and evaluated on the systematic states. The data source and
 **Hypothesis.** It raises success on the systematic states of the step-3 tasks by at least 10 points without
 lowering success on their reachable states by more than 5.
 
+*Design after step 3b, fixed 2026-10-29 before any step-4 code or run (reviewed: arm B's checkpoint is on
+Drive; arm C added; 16 evaluation seeds per state; the step-2 harness tolerance).*
+
+**How far the condition holds.** It holds only weakly. No noise-space method solved a systematic episode
+(step 2: 0 of 24; step 3: 0 of 15 on task 0), but none raised success clearly on reachable states either
+(step 2: +4.7 points, p = 0.30; step 3 was not a test). So steps 2-3 do not show that noise-space methods
+*can* gain where step 1 says they could; they only show that they did not reach the systematic states. Step 4
+goes ahead on that basis, and the write-up has to say so.
+
+**What changes from the plan above, and why.**
+
+- *Task 0 only.* Step 3 picked tasks 7 and 0, but task 7 has no systematic state (step 1). Task 0 has 5
+  (init states 2, 5, 6, 7, 8) and 5 reachable ones (0, 1, 3, 4, 9; 41/80 successes over noise seeds 0-15).
+- *No "neighbouring" init states.* The plan never defined a distance between init states, and choosing one
+  now would be a free parameter. Training data comes from init states 10-49, as in steps 2-3.
+- *Two data sources instead of one, because of an earlier result.* Self-filtered BC on task 6
+  (`week6/self_filtered_bc_task6/`, `n_action_steps=1`) cloned the base's own successful episodes with
+  this LoRA setup: pooled 46/90 against the base's 45/90, and init state 8, which the base never solved,
+  stayed at 0/9. That predicts that the base's own successes do not fix systematic states. So step 4 also
+  tests a source of behaviour from outside the base's rollouts: the LIBERO-10 demonstrations, through the
+  same LoRA update (arm C) and through the existing continued-training checkpoint (arm B).
+
+**Question.** Can a weight update solve task 0's systematic states, and does that need behaviour from
+outside the base policy's own rollouts?
+
+**Arms.**
+
+- *Base:* `lerobot/smolvla_libero@a24f1f3804`, re-run in this harness on every evaluation episode.
+- *A, self-filtered LoRA:* `self_filtered_bc/self_filtered_bc.py` with `--n_action_steps 10`, otherwise the
+  task-6 settings unchanged (LoRA r16/alpha32 on the action expert's seven projections, 2,000 steps, batch
+  16, lr 1e-4, only LoRA trains). Data: the base on task 0, init states 10-49 x collection seeds 0-2 (120
+  episodes, soft resets), successful episodes only; init states 45-49 held out for the validation loss.
+  Training seeds 0-2.
+- *C, demonstration LoRA:* the same training as A (same code, settings, step budget and training seeds), on
+  the task-0 demonstrations of `lerobot/libero@a1aaacb7f6` (the data `continued_training/` used) instead of the
+  base's rollouts; every fifth demonstration held out for the validation loss. A against C changes only the
+  data source, which is the comparison the main claim rests on.
+- *B, continued training:* the existing checkpoint of `continued_training/` (the full model, 25,000 more steps
+  on the 379 LIBERO-10 demonstrations, one training seed; `week6/continued_training_colab/`), reused as it is.
+  It was evaluated only at `n_action_steps=1` (174/300 against 171/300; task 0: 0/30 against 1/30). It
+  differs from C in several ways at once (all weights, all ten tasks, 12x the steps, one seed), so it is a
+  secondary arm: it shows what a larger demonstration update does, not why.
+- *What "outside the base's rollouts" means.* The 33 demonstrations of arms B and C were part of the data the
+  base itself was trained on (its loss on them is 0.04, below). So C adds no behaviour the base never saw in
+  training; it re-weights the base toward task 0's demonstrated behaviour, against A, which re-weights it
+  toward its own successful closed-loop behaviour. "Neither A nor C" is therefore weak evidence about genuinely
+  new behaviour, and the write-up says so.
+
+**Evaluation.** Task 0, init states 0-9 x evaluation seeds 16-31 (160 episodes per policy and training seed:
+base, 3 x A, 3 x C, B), `n_action_steps=10`, 520 steps, hard resets, the same environment and torch seed per
+(seed, init state) for every policy. Seeds 0-15 chose the systematic states, so on them the base is 0 by
+selection. Fresh seeds give an unbiased base rate: a state that was 0/16 can succeed by chance.
+
+- Systematic episodes: init states 2, 5, 6, 7, 8 x 16 seeds (80). Reachable: the other 80.
+- Exact McNemar per arm and training seed against the base on the same episodes, plus the exact 95% interval
+  of the paired difference. Arms A and C are also pooled over their 3 training seeds. The base episodes appear
+  once per training seed in that pooling, so the pooled test overstates the evidence (as on task 6); the
+  per-seed tests are the primary ones.
+- A against C directly: per training seed (same seed, same episodes), exact McNemar on the systematic episodes.
+
+**Hypothesis, per arm.**
+
+- *Systematic:* at least 10 points above the base on the 80 systematic episodes (episodes solved only by the
+  arm minus those solved only by the base: at least 8), with paired p < 0.05.
+- *Reachable, guard:* on the 80 reachable episodes, a point estimate no more than 5 points below the base
+  (at most 4 episodes net), and not significantly below it (paired p >= 0.05). With 80 episodes this guard
+  only catches large losses.
+- An arm meets the hypothesis in a training seed when both parts hold in that seed; A and C meet it when that
+  is so in at least 2 of their 3 training seeds. (*Wording clarified 2026-10-29 before any run, after the code
+  review: the first version put "2 of 3 seeds" under the systematic part only; `analyze_step4.py` already
+  counted seeds where both parts hold.*)
+
+**Reading the outcome, fixed now.**
+
+- *C meets it, A does not, and C is ahead of A on the systematic episodes (paired p < 0.05 in at least 2 of 3
+  seeds):* systematic failures need behaviour the base does not produce; imitating the base's own successes
+  with the same update is not enough. Together with steps 2-3, this is the study's main claim.
+- *C meets it, A does not, but C is not significantly ahead of A:* consistent with the claim, not a
+  demonstration of it; reported as such.
+- *A meets it:* contradicts the task-6 result. Re-check the harness and the data first (CLAUDE.md), then it is
+  a finding in its own right.
+- *Neither A nor C meets it:* at this budget no LoRA update tested solves the systematic states; B is read as
+  the larger update. If B also fails, step 4 is a negative result and the study is written up as the step 0-3b
+  measurements with that limit stated.
+- *An arm fails the guard:* its losses on reachable states are reported as the price of any gain, not hidden
+  in the total.
+
+**Checks before running.**
+
+- Harness: the base on task 0, init states 0-9 x seeds 0-2 through this eval path, against step 0's 7/30 at
+  `n_action_steps=10` (`week6/noise_reachability_step0_kaggle/`). The noise draws differ, so the episodes are
+  not paired. As in step 2, a gap of more than two standard errors of the difference
+  (2 x sqrt(2 x 0.233 x 0.767 / 30) x 30 = 6.6 episodes), that is 7 or more episodes either way, means the
+  harness is investigated before any arm is read.
+- Demonstrations: the task-0 episodes are found by their task string, not by index (LIBERO-10 task 0 is the
+  dataset's task index 5: 33 episodes among 0-378, 245-367 frames each); their state and actions
+  are in the units the policy uses (checked against `meta/stats.json`, as in `continued_training/`); and the
+  base policy's flow-matching loss on demonstration frames is below 0.3 (under 3x its 0.112 on this data at
+  the start of continued training), with both images rotated by 180 degrees giving at least twice that
+  (`check_step4.py`). *Changed on 2026-10-29 before the check ran:* the first version compared the
+  demonstration loss with the loss on the base's own rollouts, but rollout targets span several replans,
+  so the two are not comparable; the rollout loss is printed for reference only.
+- CPU tests for the step-4 analysis (systematic/reachable split, McNemar, pooling, decision) and the
+  demonstration converter, then a mutation check.
+- Real model: a fresh LoRA adapter reproduces the base chunk bit for bit at `n_action_steps=10`; arm B's
+  checkpoint loads in this harness, applies `n_action_steps=10`, and runs an episode. (It cannot be matched
+  episode by episode with its Kaggle evaluation, which ran through lerobot-eval with different noise draws.)
+- A smoke run of every stage (2 collection episodes, a few training steps, 1 evaluation episode per policy).
+
+*Checks run so far (2026-10-29, local RTX 4090 shared with another job; `outputs/step4_checks/`, not in git).*
+
+- Demonstrations: the first 2 task-0 demonstrations (dataset episodes 8 and 13) converted through LeRobot's
+  loader (pyav): stored actions and states equal the dataset's columns exactly, images pass the exact-uint8
+  check, and the image orientation matches a base rollout frame (checked by eye).
+- `check_step4.py`: base loss 0.0373 on the 273 demonstration frames (limit 0.3); rotated 1.6947 (45x, limit
+  2x); a fresh LoRA reproduces the base chunk bit for bit at `n_action_steps=10` (9 queued actions, max
+  difference 0) and nudged LoRA weights change it (0.087). All passed.
+- For reference, the base's loss on its own task-0 rollout frames is 1.2335 (2 episodes, 395 frames). The
+  review asked whether that comes from replanning or from a recording mismatch, so it was measured: at the
+  frames where the base replanned (steps 0, 10, 20, ...), counting only the first 10 target actions (the
+  chunk it executed), the loss is 0.0333 on 79 rollout frames, against 0.0444 on 55 demonstration frames under
+  the same masking. Rollouts are recorded consistently; the 1.23 comes from targets after the first 10, which
+  later replans produced. Arm A therefore trains toward closed-loop sequences the base does not predict as one
+  chunk, arm C toward sequences it already fits; that difference is part of what "data source" means here and
+  is reported with the result.
+- Collection at step 4's settings (`--n_action_steps 10`, task 0, init states 10-11, seed 0): 1 of 2
+  succeeded (269 steps, 38 s; the failure ran 520 steps, 65 s).
+- Train and eval stages, smoke run on 2 converted demonstrations: 5 training steps (1 demonstration
+  trained, 1 held out by `--val_demo_every 2`; 0.5 s per step, 4.2 GB peak GPU memory), then base and LoRA
+  on init state 2, seed 16 (both failed; CSVs and provenance written).
+- `check_step4.py --b_policy_path` exercised with the base standing in for arm B: the queue check passed
+  and "arm B's chunk differs from the base's" failed (max difference 0), as it must for identical weights.
+- The notebook's control flow, simulated locally with a fake runner in place of the simulator: a full run
+  (checks, harness, collection merge, 6 adapters, 8 x 160 episodes, then `analyze_step4.py`); a stop at the
+  deadline during evaluation and a resumed session, after which every evaluation part held exactly its 40
+  episodes, none repeated. A harness result outside the tolerance stopped the run.
+- Mutation checks (`tools/mutation_check.py`): `analyze_step4.py` 61 of 74 mutants killed; the 13 survivors
+  cannot change a decision (an exact McNemar p never equals 0.05, a net of 0 has p = 1 and a net of 1 is never
+  significant; report formatting, argparse and JSON details). `demo_episodes.py` (pure functions) 12 of 13,
+  then a test for the episode-378 boundary; the train-split changes in `self_filtered_bc.py` 11 of 13, then a
+  test for `--val_demo_every 1`.
+- Independent review (fresh-context `research-code-reviewer`, 2026-10-29): no blockers. Acted on: the
+  rollout-loss question above; T4 training speed and the bf16 backward pass, now measured by a 20-step run in
+  the notebook's checks (which also sets the time a training run needs before it may start); the converter
+  held every decoded frame in memory (about 15 GB for 33 demonstrations, by arithmetic) and now holds one
+  episode at a time (outputs byte-identical, 2.6 GB peak for 2 episodes); the "2 of 3 seeds" wording; the
+  interpretation of arm C; the analysis JSON now records the commit and a SHA-256 of every input; the
+  notebook clones a pinned commit. Not changed: up to 10 hard-reset episodes per process (FAIL-004's limit of
+  3 was seen on WSL2; steps 2, 3 and 3b ran 10 per process on Colab and Kaggle; a crash fails the job loudly).
+- Not yet run: arm B's real checkpoint (on Drive; the notebook checks it before anything else), the harness
+  check, T4 training speed and the full 33-demonstration conversion on Kaggle.
+
+**Compute (estimates, not measured).** Episode time from step 3b: about 57 s on a T4 with two streams per
+GPU, longer for task 0, whose episodes mostly fail and run all 520 steps. Collection: 120 episodes. Training:
+6 x 2,000 LoRA steps. Evaluation: 8 x 160 = 1,280 episodes, roughly 5-7 h on Kaggle 2 x T4 at 60-80 s per
+episode over 4 streams. Probably two Kaggle sessions; arm B's checkpoint (on Drive) has to be uploaded as a
+private Kaggle dataset first.
+
 ## Compute
 
 Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a month) for steps 2-4. At
@@ -259,7 +417,7 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
 | 2 | Colab A100 | done: 600 (selection) + 300 (report) episodes, one process per task in parallel; the last processes started 82 and 37 minutes after launch |
 | 3 | Colab A100 | done: 1,500 training episodes x 2 tasks in parallel (episode time summed to 13.7 h and 15.9 h), then 120 evaluation episodes; launched 2026-10-27 14:13 UTC, last evaluation process started 2026-10-28 09:18 UTC, including a disconnect of about 2 h |
 | 3b | Kaggle 2 x T4 | done: 1,000 base episodes in 4 streams (3.9-4.0 h of episode time per stream, two streams per T4), then 6 critic fits; launched 2026-10-28 19:51 UTC, analysis at 2026-10-29 00:13 UTC |
-| 4 | Colab A100 | after step 3 |
+| 4 | Kaggle 2 x T4 | estimate: 120 collection episodes, 6 x 2,000 LoRA steps, 1,280 evaluation episodes (roughly 5-7 h of evaluation); two sessions |
 
 ## Files
 
@@ -276,12 +434,17 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
   `analyze_step3.py`: step-3 report.
 - `analyze_noise_signal.py`: step-3b critics, action AUC and decision; `kaggle_step3b_noise_signal.ipynb` runs the
   collection and the analysis on Kaggle; `calibration/step3b_null_calibration.py`: the intervals' false-positive check.
+- `analyze_step4.py`: step-4 comparisons and decision; `demo_episodes.py`: arm C's task-0 demonstrations from
+  `lerobot/libero` in `self_filtered_bc`'s episode format (trained with `self_filtered_bc.py --val_demo_every 5`);
+  `check_step4.py`: the real-model checks; `kaggle_step4_weight_update.ipynb` (built by `build_step4_notebook.py`)
+  runs checks, collection, training, evaluation and the analysis on Kaggle, resuming across sessions.
 
 ## Status
 
 Steps 0, 1 and 2 done (above); step 2 is a negative result. Step 3 ran on Colab and failed as a test: the
 critic diverged (above). Step 3b (whether a Monte Carlo critic can tell the base's own noises apart) ran on
-Kaggle and is not read: its shuffled-noise control was biased (above). Next: step 4.
+Kaggle and is not read: its shuffled-noise control was biased (above). Step 4's design is fixed (above, 2026-10-29);
+next: its analysis, demonstration converter and Kaggle notebook, with their checks, before any run.
 
 Before step 0 ran, smoke tests on the local RTX 4090 (shared with another job), one episode each of task 0,
 seed 0, init state 0: `n_action_steps=10` through `evaluate_all.py` and `n_action_steps=50` through
