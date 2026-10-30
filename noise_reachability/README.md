@@ -404,6 +404,70 @@ GPU, longer for task 0, whose episodes mostly fail and run all 520 steps. Collec
 episode over 4 streams. Probably two Kaggle sessions; arm B's checkpoint (on Drive) has to be uploaded as a
 private Kaggle dataset first.
 
+## Step 5: how deep is a systematic state? (design 2026-10-30)
+
+Steps 2-4 cannot say whether noise can solve a systematic state, because no step tried hard enough: step 1 drew 16
+seeds per state, and steps 2 and 3 were not tests of depth (step 3 was not a test at all). Two papers point opposite
+ways. arXiv:2610.13943 reports a learned noise actor taking a SmolVLA from 50.6% to 95.8% on LIBERO-10 after about
+240,000 rollouts (60 epochs x 4,000; its Table 1, best of 60 evaluations, one seed listed), on the resets it trained
+on, so at most 21 of 500 resets failed in its best evaluation; SimpleVLA-RL (ICLR 2026, weights
+of OpenVLA-OFT) reports that RL fails at 0% success and barely helps below 5%, per task. Neither reports per state.
+Step 5 measures it per state, on task 0, with the VLA's weights unchanged.
+
+**Pilot (before 5a).** On the A100: 5 episodes per process of state 2 (all 520 steps) at 2, 4, 6, 8 processes, measured
+as episodes over wall time, model loads included. The run uses the count reached while each step up gains at least 15%. Not results; noise ids
+above 9000 keep these episodes apart from the search.
+
+### Step 5a: deep noise search
+
+**Hypothesis.** Written before any 5a episode: the search reaches at least one of the five systematic states. State 6
+is the likeliest, an expectation informed by step 4, where weight-updated policies reached it and the base did not
+(interim counts, not yet in the repo); that says nothing about noise. If no family reaches a state in 210 episodes, the
+one-sided 95% bound on that state's success rate is 1.4% for the equal mix of the three families (4.2% for one family
+on its own, and about 2.2% for all five states jointly), and "systematic" stands as: unreached by these noises at this
+depth, not unreachable.
+
+**Protocol (fixed before the run).** `lerobot/smolvla_libero` at `a24f1f3804` (a snapshot at that revision is passed to
+every stage), `n_action_steps=10`, 520 steps, hard resets, task 0.
+
+- *Families.* `sampled`: the base, a fresh noise per inference. `full`: one fixed 50 x 32 noise used at every
+  inference of the episode (the form of "Golden Ticket", arXiv:2603.15757). `repeat`: one fixed 32-vector repeated along
+  the chunk, used at every inference (the form of arXiv:2610.13943, whose actor chooses it per inference; this
+  search does not). Fixed noises come from their own CPU generator, the same on every machine.
+- *Episodes.* Noise ids 0-69 per family on systematic states 2, 5, 6, 7, 8 (210 per state, 1,050). Noise ids 0-34 per
+  family on control state 9 (105). Episode seed 1000 + noise id, which overlaps no seed of step 1 (0-15), step 4 (16-31)
+  or the harness (0-2). With a fixed noise the environment seed changes nothing once the init state is set
+  (`check_step5a.py`), so fixed-noise episodes are deterministic.
+- *Confirmation.* Because of that, a rerun would replay a hit. Instead the first 3 hits of each read fixed family on
+  each systematic state are run with 4 jittered copies of the noise (jitter seeds 5000-5003, Gaussian std 0.3 in the
+  family's form; at most 120 episodes). This asks whether a hit sits in a region of noise or on an isolated point. A
+  sampled hit has no noise to perturb and stands as a hit.
+- *Harness and control, run first; each stops the run if it fails.* The base on init states 0-9 x seeds 0-2 against
+  step 0's 7/30, gap at most 6 (30 episodes, through `eval_noise_selection.py`). Then control state 9: `sampled` under 3
+  of 35 stops the run. A fixed family under 3 of 35 is not read, and any hit it has is reported apart: it happened,
+  but the family is not used in the classes. At most 1,305 episodes in all, plus the pilot.
+
+**Decision.** Per state: *robust* (a fixed noise succeeds in at least 2 of 4 jittered copies), else *sampled* (a sampled
+hit), else *fragile* (only fixed hits, not held up), else *unreached*. A fragile state counts as reached: a success
+happened. Overall: no state reached, "unreached at this depth"; 1-2 states, "mixed"; 3 or more, "mostly reachable",
+and "systematic" then means rare.
+
+**Post-run validation.** `tools/validate_run.py` expects cross-product layouts, so `analyze_step5a.py` does this
+itself: it refuses a missing or repeated episode, more than one commit, a dirty tree, other settings, or more than one
+policy path across the provenance records.
+
+**What it cannot show.** A fixed noise across an episode is not a sequence of noises chosen per inference, so
+"unreached" here says nothing about a learned actor; that is step 5b. Everything is task 0.
+
+### Step 5b: a learned noise actor (outline; fixed after the pilot and 5a, before any code)
+
+NSL-AWR after arXiv:2610.13943 on task 0, VLA frozen, 3 training seeds, evaluated on init states 0-9 x seeds 16-31,
+paired with step 4's base episodes. AWR learns from successes, and the systematic states have none, so the question is
+whether what it learns on other states carries over to them. Two variants if the pilot's throughput allows: training
+on init states 0-49, and on 10-49 with 0-9 held out, which that paper did not test on LIBERO. Its budget of about 24,000
+rollouts per task is out of reach (about 6,000-12,000 estimated from step 3's episode times and an unmeasured
+process count), so the hypothesis must state that a null at this budget does not bound what such an actor can do.
+
 ## Compute
 
 Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a month) for steps 2-4. At
@@ -418,6 +482,7 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
 | 3 | Colab A100 | done: 1,500 training episodes x 2 tasks in parallel (episode time summed to 13.7 h and 15.9 h), then 120 evaluation episodes; launched 2026-10-27 14:13 UTC, last evaluation process started 2026-10-28 09:18 UTC, including a disconnect of about 2 h |
 | 3b | Kaggle 2 x T4 | done: 1,000 base episodes in 4 streams (3.9-4.0 h of episode time per stream, two streams per T4), then 6 critic fits; launched 2026-10-28 19:51 UTC, analysis at 2026-10-29 00:13 UTC |
 | 4 | Kaggle 2 x T4 | estimate: 120 collection episodes, 6 x 2,000 LoRA steps, 1,280 evaluation episodes (roughly 5-7 h of evaluation); two sessions |
+| 5a | Colab A100 | not run: pilot, then at most 1,305 episodes; time comes from the pilot |
 
 ## Files
 
@@ -438,13 +503,16 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
   `lerobot/libero` in `self_filtered_bc`'s episode format (trained with `self_filtered_bc.py --val_demo_every 5`);
   `check_step4.py`: the real-model checks; `kaggle_step4_weight_update.ipynb` (built by `build_step4_notebook.py`)
   runs checks, collection, training, evaluation and the analysis on Kaggle, resuming across sessions.
+- `deep_noise_search.py`: step-5a episodes (fixed-noise wrapper, families, confirmation); `check_step5a.py`: the
+  real-model checks; `analyze_step5a.py`: pilot choice, classes and decision; `run_step5a_deep_noise.sh`: the exact
+  commands; `colab_step5a_deep_noise.ipynb` (built by `build_step5a_notebook.py`) runs it all on Colab.
 
 ## Status
 
 Steps 0, 1 and 2 done (above); step 2 is a negative result. Step 3 ran on Colab and failed as a test: the
 critic diverged (above). Step 3b (whether a Monte Carlo critic can tell the base's own noises apart) ran on
-Kaggle and is not read: its shuffled-noise control was biased (above). Step 4's design is fixed (above, 2026-10-29);
-next: its analysis, demonstration converter and Kaggle notebook, with their checks, before any run.
+Kaggle and is not read: its shuffled-noise control was biased (above). Step 4 is running on Kaggle (two sessions so far, not finished, no decision). Step 5a's design is fixed (above,
+2026-10-30) and its code is checked; not run. Step 5b is an outline.
 
 Before step 0 ran, smoke tests on the local RTX 4090 (shared with another job), one episode each of task 0,
 seed 0, init state 0: `n_action_steps=10` through `evaluate_all.py` and `n_action_steps=50` through
