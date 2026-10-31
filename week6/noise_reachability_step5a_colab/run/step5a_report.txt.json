@@ -1,0 +1,125 @@
+{
+ "provenance": {
+  "records": 136,
+  "commit": "522c181a250a2180a4ea9fa8f4a34fee253dd442",
+  "policy_path": "/root/.cache/huggingface/hub/models--lerobot--smolvla_libero/snapshots/a24f1f380461b665158d52acd140152c79e8b36d"
+ },
+ "harness": {
+  "base": 5,
+  "gap": -2,
+  "ok": true
+ },
+ "control": {
+  "sampled": 8,
+  "full": 12,
+  "repeat": 11
+ },
+ "family_read": {
+  "sampled": true,
+  "full": true,
+  "repeat": true
+ },
+ "states": {
+  "2": {
+   "episodes": 210,
+   "hits": 1,
+   "per_family": {
+    "sampled": 0,
+    "full": 0,
+    "repeat": 1
+   },
+   "confirmed": {
+    "full": {},
+    "repeat": {
+     "6": 1
+    }
+   },
+   "class": "fragile",
+   "upper_if_zero": null
+  },
+  "5": {
+   "episodes": 210,
+   "hits": 1,
+   "per_family": {
+    "sampled": 0,
+    "full": 0,
+    "repeat": 1
+   },
+   "confirmed": {
+    "full": {},
+    "repeat": {
+     "30": 1
+    }
+   },
+   "class": "fragile",
+   "upper_if_zero": null
+  },
+  "6": {
+   "episodes": 210,
+   "hits": 9,
+   "per_family": {
+    "sampled": 0,
+    "full": 2,
+    "repeat": 7
+   },
+   "confirmed": {
+    "full": {
+     "29": 0,
+     "56": 3
+    },
+    "repeat": {
+     "1": 1,
+     "10": 0,
+     "12": 2
+    }
+   },
+   "class": "robust",
+   "upper_if_zero": null
+  },
+  "7": {
+   "episodes": 210,
+   "hits": 4,
+   "per_family": {
+    "sampled": 0,
+    "full": 1,
+    "repeat": 3
+   },
+   "confirmed": {
+    "full": {
+     "51": 0
+    },
+    "repeat": {
+     "15": 1,
+     "30": 1,
+     "55": 1
+    }
+   },
+   "class": "fragile",
+   "upper_if_zero": null
+  },
+  "8": {
+   "episodes": 210,
+   "hits": 10,
+   "per_family": {
+    "sampled": 0,
+    "full": 2,
+    "repeat": 8
+   },
+   "confirmed": {
+    "full": {
+     "25": 2,
+     "30": 4
+    },
+    "repeat": {
+     "15": 4,
+     "23": 0,
+     "35": 3
+    }
+   },
+   "class": "robust",
+   "upper_if_zero": null
+  }
+ },
+ "unread_hits": {},
+ "decision": "mostly reachable: 5 of 5 systematic states reached; 'systematic' means rare"
+}

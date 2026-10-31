@@ -1,0 +1,27 @@
+{
+ "stages": {
+  "2": {
+   "episodes": 10,
+   "wall_seconds": 205.0,
+   "episodes_per_hour": 175.609756097561
+  },
+  "4": {
+   "episodes": 20,
+   "wall_seconds": 224.0,
+   "episodes_per_hour": 321.42857142857144
+  },
+  "6": {
+   "episodes": 30,
+   "wall_seconds": 329.0,
+   "episodes_per_hour": 328.2674772036474
+  },
+  "8": {
+   "episodes": 40,
+   "wall_seconds": 571.0,
+   "episodes_per_hour": 252.1891418563923
+  }
+ },
+ "cpus": 12,
+ "streams": 4,
+ "episodes_per_hour": 321.42857142857144
+}

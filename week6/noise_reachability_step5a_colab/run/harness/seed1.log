@@ -1,0 +1,27 @@
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /content/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+[eval] task 0: 10 episodes to run in /content/drive/MyDrive/efficient_vla_runs/step5a/run/harness/seed1
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+Loading  HuggingFaceTB/SmolVLM2-500M-Video-Instruct weights ...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  38%|███▊      | 186/489 [00:00<00:00, 1842.76it/s]Loading weights:  76%|███████▌  | 371/489 [00:00<00:00, 1658.55it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 1773.73it/s]
+Reducing the number of VLM layers to 16 ...
+Loading weights from local directory
+[eval] base task 0 seed 1 init 0: success=0 steps=520 time=41s
+[eval] base task 0 seed 1 init 1: success=1 steps=268 time=20s
+[eval] base task 0 seed 1 init 2: success=0 steps=520 time=36s
+[eval] base task 0 seed 1 init 3: success=1 steps=267 time=20s
+[eval] base task 0 seed 1 init 4: success=0 steps=520 time=37s
+[eval] base task 0 seed 1 init 5: success=0 steps=520 time=36s
+[eval] base task 0 seed 1 init 6: success=0 steps=520 time=37s
+[eval] base task 0 seed 1 init 7: success=0 steps=520 time=36s
+[eval] base task 0 seed 1 init 8: success=0 steps=520 time=36s
+[eval] base task 0 seed 1 init 9: success=0 steps=520 time=36s
+[eval] task 0 base: 2/10 = 20.0%

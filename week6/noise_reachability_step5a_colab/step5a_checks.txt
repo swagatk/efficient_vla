@@ -1,0 +1,57 @@
+files 18 episodes 1155
+state  sampled full repeat
+2 [0, 0, 1] 70
+5 [0, 0, 1] 70
+6 [0, 2, 7] 70
+7 [0, 1, 3] 70
+8 [0, 2, 8] 70
+9 [8, 12, 11] 35
+systematic totals of 350 {'sampled': 0, 'full': 5, 'repeat': 20}
+fail-step check Counter({520: 1099})
+('full', 6) [(29, 329), (56, 398)]
+('full', 7) [(51, 252)]
+('full', 8) [(25, 356), (30, 321)]
+('repeat', 2) [(6, 359)]
+('repeat', 5) [(30, 359)]
+('repeat', 6) [(1, 262), (10, 316), (12, 300), (30, 288), (41, 266), (57, 250), (60, 276)]
+('repeat', 7) [(15, 247), (30, 416), (55, 257)]
+('repeat', 8) [(15, 259), (23, 322), (35, 266), (38, 284), (44, 269), (46, 278), (53, 264), (62, 278)]
+full ids hitting >=2 states 0 {} perm p 1.0 mean 0.1168
+repeat ids hitting >=2 states 2 {30: 3, 15: 2} perm p 0.5974 mean 1.82855
+fisher full vs sampled 5 0 0.06160778977140945
+fisher repeat vs sampled 20 0 1.442632564129872e-06
+fisher repeat vs full 0.0034715535354786537
+CI sampled 0 (0, 0.0105)
+CI full 5 (0.0047, 0.033)
+CI repeat 20 (0.0353, 0.0869)
+CI ctrl {'sampled': (8, (0.1042, 0.4014)), 'full': (12, (0.1913, 0.5221)), 'repeat': (11, (0.1685, 0.4929))}
+confirm:
+full 25 state 8 2 /4 ['286', '395']
+full 29 state 6 0 /4 []
+full 30 state 8 4 /4 ['324', '313', '310', '318']
+full 51 state 7 0 /4 []
+full 56 state 6 3 /4 ['309', '308', '311']
+repeat 10 state 6 0 /4 []
+repeat 12 state 6 2 /4 ['386', '310']
+repeat 15 state 7 1 /4 ['250']
+repeat 15 state 8 4 /4 ['259', '258', '250', '265']
+repeat 1 state 6 1 /4 ['346']
+repeat 23 state 8 0 /4 []
+repeat 30 state 5 1 /4 ['453']
+repeat 30 state 7 1 /4 ['450']
+repeat 35 state 8 3 /4 ['280', '258', '276']
+repeat 55 state 7 1 /4 ['237']
+repeat 6 state 2 1 /4 ['461']
+Counter({('repeat', 'n'): 44, ('full', 'n'): 20, ('repeat', 'k'): 15, ('full', 'k'): 9})
+prov records 136 keys ['date', 'env', 'git_commit', 'git_dirty', 'git_dirty_noise_reachability', 'gpus', 'host', 'packages', 'settings']
+git_commit Counter({'522c181a250a2180a4ea9fa8f4a34fee253dd442': 136})
+git_dirty Counter({'False': 136})
+git_dirty_noise_reachability Counter({'False': 136})
+policy_path Counter({'None': 136})
+522c181a250a2180a4ea9fa8f4a34fee253dd442
+{}
+n_action_steps Counter({'None': 136})
+max_steps Counter({'None': 136})
+rename_map Counter({'None': 136})
+task_id Counter({'None': 136})
+policy_path Counter({'None': 136})

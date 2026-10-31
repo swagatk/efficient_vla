@@ -1,0 +1,21 @@
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /content/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+[search] per_episode_sampled_state2.csv: 5 episodes to run
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+Loading  HuggingFaceTB/SmolVLM2-500M-Video-Instruct weights ...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]Loading weights:  26%|██▌       | 128/489 [00:00<00:00, 1275.50it/s]Loading weights:  52%|█████▏    | 256/489 [00:00<00:00, 1192.39it/s]Loading weights:  91%|█████████▏| 447/489 [00:00<00:00, 1489.13it/s]Loading weights: 100%|██████████| 489/489 [00:00<00:00, 1499.32it/s]
+Reducing the number of VLM layers to 16 ...
+Loading weights from local directory
+[search] sampled noise 9440 seed 10440 init 2: success=0 steps=520 time=43.4s
+[search] sampled noise 9441 seed 10441 init 2: success=0 steps=520 time=38.3s
+[search] sampled noise 9442 seed 10442 init 2: success=0 steps=520 time=37.7s
+[search] sampled noise 9443 seed 10443 init 2: success=0 steps=520 time=37.7s
+[search] sampled noise 9444 seed 10444 init 2: success=0 steps=520 time=38.1s

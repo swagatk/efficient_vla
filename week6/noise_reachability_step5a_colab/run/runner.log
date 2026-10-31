@@ -1,0 +1,11 @@
+gate harness passed
+gate control passed
+harness: base 5/30 against 7 (gap -2, ok)
+control, state 9, of 35: sampled 8, full 12, repeat 11
+state 2: 1/210 {'sampled': 0, 'full': 0, 'repeat': 1} confirmed {'full': {}, 'repeat': {'6': 1}} -> fragile
+state 5: 1/210 {'sampled': 0, 'full': 0, 'repeat': 1} confirmed {'full': {}, 'repeat': {'30': 1}} -> fragile
+state 6: 9/210 {'sampled': 0, 'full': 2, 'repeat': 7} confirmed {'full': {'29': 0, '56': 3}, 'repeat': {'1': 1, '10': 0, '12': 2}} -> robust
+state 7: 4/210 {'sampled': 0, 'full': 1, 'repeat': 3} confirmed {'full': {'51': 0}, 'repeat': {'15': 1, '30': 1, '55': 1}} -> fragile
+state 8: 10/210 {'sampled': 0, 'full': 2, 'repeat': 8} confirmed {'full': {'25': 2, '30': 4}, 'repeat': {'15': 4, '23': 0, '35': 3}} -> robust
+decision: mostly reachable: 5 of 5 systematic states reached; 'systematic' means rare
+runner exit 0
