@@ -88,6 +88,37 @@ def install(policy, choose_noise, state_dim: int = 8) -> Steering:
     return st
 
 
+def install_repeated(policy, choose_noise, state_dim: int = 8) -> Steering:
+    """Step 5b: ``choose_noise(features)`` returns one ``max_action_dim`` vector per inference, repeated along the
+    chunk, or ``None`` to keep the base's own sampling. Unlike ``install``, the base draws no noise of its own when a
+    vector is chosen."""
+    import torch
+
+    model = policy.model
+    if "sample_actions" in vars(model):
+        raise RuntimeError("a sampler wrapper is already installed on this policy")
+    st = Steering(*executed_shape(policy), state_dim=state_dim)
+    original = model.sample_actions  # the bound class method
+    size, dim = model.config.chunk_size, model.config.max_action_dim
+
+    def sample_actions(images, img_masks, lang_tokens, lang_masks, state, noise=None, **kwargs):
+        if noise is not None:
+            raise ValueError("noise steering draws its own noise")
+        if state.shape[0] != 1:
+            raise ValueError(f"noise steering expects one observation per call, got batch {state.shape[0]}")
+        feats = prefix_features(model, images, img_masks, lang_tokens, lang_masks, state, st.state_dim)
+        chosen = choose_noise(feats)
+        if chosen is not None:
+            if tuple(chosen.shape) != (dim,):
+                raise ValueError(f"choose_noise returned shape {tuple(chosen.shape)}, expected {(dim,)}")
+            noise = chosen.to(device=state.device, dtype=torch.float32).reshape(1, 1, dim).repeat(1, size, 1)
+        st.n_inferences += 1
+        return original(images, img_masks, lang_tokens, lang_masks, state, noise=noise, **kwargs)
+
+    model.sample_actions = sample_actions
+    return st
+
+
 def uninstall(policy) -> None:
     """Restore the policy's own sampler (no-op if nothing is installed)."""
     vars(policy.model).pop("sample_actions", None)

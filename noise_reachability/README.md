@@ -459,14 +459,85 @@ policy path across the provenance records.
 **What it cannot show.** A fixed noise across an episode is not a sequence of noises chosen per inference, so
 "unreached" here says nothing about a learned actor; that is step 5b. Everything is task 0.
 
-### Step 5b: a learned noise actor (outline; fixed after the pilot and 5a, before any code)
+**Result (2026-10-31, `week6/noise_reachability_step5a_colab/`).** "Mostly reachable": all 5 states reached, so the
+hypothesis holds and "systematic" means rare. States 6 and 8 are robust; 2, 5 and 7 fragile. Of 350 episodes per
+family: `sampled` 0, `full` 5, `repeat` 20. Harness 5/30 against 7; control sampled 8, full 12, repeat 11 of 35. Fixed
+noises were chosen after seeing the outcome, so this shows that such noises exist, not that a policy can find them.
 
-NSL-AWR after arXiv:2610.13943 on task 0, VLA frozen, 3 training seeds, evaluated on init states 0-9 x seeds 16-31,
-paired with step 4's base episodes. AWR learns from successes, and the systematic states have none, so the question is
-whether what it learns on other states carries over to them. Two variants if the pilot's throughput allows: training
-on init states 0-49, and on 10-49 with 0-9 held out, which that paper did not test on LIBERO. Its budget of about 24,000
-rollouts per task is out of reach (about 6,000-12,000 estimated from step 3's episode times and an unmeasured
-process count), so the hypothesis must state that a null at this budget does not bound what such an actor can do.
+### Step 5b: a learned noise actor on held-out states (design 2026-10-31)
+
+Step 5a showed that fixed noises reach all five systematic states, and that they were picked after seeing the outcome.
+Step 5b asks whether an actor that never saw those states can find such noises from the observation.
+
+**Hypothesis.** Written before any 5b code: NSL-AWR after arXiv:2610.13943, trained on init states 10-49 only, does not
+raise success on the held-out systematic states. In full, it fails the rule below in at least 2 of 3 training seeds,
+because AWR learns only from successes, and these states are unlike the states that supply them. Being wrong is the
+interesting outcome: it would mean that a noise actor transfers to failures it has never seen solved.
+
+**What a null cannot show.** The budget is about 1,500 rollouts per training seed against about 24,000 per task in that
+paper, and no init state of 0-9 is trained on. A null does not bound what such an actor can do with more data or
+with these states in training; the paper's own result used its evaluation resets in training.
+
+**Protocol (fixed before the code and the pilot).** `lerobot/smolvla_libero` at `a24f1f3804`, `n_action_steps=10`, 520
+steps, hard resets, task 0, VLA frozen.
+
+- *Actor.* From that paper, Appendix B.1: pooled VLA features plus the state as input (`noise_steering.py`'s 960 + 8
+  numbers), four hidden layers of 512 with LayerNorm and ReLU, zero-initialised 32-dimensional mean and log-std heads,
+  log-std clamped to [-20, 2], unbounded noise. One 32-vector per inference, repeated along the 50 positions.
+- *Value model.* Four hidden layers of 512 with ReLU, 16 bins over [0, 1], cross-entropy on two-hot targets (the paper
+  gives the bins but not the target form).
+- *Update.* Its equation 10: `w = Y min(exp(A / 0.5), 20)`, with log-probabilities averaged over noise dimensions. `Y`
+  is episode success. AdamW at 1e-5 (actor) and 2e-5 (value), betas 0.9 and 0.95, weight decay 0.01, gradient-norm
+  clip 1.0, batch 2,048, half from successful episodes. Sampling is with replacement.
+- *Advantage.* `A = G - V(s)`, with `G = 0.99^(steps to the success decision)` and 0 for a failed episode. The paper does
+  not spell out AWR's target. A failed episode's truncated return counts as 0 and has no bootstrap, so `V` is
+  a success-probability estimate under the balanced batches; this is a choice of this study.
+- *Departure from the paper.* Its 1x ratio would give about 8 actor updates per epoch here, about 300 in all at a learning
+  rate of 1e-5. So each epoch has 100 joint updates and 100 value-only updates, what the paper runs per collection
+  batch: 3,700 actor updates per seed. This is not tuned: no 5b result changes it.
+- *Training.* Init states 10-49, one episode each per epoch (40 episodes), 37 epochs, 1,480 episodes per training seed;
+  training seeds 0, 1, 2 in turn. Actor updated between epochs; stochastic rollouts. Replay keeps every episode.
+  Episodes of training seed `t`, index `e`: seed 200,000 + 10,000 `t` + `e`.
+
+**Evaluation (init states 0-9 x seeds 16-31, 160 episodes per arm).** A deterministic noise makes an episode deterministic
+(`check_step5a.py`), so the actor mean would give the same outcome on all 16 seeds of a state. The primary arm is
+therefore the stochastic actor, as the base is stochastic.
+
+- `base`: the frozen policy on the A100, through this path (step 4's base ran on T4s, so it does not pair exactly).
+- `actor`: the final actor, sampled, per training seed.
+- `prior`: the untrained actor, sampled: N(0, 1) per inference, repeated along the chunk. It separates what learning adds
+  from what the repeated form adds, which step 5a says may be large.
+- Secondary, one episode per init state (seed 16): `actor_mean` per training seed and `zero` (the untrained mean). These
+  are 10 outcomes each, reported and not tested.
+
+At most 5,280 episodes (4,440 + 160 + 160 + 480 + 30 + 10). Estimated at about 16 h and 108 compute units at step 5a's
+rate; the pilot replaces this estimate. Same pairing as step 4: same (seed, init state) across arms, exact McNemar.
+
+**Harness and gates, each stops the run.** `base` runs first and must score within 16 of step 4's 37/160 (the 20%
+tolerance of the other steps; this count and the 50/120 below are in `week6/noise_reachability_step5b_colab/references/`).
+After training seed 0, its success over the last 5 epochs (200 episodes) must be at least
+30%, against 41.7% for the base on the same states (50/120, step 4's collection); 30% is about 3 standard errors below
+that, so a lower value means that the actor has broken the policy.
+
+**Pilot.** One training epoch of a separate seed (9, not a result), with its update, on the A100, timing both; evaluation
+time is estimated from that rate. The run then uses 37 epochs if the estimate fits in 17 h, otherwise the largest
+number of epochs that does. That number is written down before training seed 0 starts.
+
+**Decision, per training seed (`analyze_step5b.py`).** As step 4: *meets* if `actor` beats `base` by a net of at least 8 of
+the 80 systematic episodes with paired p < 0.05, and the guard on the 80 reachable episodes holds (no more than 4 net
+below the base, and not significantly below). *Learned* if `actor` also beats `prior` on the same systematic
+episodes by a net of at least 8 with p < 0.05.
+
+- *Meets and learned in at least 2 of 3 seeds:* the hypothesis is rejected: the actor transfers to held-out systematic
+  states. Re-check for bugs first (CLAUDE.md), then it is the study's main claim.
+- *Meets in at least 2 seeds, not learned in 2:* the repeated form explains the gain, not learning.
+- *Otherwise, with `actor` at least 8 net above both `base` and `prior` on reachable episodes (p < 0.05 each) in at least
+  2 seeds:* the actor transfers to held-out reachable states and not to systematic ones. The hypothesis stands, and this is the clean form
+  of the split between the two kinds of state.
+- *Otherwise, training success over the last 5 epochs at least 8 points above the untrained actor's in at least 2 seeds:*
+  the actor learned its training states and did not transfer. The untrained actor's rate is epoch 0 of the three seeds
+  (120 episodes), so a gain from the repeated form alone does not count here.
+- *Otherwise:* the learner did not learn at this budget, so 5b says nothing about transfer.
 
 ## Compute
 
@@ -482,7 +553,8 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
 | 3 | Colab A100 | done: 1,500 training episodes x 2 tasks in parallel (episode time summed to 13.7 h and 15.9 h), then 120 evaluation episodes; launched 2026-10-27 14:13 UTC, last evaluation process started 2026-10-28 09:18 UTC, including a disconnect of about 2 h |
 | 3b | Kaggle 2 x T4 | done: 1,000 base episodes in 4 streams (3.9-4.0 h of episode time per stream, two streams per T4), then 6 critic fits; launched 2026-10-28 19:51 UTC, analysis at 2026-10-29 00:13 UTC |
 | 4 | Kaggle 2 x T4 | estimate: 120 collection episodes, 6 x 2,000 LoRA steps, 1,280 evaluation episodes (roughly 5-7 h of evaluation); two sessions |
-| 5a | Colab A100 | not run: pilot, then at most 1,305 episodes; time comes from the pilot |
+| 5a | Colab A100 | done: 1,219 episodes after the pilot on 4 processes; first record 2026-10-30 22:04 UTC, last process started 2026-10-31 01:52 UTC |
+| 5b | Colab A100 | not run: at most 5,280 episodes, estimated at about 16 h; the pilot replaces this |
 
 ## Files
 
@@ -506,13 +578,17 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
 - `deep_noise_search.py`: step-5a episodes (fixed-noise wrapper, families, confirmation); `check_step5a.py`: the
   real-model checks; `analyze_step5a.py`: pilot choice, classes and decision; `run_step5a_deep_noise.sh`: the exact
   commands; `colab_step5a_deep_noise.ipynb` (built by `build_step5a_notebook.py`) runs it all on Colab.
+- `noise_awr.py`: step-5b actor, value model, returns, replay; `train_noise_awr.py`: collection, update, evaluation;
+  `noise_steering.py` (`install_repeated`): the repeated noise; `check_step5b.py`: the real-model checks;
+  `analyze_step5b.py`: gates and decision; `run_step5b_noise_awr.sh`: the exact commands;
+  `colab_step5b_noise_awr.ipynb` (built by `build_step5b_notebook.py`) runs it all on Colab.
 
 ## Status
 
 Steps 0, 1 and 2 done (above); step 2 is a negative result. Step 3 ran on Colab and failed as a test: the
 critic diverged (above). Step 3b (whether a Monte Carlo critic can tell the base's own noises apart) ran on
-Kaggle and is not read: its shuffled-noise control was biased (above). Step 4 is running on Kaggle (two sessions so far, not finished, no decision). Step 5a's design is fixed (above,
-2026-10-30) and its code is checked; not run. Step 5b is an outline.
+Kaggle and is not read: its shuffled-noise control was biased (above). Step 4 is running on Kaggle (two sessions so far, not finished, no decision). Step 5a ran on Colab (above, 2026-10-31): "mostly reachable", all 5 systematic states reached by fixed noises, none by
+sampled noise. Step 5b's design is fixed (above, 2026-10-31); not run.
 
 Before step 0 ran, smoke tests on the local RTX 4090 (shared with another job), one episode each of task 0,
 seed 0, init state 0: `n_action_steps=10` through `evaluate_all.py` and `n_action_steps=50` through
