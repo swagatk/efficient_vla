@@ -13,7 +13,7 @@ Works on evaluate_all.py output (``per_episode.csv`` + ``provenance.jsonl`` at t
 - logs: each ``--log_grep PATTERN`` occurs in every ``eval.log`` / ``eval.log.gz`` under the folder (e.g. the
   applied setting), and no log contains a Python traceback.
 
-    python -S tools/validate_run.py <folder> --tasks 0 4 6 7 8 --seeds 3-15 --init_states 0-9 \
+    python -S tools/validate_run.py <folder> --tasks "0 4 6 7 8" --seeds 3-15 --init_states 0-9 \
         --expect n_action_steps=10 --log_grep "n_action_steps': 10"
 
 Exit code 0 if every check passes, 1 otherwise. Reads files only: run with ``python -S``.

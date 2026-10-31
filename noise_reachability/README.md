@@ -546,6 +546,77 @@ episodes by a net of at least 8 with p < 0.05.
   (120 episodes), so a gain from the repeated form alone does not count here.
 - *Otherwise:* the learner did not learn at this budget, so 5b says nothing about transfer.
 
+## Step 6: do the labels and arm B's uneven gain hold beyond task 0? (design 2026-10-31)
+
+Steps 4 and 5a rest on task 0 and five of its states, with one checkpoint for arm B. Step 1's labels on the other weak
+tasks were never checked on fresh seeds. This step needs no training: the base and arm B's checkpoint (step 4's, same
+SHA-256) on tasks 4, 6, 7, 8 x init states 0-9 x seeds 16-31, `n_action_steps=10`, through step 4's evaluation path
+(`self_filtered_bc.py --stage eval`): 2 policies x 640 episodes. Task 0's base and B come from step 4's files, same
+protocol. Step 4 is why the claim is tested here: this design was written after seeing task 0, so task 0 is not
+out-of-sample and the primary test leaves it out.
+
+**Groups, from the base on seeds 0-15 only (step 1; fixed before any new episode).** *Systematic:* 0 of 16. *Low
+reachable:* 1 to 8 of 16, states with room to gain, so a ceiling cannot explain a difference. States above 8 of 16 are
+in no group. Successes of 16 per init state 0-9:
+
+| Task | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | Systematic | Low reachable |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 4 | 13 | 4 | 0 | 16 | 16 | 5 | 1 | 8 | 5 | 11 | 2 | 1, 5, 6, 7, 8 |
+| 6 | 7 | 5 | 15 | 9 | 9 | 16 | 12 | 16 | 0 | 8 | 8 | 0, 1, 9 |
+| 7 | 8 | 16 | 3 | 6 | 7 | 1 | 13 | 16 | 4 | 16 | none | no test |
+| 8 | 11 | 8 | 2 | 1 | 0 | 10 | 14 | 13 | 5 | 6 | 4 | 1, 2, 3, 8, 9 |
+
+**Hypotheses, each with its rule (`analyze_step6.py`).** A state's *gain* is (B successes - base successes) / 16 on seeds
+16-31, the same episodes for both.
+
+- *Labels hold:* the base solves at most 4 of the 48 episodes on the 3 systematic states of tasks 4, 6, 8, and at most 2
+  of 16 on any one of them. This cannot exclude rates near 10%; the report gives the exact interval and each state's count.
+- *Informative:* B's mean gain on the 13 low reachable states of those tasks is at least 0.10. If not, B has too
+  little effect there to compare states.
+- *Uneven gain:* `D`, the mean over tasks 4, 6, 8 of (mean gain of the task's low reachable states minus its systematic
+  state's gain), is at least 0.10, with one-sided exact stratified permutation p < 0.05. Within each task, every choice
+  of which state plays the systematic one is enumerated (6 x 4 x 6 = 144 assignments), so states are the unit and a task's
+  overall gain cannot produce `D`; ties count against the hypothesis. The smallest possible p is 1/144. The report also
+  gives each task's gap and a 95% bootstrap interval on `D` (seeds resampled within state, paired; states fixed, so it
+  shows episode noise only).
+
+**Reading, fixed now, in this order.**
+
+- *Labels fail:* the two classes do not carry beyond task 0. The paper reports per-state rates, not classes.
+- *Not informative:* B's gain on the low reachable states was too small to compare states; nothing is read about
+  unevenness.
+- *Labels hold, uneven gain holds:* gain is smaller on the systematic states on tasks not used to form the claim, with one
+  B checkpoint. This does not show a separate class: on a probability scale a uniform log-odds lift also shrinks at the
+  floor, and 48 episodes per arm cannot separate the two. The log-odds `D` below is the fixed check on this.
+- *Labels hold, informative, uneven gain missing:* not replicated at this size. It is not evidence that the unevenness
+  is absent beyond task 0; see the power below.
+
+*Changed after the review, before any episode ran (2026-10-31):* the per-state limit on the labels, the intervals, the
+log-odds secondary, and the wording of the three readings, which claimed more than this size allows.
+
+**Power (model-based estimates, `calibration/step6_power.py`, output in `week6/noise_reachability_step6_kaggle/`).** Rates of the states are drawn from their seeds 0-15 counts, 20,000 simulations per row, on the rule above. A true class
+effect (low reachable + x, systematic + 0) passes `D` given that the labels hold and B is informative with probability
+0.39 at x = 0.15, 0.64 at 0.20 and 0.96 at 0.30. A uniform log-odds lift with no classes passes with probability 0.42 at
++1 and 0.67 at +1.5, which is why a pass is not read as a class. The informative check passes half the time at a true
+gain of 0.10. The pooled labels rule passes with probability 0.91, 0.47 and 0.13 at true rates of 5%, 10% and 15%.
+
+
+Secondary, not part of the rule: the same `D` with task 0 included; the same `D` on the log-odds scale ((successes + 0.5) /
+(failures + 0.5), same assignments); Spearman correlation across all 50 states between
+the rate on seeds 0-15 and the gain; each task's B against base by exact McNemar. These 50 states carry their per-state
+table in the JSON report for a figure. Limits: 3 systematic states, one B checkpoint, and four tasks chosen in step 1 as
+the weakest. B's task-level results on these tasks at `n_action_steps=1`, seeds 0-2, existed before this design
+(`week6/continued_training_kaggle/`), so the design is not blind to them.
+
+**Harness, stops the run.** The base runs first, then B. Per task, the base on seeds 16-31 must be within 18 of 160 of
+its seeds 0-15 count (79, 97, 90, 70 for tasks 4, 6, 7, 8): 2 standard errors of a difference at p = 0.5, 2 x sqrt(2 x
+0.25 / 160) x 160 = 17.9. Step 4 passed the same path on task 0 (37 against 41). B's checkpoint must match step 4's
+SHA-256 `b75872e158799eb4`.
+
+Same protocol on both sides: same tasks, states, seeds, horizon, control and code path. **Compute (estimate).** 1,280
+episodes at step 4's 60-80 s per episode over 4 streams: about 6 h, one Kaggle session, probably less because these
+tasks fail less often.
+
 ## Compute
 
 Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a month) for steps 2-4. At
@@ -560,6 +631,7 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
 | 3 | Colab A100 | done: 1,500 training episodes x 2 tasks in parallel (episode time summed to 13.7 h and 15.9 h), then 120 evaluation episodes; launched 2026-10-27 14:13 UTC, last evaluation process started 2026-10-28 09:18 UTC, including a disconnect of about 2 h |
 | 3b | Kaggle 2 x T4 | done: 1,000 base episodes in 4 streams (3.9-4.0 h of episode time per stream, two streams per T4), then 6 critic fits; launched 2026-10-28 19:51 UTC, analysis at 2026-10-29 00:13 UTC |
 | 4 | Kaggle 2 x T4 | estimate: 120 collection episodes, 6 x 2,000 LoRA steps, 1,280 evaluation episodes (roughly 5-7 h of evaluation); two sessions |
+| 6 | Kaggle 2 x T4 | estimate: 1,280 evaluation episodes, about 6 h, one session |
 | 5a | Colab A100 | done: 1,219 episodes after the pilot on 4 processes; first record 2026-10-30 22:04 UTC, last process started 2026-10-31 01:52 UTC |
 | 5b | Colab A100 | not run: at most 5,280 episodes, estimated at about 16 h; the pilot replaces this |
 
@@ -589,13 +661,15 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
   `noise_steering.py` (`install_repeated`): the repeated noise; `check_step5b.py`: the real-model checks;
   `analyze_step5b.py`: gates and decision; `run_step5b_noise_awr.sh`: the exact commands;
   `colab_step5b_noise_awr.ipynb` (built by `build_step5b_notebook.py`) runs it all on Colab.
+- `analyze_step6.py`: step-6 groups, harness, permutation test and reading; `kaggle_step6_replication.ipynb` (built by
+  `build_step6_notebook.py`, from step 4's notebook cells) runs the evaluation and the analysis on Kaggle.
 
 ## Status
 
 Steps 0, 1 and 2 done (above); step 2 is a negative result. Step 3 ran on Colab and failed as a test: the
 critic diverged (above). Step 3b (whether a Monte Carlo critic can tell the base's own noises apart) ran on
 Kaggle and is not read: its shuffled-noise control was biased (above). Step 4 ran on Kaggle (above, 2026-10-31): negative, no arm meets the hypothesis. Step 5a ran on Colab (above, 2026-10-31): "mostly reachable", all 5 systematic states reached by fixed noises, none by
-sampled noise. Step 5b's design is fixed (above, 2026-10-31); not run.
+sampled noise. Step 5b is running on Colab (launched 2026-10-31, no result). Step 6's design is fixed (above, 2026-10-31); not run.
 
 Before step 0 ran, smoke tests on the local RTX 4090 (shared with another job), one episode each of task 0,
 seed 0, init state 0: `n_action_steps=10` through `evaluate_all.py` and `n_action_steps=50` through
