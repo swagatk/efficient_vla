@@ -1,0 +1,371 @@
+{
+ "args": {
+  "base": "/kaggle/working/step4/eval/per_episode_base.csv",
+  "arm": [
+   "A0=/kaggle/working/step4/eval/per_episode_A0.csv",
+   "A1=/kaggle/working/step4/eval/per_episode_A1.csv",
+   "A2=/kaggle/working/step4/eval/per_episode_A2.csv",
+   "C0=/kaggle/working/step4/eval/per_episode_C0.csv",
+   "C1=/kaggle/working/step4/eval/per_episode_C1.csv",
+   "C2=/kaggle/working/step4/eval/per_episode_C2.csv",
+   "B=/kaggle/working/step4/eval/per_episode_B.csv"
+  ],
+  "harness": "/kaggle/working/step4/harness_check/per_episode_base.csv",
+  "out": "/kaggle/working/step4/step4_report.txt"
+ },
+ "provenance": {
+  "git_commit": "9318dd507a3cc3413577e64b514a694aa47c0ffd",
+  "inputs": {
+   "/kaggle/working/step4/eval/per_episode_base.csv": "44ef871659fc5b9b2b065495904cc6c151306c9fb79500721fde994464c2d42a",
+   "/kaggle/working/step4/eval/per_episode_A0.csv": "ed6aaedb027332447468063233b25762ec411263f1ec8938b855a0c1f9768b35",
+   "/kaggle/working/step4/eval/per_episode_A1.csv": "cb698d87ceaef361b1a3d03cb0efe3c3c2c2565989aa48204f74444be40c36e9",
+   "/kaggle/working/step4/eval/per_episode_A2.csv": "b6b0cf799cc5a055039150e0993e227e004cc4abafd69862150d6b9a7320786e",
+   "/kaggle/working/step4/eval/per_episode_C0.csv": "1c41de4148c151cfb313de155545054b8335fb71b1f47b81c9839ee5c105f916",
+   "/kaggle/working/step4/eval/per_episode_C1.csv": "f604e677da3fc09331f47f8e8939a8e1b915f7db20feec86f3c5fb645cebfb52",
+   "/kaggle/working/step4/eval/per_episode_C2.csv": "6efd6cf330781a49104002e28ae42f4a698e3a2d660491346631ad83b7784419",
+   "/kaggle/working/step4/eval/per_episode_B.csv": "fd0de511c09d4d94f831385d5f70db8dafcdeba1166698c2bfa4f8ef90d6748f",
+   "/kaggle/working/step4/harness_check/per_episode_base.csv": "faf4285bed938b3733be4e17a59679f141be8914c7fe91e3b018eeb12daa6127"
+  }
+ },
+ "A": {
+  "0": {
+   "systematic": {
+    "ref": 0,
+    "run": 1,
+    "n": 80,
+    "ref_only": 0,
+    "run_only": 1,
+    "net": 1,
+    "p": 1.0,
+    "diff_ci95": [
+     -0.011875000000000002,
+     0.0125
+    ],
+    "ok": false
+   },
+   "reachable": {
+    "ref": 37,
+    "run": 48,
+    "n": 80,
+    "ref_only": 1,
+    "run_only": 12,
+    "net": 11,
+    "p": 0.00341796875,
+    "diff_ci95": [
+     0.04540333353793978,
+     0.16186767073836233
+    ],
+    "guard_ok": true
+   },
+   "meets": false
+  },
+  "1": {
+   "systematic": {
+    "ref": 0,
+    "run": 2,
+    "n": 80,
+    "ref_only": 0,
+    "run_only": 2,
+    "net": 2,
+    "p": 0.5,
+    "diff_ci95": [
+     -0.017094305849579054,
+     0.025
+    ],
+    "ok": false
+   },
+   "reachable": {
+    "ref": 37,
+    "run": 38,
+    "n": 80,
+    "ref_only": 6,
+    "run_only": 7,
+    "net": 1,
+    "p": 1.0,
+    "diff_ci95": [
+     -0.08081271826215136,
+     0.10002445641458142
+    ],
+    "guard_ok": true
+   },
+   "meets": false
+  },
+  "2": {
+   "systematic": {
+    "ref": 0,
+    "run": 3,
+    "n": 80,
+    "ref_only": 0,
+    "run_only": 3,
+    "net": 3,
+    "p": 0.25,
+    "diff_ci95": [
+     -0.015569866963403518,
+     0.0375
+    ],
+    "ok": false
+   },
+   "reachable": {
+    "ref": 37,
+    "run": 47,
+    "n": 80,
+    "ref_only": 2,
+    "run_only": 12,
+    "net": 10,
+    "p": 0.012939453125,
+    "diff_ci95": [
+     0.025154793681605312,
+     0.16877191958088295
+    ],
+    "guard_ok": true
+   },
+   "meets": false
+  }
+ },
+ "C": {
+  "0": {
+   "systematic": {
+    "ref": 0,
+    "run": 0,
+    "n": 80,
+    "ref_only": 0,
+    "run_only": 0,
+    "net": 0,
+    "p": 1.0,
+    "diff_ci95": [
+     0.0,
+     0.0
+    ],
+    "ok": false
+   },
+   "reachable": {
+    "ref": 37,
+    "run": 40,
+    "n": 80,
+    "ref_only": 4,
+    "run_only": 7,
+    "net": 3,
+    "p": 0.548828125,
+    "diff_ci95": [
+     -0.05282620337178882,
+     0.10745255294974805
+    ],
+    "guard_ok": true
+   },
+   "meets": false
+  },
+  "1": {
+   "systematic": {
+    "ref": 0,
+    "run": 0,
+    "n": 80,
+    "ref_only": 0,
+    "run_only": 0,
+    "net": 0,
+    "p": 1.0,
+    "diff_ci95": [
+     0.0,
+     0.0
+    ],
+    "ok": false
+   },
+   "reachable": {
+    "ref": 37,
+    "run": 41,
+    "n": 80,
+    "ref_only": 4,
+    "run_only": 8,
+    "net": 4,
+    "p": 0.3876953125,
+    "diff_ci95": [
+     -0.04533734807435575,
+     0.12022617265512497
+    ],
+    "guard_ok": true
+   },
+   "meets": false
+  },
+  "2": {
+   "systematic": {
+    "ref": 0,
+    "run": 0,
+    "n": 80,
+    "ref_only": 0,
+    "run_only": 0,
+    "net": 0,
+    "p": 1.0,
+    "diff_ci95": [
+     0.0,
+     0.0
+    ],
+    "ok": false
+   },
+   "reachable": {
+    "ref": 37,
+    "run": 40,
+    "n": 80,
+    "ref_only": 3,
+    "run_only": 6,
+    "net": 3,
+    "p": 0.5078125,
+    "diff_ci95": [
+     -0.045158612353078394,
+     0.09565770793056934
+    ],
+    "guard_ok": true
+   },
+   "meets": false
+  }
+ },
+ "B": {
+  "systematic": {
+   "ref": 0,
+   "run": 2,
+   "n": 80,
+   "ref_only": 0,
+   "run_only": 2,
+   "net": 2,
+   "p": 0.5,
+   "diff_ci95": [
+    -0.017094305849579054,
+    0.025
+   ],
+   "ok": false
+  },
+  "reachable": {
+   "ref": 37,
+   "run": 62,
+   "n": 80,
+   "ref_only": 1,
+   "run_only": 26,
+   "net": 25,
+   "p": 4.172325134277344e-07,
+   "diff_ci95": [
+    0.20944870824619483,
+    0.3368673514629373
+   ],
+   "guard_ok": true
+  },
+  "meets": false
+ },
+ "C_vs_A": {
+  "0": {
+   "ref": 1,
+   "run": 0,
+   "n": 80,
+   "ref_only": 1,
+   "run_only": 0,
+   "net": -1,
+   "p": 1.0,
+   "diff_ci95": [
+    -0.0125,
+    0.011874999999999997
+   ],
+   "ahead": false
+  },
+  "1": {
+   "ref": 2,
+   "run": 0,
+   "n": 80,
+   "ref_only": 2,
+   "run_only": 0,
+   "net": -2,
+   "p": 0.5,
+   "diff_ci95": [
+    -0.025,
+    0.01709430584957905
+   ],
+   "ahead": false
+  },
+  "2": {
+   "ref": 3,
+   "run": 0,
+   "n": 80,
+   "ref_only": 3,
+   "run_only": 0,
+   "net": -3,
+   "p": 0.25,
+   "diff_ci95": [
+    -0.0375,
+    0.015569866963403494
+   ],
+   "ahead": false
+  }
+ },
+ "pooled": {
+  "A": {
+   "systematic": {
+    "ref": 0,
+    "run": 6,
+    "n": 240,
+    "ref_only": 0,
+    "run_only": 6,
+    "net": 6,
+    "p": 0.03125,
+    "diff_ci95": [
+     0.0020370936780049645,
+     0.025
+    ],
+    "ok": false
+   },
+   "reachable": {
+    "ref": 111,
+    "run": 133,
+    "n": 240,
+    "ref_only": 9,
+    "run_only": 31,
+    "net": 22,
+    "p": 0.0006795482549932785,
+    "diff_ci95": [
+     0.03849610756552575,
+     0.13053445367197597
+    ],
+    "guard_ok": true
+   },
+   "meets": false
+  },
+  "C": {
+   "systematic": {
+    "ref": 0,
+    "run": 0,
+    "n": 240,
+    "ref_only": 0,
+    "run_only": 0,
+    "net": 0,
+    "p": 1.0,
+    "diff_ci95": [
+     0.0,
+     0.0
+    ],
+    "ok": false
+   },
+   "reachable": {
+    "ref": 111,
+    "run": 121,
+    "n": 240,
+    "ref_only": 11,
+    "run_only": 21,
+    "net": 10,
+    "p": 0.11018416518345475,
+    "diff_ci95": [
+     -0.008514943008071629,
+     0.08380824220891571
+    ],
+    "guard_ok": true
+   },
+   "meets": false
+  }
+ },
+ "base": {
+  "systematic": 0,
+  "reachable": 37
+ },
+ "harness": {
+  "base": 6,
+  "n": 30,
+  "reference": 7,
+  "gap": -1,
+  "ok": true
+ },
+ "decision": "negative: no arm meets the hypothesis"
+}

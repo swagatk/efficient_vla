@@ -1,0 +1,219 @@
+{
+ "task_id": 0,
+ "task": "put both the alphabet soup and the tomato sauce in the basket",
+ "dataset": "lerobot/libero",
+ "revision": "a1aaacb7f6cd6ee5fb43120f673cebb0cfea7dd4",
+ "task_index": 5,
+ "frame_stride": 2,
+ "video_backend": "pyav",
+ "episodes": [
+  {
+   "file": "demo000_ep0008.npz",
+   "dataset_episode_index": 8,
+   "frames": 259
+  },
+  {
+   "file": "demo001_ep0013.npz",
+   "dataset_episode_index": 13,
+   "frames": 285
+  },
+  {
+   "file": "demo002_ep0026.npz",
+   "dataset_episode_index": 26,
+   "frames": 296
+  },
+  {
+   "file": "demo003_ep0039.npz",
+   "dataset_episode_index": 39,
+   "frames": 288
+  },
+  {
+   "file": "demo004_ep0069.npz",
+   "dataset_episode_index": 69,
+   "frames": 292
+  },
+  {
+   "file": "demo005_ep0071.npz",
+   "dataset_episode_index": 71,
+   "frames": 312
+  },
+  {
+   "file": "demo006_ep0077.npz",
+   "dataset_episode_index": 77,
+   "frames": 300
+  },
+  {
+   "file": "demo007_ep0079.npz",
+   "dataset_episode_index": 79,
+   "frames": 274
+  },
+  {
+   "file": "demo008_ep0092.npz",
+   "dataset_episode_index": 92,
+   "frames": 280
+  },
+  {
+   "file": "demo009_ep0101.npz",
+   "dataset_episode_index": 101,
+   "frames": 278
+  },
+  {
+   "file": "demo010_ep0102.npz",
+   "dataset_episode_index": 102,
+   "frames": 317
+  },
+  {
+   "file": "demo011_ep0118.npz",
+   "dataset_episode_index": 118,
+   "frames": 268
+  },
+  {
+   "file": "demo012_ep0132.npz",
+   "dataset_episode_index": 132,
+   "frames": 312
+  },
+  {
+   "file": "demo013_ep0137.npz",
+   "dataset_episode_index": 137,
+   "frames": 317
+  },
+  {
+   "file": "demo014_ep0156.npz",
+   "dataset_episode_index": 156,
+   "frames": 255
+  },
+  {
+   "file": "demo015_ep0181.npz",
+   "dataset_episode_index": 181,
+   "frames": 261
+  },
+  {
+   "file": "demo016_ep0199.npz",
+   "dataset_episode_index": 199,
+   "frames": 250
+  },
+  {
+   "file": "demo017_ep0200.npz",
+   "dataset_episode_index": 200,
+   "frames": 343
+  },
+  {
+   "file": "demo018_ep0219.npz",
+   "dataset_episode_index": 219,
+   "frames": 267
+  },
+  {
+   "file": "demo019_ep0234.npz",
+   "dataset_episode_index": 234,
+   "frames": 255
+  },
+  {
+   "file": "demo020_ep0238.npz",
+   "dataset_episode_index": 238,
+   "frames": 340
+  },
+  {
+   "file": "demo021_ep0241.npz",
+   "dataset_episode_index": 241,
+   "frames": 274
+  },
+  {
+   "file": "demo022_ep0260.npz",
+   "dataset_episode_index": 260,
+   "frames": 367
+  },
+  {
+   "file": "demo023_ep0291.npz",
+   "dataset_episode_index": 291,
+   "frames": 245
+  },
+  {
+   "file": "demo024_ep0308.npz",
+   "dataset_episode_index": 308,
+   "frames": 336
+  },
+  {
+   "file": "demo025_ep0317.npz",
+   "dataset_episode_index": 317,
+   "frames": 300
+  },
+  {
+   "file": "demo026_ep0334.npz",
+   "dataset_episode_index": 334,
+   "frames": 265
+  },
+  {
+   "file": "demo027_ep0336.npz",
+   "dataset_episode_index": 336,
+   "frames": 276
+  },
+  {
+   "file": "demo028_ep0340.npz",
+   "dataset_episode_index": 340,
+   "frames": 282
+  },
+  {
+   "file": "demo029_ep0350.npz",
+   "dataset_episode_index": 350,
+   "frames": 278
+  },
+  {
+   "file": "demo030_ep0352.npz",
+   "dataset_episode_index": 352,
+   "frames": 282
+  },
+  {
+   "file": "demo031_ep0359.npz",
+   "dataset_episode_index": 359,
+   "frames": 342
+  },
+  {
+   "file": "demo032_ep0363.npz",
+   "dataset_episode_index": 363,
+   "frames": 275
+  }
+ ],
+ "total_frames": 9571,
+ "provenance": {
+  "date": "2026-10-29T12:03:05+00:00",
+  "host": "5f3c53224a3c",
+  "git_commit": "9318dd507a3cc3413577e64b514a694aa47c0ffd",
+  "git_dirty": false,
+  "packages": {
+   "lerobot": {
+    "version": "0.6.2",
+    "commit": "b6ec0060779550c0a157ae34feb89e0cf86012a8"
+   },
+   "torch": {
+    "version": "2.11.0",
+    "commit": null
+   },
+   "av": {
+    "version": "18.1.0",
+    "commit": null
+   },
+   "huggingface_hub": {
+    "version": "1.31.0",
+    "commit": null
+   }
+  },
+  "gpus": [
+   "Tesla T4",
+   "Tesla T4"
+  ],
+  "env": {
+   "MUJOCO_GL": "egl",
+   "PYOPENGL_PLATFORM": "egl"
+  },
+  "settings": {
+   "task_id": 0,
+   "out_dir": "/kaggle/working/step4/demos",
+   "frame_stride": 2,
+   "revision": "a1aaacb7f6cd6ee5fb43120f673cebb0cfea7dd4",
+   "root": "/tmp/lerobot_libero",
+   "max_episodes": 0,
+   "video_backend": "pyav"
+  },
+  "git_dirty_step4": false
+ }
+}

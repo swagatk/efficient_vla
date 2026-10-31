@@ -1,0 +1,16 @@
+step 4: weight updates on task 0's systematic init states (init states 0-9 x seeds 16-31)
+systematic states [2, 5, 6, 7, 8]; base 0/80 systematic, 37/80 reachable
+harness check: base 6/30 against step 0's 7 (gap -1, allowed 6): ok
+A0         systematic 1/80 vs base 0 (net +1, p 1, diff -1.2 to +1.2) - | reachable 48/80 vs 37 (net +11, p 0.00342) guard ok | meets: False
+A1         systematic 2/80 vs base 0 (net +2, p 0.5, diff -1.7 to +2.5) - | reachable 38/80 vs 37 (net +1, p 1) guard ok | meets: False
+A2         systematic 3/80 vs base 0 (net +3, p 0.25, diff -1.6 to +3.8) - | reachable 47/80 vs 37 (net +10, p 0.0129) guard ok | meets: False
+A pooled   systematic 6/240 vs base 0 (net +6, p 0.0312, diff +0.2 to +2.5) - | reachable 133/240 vs 111 (net +22, p 0.00068) guard ok | meets: False
+C0         systematic 0/80 vs base 0 (net +0, p 1, diff +0.0 to +0.0) - | reachable 40/80 vs 37 (net +3, p 0.549) guard ok | meets: False
+C1         systematic 0/80 vs base 0 (net +0, p 1, diff +0.0 to +0.0) - | reachable 41/80 vs 37 (net +4, p 0.388) guard ok | meets: False
+C2         systematic 0/80 vs base 0 (net +0, p 1, diff +0.0 to +0.0) - | reachable 40/80 vs 37 (net +3, p 0.508) guard ok | meets: False
+C pooled   systematic 0/240 vs base 0 (net +0, p 1, diff +0.0 to +0.0) - | reachable 121/240 vs 111 (net +10, p 0.11) guard ok | meets: False
+B          systematic 2/80 vs base 0 (net +2, p 0.5, diff -1.7 to +2.5) - | reachable 62/80 vs 37 (net +25, p 4.17e-07) guard ok | meets: False
+C0 vs A0 systematic: 0 vs 1 (net -1, p 1) -
+C1 vs A1 systematic: 0 vs 2 (net -2, p 0.5) -
+C2 vs A2 systematic: 0 vs 3 (net -3, p 0.25) -
+decision: negative: no arm meets the hypothesis

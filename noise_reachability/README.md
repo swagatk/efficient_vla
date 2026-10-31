@@ -404,6 +404,13 @@ GPU, longer for task 0, whose episodes mostly fail and run all 520 steps. Collec
 episode over 4 streams. Probably two Kaggle sessions; arm B's checkpoint (on Drive) has to be uploaded as a
 private Kaggle dataset first.
 
+**Result (Kaggle 2 x T4, 2026-10-29/31, commit `9318dd5`): negative under the rule above.** Neither A nor C meets the
+hypothesis in any training seed, and B also fails, so step 4 is a negative result and the study is written up as the
+step 0-3b measurements with that limit stated. Of 80 systematic episodes, against 0 for the base: A 1, 2, 3; C 0, 0, 0;
+B 2 (best net +3, required +8). Of 80 reachable, against 37: A 48, 38, 47; C 40, 41, 40; B 62. Harness 6/30 against 7.
+Exploratory: all 8 systematic successes are on state 6, and arm C's loss started low and did not fall, so C does not
+show that demonstrations cannot help. Records and checks: `week6/noise_reachability_step4_kaggle/`.
+
 ## Step 5: how deep is a systematic state? (design 2026-10-30)
 
 Steps 2-4 cannot say whether noise can solve a systematic state, because no step tried hard enough: step 1 drew 16
@@ -587,7 +594,7 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
 
 Steps 0, 1 and 2 done (above); step 2 is a negative result. Step 3 ran on Colab and failed as a test: the
 critic diverged (above). Step 3b (whether a Monte Carlo critic can tell the base's own noises apart) ran on
-Kaggle and is not read: its shuffled-noise control was biased (above). Step 4 is running on Kaggle (two sessions so far, not finished, no decision). Step 5a ran on Colab (above, 2026-10-31): "mostly reachable", all 5 systematic states reached by fixed noises, none by
+Kaggle and is not read: its shuffled-noise control was biased (above). Step 4 ran on Kaggle (above, 2026-10-31): negative, no arm meets the hypothesis. Step 5a ran on Colab (above, 2026-10-31): "mostly reachable", all 5 systematic states reached by fixed noises, none by
 sampled noise. Step 5b's design is fixed (above, 2026-10-31); not run.
 
 Before step 0 ran, smoke tests on the local RTX 4090 (shared with another job), one episode each of task 0,

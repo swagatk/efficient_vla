@@ -1,0 +1,62 @@
+validate_run eval/base: OK: every check passed
+validate_run eval/A0: OK: every check passed
+validate_run eval/A1: OK: every check passed
+validate_run eval/A2: OK: every check passed
+validate_run eval/B: OK: every check passed
+validate_run eval/C0: OK: every check passed
+validate_run eval/C1: OK: every check passed
+validate_run eval/C2: OK: every check passed
+validate_run harness parts: 1 episode-file failure (merged file and parts counted together, as the rows are duplicated by design)
+columns dict_keys(['task_id', 'seed', 'init_state', 'success', 'steps'])
+merged == parts for all arms
+base succ 37 differs outcome 0 differs steps 0 systematic hits []
+A0 succ 49 differs outcome 14 differs steps 46 systematic hits [(25, 6)]
+A1 succ 40 differs outcome 15 differs steps 40 systematic hits [(20, 6), (25, 6)]
+A2 succ 50 differs outcome 17 differs steps 46 systematic hits [(19, 6), (25, 6), (31, 6)]
+B succ 64 differs outcome 29 differs steps 61 systematic hits [(20, 6), (30, 6)]
+C0 succ 40 differs outcome 11 differs steps 41 systematic hits []
+C1 succ 41 differs outcome 12 differs steps 36 systematic hits []
+C2 succ 40 differs outcome 9 differs steps 37 systematic hits []
+('A0', '9318dd5', False, None, '') 16
+('A1', '9318dd5', False, None, '') 20
+('A2', '9318dd5', False, None, '') 20
+('B', '9318dd5', False, None, '') 16
+('C0', '9318dd5', False, None, '') 16
+('C1', '9318dd5', False, None, '') 16
+('C2', '9318dd5', False, None, '') 16
+('base', '9318dd5', False, None, '') 16
+('harness_check', '9318dd5', False, None, '') 6
+['date', 'env', 'git_commit', 'git_dirty', 'git_dirty_sfbc', 'gpus', 'host', 'packages', 'settings']
+{}
+{}
+/runs/A0/adapter/run_config.json {}
+/runs/A1/adapter/run_config.json {}
+/runs/A2/adapter/run_config.json {}
+/runs/C0/adapter/run_config.json {}
+/runs/C1/adapter/run_config.json {}
+/runs/C2/adapter/run_config.json {}
+/runs/A0/train_history.json 41 {'step': 1, 'loss': 0.7346412539482117, 'grad_norm': 0.71651291847229, 'lr': 1.999998766299704e-06, 'sec_per_s {'step': 2000, 'loss': 0.12723542749881744, 'grad_norm': 0.3730614185333252, 'lr': 0.0, 'sec_per_step': 5.0316
+/runs/A1/train_history.json 41 {'step': 1, 'loss': 0.7230780720710754, 'grad_norm': 2.8829219341278076, 'lr': 1.999998766299704e-06, 'sec_per {'step': 2000, 'loss': 0.21372459828853607, 'grad_norm': 0.49258121848106384, 'lr': 0.0, 'sec_per_step': 5.020
+/runs/A2/train_history.json 41 {'step': 1, 'loss': 0.3863063454627991, 'grad_norm': 0.5394104719161987, 'lr': 1.999998766299704e-06, 'sec_per {'step': 2000, 'loss': 0.08169690519571304, 'grad_norm': 0.2502199113368988, 'lr': 0.0, 'sec_per_step': 5.0148
+/runs/C0/train_history.json 41 {'step': 1, 'loss': 0.021349603310227394, 'grad_norm': 0.06898205727338791, 'lr': 1.999998766299704e-06, 'sec_ {'step': 2000, 'loss': 0.06878700852394104, 'grad_norm': 0.0815642699599266, 'lr': 0.0, 'sec_per_step': 5.2841
+/runs/C1/train_history.json 41 {'step': 1, 'loss': 0.11040997505187988, 'grad_norm': 0.1401241421699524, 'lr': 1.999998766299704e-06, 'sec_pe {'step': 2000, 'loss': 0.11241712421178818, 'grad_norm': 0.10652724653482437, 'lr': 0.0, 'sec_per_step': 5.297
+/runs/C2/train_history.json 41 {'step': 1, 'loss': 0.034548163414001465, 'grad_norm': 0.10090216249227524, 'lr': 1.999998766299704e-06, 'sec_ {'step': 2000, 'loss': 0.08435016870498657, 'grad_norm': 0.10006393492221832, 'lr': 0.0, 'sec_per_step': 4.753
+task_id,seed,init_state,success,steps
+120 50
+dict_keys(['task_id', 'task', 'dataset', 'revision', 'task_index', 'frame_stride', 'video_backend', 'episodes', 'total_frames', 'provenance'])
+A0 loss first8 0.3093 last8 0.1140
+A1 loss first8 0.2773 last8 0.1210
+A2 loss first8 0.2061 last8 0.0969
+C0 loss first8 0.0431 last8 0.0508
+C1 loss first8 0.0637 last8 0.0484
+C2 loss first8 0.0306 last8 0.0412
+{'task': 'put both the alphabet soup and the tomato sauce in the basket', 'task_index': 5, 'total_frames': 9571, 'frame_stride': 2} 33
+state    0   1   2   3   4   5   6   7   8   9
+base     0  15   0  15   3   0   0   0   0   4
+A0       0  16   0  16   5   0   1   0   0  11
+A1       0  16   0  16   0   0   2   0   0   6
+A2       0  16   0  16   2   0   3   0   0  13
+B        9  16   0  16   8   0   2   0   0  13
+C0       0  16   0  16   5   0   0   0   0   3
+C1       0  16   0  16   2   0   0   0   0   7
+C2       0  15   0  16   4   0   0   0   0   5

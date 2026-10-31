@@ -1,0 +1,36 @@
+Loading  HuggingFaceTB/SmolVLM2-500M-Video-Instruct weights ...
+Reducing the number of VLM layers to 16 ...
+Loading weights from local directory
+[check] ok   base loss on demonstration frames: 0.0425 on 4792 frames (limit 0.3)
+[check] ok   rotated frames raise the loss: 1.7705, 41.6x (limit 2.0x)
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+Loading  HuggingFaceTB/SmolVLM2-500M-Video-Instruct weights ...
+Reducing the number of VLM layers to 16 ...
+Loading weights from local directory
+[check] ok   arm B queues n_action_steps - 1 actions: 9 (config n_action_steps 10)
+[check] ok   arm B's chunk differs from the base's: max |diff| 0.0811
+[check] ok   fresh LoRA reproduces the base chunk (n_action_steps=10): max |diff| 0, 9 queued actions
+[check] ok   changed LoRA weights change the chunk: max |diff| 0.0936
+[check] all passed
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /tmp/venv/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+`torch_dtype` is deprecated! Use `dtype` instead!
+
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]
+Loading weights:  20%|█▉        | 96/489 [00:00<00:00, 931.25it/s]
+Loading weights:  39%|███▉      | 190/489 [00:00<00:00, 830.93it/s]
+Loading weights:  56%|█████▌    | 274/489 [00:00<00:00, 814.09it/s]
+Loading weights:  81%|████████  | 396/489 [00:00<00:00, 962.74it/s]
+Loading weights: 100%|██████████| 489/489 [00:00<00:00, 1030.04it/s]
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+
+Loading weights:   0%|          | 0/489 [00:00<?, ?it/s]
+Loading weights:  36%|███▌      | 177/489 [00:00<00:00, 1755.28it/s]
+Loading weights:  72%|███████▏  | 353/489 [00:00<00:00, 1658.54it/s]
+Loading weights: 100%|██████████| 489/489 [00:00<00:00, 1816.56it/s]
