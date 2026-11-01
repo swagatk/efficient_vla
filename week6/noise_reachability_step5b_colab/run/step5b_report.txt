@@ -1,0 +1,9 @@
+harness: base 43/160 against 37 (gap +6, ok)
+base: systematic 0/80, reachable 43/80
+prior: systematic 0/80, reachable 46/80
+actor0: systematic 2/80 (net +2, p 0.5) | reachable 56/80 (net +13, p 0.0106, guard ok) | against prior net +2, p 0.5 | meets False learned False, reachable True | training, last 5 epochs: 48.0%
+actor1: systematic 2/80 (net +2, p 0.5) | reachable 48/80 (net +5, p 0.332, guard ok) | against prior net +2, p 0.5 | meets False learned False, reachable False | training, last 5 epochs: 40.0%
+actor2: systematic 5/80 (net +5, p 0.0625) | reachable 47/80 (net +4, p 0.541, guard ok) | against prior net +5, p 0.0625 | meets False learned False, reachable False | training, last 5 epochs: 42.5%
+training, untrained actor (epoch 0, 3 seeds): 37.5%
+secondary, of 10 (one outcome per state, not tested): {'actor_mean0': 3, 'actor_mean1': 3, 'actor_mean2': 3, 'zero': 3}
+decision: no reading on transfer: the learner did not learn at this budget

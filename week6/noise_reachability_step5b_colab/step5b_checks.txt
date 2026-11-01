@@ -1,0 +1,45 @@
+arms
+  ('shared', 'base') 160 distinct 160 seeds 16 31 states 10 task {'0'} successes 43
+  ('shared', 'prior') 160 distinct 160 seeds 16 31 states 10 task {'0'} successes 46
+  ('shared', 'zero') 10 distinct 10 seeds 16 16 states 10 task {'0'} successes 3
+  ('seed0', 'actor') 160 distinct 160 seeds 16 31 states 10 task {'0'} successes 58
+  ('seed0', 'actor_mean') 10 distinct 10 seeds 16 16 states 10 task {'0'} successes 3
+  ('seed1', 'actor') 160 distinct 160 seeds 16 31 states 10 task {'0'} successes 50
+  ('seed1', 'actor_mean') 10 distinct 10 seeds 16 16 states 10 task {'0'} successes 3
+  ('seed2', 'actor') 160 distinct 160 seeds 16 31 states 10 task {'0'} successes 52
+  ('seed2', 'actor_mean') 10 distinct 10 seeds 16 16 states 10 task {'0'} successes 3
+training
+  seed0: rows 1480 distinct 1480 epochs 37 per epoch {40} states 40 update rows 37 distinct 37
+    first 5 0.435 middle 5 0.445 last 5 0.48
+    last updates [('36', '1.281161', '0.168707', '0.787875')] first [('2.36174', '0.036582', '0.983487')]
+  seed1: rows 1480 distinct 1480 epochs 37 per epoch {40} states 40 update rows 37 distinct 37
+    first 5 0.415 middle 5 0.395 last 5 0.4
+    last updates [('36', '1.27244', '0.168147', '0.814147')] first [('2.359124', '0.039726', '0.998722')]
+  seed2: rows 1480 distinct 1480 epochs 37 per epoch {40} states 40 update rows 37 distinct 37
+    first 5 0.38 middle 5 0.45 last 5 0.425
+    last updates [('36', '1.318421', '0.174972', '0.797192')] first [('2.375157', '0.042279', '0.992388')]
+provenance
+  202 ('0ea0015', False, ('NVIDIA A100-SXM4-40GB',), '40152c79e8b36d', 10, '2026-10-31')
+  441 ('0ea0015', False, ('NVIDIA A100-SXM4-40GB',), '40152c79e8b36d', 10, '2026-11-01')
+seam: seed 2 epoch 23, log attempts against train_log.csv
+  part0 attempt 0: 17 episodes, match train_log 17
+  part1 attempt 0: 16 episodes, match train_log 16
+  part2 attempt 0: 10 episodes, match train_log 10
+  part2 attempt 1: 10 episodes, match train_log 10
+  part3 attempt 0: 18 episodes, match train_log 18
+per state, of 16 (systematic 2, 5, 6, 7, 8)
+  base    [0, 16, 0, 16, 5, 0, 0, 0, 0, 6]
+  prior   [4, 16, 0, 13, 6, 0, 0, 0, 0, 7]
+  actor0  [4, 16, 0, 15, 8, 0, 1, 0, 1, 13]
+  actor1  [3, 15, 0, 15, 7, 0, 0, 0, 2, 8]
+  actor2  [4, 13, 0, 15, 5, 0, 1, 0, 4, 10]
+recomputed nets: net, p against base and prior, systematic and reachable
+  actor0 sys/base (2, 0.5) sys/prior (2, 0.5) reach/base (13, 0.010622024536132812) reach/prior (10, 0.021270751953125)
+  actor1 sys/base (2, 0.5) sys/prior (2, 0.5) reach/base (5, 0.332305908203125) reach/prior (2, 0.803619384765625)
+  actor2 sys/base (5, 0.0625) sys/prior (5, 0.0625) reach/base (4, 0.5412561893463135) reach/prior (1, 1.0)
+training rule: last 5 epochs minus epoch 0 of 3 seeds
+  untrained 45 120 0.375
+  seed0 96 200 0.48 gain 10.5 points
+  seed1 80 200 0.4 gain 2.5 points
+  seed2 85 200 0.425 gain 5.0 points
+base against step 4 on the same episodes: 37 43 differ 16 of 160

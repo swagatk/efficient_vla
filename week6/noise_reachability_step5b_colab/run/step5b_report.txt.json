@@ -1,0 +1,219 @@
+{
+ "harness": {
+  "base": 43,
+  "reference": 37,
+  "gap": 6,
+  "ok": true
+ },
+ "base": {
+  "systematic": 0,
+  "reachable": 43
+ },
+ "prior": {
+  "systematic": 0,
+  "reachable": 46
+ },
+ "seeds": {
+  "0": {
+   "systematic": {
+    "ref": 0,
+    "run": 2,
+    "n": 80,
+    "ref_only": 0,
+    "run_only": 2,
+    "net": 2,
+    "p": 0.5,
+    "diff_ci95": [
+     -0.017094305849579054,
+     0.025
+    ],
+    "ok": false
+   },
+   "reachable": {
+    "ref": 43,
+    "run": 56,
+    "n": 80,
+    "ref_only": 5,
+    "run_only": 18,
+    "net": 13,
+    "p": 0.010622024536132812,
+    "diff_ci95": [
+     0.03620733241383153,
+     0.2446030406019378
+    ],
+    "guard_ok": true,
+    "gain": true,
+    "learned": true
+   },
+   "against_prior": {
+    "ref": 0,
+    "run": 2,
+    "n": 80,
+    "ref_only": 0,
+    "run_only": 2,
+    "net": 2,
+    "p": 0.5,
+    "diff_ci95": [
+     -0.017094305849579054,
+     0.025
+    ],
+    "ok": false
+   },
+   "reachable_against_prior": {
+    "ref": 46,
+    "run": 56,
+    "n": 80,
+    "ref_only": 3,
+    "run_only": 13,
+    "net": 10,
+    "p": 0.021270751953125,
+    "diff_ci95": [
+     0.017417381507355233,
+     0.18381050643762162
+    ]
+   },
+   "meets": false,
+   "learned": false
+  },
+  "1": {
+   "systematic": {
+    "ref": 0,
+    "run": 2,
+    "n": 80,
+    "ref_only": 0,
+    "run_only": 2,
+    "net": 2,
+    "p": 0.5,
+    "diff_ci95": [
+     -0.017094305849579054,
+     0.025
+    ],
+    "ok": false
+   },
+   "reachable": {
+    "ref": 43,
+    "run": 48,
+    "n": 80,
+    "ref_only": 6,
+    "run_only": 11,
+    "net": 5,
+    "p": 0.332305908203125,
+    "diff_ci95": [
+     -0.04960444303655381,
+     0.15210856967815614
+    ],
+    "guard_ok": true,
+    "gain": false,
+    "learned": false
+   },
+   "against_prior": {
+    "ref": 0,
+    "run": 2,
+    "n": 80,
+    "ref_only": 0,
+    "run_only": 2,
+    "net": 2,
+    "p": 0.5,
+    "diff_ci95": [
+     -0.017094305849579054,
+     0.025
+    ],
+    "ok": false
+   },
+   "reachable_against_prior": {
+    "ref": 46,
+    "run": 48,
+    "n": 80,
+    "ref_only": 7,
+    "run_only": 9,
+    "net": 2,
+    "p": 0.803619384765625,
+    "diff_ci95": [
+     -0.080489240366729,
+     0.12098634378693288
+    ]
+   },
+   "meets": false,
+   "learned": false
+  },
+  "2": {
+   "systematic": {
+    "ref": 0,
+    "run": 5,
+    "n": 80,
+    "ref_only": 0,
+    "run_only": 5,
+    "net": 5,
+    "p": 0.0625,
+    "diff_ci95": [
+     -0.002727968763122715,
+     0.0625
+    ],
+    "ok": false
+   },
+   "reachable": {
+    "ref": 43,
+    "run": 47,
+    "n": 80,
+    "ref_only": 10,
+    "run_only": 14,
+    "net": 4,
+    "p": 0.5412561893463135,
+    "diff_ci95": [
+     -0.08014161260618262,
+     0.1673418567919929
+    ],
+    "guard_ok": true,
+    "gain": false,
+    "learned": false
+   },
+   "against_prior": {
+    "ref": 0,
+    "run": 5,
+    "n": 80,
+    "ref_only": 0,
+    "run_only": 5,
+    "net": 5,
+    "p": 0.0625,
+    "diff_ci95": [
+     -0.002727968763122715,
+     0.0625
+    ],
+    "ok": false
+   },
+   "reachable_against_prior": {
+    "ref": 46,
+    "run": 47,
+    "n": 80,
+    "ref_only": 7,
+    "run_only": 8,
+    "net": 1,
+    "p": 1.0,
+    "diff_ci95": [
+     -0.08780199477097626,
+     0.10774997643025955
+    ]
+   },
+   "meets": false,
+   "learned": false
+  }
+ },
+ "training_last_epochs": {
+  "0": 0.48,
+  "1": 0.4,
+  "2": 0.425
+ },
+ "training_prior": 0.375,
+ "secondary_of_10": {
+  "actor_mean0": 3,
+  "actor_mean1": 3,
+  "actor_mean2": 3,
+  "zero": 3
+ },
+ "decision": "no reading on transfer: the learner did not learn at this budget",
+ "provenance": {
+  "records": 643,
+  "commit": "0ea0015488390f5db48d12b2397585482da1184c",
+  "policy_path": "/root/.cache/huggingface/hub/models--lerobot--smolvla_libero/snapshots/a24f1f380461b665158d52acd140152c79e8b36d"
+ }
+}

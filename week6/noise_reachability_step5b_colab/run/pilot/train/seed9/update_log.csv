@@ -1,0 +1,2 @@
+epoch,replay_decisions,replay_success_decisions,value_loss,actor_loss,weight_mean,mean_abs,std_mean,time_s
+0,1774,422,2.0098,1.692588,2.393102,0.047178,0.992361,4.7

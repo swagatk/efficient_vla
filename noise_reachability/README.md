@@ -546,6 +546,12 @@ episodes by a net of at least 8 with p < 0.05.
   (120 episodes), so a gain from the repeated form alone does not count here.
 - *Otherwise:* the learner did not learn at this budget, so 5b says nothing about transfer.
 
+**Result (Colab, 2026-11-01; `week6/noise_reachability_step5b_colab/`).** No reading on transfer: the learner did not learn
+at this budget. Harness: base 43/160 against 37. Systematic /80: base 0, prior 0, actors 2, 2, 5 (nets +2, +2, +5; none
+meets). Reachable /80: base 43, prior 46, actors 56, 48, 47. Training success over the last 5 epochs against the untrained
+actor's 37.5%: 48.0, 40.0, 42.5, so 1 of 3 seeds reaches the 8 points required. The session was lost at 97 of 111 epochs and
+resumed; the episodes repeated at the seam came out the same.
+
 ## Step 6: do the labels and arm B's uneven gain hold beyond task 0? (design 2026-10-31)
 
 Steps 4 and 5a rest on task 0 and five of its states, with one checkpoint for arm B. Step 1's labels on the other weak
@@ -674,7 +680,7 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
 Steps 0, 1 and 2 done (above); step 2 is a negative result. Step 3 ran on Colab and failed as a test: the
 critic diverged (above). Step 3b (whether a Monte Carlo critic can tell the base's own noises apart) ran on
 Kaggle and is not read: its shuffled-noise control was biased (above). Step 4 ran on Kaggle (above, 2026-10-31): negative, no arm meets the hypothesis. Step 5a ran on Colab (above, 2026-10-31): "mostly reachable", all 5 systematic states reached by fixed noises, none by
-sampled noise. Step 5b is running on Colab (launched 2026-10-31, no result). Step 6 ran on Kaggle (above, 2026-11-01): the labels hold; B's gain was not informative.
+sampled noise. Step 5b ran on Colab (above, 2026-11-01): no reading on transfer, the learner did not learn at this budget. Step 6 ran on Kaggle (above, 2026-11-01): the labels hold; B's gain was not informative.
 
 Before step 0 ran, smoke tests on the local RTX 4090 (shared with another job), one episode each of task 0,
 seed 0, init state 0: `n_action_steps=10` through `evaluate_all.py` and `n_action_steps=50` through
