@@ -1,0 +1,622 @@
+{
+  "harness": {
+    "4": {
+      "seeds_16_31": 71,
+      "seeds_0_15": 79,
+      "gap": -8,
+      "ok": true,
+      "state_spearman": 0.9233128834355828
+    },
+    "6": {
+      "seeds_16_31": 95,
+      "seeds_0_15": 97,
+      "gap": -2,
+      "ok": true,
+      "state_spearman": 0.8292837093139817
+    },
+    "7": {
+      "seeds_16_31": 90,
+      "seeds_0_15": 90,
+      "gap": 0,
+      "ok": true,
+      "state_spearman": 0.8483012791424814
+    },
+    "8": {
+      "seeds_16_31": 70,
+      "seeds_0_15": 70,
+      "gap": 0,
+      "ok": true,
+      "state_spearman": 0.8087806670128278
+    }
+  },
+  "harness_ok": true,
+  "systematic_states": [
+    [
+      4,
+      2
+    ],
+    [
+      6,
+      8
+    ],
+    [
+      8,
+      4
+    ]
+  ],
+  "low_reachable_states": [
+    [
+      4,
+      1
+    ],
+    [
+      4,
+      5
+    ],
+    [
+      4,
+      6
+    ],
+    [
+      4,
+      7
+    ],
+    [
+      4,
+      8
+    ],
+    [
+      6,
+      0
+    ],
+    [
+      6,
+      1
+    ],
+    [
+      6,
+      9
+    ],
+    [
+      8,
+      1
+    ],
+    [
+      8,
+      2
+    ],
+    [
+      8,
+      3
+    ],
+    [
+      8,
+      8
+    ],
+    [
+      8,
+      9
+    ]
+  ],
+  "label_hits": 1,
+  "label_episodes": 48,
+  "labels_hold": true,
+  "label_rate_ci95": [
+    0.0005273152534231444,
+    0.11069616059315218
+  ],
+  "label_hits_per_state": {
+    "4/2": 0,
+    "6/8": 0,
+    "8/4": 1
+  },
+  "low_gain": -0.0673076923076923,
+  "informative": false,
+  "primary": {
+    "D": -0.16805555555555554,
+    "p": 0.9444444444444444,
+    "assignments": 144,
+    "per_task": {
+      "4": -0.425,
+      "6": -0.041666666666666664,
+      "8": -0.037500000000000006
+    },
+    "ci95": [
+      -0.2888888888888889,
+      -0.044444444444444446
+    ]
+  },
+  "uneven": false,
+  "reading": "not informative: B's gain on the low reachable states was too small to compare states",
+  "secondary": {
+    "with_task_0": {
+      "D": -0.012499999999999999,
+      "p": 0.5148809523809523,
+      "assignments": 8064
+    },
+    "log_odds": {
+      "D": -0.8035406576992247,
+      "p": 0.8611111111111112,
+      "assignments": 144
+    },
+    "spearman_rate_gain": -0.11588344637703102,
+    "per_task": {
+      "0": {
+        "ref": 37,
+        "run": 64,
+        "n": 160,
+        "ref_only": 1,
+        "run_only": 28,
+        "net": 27,
+        "p": 1.1175870895385742e-07,
+        "diff_ci95": [
+          0.11685394288533793,
+          0.18093366550470225
+        ]
+      },
+      "4": {
+        "ref": 71,
+        "run": 85,
+        "n": 160,
+        "ref_only": 20,
+        "run_only": 34,
+        "net": 14,
+        "p": 0.07590472948910143,
+        "diff_ci95": [
+          -0.008493259725548728,
+          0.1735377775053619
+        ]
+      },
+      "6": {
+        "ref": 95,
+        "run": 86,
+        "n": 160,
+        "ref_only": 32,
+        "run_only": 23,
+        "net": -9,
+        "p": 0.2806097176983542,
+        "diff_ci95": [
+          -0.146750143891313,
+          0.04052234272831699
+        ]
+      },
+      "7": {
+        "ref": 90,
+        "run": 111,
+        "n": 160,
+        "ref_only": 11,
+        "run_only": 32,
+        "net": 21,
+        "p": 0.001913961001264397,
+        "diff_ci95": [
+          0.04745279991688794,
+          0.19608755171991465
+        ]
+      },
+      "8": {
+        "ref": 70,
+        "run": 59,
+        "n": 160,
+        "ref_only": 26,
+        "run_only": 15,
+        "net": -11,
+        "p": 0.11727520595741225,
+        "diff_ci95": [
+          -0.14287072069370402,
+          0.015701694133172885
+        ]
+      }
+    }
+  },
+  "per_state": [
+    {
+      "task": 0,
+      "init_state": 0,
+      "seeds_0_15": 2,
+      "base": 0,
+      "b": 9,
+      "gain": 0.5625
+    },
+    {
+      "task": 0,
+      "init_state": 1,
+      "seeds_0_15": 14,
+      "base": 15,
+      "b": 16,
+      "gain": 0.0625
+    },
+    {
+      "task": 0,
+      "init_state": 2,
+      "seeds_0_15": 0,
+      "base": 0,
+      "b": 0,
+      "gain": 0.0
+    },
+    {
+      "task": 0,
+      "init_state": 3,
+      "seeds_0_15": 16,
+      "base": 15,
+      "b": 16,
+      "gain": 0.0625
+    },
+    {
+      "task": 0,
+      "init_state": 4,
+      "seeds_0_15": 4,
+      "base": 3,
+      "b": 8,
+      "gain": 0.3125
+    },
+    {
+      "task": 0,
+      "init_state": 5,
+      "seeds_0_15": 0,
+      "base": 0,
+      "b": 0,
+      "gain": 0.0
+    },
+    {
+      "task": 0,
+      "init_state": 6,
+      "seeds_0_15": 0,
+      "base": 0,
+      "b": 2,
+      "gain": 0.125
+    },
+    {
+      "task": 0,
+      "init_state": 7,
+      "seeds_0_15": 0,
+      "base": 0,
+      "b": 0,
+      "gain": 0.0
+    },
+    {
+      "task": 0,
+      "init_state": 8,
+      "seeds_0_15": 0,
+      "base": 0,
+      "b": 0,
+      "gain": 0.0
+    },
+    {
+      "task": 0,
+      "init_state": 9,
+      "seeds_0_15": 5,
+      "base": 4,
+      "b": 13,
+      "gain": 0.5625
+    },
+    {
+      "task": 4,
+      "init_state": 0,
+      "seeds_0_15": 13,
+      "base": 12,
+      "b": 11,
+      "gain": -0.0625
+    },
+    {
+      "task": 4,
+      "init_state": 1,
+      "seeds_0_15": 4,
+      "base": 0,
+      "b": 1,
+      "gain": 0.0625
+    },
+    {
+      "task": 4,
+      "init_state": 2,
+      "seeds_0_15": 0,
+      "base": 0,
+      "b": 6,
+      "gain": 0.375
+    },
+    {
+      "task": 4,
+      "init_state": 3,
+      "seeds_0_15": 16,
+      "base": 14,
+      "b": 16,
+      "gain": 0.125
+    },
+    {
+      "task": 4,
+      "init_state": 4,
+      "seeds_0_15": 16,
+      "base": 13,
+      "b": 16,
+      "gain": 0.1875
+    },
+    {
+      "task": 4,
+      "init_state": 5,
+      "seeds_0_15": 5,
+      "base": 4,
+      "b": 4,
+      "gain": 0.0
+    },
+    {
+      "task": 4,
+      "init_state": 6,
+      "seeds_0_15": 1,
+      "base": 2,
+      "b": 6,
+      "gain": 0.25
+    },
+    {
+      "task": 4,
+      "init_state": 7,
+      "seeds_0_15": 8,
+      "base": 9,
+      "b": 2,
+      "gain": -0.4375
+    },
+    {
+      "task": 4,
+      "init_state": 8,
+      "seeds_0_15": 5,
+      "base": 9,
+      "b": 7,
+      "gain": -0.125
+    },
+    {
+      "task": 4,
+      "init_state": 9,
+      "seeds_0_15": 11,
+      "base": 8,
+      "b": 16,
+      "gain": 0.5
+    },
+    {
+      "task": 6,
+      "init_state": 0,
+      "seeds_0_15": 7,
+      "base": 4,
+      "b": 3,
+      "gain": -0.0625
+    },
+    {
+      "task": 6,
+      "init_state": 1,
+      "seeds_0_15": 5,
+      "base": 6,
+      "b": 6,
+      "gain": 0.0
+    },
+    {
+      "task": 6,
+      "init_state": 2,
+      "seeds_0_15": 15,
+      "base": 16,
+      "b": 13,
+      "gain": -0.1875
+    },
+    {
+      "task": 6,
+      "init_state": 3,
+      "seeds_0_15": 9,
+      "base": 7,
+      "b": 12,
+      "gain": 0.3125
+    },
+    {
+      "task": 6,
+      "init_state": 4,
+      "seeds_0_15": 9,
+      "base": 14,
+      "b": 5,
+      "gain": -0.5625
+    },
+    {
+      "task": 6,
+      "init_state": 5,
+      "seeds_0_15": 16,
+      "base": 15,
+      "b": 13,
+      "gain": -0.125
+    },
+    {
+      "task": 6,
+      "init_state": 6,
+      "seeds_0_15": 12,
+      "base": 12,
+      "b": 10,
+      "gain": -0.125
+    },
+    {
+      "task": 6,
+      "init_state": 7,
+      "seeds_0_15": 16,
+      "base": 11,
+      "b": 15,
+      "gain": 0.25
+    },
+    {
+      "task": 6,
+      "init_state": 8,
+      "seeds_0_15": 0,
+      "base": 0,
+      "b": 0,
+      "gain": 0.0
+    },
+    {
+      "task": 6,
+      "init_state": 9,
+      "seeds_0_15": 8,
+      "base": 10,
+      "b": 9,
+      "gain": -0.0625
+    },
+    {
+      "task": 7,
+      "init_state": 0,
+      "seeds_0_15": 8,
+      "base": 15,
+      "b": 13,
+      "gain": -0.125
+    },
+    {
+      "task": 7,
+      "init_state": 1,
+      "seeds_0_15": 16,
+      "base": 16,
+      "b": 16,
+      "gain": 0.0
+    },
+    {
+      "task": 7,
+      "init_state": 2,
+      "seeds_0_15": 3,
+      "base": 4,
+      "b": 9,
+      "gain": 0.3125
+    },
+    {
+      "task": 7,
+      "init_state": 3,
+      "seeds_0_15": 6,
+      "base": 9,
+      "b": 13,
+      "gain": 0.25
+    },
+    {
+      "task": 7,
+      "init_state": 4,
+      "seeds_0_15": 7,
+      "base": 3,
+      "b": 11,
+      "gain": 0.5
+    },
+    {
+      "task": 7,
+      "init_state": 5,
+      "seeds_0_15": 1,
+      "base": 0,
+      "b": 0,
+      "gain": 0.0
+    },
+    {
+      "task": 7,
+      "init_state": 6,
+      "seeds_0_15": 13,
+      "base": 8,
+      "b": 16,
+      "gain": 0.5
+    },
+    {
+      "task": 7,
+      "init_state": 7,
+      "seeds_0_15": 16,
+      "base": 16,
+      "b": 16,
+      "gain": 0.0
+    },
+    {
+      "task": 7,
+      "init_state": 8,
+      "seeds_0_15": 4,
+      "base": 4,
+      "b": 3,
+      "gain": -0.0625
+    },
+    {
+      "task": 7,
+      "init_state": 9,
+      "seeds_0_15": 16,
+      "base": 15,
+      "b": 14,
+      "gain": -0.0625
+    },
+    {
+      "task": 8,
+      "init_state": 0,
+      "seeds_0_15": 11,
+      "base": 14,
+      "b": 10,
+      "gain": -0.25
+    },
+    {
+      "task": 8,
+      "init_state": 1,
+      "seeds_0_15": 8,
+      "base": 11,
+      "b": 4,
+      "gain": -0.4375
+    },
+    {
+      "task": 8,
+      "init_state": 2,
+      "seeds_0_15": 2,
+      "base": 1,
+      "b": 0,
+      "gain": -0.0625
+    },
+    {
+      "task": 8,
+      "init_state": 3,
+      "seeds_0_15": 1,
+      "base": 2,
+      "b": 2,
+      "gain": 0.0
+    },
+    {
+      "task": 8,
+      "init_state": 4,
+      "seeds_0_15": 0,
+      "base": 1,
+      "b": 0,
+      "gain": -0.0625
+    },
+    {
+      "task": 8,
+      "init_state": 5,
+      "seeds_0_15": 10,
+      "base": 11,
+      "b": 12,
+      "gain": 0.0625
+    },
+    {
+      "task": 8,
+      "init_state": 6,
+      "seeds_0_15": 14,
+      "base": 14,
+      "b": 13,
+      "gain": -0.0625
+    },
+    {
+      "task": 8,
+      "init_state": 7,
+      "seeds_0_15": 13,
+      "base": 11,
+      "b": 13,
+      "gain": 0.125
+    },
+    {
+      "task": 8,
+      "init_state": 8,
+      "seeds_0_15": 5,
+      "base": 5,
+      "b": 3,
+      "gain": -0.125
+    },
+    {
+      "task": 8,
+      "init_state": 9,
+      "seeds_0_15": 6,
+      "base": 0,
+      "b": 2,
+      "gain": 0.125
+    }
+  ],
+  "inputs": {
+    "/tmp/efficient_vla/week6/noise_reachability_step0_kaggle/nas10_all_tasks/per_episode.csv": "b563fd3f7cfab2934b42b3a11a3ff41b38b3e113f54d0e99dea47321cee2b037",
+    "/tmp/efficient_vla/week6/noise_reachability_step1_kaggle/nas10_step1/per_episode.csv": "93855516dbcb8579e52649114b0952e5c758cdc1e373872debeec148714f1e8a",
+    "/kaggle/working/step6/eval/per_episode_base.csv": "bb211c22abd18d96bbaff0c5da0eec70b410fa9652c3e8ece6c25dd0cb6625ab",
+    "/kaggle/working/step6/eval/per_episode_B.csv": "aa21a3981787fa974208f982c57817725cdc3dce710f161104a7e9d44a1d63e2",
+    "/tmp/efficient_vla/week6/noise_reachability_step4_kaggle/run/eval/per_episode_base.csv": "44ef871659fc5b9b2b065495904cc6c151306c9fb79500721fde994464c2d42a",
+    "/tmp/efficient_vla/week6/noise_reachability_step4_kaggle/run/eval/per_episode_B.csv": "fd0de511c09d4d94f831385d5f70db8dafcdeba1166698c2bfa4f8ef90d6748f"
+  },
+  "commit": "24437d2d821384f2447b85d7b863f9b793a23c0a"
+}

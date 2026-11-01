@@ -1,0 +1,17 @@
+step 6: labels and arm B's uneven gain on tasks 4, 6, 7, 8 (init states 0-9 x seeds 16-31)
+harness task 4: base 71/160 against 79 on seeds 0-15 (gap -8, allowed 18): ok; state Spearman 0.9233128834355828
+harness task 6: base 95/160 against 97 on seeds 0-15 (gap -2, allowed 18): ok; state Spearman 0.8292837093139817
+harness task 7: base 90/160 against 90 on seeds 0-15 (gap +0, allowed 18): ok; state Spearman 0.8483012791424814
+harness task 8: base 70/160 against 70 on seeds 0-15 (gap +0, allowed 18): ok; state Spearman 0.8087806670128278
+labels: base 1/48 on the systematic states (allowed 4, at most 2 on a state; per state {'4/2': 0, '6/8': 0, '8/4': 1}; 95% interval 0.1-11.1%): hold
+B's mean gain on 13 low reachable states: -0.067 (required 0.1): not informative
+uneven gain: D -0.168 (required 0.1), exact stratified p 0.9444 over 144 assignments, episode-noise 95% interval -0.289 to -0.044, per task {'4': -0.425, '6': -0.041666666666666664, '8': -0.037500000000000006}: no
+reading: not informative: B's gain on the low reachable states was too small to compare states
+secondary, with task 0: D -0.012, p 0.5149 over 8064 assignments
+secondary, on the log-odds scale: D -0.804, p 0.8611
+secondary, Spearman of rate on seeds 0-15 and gain, 50 states: -0.116
+secondary, task 0: B 64/160 against base 37 (net +27, p 1.12e-07)
+secondary, task 4: B 85/160 against base 71 (net +14, p 0.0759)
+secondary, task 6: B 86/160 against base 95 (net -9, p 0.281)
+secondary, task 7: B 111/160 against base 90 (net +21, p 0.00191)
+secondary, task 8: B 59/160 against base 70 (net -11, p 0.117)

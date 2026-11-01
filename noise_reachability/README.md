@@ -617,6 +617,11 @@ Same protocol on both sides: same tasks, states, seeds, horizon, control and cod
 episodes at step 4's 60-80 s per episode over 4 streams: about 6 h, one Kaggle session, probably less because these
 tasks fail less often.
 
+**Result (Kaggle, 2026-11-01; `week6/noise_reachability_step6_kaggle/`).** The labels hold: the base solved 1 of 48
+episodes on the systematic states (95% interval 0.1-11.1%). Not informative: B's mean gain on the 13 low reachable states
+was -0.067, against the 0.10 required, so nothing is read about unevenness. B against base over the four tasks: 341 to
+326 of 640, with +14, -9, +21, -11 per task. Exploratory: B reached 6 of 16 on task 4 state 2, 0 of 32 for the base.
+
 ## Compute
 
 Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a month) for steps 2-4. At
@@ -669,7 +674,7 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
 Steps 0, 1 and 2 done (above); step 2 is a negative result. Step 3 ran on Colab and failed as a test: the
 critic diverged (above). Step 3b (whether a Monte Carlo critic can tell the base's own noises apart) ran on
 Kaggle and is not read: its shuffled-noise control was biased (above). Step 4 ran on Kaggle (above, 2026-10-31): negative, no arm meets the hypothesis. Step 5a ran on Colab (above, 2026-10-31): "mostly reachable", all 5 systematic states reached by fixed noises, none by
-sampled noise. Step 5b is running on Colab (launched 2026-10-31, no result). Step 6's design is fixed (above, 2026-10-31); not run.
+sampled noise. Step 5b is running on Colab (launched 2026-10-31, no result). Step 6 ran on Kaggle (above, 2026-11-01): the labels hold; B's gain was not informative.
 
 Before step 0 ran, smoke tests on the local RTX 4090 (shared with another job), one episode each of task 0,
 seed 0, init state 0: `n_action_steps=10` through `evaluate_all.py` and `n_action_steps=50` through

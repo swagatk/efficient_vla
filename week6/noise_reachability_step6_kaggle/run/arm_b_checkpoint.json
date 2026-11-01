@@ -1,0 +1,14 @@
+{
+ "path": "/kaggle/input/datasets/swagatk/smolvla-libero10-continued/smolvla_libero10_continued_final",
+ "model_sha256": "b75872e158799eb4c824d2ac8d1f6e956bb0cc243d9033d302fa8e1868d6b336",
+ "files": [
+  "config.json",
+  "model.safetensors",
+  "policy_postprocessor.json",
+  "policy_postprocessor_step_0_unnormalizer_processor.safetensors",
+  "policy_preprocessor.json",
+  "policy_preprocessor_step_5_normalizer_processor.safetensors",
+  "tokenizer",
+  "train_config.json"
+ ]
+}

@@ -1,0 +1,72 @@
+tasks [4, 6, 7, 8] seeds 16 31 states [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+base parts 640 equal merged True
+B parts 640 equal merged True
+old rows 640 seeds [0, 1, 2] [13, 14, 15]
+task 4 base new 71 old 79 same outcome 116 /160
+   B vs base: differ outcome 54 differ steps 103
+task 6 base new 95 old 97 same outcome 110 /160
+   B vs base: differ outcome 55 differ steps 114
+task 7 base new 90 old 90 same outcome 116 /160
+   B vs base: differ outcome 43 differ steps 118
+task 8 base new 70 old 70 same outcome 110 /160
+   B vs base: differ outcome 41 differ steps 85
+step-table: state: old/16 base/16 B/16
+task 4
+  0: 13 12 11 
+  1:  4  0  1 low
+  2:  0  0  6 SYS
+  3: 16 14 16 
+  4: 16 13 16 
+  5:  5  4  4 low
+  6:  1  2  6 low
+  7:  8  9  2 low
+  8:  5  9  7 low
+  9: 11  8 16 
+task 6
+  0:  7  4  3 low
+  1:  5  6  6 low
+  2: 15 16 13 
+  3:  9  7 12 
+  4:  9 14  5 
+  5: 16 15 13 
+  6: 12 12 10 
+  7: 16 11 15 
+  8:  0  0  0 SYS
+  9:  8 10  9 low
+task 7
+  0:  8 15 13 
+  1: 16 16 16 
+  2:  3  4  9 
+  3:  6  9 13 
+  4:  7  3 11 
+  5:  1  0  0 
+  6: 13  8 16 
+  7: 16 16 16 
+  8:  4  4  3 
+  9: 16 15 14 
+task 8
+  0: 11 14 10 
+  1:  8 11  4 low
+  2:  2  1  0 low
+  3:  1  2  2 low
+  4:  0  1  0 SYS
+  5: 10 11 12 
+  6: 14 14 13 
+  7: 13 11 13 
+  8:  5  5  3 low
+  9:  6  0  2 low
+mean low gain -0.0673076923076923 13
+per task low {4: -0.05, 6: -0.041666666666666664, 8: -0.1} sys [(4, 0.375), (6, 0.0), (8, -0.0625)]
+D (low mean-of-task minus sys) -0.16805555555555554
+largest changes by state, paired by seed: task state base B gained lost p
+  6 4 14 5 0 9 0.00391
+  4 9 8 16 8 0 0.00781
+  7 4 3 11 8 0 0.00781
+  7 6 8 16 8 0 0.00781
+  4 2 0 6 6 0 0.03125
+  4 7 9 2 1 8 0.03906
+  8 1 11 4 1 8 0.03906
+  4 6 2 6 4 0 0.125
+states of 40 with p<.05 before correction: 7 ; Bonferroni .05/40: 0
+totals, 4 tasks: base 326 B 341 of 640
+state 4/2, base on 32 seeds: 0 /32
