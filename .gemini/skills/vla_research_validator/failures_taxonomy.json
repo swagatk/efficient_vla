@@ -140,5 +140,15 @@
       "memory",
       "wsl"
     ]
+  },
+  {
+    "id": "FAIL-010",
+    "date": "2026-11-01",
+    "title": "LIBERO task 8: the stove's pose is not fixed by the init state or any seed",
+    "symptom": "check_step5a.py failed 'the environment seed does not change a fixed-noise chunk' on task 8 only; images differed between resets with the same seed and init state.",
+    "root_cause": "The stove is a fixture placed when a hard reset rebuilds the simulator; set_init_state restores free joints only, and the placement is not controlled by env.seed or seed_everything. Its position changed by 0.012-0.018 m between resets; no body moved on tasks 0, 4, 6, 7.",
+    "resolution": "Step 7 keeps task 8, runs the check with --scene_varies and reports the rate without task 8 as a secondary. week6/noise_reachability_step7_kaggle/fixture_check.txt holds the measurement.",
+    "invariant": "Do not call a fixed-noise episode deterministic, or an init state a fixed scene, on a LIBERO task with a stove fixture, without checking body poses across resets.",
+    "tags": []
   }
 ]

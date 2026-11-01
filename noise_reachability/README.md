@@ -628,6 +628,92 @@ episodes on the systematic states (95% interval 0.1-11.1%). Not informative: B's
 was -0.067, against the 0.10 required, so nothing is read about unevenness. B against base over the four tasks: 341 to
 326 of 640, with +14, -9, +21, -11 per task. Exploratory: B reached 6 of 16 on task 4 state 2, 0 of 32 for the base.
 
+## Step 7: does deep noise reach systematic states beyond task 0? (design 2026-11-01)
+
+Step 5a is the study's most unusual result: all 5 systematic states of task 0 were reached by fixed noises, none by
+sampled noise. It rests on one task, and on hits picked from the same episodes they are counted on. This step asks the
+same question on the 3 systematic states of step 6, whose labels held on fresh seeds: task 4 state 2, task 6 state 8,
+task 8 state 4. Step 6 is why these states: they were fixed before this design, by seeds 0-15. No training.
+
+**Hypothesis.** Written before any step-7 episode: pooled over the 3 states, the fixed `repeat` noise succeeds more often
+than sampled noise, with `repeat` hits on at least 2 of the 3 states. Step 5a's rate (5.7%, 20/350) is the expectation; the
+rule passes well below it, so a pass does not confirm that rate.
+
+**Protocol (fixed before the run).** As step 5a through `deep_noise_search.py`: `lerobot/smolvla_libero` at `a24f1f3804`,
+`n_action_steps=10`, 520 steps, hard resets, families `sampled`, `full`, `repeat`, the same noises by id as step 5a.
+
+- *Episodes.* Noise ids 0-69 per family on each of the 3 states (210 per state, 630). Episode seed 1000 + noise id, as in
+  step 5a, which overlaps no seed of steps 0, 1, 4 or 6 on these tasks.
+- *Control, one per task, ids 0-34 per family (315).* The state of the task's low reachable group (step 6) whose base
+  count on seeds 0-31 is closest to one third, 10.67 of 32, ties to the lower state: task 4 state 5 (9), task 6 state 0
+  (11), task 8 state 8 (10). Step 5a's control ran near that rate. The rule uses seeds 16-31 as well, so it is chosen after
+  those results; these states are controls only and enter no test.
+- *Confirmation.* As step 5a: the first 3 hits of each read fixed family on each state, with jitter seeds 5000-5003, Gaussian
+  std 0.3 (at most 72 episodes).
+- *Harness, first, stops the run.* Per task, the base on init states 0-9 x seeds 0-2 through `eval_noise_selection.py`
+  against step 0's count (14, 20, 15 of 30 for tasks 4, 6, 8), gap at most 6, step 5a's limit (90 episodes).
+- *Control gate, stops the run.* `sampled` under 3 of 35 on any task's control. A fixed family under 3 of 35 on a task is
+  not read on that task, and any hit it has there is reported apart.
+
+At most 1,107 episodes.
+
+**Rules (`analyze_step7.py`).**
+
+- *Rate.* Pooled over the states of the tasks where `repeat` is read: `repeat` against `sampled`, one-sided Fisher exact
+  on episodes, p < 0.05. The two have the same episode count; with all 3 tasks read that is 210 each, and `repeat` needs 5
+  hits if `sampled` has 0, 7 if 1, 9 if 2. Only `repeat` is tested, because step 5a is what predicts it; `full` is reported.
+- *Spread.* States with at least one `repeat` hit, of the states where it is read: at least 2 of 3. A `sampled` hit on a
+  state does not affect this: the rate rule carries the comparison with sampling.
+- *Reached.* Per state, step 5a's classes: robust, sampled, fragile, unreached. Reported, with each state's fixed-only
+  status (a read fixed family hit it and `sampled` did not), and not part of the reading.
+
+The report gives exact 95% intervals on both pooled rates and the number of distinct `repeat` noises that hit: noises are
+reused across states, so 5 hits may be fewer than 5 noises.
+
+**Reading, fixed now, in this order.**
+
+- *A harness or a sampled control failed:* not read.
+- *No fixed family read on any task:* not read.
+- *Rate passes, spread at least 2:* the result extends beyond task 0: pooled over these 3 states, `repeat` noise succeeds
+  more often than sampled noise, and it does so on more than one state.
+- *Rate passes, spread under 2:* a higher rate, concentrated on too few states to call general.
+- *Rate fails, some state reached by a fixed family:* existence only. Hits happened, at a rate not shown above sampling.
+- *No state reached by a fixed family:* unreached at this depth. Step 5a's result stays a result about task 0.
+
+*Changed after the review, before any step-7 episode ran (2026-11-01):* the first design required at least 2 "fixed-only"
+states, so one sampled hit could change the reading however many `repeat` hits a state had, and one `full` hit could count
+towards a claim about `repeat`. Spread replaces it. Also added: the second "not read" branch, intervals, distinct noises.
+
+**Power (exact, assuming independent episodes; `calibration/step7_power.py`, output in
+`week6/noise_reachability_step7_kaggle/`).** Step 6 is the only unbiased estimate of `sampled` on these states: 1 of 48, or
+2.1%; on seeds 0-31, 1 of 96. With the same true `repeat` rate of 5.7% on each state, the rule with spread passes with
+probability 0.82 if `sampled` is 1% and 0.54 if 2%; at a true `repeat` rate of 3%, 0.28 and 0.09. With step 5a's uneven
+rates (1, 1, 7, 3, 8 of 70) over its subsets of 3 states, 0.73 and 0.52. So a miss says little: if `sampled` is near 2% it barely
+rules out even step 5a's rate. At equal true rates of 1% and 2% the rule passes with probability 0.009 and 0.020.
+
+**Task 8's scene is not fixed by its init state (found in the smoke run, before any step-7 episode).** On task 8 the stove
+is a fixture placed when the simulator is rebuilt, and the init state does not restore it: between resets with the same
+init state its position changed by 0.012 and 0.018 m in two comparisons, also with the same seed and every generator seeded.
+No body moved on tasks 0, 4, 6 or 7 at state 4 (`week6/noise_reachability_step7_kaggle/fixture_check.txt`, 2 comparisons per task). So on task 8 a fixed-noise
+episode is not deterministic, `check_step5a.py` fails its environment-seed check there, and the notebook runs it with
+`--scene_varies`. Task 8 stays in the rules: `repeat` and `sampled` meet the same stove variation, so the rate
+comparison is fair, but a task-8 hit may owe something to the stove. The report also gives the rate on tasks 4 and 6 alone
+(140 episodes each), as a secondary: `repeat` needs 5 hits there if `sampled` has 0. Step 1 and 6's task-8 counts ran the same
+way, so "init state" on task 8 means a family of scenes.
+
+The same smoke run saw 3 search outcomes at noise id 0, which are part of the protocol's episodes and were not chosen by
+this design: `repeat` on 4/2 failed, `sampled` on 6/8 failed, `full` on 8/4 succeeded in 373 steps. They will run again
+on Kaggle and those runs are what count. Nothing above changed because of them.
+
+**What it cannot show.** As in step 5a, a noise is picked after seeing the outcome, so this shows that such noises exist,
+not that a policy can find them. Noises are the same ids as step 5a, so overlap of hits between tasks can be looked at, as
+exploration only. The Fisher test treats episodes as independent, but the 210 `repeat` episodes are 70 noises reused on 3 states, so
+it is valid for these 3 states and says nothing about other states. Three states on three tasks, with one checkpoint. Task 4 state 2 also moved under arm B in step 6 (exploratory, 6
+of 16): a report of both on that state stays exploratory.
+
+**Compute (estimate).** 1,107 episodes on Kaggle 2 x T4 in 4 streams. Step 6 took 16.2 s per episode at a mean of 396 steps,
+so about 21 s at 520 steps: about 6.5 h, one session.
+
 ## Compute
 
 Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a month) for steps 2-4. At
@@ -642,9 +728,10 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
 | 3 | Colab A100 | done: 1,500 training episodes x 2 tasks in parallel (episode time summed to 13.7 h and 15.9 h), then 120 evaluation episodes; launched 2026-10-27 14:13 UTC, last evaluation process started 2026-10-28 09:18 UTC, including a disconnect of about 2 h |
 | 3b | Kaggle 2 x T4 | done: 1,000 base episodes in 4 streams (3.9-4.0 h of episode time per stream, two streams per T4), then 6 critic fits; launched 2026-10-28 19:51 UTC, analysis at 2026-10-29 00:13 UTC |
 | 4 | Kaggle 2 x T4 | estimate: 120 collection episodes, 6 x 2,000 LoRA steps, 1,280 evaluation episodes (roughly 5-7 h of evaluation); two sessions |
-| 6 | Kaggle 2 x T4 | estimate: 1,280 evaluation episodes, about 6 h, one session |
+| 6 | Kaggle 2 x T4 | done: 1,280 evaluation episodes, about 5.9 h, one session |
 | 5a | Colab A100 | done: 1,219 episodes after the pilot on 4 processes; first record 2026-10-30 22:04 UTC, last process started 2026-10-31 01:52 UTC |
-| 5b | Colab A100 | not run: at most 5,280 episodes, estimated at about 16 h; the pilot replaces this |
+| 5b | Colab A100 | done: 111 epochs, 840 evaluation episodes, two sessions (lost at 97 epochs); about 110 compute units is an estimate |
+| 7 | Kaggle 2 x T4 | estimate: at most 1,107 episodes, about 6.5 h, one session |
 
 ## Files
 
@@ -674,13 +761,15 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
   `colab_step5b_noise_awr.ipynb` (built by `build_step5b_notebook.py`) runs it all on Colab.
 - `analyze_step6.py`: step-6 groups, harness, permutation test and reading; `kaggle_step6_replication.ipynb` (built by
   `build_step6_notebook.py`, from step 4's notebook cells) runs the evaluation and the analysis on Kaggle.
+- `analyze_step7.py`: step-7 gates, rate test and reading; `kaggle_step7_deep_noise.ipynb` (built by
+  `build_step7_notebook.py`, from step 6's notebook) runs `deep_noise_search.py` on Kaggle.
 
 ## Status
 
 Steps 0, 1 and 2 done (above); step 2 is a negative result. Step 3 ran on Colab and failed as a test: the
 critic diverged (above). Step 3b (whether a Monte Carlo critic can tell the base's own noises apart) ran on
 Kaggle and is not read: its shuffled-noise control was biased (above). Step 4 ran on Kaggle (above, 2026-10-31): negative, no arm meets the hypothesis. Step 5a ran on Colab (above, 2026-10-31): "mostly reachable", all 5 systematic states reached by fixed noises, none by
-sampled noise. Step 5b ran on Colab (above, 2026-11-01): no reading on transfer, the learner did not learn at this budget. Step 6 ran on Kaggle (above, 2026-11-01): the labels hold; B's gain was not informative.
+sampled noise. Step 5b ran on Colab (above, 2026-11-01): no reading on transfer, the learner did not learn at this budget. Step 6 ran on Kaggle (above, 2026-11-01): the labels hold; B's gain was not informative. Step 7's design is fixed (above, 2026-11-01); not run.
 
 Before step 0 ran, smoke tests on the local RTX 4090 (shared with another job), one episode each of task 0,
 seed 0, init state 0: `n_action_steps=10` through `evaluate_all.py` and `n_action_steps=50` through

@@ -32,6 +32,9 @@ def main(argv=None) -> int:
     p.add_argument("--policy_path", default="lerobot/smolvla_libero")
     p.add_argument("--n_action_steps", type=int, default=10)
     p.add_argument("--rename_map", type=json.loads, default=DEFAULT_RENAME_MAP)
+    p.add_argument("--scene_varies", action="store_true",
+                   help="task 8: the stove's pose is not fixed by the init state, so the check on the environment seed "
+                        "is reported and not required (README.md, step 7)")
     args = p.parse_args(argv)
     if "robosuite_mujoco_patch" not in sys.modules:
         raise SystemExit("robosuite_mujoco_patch is not loaded: run with the repo root on PYTHONPATH (FAIL-003)")
@@ -94,7 +97,10 @@ def main(argv=None) -> int:
         check("the same noise reaches a second inference", torch.equal(first, second))
         obs, _ = reset_to_init_state(env, 0, seed=5000)
         other = with_noise(z, 1)
-        check("the environment seed does not change a fixed-noise chunk", torch.equal(other, first))
+        if args.scene_varies:
+            print(f"[check] note the scene varies: max |diff| across resets {float((other - first).abs().max()):.3g}", flush=True)
+        else:
+            check("the environment seed does not change a fixed-noise chunk", torch.equal(other, first))
         jittered = with_noise(make_noise("full", 0, cfg.chunk_size, cfg.max_action_dim, 5000), 1)
         diff = float((jittered - first).abs().max())
         check("jitter changes the chunk", diff > 1e-4, f"max |diff| {diff:.3g}")

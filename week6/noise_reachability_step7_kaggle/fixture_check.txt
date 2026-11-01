@@ -1,0 +1,10 @@
+ task 8 state 4 seeded same: 1 of 30 bodies moved, max 0.0124 {'flat_stove_1_main': 0.0124}
+ task 8 state 4 other seed: 1 of 30 bodies moved, max 0.0182 {'flat_stove_1_main': 0.0182}
+ task 7 state 4 seeded same: 0 of 26 bodies moved, max 0 {}
+ task 7 state 4 other seed: 0 of 26 bodies moved, max 0 {}
+ task 0 state 4 seeded same: 0 of 29 bodies moved, max 0 {}
+ task 0 state 4 other seed: 0 of 29 bodies moved, max 0 {}
+ task 4 state 4 seeded same: 0 of 26 bodies moved, max 0 {}
+ task 4 state 4 other seed: 0 of 26 bodies moved, max 0 {}
+ task 6 state 4 seeded same: 0 of 25 bodies moved, max 0 {}
+ task 6 state 4 other seed: 0 of 25 bodies moved, max 0 {}

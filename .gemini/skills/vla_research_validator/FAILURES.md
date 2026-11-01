@@ -13,6 +13,7 @@ This file is automatically updated by `record_failure.py`. Before modifying agen
 | **FAIL-007** | 2026-10-10 | Stacked mj_fullM Patches Corrupt OSC Mass Matrix (0% Base Success in Hybrid Harness) | Frozen base SmolVLA scored 0/10 on Task 3 through train_hybr... | Only robosuite_mujoco_patch.py may patch mujoco.mj_fullM. No... |
 | **FAIL-008** | 2026-10-11 | Runner Aborted by Segfault in a Helper Python Call (sitecustomize imports torch) | run_task3_residual.sh died with 'Fatal Python error: Segment... | Helper Python calls in runner scripts that do not need torch... |
 | **FAIL-009** | 2026-10-19 | sitecustomize + pyGLFW Library Probe Recursion Fills RAM (MUJOCO_GL unset) | 'python rl_based_tuning/train_online_sac.py --help' with the... | sitecustomize must never load robosuite_mujoco_patch into py... |
+| **FAIL-010** | 2026-11-01 | LIBERO task 8: the stove's pose is not fixed by the init state or any seed | check_step5a.py failed 'the environment seed does not change... | Do not call a fixed-noise episode deterministic, or an init ... |
 
 ---
 
@@ -87,4 +88,12 @@ This file is automatically updated by `record_failure.py`. Before modifying agen
 - **Root Cause**: With MUJOCO_GL not egl, importing MuJoCo/robosuite imports pyGLFW, which checks candidate libraries by running 'python -c <source calling glfwGetVersion>'. The child inherits PYTHONPATH, so sitecustomize loaded robosuite_mujoco_patch there, which imported GLFW again and started the next probe, without end.
 - **Resolution**: sitecustomize.py skips the patch when sys.orig_argv contains glfwGetVersion (only pyGLFW's probe source does). Regression test tests/test_sitecustomize.py fails before the fix; the original command now exits in seconds with no probe processes left.
 - **Mandatory Invariant**: `sitecustomize must never load robosuite_mujoco_patch into pyGLFW probe processes (tests/test_sitecustomize.py). Run simulator code with MUJOCO_GL=egl, as the runner scripts do.`
+
+### [FAIL-010] LIBERO task 8: the stove's pose is not fixed by the init state or any seed
+
+- **Date**: 2026-11-01
+- **Symptom**: check_step5a.py failed 'the environment seed does not change a fixed-noise chunk' on task 8 only; images differed between resets with the same seed and init state.
+- **Root Cause**: The stove is a fixture placed when a hard reset rebuilds the simulator; set_init_state restores free joints only, and the placement is not controlled by env.seed or seed_everything. Its position changed by 0.012-0.018 m between resets; no body moved on tasks 0, 4, 6, 7.
+- **Resolution**: Step 7 keeps task 8, runs the check with --scene_varies and reports the rate without task 8 as a secondary. week6/noise_reachability_step7_kaggle/fixture_check.txt holds the measurement.
+- **Mandatory Invariant**: `Do not call a fixed-noise episode deterministic, or an init state a fixed scene, on a LIBERO task with a stove fixture, without checking body poses across resets.`
 

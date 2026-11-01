@@ -1,0 +1,28 @@
+smallest repeat count that passes with sampled 0: 5
+with sampled 1: 7
+with sampled 2: 9
+same true rate on each state: true repeat rate, true sampled rate, rate rule, rate rule and spread
+0.010 0.000 0.061 0.061
+0.020 0.000 0.411 0.408
+0.030 0.000 0.757 0.755
+0.057 0.000 0.993 0.993
+0.010 0.010 0.009 0.009
+0.020 0.010 0.093 0.092
+0.030 0.010 0.278 0.277
+0.057 0.010 0.817 0.817
+0.010 0.020 0.001 0.001
+0.020 0.020 0.020 0.020
+0.030 0.020 0.088 0.088
+0.057 0.020 0.541 0.541
+chance of at least one repeat hit on a state in 70 noises, true rate: value
+0.014: 0.635
+0.020: 0.757
+0.030: 0.881
+0.057: 0.984
+false pass of the rate rule at equal true rates
+0.010: 0.0089
+0.020: 0.0196
+step 5a's repeat rates (1, 1, 7, 3, 8 of 70), mean over its 10 subsets of 3 states: true sampled rate, rate rule, rate rule and spread
+0.000 0.945 0.913
+0.010 0.745 0.731
+0.020 0.523 0.517
