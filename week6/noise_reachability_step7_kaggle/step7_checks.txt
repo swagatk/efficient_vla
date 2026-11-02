@@ -1,0 +1,52 @@
+search 4/2 sampled: 6/70 ids,steps [(1, 210), (7, 208), (20, 327), (22, 219), (40, 210), (56, 209)]
+search 4/2 full: 10/70 ids,steps [(0, 330), (4, 214), (6, 208), (10, 220), (14, 307), (16, 206), (18, 217), (30, 247), (45, 323), (58, 212)]
+search 4/2 repeat: 3/70 ids,steps [(23, 278), (27, 209), (49, 198)]
+search 6/8 sampled: 0/70 ids,steps []
+search 6/8 full: 0/70 ids,steps []
+search 6/8 repeat: 3/70 ids,steps [(30, 256), (42, 224), (69, 253)]
+search 8/4 sampled: 4/70 ids,steps [(5, 393), (32, 373), (34, 473), (52, 371)]
+search 8/4 full: 7/70 ids,steps [(0, 394), (8, 379), (27, 374), (33, 491), (34, 378), (50, 398), (58, 416)]
+search 8/4 repeat: 10/70 ids,steps [(8, 474), (9, 432), (18, 412), (20, 370), (27, 378), (34, 379), (40, 372), (41, 428), (47, 451), (51, 360)]
+control 4/5 sampled: 8/35 ids,steps 
+control 4/5 full: 14/35 ids,steps 
+control 4/5 repeat: 10/35 ids,steps 
+control 6/0 sampled: 14/35 ids,steps 
+control 6/0 full: 13/35 ids,steps 
+control 6/0 repeat: 5/35 ids,steps 
+control 8/8 sampled: 15/35 ids,steps 
+control 8/8 full: 14/35 ids,steps 
+control 8/8 repeat: 12/35 ids,steps 
+totals {'sampled': 10, 'full': 17, 'repeat': 16} repeat v sampled p 0.1557
+harness 4 15
+harness 6 16
+harness 8 13
+15 confirmation files
+task_4/confirm_full_n0_state2.csv ids ['5000', '5001', '5002', '5003'] successes 0
+task_4/confirm_full_n4_state2.csv ids ['5000', '5001', '5002', '5003'] successes 1
+task_4/confirm_full_n6_state2.csv ids ['5000', '5001', '5002', '5003'] successes 2
+task_4/confirm_repeat_n23_state2.csv ids ['5000', '5001', '5002', '5003'] successes 1
+task_4/confirm_repeat_n27_state2.csv ids ['5000', '5001', '5002', '5003'] successes 1
+task_4/confirm_repeat_n49_state2.csv ids ['5000', '5001', '5002', '5003'] successes 2
+task_6/confirm_repeat_n30_state8.csv ids ['5000', '5001', '5002', '5003'] successes 1
+task_6/confirm_repeat_n42_state8.csv ids ['5000', '5001', '5002', '5003'] successes 2
+task_6/confirm_repeat_n69_state8.csv ids ['5000', '5001', '5002', '5003'] successes 2
+task_8/confirm_full_n0_state4.csv ids ['5000', '5001', '5002', '5003'] successes 2
+task_8/confirm_full_n27_state4.csv ids ['5000', '5001', '5002', '5003'] successes 1
+task_8/confirm_full_n8_state4.csv ids ['5000', '5001', '5002', '5003'] successes 0
+task_8/confirm_repeat_n18_state4.csv ids ['5000', '5001', '5002', '5003'] successes 0
+task_8/confirm_repeat_n8_state4.csv ids ['5000', '5001', '5002', '5003'] successes 1
+task_8/confirm_repeat_n9_state4.csv ids ['5000', '5001', '5002', '5003'] successes 0
+provenance records 123 commits {'710a3aa08882d54b6f3fc3cca65e5aa7006c9ed4'} dirty {False} n_action_steps {10} gpus {('Tesla T4', 'Tesla T4')}
+policy {'a24f1f380461'}
+nas10_all_tasks columns ['task_id', 'seed', 'init_state', 'success']
+nas10_step1 columns ['task_id', 'seed', 'init_state', 'success']
+earlier base 4 16 hits []
+earlier base 6 16 hits []
+earlier base 8 16 hits []
+4/2: base seeds 0-31 0/32, step 7 sampled 6/70, together 6/102; repeat 3/70 p 0.788; full 10/70 p 0.056; B seeds 16-31 6/16 p 0.0014 (all against the /102)
+   jittered {'repeat': (4, 12), 'full': (3, 12)}; repeat against the /102: p 0.011
+6/8: base seeds 0-31 0/32, step 7 sampled 0/70, together 0/102; repeat 3/70 p 0.066; full 0/70 p 1.000; B seeds 16-31 0/16 p 1 (all against the /102)
+   jittered {'repeat': (5, 12), 'full': (0, 0)}; repeat against the /102: p 5.4e-06
+8/4: base seeds 0-31 1/32, step 7 sampled 4/70, together 5/102; repeat 10/70 p 0.032; full 7/70 p 0.162; B seeds 16-31 0/16 p 1 (all against the /102)
+   jittered {'repeat': (1, 12), 'full': (3, 12)}; repeat against the /102: p 0.5
+controls pooled, of 105: {'sampled': 37, 'full': 41, 'repeat': 27}

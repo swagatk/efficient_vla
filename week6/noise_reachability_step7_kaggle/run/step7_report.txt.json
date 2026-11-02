@@ -1,0 +1,182 @@
+{
+ "provenance": {
+  "records": 123,
+  "commit": "710a3aa08882d54b6f3fc3cca65e5aa7006c9ed4",
+  "policy_path": "/root/.cache/huggingface/hub/models--lerobot--smolvla_libero/snapshots/a24f1f380461b665158d52acd140152c79e8b36d"
+ },
+ "harness": {
+  "4": {
+   "base": 15,
+   "reference": 14,
+   "gap": 1,
+   "ok": true
+  },
+  "6": {
+   "base": 16,
+   "reference": 20,
+   "gap": -4,
+   "ok": true
+  },
+  "8": {
+   "base": 13,
+   "reference": 15,
+   "gap": -2,
+   "ok": true
+  }
+ },
+ "control": {
+  "4": {
+   "sampled": 8,
+   "full": 14,
+   "repeat": 10
+  },
+  "6": {
+   "sampled": 14,
+   "full": 13,
+   "repeat": 5
+  },
+  "8": {
+   "sampled": 15,
+   "full": 14,
+   "repeat": 12
+  }
+ },
+ "family_read": {
+  "4": {
+   "sampled": true,
+   "full": true,
+   "repeat": true
+  },
+  "6": {
+   "sampled": true,
+   "full": true,
+   "repeat": true
+  },
+  "8": {
+   "sampled": true,
+   "full": true,
+   "repeat": true
+  }
+ },
+ "states": {
+  "4": {
+   "state": 2,
+   "episodes": 210,
+   "hits": 19,
+   "per_family": {
+    "sampled": 6,
+    "full": 10,
+    "repeat": 3
+   },
+   "confirmed": {
+    "full": {
+     "0": 0,
+     "4": 1,
+     "6": 2
+    },
+    "repeat": {
+     "23": 1,
+     "27": 1,
+     "49": 2
+    }
+   },
+   "class": "robust",
+   "upper_if_zero": null,
+   "fixed_only": false,
+   "repeat_hit_ids": [
+    23,
+    27,
+    49
+   ]
+  },
+  "6": {
+   "state": 8,
+   "episodes": 210,
+   "hits": 3,
+   "per_family": {
+    "sampled": 0,
+    "full": 0,
+    "repeat": 3
+   },
+   "confirmed": {
+    "full": {},
+    "repeat": {
+     "30": 1,
+     "42": 2,
+     "69": 2
+    }
+   },
+   "class": "robust",
+   "upper_if_zero": null,
+   "fixed_only": true,
+   "repeat_hit_ids": [
+    30,
+    42,
+    69
+   ]
+  },
+  "8": {
+   "state": 4,
+   "episodes": 210,
+   "hits": 21,
+   "per_family": {
+    "sampled": 4,
+    "full": 7,
+    "repeat": 10
+   },
+   "confirmed": {
+    "full": {
+     "0": 2,
+     "8": 0,
+     "27": 1
+    },
+    "repeat": {
+     "8": 1,
+     "9": 0,
+     "18": 0
+    }
+   },
+   "class": "robust",
+   "upper_if_zero": null,
+   "fixed_only": false,
+   "repeat_hit_ids": [
+    8,
+    9,
+    18,
+    20,
+    27,
+    34,
+    40,
+    41,
+    47,
+    51
+   ]
+  }
+ },
+ "unread_hits": {},
+ "rate": {
+  "repeat": 16,
+  "sampled": 10,
+  "episodes": 210,
+  "p": 0.1556905748291498,
+  "passes": false,
+  "repeat_noises_that_hit": 15,
+  "repeat_interval": [
+   0.0441749581613013,
+   0.1207809826853059
+  ],
+  "sampled_interval": [
+   0.023068262345875112,
+   0.08582759428725395
+  ]
+ },
+ "rate_without_task_8": {
+  "repeat": 6,
+  "sampled": 6,
+  "episodes": 140,
+  "p": 0.6152859237655351
+ },
+ "spread": 3,
+ "fixed_only_states": 1,
+ "decision": "existence only: hits happened, at a rate not shown above sampling"
+}

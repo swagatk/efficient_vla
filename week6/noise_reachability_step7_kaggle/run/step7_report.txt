@@ -1,0 +1,15 @@
+step 7: deep noise on tasks 4, 6, 8; commit 710a3aa08882d54b6f3fc3cca65e5aa7006c9ed4
+harness task 4: base 15/30 against 14 (gap +1, ok)
+harness task 6: base 16/30 against 20 (gap -4, ok)
+harness task 8: base 13/30 against 15 (gap -2, ok)
+control task 4, state 5, of 35: sampled 8, full 14, repeat 10
+control task 6, state 0, of 35: sampled 14, full 13, repeat 5
+control task 8, state 8, of 35: sampled 15, full 14, repeat 12
+task 4 state 2: 19/210 {'sampled': 6, 'full': 10, 'repeat': 3} confirmed {'full': {'0': 0, '4': 1, '6': 2}, 'repeat': {'23': 1, '27': 1, '49': 2}} -> robust
+task 6 state 8: 3/210 {'sampled': 0, 'full': 0, 'repeat': 3} confirmed {'full': {}, 'repeat': {'30': 1, '42': 2, '69': 2}} -> robust, fixed-only
+task 8 state 4: 21/210 {'sampled': 4, 'full': 7, 'repeat': 10} confirmed {'full': {'0': 2, '8': 0, '27': 1}, 'repeat': {'8': 1, '9': 0, '18': 0}} -> robust
+rate: repeat 16/210 against sampled 10/210, one-sided Fisher p 0.156: does not pass
+95% intervals: repeat 4.4-12.1%, sampled 2.3-8.6%; 15 distinct repeat noises hit
+secondary, without task 8 (stove not fixed): repeat 6/140 against sampled 6/140, one-sided Fisher p 0.615
+states with a repeat hit: 3 of 3 (required 2); fixed-only (descriptive): 1
+decision: existence only: hits happened, at a rate not shown above sampling
