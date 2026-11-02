@@ -720,6 +720,94 @@ solved 4/2 and 8/4, so with base seeds 0-31 they stand at 6/102 and 5/102, and o
 0's 0 of 350. The observed `sampled` rate, 4.8%, is above the 1-2% the power table assumed, so the test had less power than
 stated. Only 6/8 kept task 0's pattern: 0/102 sampled, 3/70 `repeat`, 5 of 12 jittered, one state picked after seeing the data.
 
+## Step 8: does fixed noise beat sampling on states that resist sampling? (design 2026-11-02)
+
+Step 7 raised two questions it could not answer. Task 6 state 8 kept task 0's pattern, but it was picked after seeing the
+data. And a label of 0 of 32 turned out to cover states that sampling solves at about 5%, so a test on such states mixes
+rare states with resistant ones. This step tests 6/8 on fresh noises, and tests states that were never labelled or searched,
+with far more sampled episodes than any label so far. LIBERO has 50 init states per task (confirmed locally on tasks 0, 4, 6,
+7, 8). Labels and deep searches used only states 0-9. States 10-49 are not unused: steps 2, 3, 3b, 4 and 5b collected or
+trained on them. The frozen base was never trained on them by this study, but arm B and the learned actors were, so those
+checkpoints are not read on these states here. No training.
+
+**Hypothesis.** Written before any step-8 episode. On 6/8, `repeat` noise succeeds more often than sampled noise; expected
+about 4.3% (step 7, 3 of 70) against under 1%. On unlabelled states that fail 32 of 32 sampled episodes, the same holds, pooled:
+expected about the same rates. This is a claim about the `repeat` family against the `sampled` family. It does not say that
+any one chosen noise is good, or that a policy could find one.
+
+**Protocol (fixed before the run).** As step 7 through `deep_noise_search.py`: `lerobot/smolvla_libero` at `a24f1f3804`,
+`n_action_steps=10`, 520 steps, hard resets. Families `sampled` and `repeat` only: `full` is dropped because no rule uses it and
+the episodes go to the tests. Tasks 0, 4, 6, 7. Task 8 is excluded because its stove is not fixed by the init state (FAIL-010).
+
+- *Harness, first, stops the run.* Per task, the base on init states 0-9 x seeds 0-2 against step 0's count (7, 14, 20, 18 of 30
+  for tasks 0, 4, 6, 7), gap at most 6 (120 episodes).
+- *Control gate, stops the run.* Each task's control state from steps 5a and 7, and for task 7 the state closest to one third
+  on seeds 0-31: 0/9, 4/5, 6/0, 7/4. Noise ids 35-69, new on the states steps 5a and 7 ran, both families (280 episodes).
+  `sampled` under 3 of 35 on any control stops the run; `repeat` under 3 of 35 on a task drops that task's states from the
+  screen's second part and from the tests, so if that task is 6, test 1 does not run.
+- *Test 1, 6/8.* Noise ids 100-399, 300 episodes each of `sampled` and `repeat` (600).
+- *Screen, unlabelled states.* States 10-29 of tasks 0, 4, 6 (60 states), `sampled`, ids 400-407 (480 episodes). States with 0 of 8
+  go on to ids 408-431, at most 20 states (480 episodes), taken in rounds over tasks 0, 4, 6 with the lowest state first. Task 7
+  skips the first part: its states 33, 38 and 47 run ids 400-431 directly (96 episodes). They are the only task-7 states among
+  10-49 with 0 hits in step 3b's base rollouts (0 of 19, 23, 24, soft resets), and no state in 10-29 has fewer than 3 hits, so a
+  screen of 10-29 would likely leave task 7 out. Those step-3b episodes do not count towards eligibility.
+  States with 0 of 32 are *eligible*, the study's usual label on the same episode count.
+- *Selection.* Up to 4 eligible states, taken in the same rounds. This uses no outcome beyond eligibility. Fewer than 2
+  eligible states: test 2 is not run. Each state's scene, 6/8's included, is checked before its test (`check_scene.py`): one noise
+  (id 3000, in no test) runs twice for 120 steps from the state with different environment seeds, and no body pose may differ by
+  more than 1e-6 between the two scenes, FAIL-010's measure. Outcomes could not show this, because a failed episode ends at step 520
+  whatever the scene. Action differences are recorded but do not decide, so a last-bit GPU difference cannot change which states
+  are tested. These short runs are not counted. An eligible state that fails is replaced by the next one; if 6/8 fails, test 1
+  does not run, and the report says why.
+- *Test 2, unlabelled states.* The i-th selected state (i = 0-3) has noise ids 1000 + 150i to 1149 + 150i, 150 episodes each of `sampled`
+  and `repeat` (up to 1,200). The screen's episodes are not counted, because those states were picked for failing them; a
+  fresh `sampled` count removes that bias.
+- *Confirmation.* As step 7: the first 3 `repeat` hits on each tested state, jitter seeds 5000-5003, std 0.3 (at most 60).
+
+Episode seed is 1000 + noise id. Every tested state has its own noise ids, so unlike step 7 the pooled episodes are
+independent. At most 3,316 episodes.
+
+**Rules.** Two tests, each a one-sided Fisher exact test of `repeat` against `sampled`, Holm-corrected at 0.05: the smaller p must
+be under 0.025 and then the other under 0.05.
+
+- *Test 1:* 6/8, 300 against 300. If only one of the two tests runs, it needs p under 0.05.
+- *Test 2:* pooled over the selected states read, up to 600 against 600.
+
+**Reported, not part of the reading.** Per state: both counts with exact 95% intervals. Sampled depth: how many tested states stay
+at 0 hits; 0 of 300 on 6/8 would put a one-sided 95% bound under 1%. How well the label predicts: the pooled `sampled` rate on
+eligible states, and how many of them were hit. `repeat` hits by distinct noise and jittered successes, which bear on
+whether a good noise has good neighbours. The count of eligible states, which is a count over the screened states only.
+
+**Reading, fixed now, in this order.**
+
+- *A harness or a sampled control failed, or neither test ran:* not read.
+- *Both tests pass:* fixed noise beats sampling on resistant states beyond task 0, on a state and on unlabelled states chosen in
+  advance.
+- *Test 1 passes, test 2 fails:* 6/8 is confirmed, but the pattern did not appear on unlabelled states.
+- *Test 2 passes, test 1 fails:* the pattern holds on unlabelled states, and step 7's result on 6/8 did not replicate.
+- *Test 2 not run, test 1 passes:* 6/8 is confirmed; too few resistant states to test anything else.
+- *Test 1 not run, test 2 passes:* the pattern holds on unlabelled states; 6/8 was not tested.
+- *Otherwise:* not shown. Claim 2 stays a result about task 0.
+
+**Power (exact, independent episodes; `calibration/step8_power.py`, output in `week6/noise_reachability_step8_kaggle/`).** Written
+as true `sampled`, true `repeat`, power at 0.025 and 0.05. Test 1: 0.5%, 4.3%, 0.86, 0.92; 1%, 4.3%, 0.66, 0.77; 2%, 4.3%, 0.29,
+0.40. Test 2 with 4 states: 0.5%, 4.3%, 1.00, 1.00; 1%, 4.3%, 0.95, 0.97; 2%, 4.3%, 0.58, 0.69; step 7's own rates (4.8%, 7.6%), 0.48,
+0.60. So the design is good if eligible states are truly resistant, and weak if they are only rare as step 7's were. False pass at
+equal rates stays under 0.05 (0.015-0.03 at 1%, 0.03-0.04 at 5%). With 2 eligible states test 2 has 300 against 300, as in test 1's row.
+A true rate on a state of 5% passes the 0 of 32 screen with probability 0.19, so some eligible states will be rare, not resistant.
+On tasks 0, 4 and 6, 7 of the 30 states 0-9 are at 0 of 32, so about 14 of 60 are expected there (estimate), and task 7 has 3
+candidates.
+
+These figures assume task 6's `repeat` control passes. At step 7's rate on 6/0, 5 of 35, it fails with probability about 0.11
+(estimate), which would drop test 1 and task 6's states. The threshold stays at step 5a's 3 of 35.
+
+**What it cannot show.** Three weak spots remain. One checkpoint. `repeat` against `sampled` compares two families, so a pass does
+not show that a good noise can be found. The screened states are not a random sample of hard states: the selection takes what the rounds
+give, and task-level differences may decide the pooled result, so the report gives each state's counts.
+
+**Compute (estimate).** At step 7's rate (1,095 episodes in 6.0 h, 19.7 s each), 3,316 episodes take about 18.1 h: two Kaggle
+sessions, with the second resuming. The screen ends in the first session, so eligibility is known early.
+
 ## Compute
 
 Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a month) for steps 2-4. At
@@ -738,6 +826,7 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
 | 5a | Colab A100 | done: 1,219 episodes after the pilot on 4 processes; first record 2026-10-30 22:04 UTC, last process started 2026-10-31 01:52 UTC |
 | 5b | Colab A100 | done: 111 epochs, 840 evaluation episodes, two sessions (lost at 97 epochs); about 110 compute units is an estimate |
 | 7 | Kaggle 2 x T4 | done: 1,095 episodes, 6.0 h between first and last provenance records, one session |
+| 8 | Kaggle 2 x T4 | estimate: at most 3,316 episodes, about 18.1 h, two sessions |
 
 ## Files
 
@@ -769,13 +858,15 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
   `build_step6_notebook.py`, from step 4's notebook cells) runs the evaluation and the analysis on Kaggle.
 - `analyze_step7.py`: step-7 gates, rate test and reading; `kaggle_step7_deep_noise.ipynb` (built by
   `build_step7_notebook.py`, from step 6's notebook) runs `deep_noise_search.py` on Kaggle.
+- `analyze_step8.py`: step-8 gates, screen, selection, the two tests and reading; `check_scene.py`: the scene check;
+  `kaggle_step8_resistant_states.ipynb` (built by `build_step8_notebook.py`, from step 7's notebook) runs them on Kaggle.
 
 ## Status
 
 Steps 0, 1 and 2 done (above); step 2 is a negative result. Step 3 ran on Colab and failed as a test: the
 critic diverged (above). Step 3b (whether a Monte Carlo critic can tell the base's own noises apart) ran on
 Kaggle and is not read: its shuffled-noise control was biased (above). Step 4 ran on Kaggle (above, 2026-10-31): negative, no arm meets the hypothesis. Step 5a ran on Colab (above, 2026-10-31): "mostly reachable", all 5 systematic states reached by fixed noises, none by
-sampled noise. Step 5b ran on Colab (above, 2026-11-01): no reading on transfer, the learner did not learn at this budget. Step 6 ran on Kaggle (above, 2026-11-01): the labels hold; B's gain was not informative. Step 7 ran on Kaggle (above, 2026-11-02): existence only, `repeat` did not beat `sampled`, and on two of the three states sampling also solved the state.
+sampled noise. Step 5b ran on Colab (above, 2026-11-01): no reading on transfer, the learner did not learn at this budget. Step 6 ran on Kaggle (above, 2026-11-01): the labels hold; B's gain was not informative. Step 7 ran on Kaggle (above, 2026-11-02): existence only, `repeat` did not beat `sampled`, and on two of the three states sampling also solved the state. Step 8's design is fixed (above, 2026-11-02); not run.
 
 Before step 0 ran, smoke tests on the local RTX 4090 (shared with another job), one episode each of task 0,
 seed 0, init state 0: `n_action_steps=10` through `evaluate_all.py` and `n_action_steps=50` through
