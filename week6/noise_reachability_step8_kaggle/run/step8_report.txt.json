@@ -1,0 +1,259 @@
+{
+ "provenance": {
+  "records": 362,
+  "commit": "50a98bd43a3c8c9e3dfd070324c868e0a1e5630c",
+  "policy_path": "/root/.cache/huggingface/hub/models--lerobot--smolvla_libero/snapshots/a24f1f380461b665158d52acd140152c79e8b36d"
+ },
+ "harness": {
+  "0": {
+   "base": 6,
+   "reference": 7,
+   "gap": -1,
+   "ok": true
+  },
+  "4": {
+   "base": 15,
+   "reference": 14,
+   "gap": 1,
+   "ok": true
+  },
+  "6": {
+   "base": 16,
+   "reference": 20,
+   "gap": -4,
+   "ok": true
+  },
+  "7": {
+   "base": 14,
+   "reference": 18,
+   "gap": -4,
+   "ok": true
+  }
+ },
+ "control": {
+  "0": {
+   "sampled": 8,
+   "repeat": 12
+  },
+  "4": {
+   "sampled": 12,
+   "repeat": 11
+  },
+  "6": {
+   "sampled": 14,
+   "repeat": 8
+  },
+  "7": {
+   "sampled": 15,
+   "repeat": 12
+  }
+ },
+ "tests": {
+  "test 1": {
+   "p": 0.018352775009601672,
+   "passes": true
+  },
+  "test 2": {
+   "p": 4.097322742682224e-11,
+   "passes": true
+  }
+ },
+ "states": [
+  {
+   "task": 6,
+   "state": 8,
+   "episodes": 300,
+   "sampled": 2,
+   "repeat": 10,
+   "sampled_interval": [
+    0.0008083864127997904,
+    0.023873497572173715
+   ],
+   "repeat_interval": [
+    0.016098167562619302,
+    0.06044532220126553
+   ],
+   "sampled_bound_if_zero": null,
+   "confirmed": {
+    "125": 2,
+    "150": 3,
+    "164": 0
+   },
+   "group": "test 1"
+  },
+  {
+   "task": 0,
+   "state": 11,
+   "episodes": 150,
+   "sampled": 0,
+   "repeat": 3,
+   "sampled_interval": [
+    0.0,
+    0.02429259716610854
+   ],
+   "repeat_interval": [
+    0.004143625281220555,
+    0.05733422228820583
+   ],
+   "sampled_bound_if_zero": 0.019773438164508494,
+   "confirmed": {
+    "1055": 0,
+    "1130": 1,
+    "1148": 3
+   },
+   "group": "test 2"
+  },
+  {
+   "task": 4,
+   "state": 11,
+   "episodes": 150,
+   "sampled": 0,
+   "repeat": 3,
+   "sampled_interval": [
+    0.0,
+    0.02429259716610854
+   ],
+   "repeat_interval": [
+    0.004143625281220555,
+    0.05733422228820583
+   ],
+   "sampled_bound_if_zero": 0.019773438164508494,
+   "confirmed": {
+    "1239": 0,
+    "1276": 1,
+    "1286": 1
+   },
+   "group": "test 2"
+  },
+  {
+   "task": 6,
+   "state": 12,
+   "episodes": 150,
+   "sampled": 1,
+   "repeat": 7,
+   "sampled_interval": [
+    0.00016877114310994822,
+    0.036583167740580125
+   ],
+   "repeat_interval": [
+    0.018965569634577507,
+    0.0937858649877965
+   ],
+   "sampled_bound_if_zero": null,
+   "confirmed": {
+    "1324": 0,
+    "1334": 2,
+    "1356": 1
+   },
+   "group": "test 2"
+  },
+  {
+   "task": 7,
+   "state": 33,
+   "episodes": 150,
+   "sampled": 0,
+   "repeat": 25,
+   "sampled_interval": [
+    0.0,
+    0.02429259716610854
+   ],
+   "repeat_interval": [
+    0.11085733201757474,
+    0.236124326540432
+   ],
+   "sampled_bound_if_zero": 0.019773438164508494,
+   "confirmed": {
+    "1459": 3,
+    "1467": 3,
+    "1473": 2
+   },
+   "group": "test 2"
+  }
+ ],
+ "read_tasks": [
+  0,
+  4,
+  6,
+  7
+ ],
+ "test1_status": "run",
+ "screen": {
+  "first_part_zero": {
+   "0": 5,
+   "4": 4,
+   "6": 5
+  },
+  "second_part": 14,
+  "eligible": [
+   [
+    0,
+    11
+   ],
+   [
+    4,
+    11
+   ],
+   [
+    6,
+    12
+   ],
+   [
+    7,
+    33
+   ],
+   [
+    0,
+    14
+   ],
+   [
+    4,
+    18
+   ],
+   [
+    6,
+    14
+   ],
+   [
+    7,
+    38
+   ],
+   [
+    0,
+    27
+   ],
+   [
+    4,
+    26
+   ],
+   [
+    6,
+    20
+   ],
+   [
+    7,
+    47
+   ]
+  ],
+  "scene_failed": []
+ },
+ "pooled": {
+  "repeat": 38,
+  "sampled": 1,
+  "episodes": 600,
+  "repeat_interval": [
+   0.04520459994401139,
+   0.0858966018567091
+  ],
+  "sampled_interval": [
+   4.2195456387169455e-05,
+   0.009250772279374651
+  ],
+  "states_with_a_sampled_hit": 1,
+  "states": 4
+ },
+ "jittered": {
+  "successes": 22,
+  "episodes": 60
+ },
+ "decision": "fixed noise beats sampling on resistant states beyond task 0, on a state and on unlabelled states chosen in advance"
+}

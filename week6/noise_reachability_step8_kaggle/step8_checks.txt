@@ -1,0 +1,43 @@
+# check_step8_rows.py run
+task 0: harness 6/30 vs 7 (gap -1); control state 9 of 35 {'sampled': 8, 'repeat': 12}
+task 4: harness 15/30 vs 14 (gap +1); control state 5 of 35 {'sampled': 12, 'repeat': 11}
+task 6: harness 16/30 vs 20 (gap -4); control state 0 of 35 {'sampled': 14, 'repeat': 8}
+task 7: harness 14/30 vs 18 (gap -4); control state 4 of 35 {'sampled': 15, 'repeat': 12}
+test 1 6/8 ids 100-399: sampled 2/300 [116, 372]; repeat 10/300 [125, 150, 164, 167, 190, 256, 293, 313, 350, 381]
+   jittered confirm_repeat_n125_state8.csv: 2/4
+   jittered confirm_repeat_n150_state8.csv: 3/4
+   jittered confirm_repeat_n164_state8.csv: 0/4
+test 2 0/11 ids 1000-1149: sampled 0/150 []; repeat 3/150 [1055, 1130, 1148]
+   jittered confirm_repeat_n1055_state11.csv: 0/4
+   jittered confirm_repeat_n1130_state11.csv: 1/4
+   jittered confirm_repeat_n1148_state11.csv: 3/4
+test 2 4/11 ids 1150-1299: sampled 0/150 []; repeat 3/150 [1239, 1276, 1286]
+   jittered confirm_repeat_n1239_state11.csv: 0/4
+   jittered confirm_repeat_n1276_state11.csv: 1/4
+   jittered confirm_repeat_n1286_state11.csv: 1/4
+test 2 6/12 ids 1300-1449: sampled 1/150 [1408]; repeat 7/150 [1324, 1334, 1356, 1368, 1389, 1396, 1439]
+   jittered confirm_repeat_n1324_state12.csv: 0/4
+   jittered confirm_repeat_n1334_state12.csv: 2/4
+   jittered confirm_repeat_n1356_state12.csv: 1/4
+test 2 7/33 ids 1450-1599: sampled 0/150 []; repeat 25/150 [1459, 1467, 1473, 1483, 1484, 1492, 1509, 1510, 1518, 1519, 1522, 1536, 1538, 1540, 1545, 1548, 1557, 1561, 1562, 1567, 1581, 1586, 1595, 1596, 1599]
+   jittered confirm_repeat_n1459_state33.csv: 3/4
+   jittered confirm_repeat_n1467_state33.csv: 3/4
+   jittered confirm_repeat_n1473_state33.csv: 2/4
+test 2 pooled {'sampled': 1, 'repeat': 38, 'n': 600}
+test 1: one-sided Fisher p 0.01835, Holm passes
+test 2: one-sided Fisher p 4.097e-11, Holm passes
+jittered successes 22/60
+provenance records 362 commits {'50a98bd43a3c8c9e3dfd070324c868e0a1e5630c'} dirty {False} hosts ['8155ea7b7423', 'eb9f41883bd5'] n_action_steps {10} max_steps {520}
+
+# explore_step8.py run/step8_report.txt.json (exploratory, not part of the rule)
+6/8: repeat 10 sampled 2 of 300, per-state p 0.0184
+0/11: repeat 3 sampled 0 of 150, per-state p 0.124
+4/11: repeat 3 sampled 0 of 150, per-state p 0.124
+6/12: repeat 7 sampled 1 of 150, per-state p 0.0333
+7/33: repeat 25 sampled 0 of 150, per-state p 1e-08
+test 2 without 0/11: repeat 35/450 sampled 1/450 p 2.81e-10
+test 2 without 4/11: repeat 35/450 sampled 1/450 p 2.81e-10
+test 2 without 6/12: repeat 31/450 sampled 0/450 p 2.73e-10
+test 2 without 7/33: repeat 13/450 sampled 1/450 p 0.000849
+controls pooled of 140: repeat 43 sampled 49; sampled>repeat one-sided p 0.262
+task 6 control: sampled 14 > repeat 8 one-sided p 0.0987

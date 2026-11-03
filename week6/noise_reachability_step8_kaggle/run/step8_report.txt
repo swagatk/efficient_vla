@@ -1,0 +1,20 @@
+step 8: fixed noise on states that resist sampling; commit 50a98bd43a3c8c9e3dfd070324c868e0a1e5630c
+harness task 0: base 6/30 against 7 (gap -1, ok)
+harness task 4: base 15/30 against 14 (gap +1, ok)
+harness task 6: base 16/30 against 20 (gap -4, ok)
+harness task 7: base 14/30 against 18 (gap -4, ok)
+control task 0, state 9, of 35: sampled 8, repeat 12
+control task 4, state 5, of 35: sampled 12, repeat 11
+control task 6, state 0, of 35: sampled 14, repeat 8
+control task 7, state 4, of 35: sampled 15, repeat 12
+tasks read: [0, 4, 6, 7]; states at 0 of 8, of 20: {0: 5, 4: 4, 6: 5}; second part 14 states; eligible at 0 of 32: [[0, 11], [4, 11], [6, 12], [7, 33], [0, 14], [4, 18], [6, 14], [7, 38], [0, 27], [4, 26], [6, 20], [7, 47]]; failed the scene check: []; test 1 run
+test 1, task 6 state 8: sampled 2/300 (0.1-2.4%), repeat 10/300 (1.6-6.0%), jittered {'125': 2, '150': 3, '164': 0}
+test 2, task 0 state 11: sampled 0/150 (0.0-2.4%), repeat 3/150 (0.4-5.7%), jittered {'1055': 0, '1130': 1, '1148': 3}; sampled one-sided 95% bound 1.98%
+test 2, task 4 state 11: sampled 0/150 (0.0-2.4%), repeat 3/150 (0.4-5.7%), jittered {'1239': 0, '1276': 1, '1286': 1}; sampled one-sided 95% bound 1.98%
+test 2, task 6 state 12: sampled 1/150 (0.0-3.7%), repeat 7/150 (1.9-9.4%), jittered {'1324': 0, '1334': 2, '1356': 1}
+test 2, task 7 state 33: sampled 0/150 (0.0-2.4%), repeat 25/150 (11.1-23.6%), jittered {'1459': 3, '1467': 3, '1473': 2}; sampled one-sided 95% bound 1.98%
+test 2 pooled: sampled 1/600 (0.0-0.9%), repeat 38/600 (4.5-8.6%); 1 of 4 states have a sampled hit
+test 1: one-sided Fisher p 0.0184, Holm passes
+test 2: one-sided Fisher p 4.1e-11, Holm passes
+jittered successes (descriptive): 22/60
+decision: fixed noise beats sampling on resistant states beyond task 0, on a state and on unlabelled states chosen in advance

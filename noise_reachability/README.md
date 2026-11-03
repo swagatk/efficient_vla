@@ -808,6 +808,13 @@ give, and task-level differences may decide the pooled result, so the report giv
 **Compute (estimate).** At step 7's rate (1,095 episodes in 6.0 h, 19.7 s each), 3,316 episodes take about 18.1 h: two Kaggle
 sessions, with the second resuming. The screen ends in the first session, so eligibility is known early.
 
+**Result (Kaggle, 2026-11-02/03; `week6/noise_reachability_step8_kaggle/`).** Both tests pass: fixed noise beats sampling on
+resistant states beyond task 0, on a state and on unlabelled states chosen in advance. Test 1, 6/8: `repeat` 10 of 300 against
+`sampled` 2 of 300, p 0.0184. Test 2, 0/11, 4/11, 6/12 and 7/33 pooled: 38 of 600 against 1 of 600, p 4.1e-11. Holm passes both.
+Exploratory: 7/33 gives 25 of the 38 hits, and without it test 2 is 13/450 against 1/450 (p 0.00085); 0/11 and 4/11 alone are 3
+against 0. On the easy control states `repeat` is no better than `sampled` (43 against 49 of 140), so the result is about states
+that resist sampling, not a better policy. Jittered successes 22 of 60.
+
 ## Compute
 
 Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a month) for steps 2-4. At
@@ -826,7 +833,7 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
 | 5a | Colab A100 | done: 1,219 episodes after the pilot on 4 processes; first record 2026-10-30 22:04 UTC, last process started 2026-10-31 01:52 UTC |
 | 5b | Colab A100 | done: 111 epochs, 840 evaluation episodes, two sessions (lost at 97 epochs); about 110 compute units is an estimate |
 | 7 | Kaggle 2 x T4 | done: 1,095 episodes, 6.0 h between first and last provenance records, one session |
-| 8 | Kaggle 2 x T4 | estimate: at most 3,316 episodes, about 18.1 h, two sessions |
+| 8 | Kaggle 2 x T4 | done: 3,172 episodes, 10.3 h and 5.9 h between first and last provenance records, two sessions |
 
 ## Files
 
@@ -866,7 +873,7 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
 Steps 0, 1 and 2 done (above); step 2 is a negative result. Step 3 ran on Colab and failed as a test: the
 critic diverged (above). Step 3b (whether a Monte Carlo critic can tell the base's own noises apart) ran on
 Kaggle and is not read: its shuffled-noise control was biased (above). Step 4 ran on Kaggle (above, 2026-10-31): negative, no arm meets the hypothesis. Step 5a ran on Colab (above, 2026-10-31): "mostly reachable", all 5 systematic states reached by fixed noises, none by
-sampled noise. Step 5b ran on Colab (above, 2026-11-01): no reading on transfer, the learner did not learn at this budget. Step 6 ran on Kaggle (above, 2026-11-01): the labels hold; B's gain was not informative. Step 7 ran on Kaggle (above, 2026-11-02): existence only, `repeat` did not beat `sampled`, and on two of the three states sampling also solved the state. Step 8's design is fixed (above, 2026-11-02); not run.
+sampled noise. Step 5b ran on Colab (above, 2026-11-01): no reading on transfer, the learner did not learn at this budget. Step 6 ran on Kaggle (above, 2026-11-01): the labels hold; B's gain was not informative. Step 7 ran on Kaggle (above, 2026-11-02): existence only, `repeat` did not beat `sampled`, and on two of the three states sampling also solved the state. Step 8 ran on Kaggle (above, 2026-11-03): both tests pass, `repeat` beats `sampled` on 6/8 and on four unlabelled states chosen in advance, pooled.
 
 Before step 0 ran, smoke tests on the local RTX 4090 (shared with another job), one episode each of task 0,
 seed 0, init state 0: `n_action_steps=10` through `evaluate_all.py` and `n_action_steps=50` through
