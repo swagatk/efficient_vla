@@ -1,0 +1,303 @@
+{
+ "provenance": {
+  "records": 76,
+  "commit": "f2a067e629557b44996b423c08835647544178b9",
+  "policy_path": "/root/.cache/huggingface/hub/models--lerobot--smolvla_libero/snapshots/a24f1f380461b665158d52acd140152c79e8b36d"
+ },
+ "harness": {
+  "0": {
+   "base": 6,
+   "reference": 7,
+   "gap": -1,
+   "ok": true
+  },
+  "4": {
+   "base": 15,
+   "reference": 14,
+   "gap": 1,
+   "ok": true
+  },
+  "6": {
+   "base": 16,
+   "reference": 20,
+   "gap": -4,
+   "ok": true
+  },
+  "7": {
+   "base": 14,
+   "reference": 18,
+   "gap": -4,
+   "ok": true
+  }
+ },
+ "states": [
+  {
+   "task": 0,
+   "state": 14,
+   "library": 8,
+   "library_episodes": 20,
+   "library_interval": [
+    0.19119006072530717,
+    0.6394574126925101
+   ],
+   "random": 4,
+   "random_episodes": 50,
+   "random_interval": [
+    0.022227963654929753,
+    0.19234278359596277
+   ]
+  },
+  {
+   "task": 0,
+   "state": 27,
+   "library": 1,
+   "library_episodes": 20,
+   "library_interval": [
+    0.0012650894979498025,
+    0.2487327627720275
+   ],
+   "random": 1,
+   "random_episodes": 50,
+   "random_interval": [
+    0.0005062279830408273,
+    0.1064695457114999
+   ]
+  },
+  {
+   "task": 4,
+   "state": 18,
+   "library": 0,
+   "library_episodes": 6,
+   "library_interval": [
+    0.0,
+    0.4592581264399
+   ],
+   "random": 2,
+   "random_episodes": 50,
+   "random_interval": [
+    0.004881433426164384,
+    0.13713762560396736
+   ]
+  },
+  {
+   "task": 4,
+   "state": 26,
+   "library": 1,
+   "library_episodes": 6,
+   "library_interval": [
+    0.004210744514489469,
+    0.6412345789976744
+   ],
+   "random": 3,
+   "random_episodes": 50,
+   "random_interval": [
+    0.012548587835334064,
+    0.16548194660377288
+   ]
+  },
+  {
+   "task": 6,
+   "state": 14,
+   "library": 0,
+   "library_episodes": 20,
+   "library_interval": [
+    0.0,
+    0.16843347098308525
+   ],
+   "random": 0,
+   "random_episodes": 50,
+   "random_interval": [
+    0.0,
+    0.0711217364641976
+   ]
+  },
+  {
+   "task": 6,
+   "state": 20,
+   "library": 0,
+   "library_episodes": 20,
+   "library_interval": [
+    0.0,
+    0.16843347098308525
+   ],
+   "random": 0,
+   "random_episodes": 50,
+   "random_interval": [
+    0.0,
+    0.0711217364641976
+   ]
+  },
+  {
+   "task": 7,
+   "state": 38,
+   "library": 0,
+   "library_episodes": 25,
+   "library_interval": [
+    0.0,
+    0.13718517153071239
+   ],
+   "random": 7,
+   "random_episodes": 50,
+   "random_interval": [
+    0.05819170034037206,
+    0.26739600249700834
+   ]
+  },
+  {
+   "task": 7,
+   "state": 47,
+   "library": 0,
+   "library_episodes": 25,
+   "library_interval": [
+    0.0,
+    0.13718517153071239
+   ],
+   "random": 6,
+   "random_episodes": 50,
+   "random_interval": [
+    0.0453353207736638,
+    0.24310131670556245
+   ]
+  }
+ ],
+ "tasks": {
+  "0": {
+   "states": [
+    14,
+    27
+   ],
+   "library": 9,
+   "library_episodes": 40,
+   "random": 5,
+   "random_episodes": 100,
+   "library_hits": [
+    [
+     12,
+     "step 5a, 0/6",
+     [
+      14
+     ]
+    ],
+    [
+     15,
+     "step 5a, 0/7; step 5a, 0/8",
+     [
+      14
+     ]
+    ],
+    [
+     23,
+     "step 5a, 0/8",
+     [
+      14
+     ]
+    ],
+    [
+     35,
+     "step 5a, 0/8",
+     [
+      14
+     ]
+    ],
+    [
+     38,
+     "step 5a, 0/8",
+     [
+      14
+     ]
+    ],
+    [
+     44,
+     "step 5a, 0/8",
+     [
+      14
+     ]
+    ],
+    [
+     53,
+     "step 5a, 0/8",
+     [
+      14
+     ]
+    ],
+    [
+     57,
+     "step 5a, 0/6",
+     [
+      14
+     ]
+    ],
+    [
+     1130,
+     "step 8, 0/11",
+     [
+      27
+     ]
+    ]
+   ],
+   "library_ids_on_every_state": 0
+  },
+  "4": {
+   "states": [
+    18,
+    26
+   ],
+   "library": 1,
+   "library_episodes": 12,
+   "random": 5,
+   "random_episodes": 100,
+   "library_hits": [
+    [
+     1276,
+     "step 8, 4/11",
+     [
+      26
+     ]
+    ]
+   ],
+   "library_ids_on_every_state": 0
+  },
+  "6": {
+   "states": [
+    14,
+    20
+   ],
+   "library": 0,
+   "library_episodes": 40,
+   "random": 0,
+   "random_episodes": 100,
+   "library_hits": [],
+   "library_ids_on_every_state": 0
+  },
+  "7": {
+   "states": [
+    38,
+    47
+   ],
+   "library": 0,
+   "library_episodes": 50,
+   "random": 13,
+   "random_episodes": 100,
+   "library_hits": [],
+   "library_ids_on_every_state": 0
+  }
+ },
+ "scene_failed": [],
+ "p": 0.4075982937779095,
+ "pooled": {
+  "library": 10,
+  "library_episodes": 142,
+  "random": 23,
+  "random_episodes": 400,
+  "library_interval": [
+   0.03428496896533926,
+   0.12569573876820025
+  ],
+  "random_interval": [
+   0.03679551950927155,
+   0.08503159529781046
+  ],
+  "fisher_cross_check": 0.35439005169957766
+ },
+ "decision": "not shown: no carry-over found; the test had about 0.25-0.55 power for the hypothesised 2x gain"
+}

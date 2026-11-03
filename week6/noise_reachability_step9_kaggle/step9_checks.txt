@@ -1,0 +1,26 @@
+$ python -I week6/noise_reachability_step9_kaggle/check_step9_rows.py <run>
+task 0 state 14 library: 8/20
+task 0 state 27 library: 1/20
+task 0 state 14 random: 4/50
+task 0 state 27 random: 1/50
+task 4 state 18 library: 0/6
+task 4 state 26 library: 1/6
+task 4 state 18 random: 2/50
+task 4 state 26 random: 3/50
+task 6 state 14 library: 0/20
+task 6 state 20 library: 0/20
+task 6 state 14 random: 0/50
+task 6 state 20 random: 0/50
+task 7 state 38 library: 0/25
+task 7 state 47 library: 0/25
+task 7 state 38 random: 7/50
+task 7 state 47 random: 6/50
+episodes 542, provenance records 56
+pooled library 10/142, random 23/400
+permutation p, 200000 random relabellings within task (seed 0): 0.4074 +- 0.0022
+
+$ python -I -S week6/noise_reachability_step9_kaggle/explore_step9.py <run>  (exploratory)
+0/14, library above random: 8/20 against 4/50, p 0.0031
+task 7, library below random: 0/50 against 13/100, p 0.0039
+tasks 0, 4, 6 pooled, library above random: 10/92 against 10/300, p 0.0072
+task 7 random on states never solved by sampling: 13/100

@@ -881,6 +881,14 @@ that do not resist sampling.
 **Compute (estimate).** At step 8's rate (3,172 episodes over 16.2 h of provenance records), 662 episodes take about
 3.4 h, one Kaggle session.
 
+**Result (Kaggle, 2026-11-03; `week6/noise_reachability_step9_kaggle/`).** Not shown, no carry-over found: the library
+hit 10 of 142 against 23 of 400 for fresh ids, exact permutation p 0.408. Exploratory, and opposite by task: on 0/14 the
+library hit 8 of 20 against 4 of 50 (all eight are step 5a ids, found on states 6-8), while on task 7 the 25 noises that
+solved 7/33 hit 0 of 50 on 7/38 and 7/47 against 13 of 100 for fresh ids. Tasks 0, 4 and 6 pooled are 10/92 against
+10/300 (p 0.0072, descriptive). So a noise's success looks tied to the pair of states, not to the task; a retrieval
+method would need to match states, not tasks. Fresh `repeat` ids solving 13 of 100 on two states at 0 of 32 `sampled`
+matches step 8.
+
 ## Step 10: can constant-noise successes be learned into the weights? (design 2026-11-03)
 
 Learning from a policy's own sampled successes stalls on states where it never succeeds: self-filtered BC on task 6 left
@@ -981,7 +989,7 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
 | 5b | Colab A100 | done: 111 epochs, 840 evaluation episodes, two sessions (lost at 97 epochs); about 110 compute units is an estimate |
 | 7 | Kaggle 2 x T4 | done: 1,095 episodes, 6.0 h between first and last provenance records, one session |
 | 8 | Kaggle 2 x T4 | done: 3,172 episodes, 10.3 h and 5.9 h between first and last provenance records, two sessions |
-| 9 | Kaggle 2 x T4 | estimate: at most 662 episodes, about 3.4 h, one session (local smoke: 71-151 s per episode, one process) |
+| 9 | Kaggle 2 x T4 | done: 662 episodes, 3.9 h between first and last provenance records, one session |
 | 10 | Kaggle 2 x T4 | estimate: 2,940 episodes and 12 adapters, about 32 h over four sessions |
 
 ## Files
@@ -1028,7 +1036,7 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
 Steps 0, 1 and 2 done (above); step 2 is a negative result. Step 3 ran on Colab and failed as a test: the
 critic diverged (above). Step 3b (whether a Monte Carlo critic can tell the base's own noises apart) ran on
 Kaggle and is not read: its shuffled-noise control was biased (above). Step 4 ran on Kaggle (above, 2026-10-31): negative, no arm meets the hypothesis. Step 5a ran on Colab (above, 2026-10-31): "mostly reachable", all 5 systematic states reached by fixed noises, none by
-sampled noise. Step 5b ran on Colab (above, 2026-11-01): no reading on transfer, the learner did not learn at this budget. Step 6 ran on Kaggle (above, 2026-11-01): the labels hold; B's gain was not informative. Step 7 ran on Kaggle (above, 2026-11-02): existence only, `repeat` did not beat `sampled`, and on two of the three states sampling also solved the state. Step 8 ran on Kaggle (above, 2026-11-03): both tests pass, `repeat` beats `sampled` on 6/8 and on four unlabelled states chosen in advance, pooled. Step 9's design is fixed and its code built and reviewed (above, 2026-11-03); running. Step 10's design is fixed (above, 2026-11-03); its code is built, not yet run.
+sampled noise. Step 5b ran on Colab (above, 2026-11-01): no reading on transfer, the learner did not learn at this budget. Step 6 ran on Kaggle (above, 2026-11-01): the labels hold; B's gain was not informative. Step 7 ran on Kaggle (above, 2026-11-02): existence only, `repeat` did not beat `sampled`, and on two of the three states sampling also solved the state. Step 8 ran on Kaggle (above, 2026-11-03): both tests pass, `repeat` beats `sampled` on 6/8 and on four unlabelled states chosen in advance, pooled. Step 9 ran on Kaggle (above, 2026-11-03): not shown, the library did not beat fresh noises pooled (p 0.408); exploratory, it helped on 0/14 and hurt on task 7. Step 10's design is fixed (above, 2026-11-03); its code is built, not yet run.
 
 Before step 0 ran, smoke tests on the local RTX 4090 (shared with another job), one episode each of task 0,
 seed 0, init state 0: `n_action_steps=10` through `evaluate_all.py` and `n_action_steps=50` through
