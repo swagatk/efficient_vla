@@ -1,0 +1,6 @@
+repeat {2: ([6], 70), 5: ([30], 70), 6: ([1, 10, 12, 30, 41, 57, 60], 70), 7: ([15, 30, 55], 70), 8: ([15, 23, 35, 38, 44, 46, 53, 62], 70)}
+  shared hit ids across state pairs: 4, expected 1.97 under shuffled ids, p(>=) 0.1153
+full {2: ([], 70), 5: ([], 70), 6: ([29, 56], 70), 7: ([51], 70), 8: ([25, 30], 70)}
+  shared hit ids across state pairs: 0, expected 0.12 under shuffled ids, p(>=) 1.0000
+sampled {2: ([], 70), 5: ([], 70), 6: ([], 70), 7: ([], 70), 8: ([], 70)}
+  shared hit ids across state pairs: 0, expected 0.00 under shuffled ids, p(>=) 1.0000

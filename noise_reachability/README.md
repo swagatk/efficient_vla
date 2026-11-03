@@ -815,6 +815,72 @@ Exploratory: 7/33 gives 25 of the 38 hits, and without it test 2 is 13/450 again
 against 0. On the easy control states `repeat` is no better than `sampled` (43 against 49 of 140), so the result is about states
 that resist sampling, not a better policy. Jittered successes 22 of 60.
 
+## Step 9: does a noise that solved one state help on other states of its task? (design 2026-11-03)
+
+Step 8 shows that fixed noises reach resistant states, but each hit was found by trying noises on that state. A method
+needs the converse: a noise found on some states that works on new ones. The jittered replays do not answer this; they
+perturb the noise, not the state. Step 5a's files give a hint: its five task-0 states share noise ids 0-69, and `repeat`
+hits recur on a second state 4 times against 1.97 expected with ids shuffled within state (p 0.12, exploratory;
+noise 30 hit states 5, 6 and 7; `week6/noise_reachability_step9_kaggle/step5a_recurrence.py`). This step tests it on states no hit was found on. No training.
+
+**Hypothesis.** Written before any step-9 episode. On resistant states held out from every earlier search, `repeat`
+noises that succeeded on other resistant states of the same task succeed more often than fresh `repeat` noises; expected
+at least twice as often. A pass says retrieving past hits is worth building into a method. It does not say a retrieved
+noise beats sampling on easy states, where step 8 found it does not.
+
+**Protocol (fixed before the run).** As step 8 through `deep_noise_search.py`: `lerobot/smolvla_libero` at `a24f1f3804`,
+`n_action_steps=10`, 520 steps, hard resets, family `repeat` only. A noise id gives the same noise on every task and state
+(`make_noise`), so a library is a list of ids.
+
+- *Harness, first, stops the run.* As step 8: base on init states 0-9 x seeds 0-2 per task against 7, 14, 20, 18 of 30,
+  gap at most 6 (120 episodes).
+- *Held-out states.* The eight eligible states step 8 did not test, all at 0 of 32 `sampled`: 0/14, 0/27, 4/18, 4/26,
+  6/14, 6/20, 7/38, 7/47. Each is scene-checked first (`check_scene.py`, as step 8); a state that fails is dropped, not
+  replaced, and its task's other state stays.
+- *Library, per task: every `repeat` hit of an earlier step on a state labelled systematic or eligible.* Task 0, 20 ids:
+  1, 6, 10, 12, 15, 23, 30, 35, 38, 41, 44, 46, 53, 55, 57, 60, 62 (step 5a, states 2, 5, 6, 7, 8), 1055, 1130, 1148
+  (step 8, 0/11). Task 4, 6 ids: 23, 27, 49 (step 7, 4/2), 1239, 1276, 1286 (step 8, 4/11). Task 6, 20 ids: 30, 42, 69
+  (step 7, 6/8), 125, 150, 164, 167, 190, 256, 293, 313, 350, 381 (step 8, 6/8), 1324, 1334, 1356, 1368, 1389, 1396, 1439
+  (step 8, 6/12). Task 7, 25 ids (step 8, 7/33): 1459, 1467, 1473, 1483, 1484, 1492, 1509, 1510, 1518, 1519,
+  1522, 1536, 1538, 1540, 1545, 1548, 1557, 1561, 1562, 1567, 1581, 1586, 1595, 1596, 1599. Control-state hits are left out: those states
+  are easy.
+- *Random.* Noise ids 6000-6049, new to every step, the same 50 on every held-out state.
+- Every library and random id runs once on each held-out state of its task: 2 x (71 + 200) = 542 episodes. Episode seed
+  1000 + noise id, as before; with a fixed noise the seed changes nothing once the state is set.
+
+At most 662 episodes.
+
+**Rule.** One test, one-sided, at 0.05. The statistic is the library's successes over the states read. Its p value comes
+from relabelling noise ids as library or random within each task, a noise's successes summed over its task's states
+read, so its outcomes on the two states stay together. The p value is exact: every relabelling is counted, by subset
+sums within a task convolved across tasks (`analyze_step9.py`; *changed 2026-11-03 before any step-9 episode from
+100,000 random permutations, which estimate the same number*). A noise that works on
+one state and so on the other cannot inflate the test.
+
+**Reported, not part of the reading.** Per state, library and random successes of their ids with exact 95% intervals;
+per task, which library ids hit and on which earlier state they were found; the pooled one-sided Fisher p as a
+cross-check; library ids that hit both held-out states.
+
+**Reading, fixed now.**
+
+- *The harness failed, or no held-out state passed the scene check:* not read.
+- *p under 0.05:* hit noises carry over to other resistant states of their task; a retrieval method is worth building.
+- *Otherwise:* not shown; no carry-over found. The test had about 0.25-0.55 power for the hypothesised 2x gain (below), so
+  this does not show that a hit noise is specific to its state.
+
+**Power (`calibration/step9_power.py`, output in `week6/noise_reachability_step9_kaggle/step9_power.txt`).** Simulated
+with the exact test, 2,000 runs per row, outcomes independent per noise and state, written as random rate, library rate
+as a multiple of it, power. At 5%: 1.5x 0.22, 2x 0.55, 3x 0.955. At 10%: 1.5x 0.39, 2x 0.84, 3x 1.00. At 2%: 2x 0.25,
+3x 0.60. False pass at equal rates 0.023-0.035 (`step9_power.py --sims 2000 --seed 0`). So the test finds a large carry-over and can miss a small one; step 8's `repeat` rate on its four fresh
+states was 6.3% (38/600). The library sets the size: more episodes on the random side would add little.
+
+**What it cannot show.** The library is chosen on outcomes, but on other states, so the held-out states are clean. One
+checkpoint, two held-out states per task. A pass does not show transfer across tasks, nor that a library helps on states
+that do not resist sampling.
+
+**Compute (estimate).** At step 8's rate (3,172 episodes over 16.2 h of provenance records), 662 episodes take about
+3.4 h, one Kaggle session.
+
 ## Compute
 
 Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a month) for steps 2-4. At
@@ -834,6 +900,7 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
 | 5b | Colab A100 | done: 111 epochs, 840 evaluation episodes, two sessions (lost at 97 epochs); about 110 compute units is an estimate |
 | 7 | Kaggle 2 x T4 | done: 1,095 episodes, 6.0 h between first and last provenance records, one session |
 | 8 | Kaggle 2 x T4 | done: 3,172 episodes, 10.3 h and 5.9 h between first and last provenance records, two sessions |
+| 9 | Kaggle 2 x T4 | estimate: at most 662 episodes, about 3.4 h, one session (local smoke: 71-151 s per episode, one process) |
 
 ## Files
 
@@ -867,13 +934,16 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
   `build_step7_notebook.py`, from step 6's notebook) runs `deep_noise_search.py` on Kaggle.
 - `analyze_step8.py`: step-8 gates, screen, selection, the two tests and reading; `check_scene.py`: the scene check;
   `kaggle_step8_resistant_states.ipynb` (built by `build_step8_notebook.py`, from step 7's notebook) runs them on Kaggle.
+- `analyze_step9.py`: step-9 harness gate, the jobs, the exact permutation test and reading;
+  `kaggle_step9_retrieval.ipynb` (built by `build_step9_notebook.py`, from step 8's notebook) runs it on Kaggle;
+  `calibration/step9_power.py`: the power table.
 
 ## Status
 
 Steps 0, 1 and 2 done (above); step 2 is a negative result. Step 3 ran on Colab and failed as a test: the
 critic diverged (above). Step 3b (whether a Monte Carlo critic can tell the base's own noises apart) ran on
 Kaggle and is not read: its shuffled-noise control was biased (above). Step 4 ran on Kaggle (above, 2026-10-31): negative, no arm meets the hypothesis. Step 5a ran on Colab (above, 2026-10-31): "mostly reachable", all 5 systematic states reached by fixed noises, none by
-sampled noise. Step 5b ran on Colab (above, 2026-11-01): no reading on transfer, the learner did not learn at this budget. Step 6 ran on Kaggle (above, 2026-11-01): the labels hold; B's gain was not informative. Step 7 ran on Kaggle (above, 2026-11-02): existence only, `repeat` did not beat `sampled`, and on two of the three states sampling also solved the state. Step 8 ran on Kaggle (above, 2026-11-03): both tests pass, `repeat` beats `sampled` on 6/8 and on four unlabelled states chosen in advance, pooled.
+sampled noise. Step 5b ran on Colab (above, 2026-11-01): no reading on transfer, the learner did not learn at this budget. Step 6 ran on Kaggle (above, 2026-11-01): the labels hold; B's gain was not informative. Step 7 ran on Kaggle (above, 2026-11-02): existence only, `repeat` did not beat `sampled`, and on two of the three states sampling also solved the state. Step 8 ran on Kaggle (above, 2026-11-03): both tests pass, `repeat` beats `sampled` on 6/8 and on four unlabelled states chosen in advance, pooled. Step 9's design is fixed and its code built and reviewed (above, 2026-11-03); not run.
 
 Before step 0 ran, smoke tests on the local RTX 4090 (shared with another job), one episode each of task 0,
 seed 0, init state 0: `n_action_steps=10` through `evaluate_all.py` and `n_action_steps=50` through
