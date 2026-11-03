@@ -881,6 +881,87 @@ that do not resist sampling.
 **Compute (estimate).** At step 8's rate (3,172 episodes over 16.2 h of provenance records), 662 episodes take about
 3.4 h, one Kaggle session.
 
+## Step 10: can constant-noise successes be learned into the weights? (design 2026-11-03)
+
+Learning from a policy's own sampled successes stalls on states where it never succeeds: self-filtered BC on task 6 left
+a never-solved state at 0/9 (`week6/self_filtered_bc_task6/`), and step 4's arm A, the same LoRA update on the base's own
+successes from task-0 states 10-49, solved 1, 2, 3 of 80 systematic episodes (8 required). Steps 5a and 8 show that a
+noise held fixed for the episode does succeed on such states. This step closes the loop once: it trains the same LoRA
+update on those constant-noise successes and asks whether the policy, with its ordinary sampled noise, then solves the
+states. It is one round of filtered behaviour cloning (expert iteration), not online RL. No step-10 episode has run.
+
+**Hypothesis.** On the resistant states it is trained on, the LoRA trained on constant-noise successes (arm N) succeeds
+with sampled noise in at least 10% of fresh episodes, where the base is near 0% (0 of 350 sampled on task 0's five
+systematic states in step 5a; 0 of 182 on 7/33 in step 8; 2 of 370 on 6/8 in steps 7 and 8). On task 0 it beats arm A, the same
+update on the base's own sampled successes.
+
+**Protocol (fixed before the run).** `lerobot/smolvla_libero` at `a24f1f3804`, `n_action_steps=10`, 520 steps. Tasks 0,
+6 and 7, the tasks with at least 20 constant-noise successes on resistant states (task 4 has 5).
+
+- *Harness, first, stops the run.* As step 8: base on init states 0-9 x seeds 0-2 against 7, 20 and 18 of 30, gap at
+  most 6 (90 episodes).
+- *Arm N's data, recorded by replay.* Every successful fixed-noise episode already found on a resistant state is
+  replayed with `deep_noise_search.py --record_dir` (same family, noise id, jitter seed and init state). A fixed noise
+  makes an episode deterministic on one machine, not across GPUs: noise 1459 on 7/33 took 327 steps on Kaggle and 307
+  on a local GPU, the same with and without recording, and its jitter seed 5000 took 257 and 358, all successes. So arm
+  N trains on what these noises do on Kaggle's T4s, and task 0's replays come from step 5a's A100. The report gives,
+  per task, how many replays succeeded again and how many took the original's number of steps. Launch check, not a result: 12
+  of step 5a's task-0 `repeat` hits (A100) replayed on a local RTX 4090 succeeded 8 times, 1 in the original's number of
+  steps (`week6/noise_reachability_step10_kaggle/replay_check.txt`). At that rate task 0 keeps about 37 of 56 on a T4
+  (an estimate, wide with 12 episodes), above the 20 needed. Task 0: 56 episodes on states 2, 5, 6, 7, 8 (step 5a, `full` and `repeat`, jittered copies
+  included) and 11 (step 8). Task 6: 33 on 6/8 (steps 7 and 8) and 6/12 (step 8). Task 7: 33 on 7/33 (step 8). The list
+  is read from the committed result files (`analyze_step10.py`). A replay that fails is not trained on; the count is
+  reported.
+- *Arm A's data, as step 4.* The base on task 0, init states 10-49 x seeds 0-2, soft resets (120 episodes); successes
+  train, states 45-49 give the validation loss. Step 4's episodes and adapters were not kept, so A is re-run. A's
+  collection states include 11, 14 and 27, so A is read only on states 0-9.
+- *Training.* `self_filtered_bc.py --stage train`, step 4's settings unchanged (LoRA r16/alpha32 on the action expert's
+  seven projections, 2,000 steps, batch 16, lr 1e-4, `--selection success`). Arm N: per task, training seeds 0-2, no
+  validation states (9 adapters). Arm A: task 0, training seeds 0-2 (3 adapters). A training run starts only if the
+  session has time to finish it; an unfinished one restarts from scratch.
+- *Evaluation, sampled noise, hard resets* (`self_filtered_bc.py --stage eval`, as step 4). Task 0: init states 0-9, 11,
+  14, 27 x seeds 16-31 (208 per policy; states 0-9 x seeds 16-31 are step 4's evaluation episodes). Task 6: states 0, 8,
+  12, 14, 20 x seeds 16-47 (160). Task 7: states 4, 33, 38, 47 x seeds 16-47 (128). Policies: base and N0-N2 on every
+  task, A0-A2 on task 0. States by role: *trained* (0: 2, 5, 6, 7, 8, 11; 6: 8, 12; 7: 33), *held out* (step 8's
+  untested eligible states: 0/14, 0/27, 6/14, 6/20, 7/38, 7/47), *easy* (0: 0, 1, 3, 4, 9; 6: 0; 7: 4).
+
+At most 90 + 122 + 120 + 2,608 = 2,940 episodes and 12 adapters.
+
+**Rules, in order (test 2 is read only if test 1 passes, so the family-wise error stays at 0.05).** McNemar tests are
+exact and one-sided: with b episodes won only by the first policy and c only by the second, p = P(X >= b), X ~ Bin(b + c,
+1/2).
+
+- *Test 1, learned.* Per training seed i, N_i against base on the trained states of the tasks read (6 x 16 + 2 x 32 + 32
+  = 192 paired episodes with all three). Passes if p < 0.05 for at least 2 of the 3 seeds. A pass needs only about 5 more
+  wins than the base, about 3% of 192, so it shows learning, not the hypothesised 10%; the rates are reported beside it.
+- *Test 2, beyond its own successes.* Task 0, states 2, 5, 6, 7, 8 x seeds 16-31: N_i against A_i paired by episode,
+  pooled over i = 0-2 (240 pairs), p < 0.05. Not run if task 0 is not read.
+
+**Reported, not part of the reading.** Per state and policy, successes with exact intervals; N against base on the
+held-out states (generalisation) and the easy states (harm), and A against base, per seed; replay successes per task.
+
+**Reading, fixed now.**
+
+- *The harness failed:* not read. *Fewer than 20 replays succeeded on a task:* that task is left out of the tests.
+- *Tests 1 and 2 pass:* constant-noise successes make resistant states learnable, beyond what the policy's own
+  successes give.
+- *Test 1 passes, test 2 fails or is not run:* learnable, but not shown better than training on its own successes.
+- *Test 1 fails:* not shown; one round of filtered BC on constant-noise successes did not make these states solvable by
+  sampling.
+
+**Power (`calibration/step10_power.py`, output in `week6/noise_reachability_step10_kaggle/step10_power.txt`; an
+estimate).** Test 1, outcomes independent, 4,000 runs per value. Base at 0%: N at 2% passes with probability 0.26, 3%
+0.77, 5% 0.997, 10% 1.00. Base at 0.5%: 2% 0.11, 3% 0.41, 5% 0.89, 10% 1.00. At equal rates of 0.5%: 0.000.
+
+**What it cannot show.** Trained states are evaluated with fresh noise but the same scenes, so a pass on them can be
+memorisation of one scene's motion; the held-out states are reported for that reason, not tested. One checkpoint, three
+tasks, one round.
+
+**Compute (estimate).** Step 4's adapters trained at 5.0 s per step on a T4: about 2.8 h each, two at a time on the two
+T4s. At step 8's rate about 196 episodes per hour. First session (this week, at most 9 h): harness, replays, A's
+collection (about 1.7 h), then A0-A2 and one N adapter (about 5.6 h). Following sessions: the other 8 N adapters (about
+11.2 h) and the 2,608 evaluation episodes (about 13.3 h). About 32 h over four sessions.
+
 ## Compute
 
 Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a month) for steps 2-4. At
@@ -901,6 +982,7 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
 | 7 | Kaggle 2 x T4 | done: 1,095 episodes, 6.0 h between first and last provenance records, one session |
 | 8 | Kaggle 2 x T4 | done: 3,172 episodes, 10.3 h and 5.9 h between first and last provenance records, two sessions |
 | 9 | Kaggle 2 x T4 | estimate: at most 662 episodes, about 3.4 h, one session (local smoke: 71-151 s per episode, one process) |
+| 10 | Kaggle 2 x T4 | estimate: 2,940 episodes and 12 adapters, about 32 h over four sessions |
 
 ## Files
 
@@ -937,13 +1019,16 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
 - `analyze_step9.py`: step-9 harness gate, the jobs, the exact permutation test and reading;
   `kaggle_step9_retrieval.ipynb` (built by `build_step9_notebook.py`, from step 8's notebook) runs it on Kaggle;
   `calibration/step9_power.py`: the power table.
+- `analyze_step10.py`: step-10 replay list, provenance, harness gate, tests 1 and 2 and reading;
+  `kaggle_step10_learn_from_noise.ipynb` (built by `build_step10_notebook.py`) runs replays (`deep_noise_search.py
+  --record_dir`), training and evaluation (`self_filtered_bc/self_filtered_bc.py`) on Kaggle over several sessions.
 
 ## Status
 
 Steps 0, 1 and 2 done (above); step 2 is a negative result. Step 3 ran on Colab and failed as a test: the
 critic diverged (above). Step 3b (whether a Monte Carlo critic can tell the base's own noises apart) ran on
 Kaggle and is not read: its shuffled-noise control was biased (above). Step 4 ran on Kaggle (above, 2026-10-31): negative, no arm meets the hypothesis. Step 5a ran on Colab (above, 2026-10-31): "mostly reachable", all 5 systematic states reached by fixed noises, none by
-sampled noise. Step 5b ran on Colab (above, 2026-11-01): no reading on transfer, the learner did not learn at this budget. Step 6 ran on Kaggle (above, 2026-11-01): the labels hold; B's gain was not informative. Step 7 ran on Kaggle (above, 2026-11-02): existence only, `repeat` did not beat `sampled`, and on two of the three states sampling also solved the state. Step 8 ran on Kaggle (above, 2026-11-03): both tests pass, `repeat` beats `sampled` on 6/8 and on four unlabelled states chosen in advance, pooled. Step 9's design is fixed and its code built and reviewed (above, 2026-11-03); not run.
+sampled noise. Step 5b ran on Colab (above, 2026-11-01): no reading on transfer, the learner did not learn at this budget. Step 6 ran on Kaggle (above, 2026-11-01): the labels hold; B's gain was not informative. Step 7 ran on Kaggle (above, 2026-11-02): existence only, `repeat` did not beat `sampled`, and on two of the three states sampling also solved the state. Step 8 ran on Kaggle (above, 2026-11-03): both tests pass, `repeat` beats `sampled` on 6/8 and on four unlabelled states chosen in advance, pooled. Step 9's design is fixed and its code built and reviewed (above, 2026-11-03); running. Step 10's design is fixed (above, 2026-11-03); its code is built, not yet run.
 
 Before step 0 ran, smoke tests on the local RTX 4090 (shared with another job), one episode each of task 0,
 seed 0, init state 0: `n_action_steps=10` through `evaluate_all.py` and `n_action_steps=50` through

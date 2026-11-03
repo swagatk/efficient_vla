@@ -16,7 +16,9 @@ once per jitter seed with Gaussian jitter of std JITTER_STD added in the family'
 seed.
 
 Results go to ``<output_dir>/per_episode_<family>_state<i>.csv``, or ``confirm_<family>_n<id>_state<i>.csv``; a
-rerun skips finished episodes. At most --max_episodes_per_process run per call (exit code 3: call again).
+rerun skips finished episodes. With ``--record_dir`` each episode is also saved in self_filtered_bc's episode format
+(``<record_dir>/episodes/<name>.npz``, see ``record_name``) for training on it (step 10); recording only copies what
+the policy saw and did, so it does not change the episode. At most --max_episodes_per_process run per call (exit code 3: call again).
 Run from the repo root with the repo root on PYTHONPATH (FAIL-003).
 """
 from __future__ import annotations
@@ -100,6 +102,20 @@ def result_file(out: Path, family: str, state: int, noise_ids, jitter_seeds) -> 
     return out / f"per_episode_{family}_state{state}.csv"
 
 
+def record_name(family: str, noise_id: int, jitter_seed: int | None, state: int, episode_seed: int) -> str:
+    """File name of one recorded episode: unique per (family, noise, jitter, state, episode seed)."""
+    jitter = "" if jitter_seed is None else f"_j{jitter_seed}"
+    return f"{family}_n{noise_id}{jitter}_init{state:02d}_seed{episode_seed}.npz"
+
+
+def record_meta(args, task: str, noise_id: int, jitter_seed: int | None, episode_seed: int, result: dict) -> dict:
+    """What self_filtered_bc needs to train on and check an episode, plus the noise that produced it."""
+    return {"task_id": args.task_id, "task": task, "seed": episode_seed, "init_state": args.init_state,
+            "success": bool(result["success"]), "steps": result["steps"], "policy_path": args.policy_path,
+            "n_action_steps": args.n_action_steps, "rename_map": args.rename_map, "source": "noise_search",
+            "noise_family": args.family, "noise_id": noise_id, "jitter_seed": jitter_seed}
+
+
 def parse_args(argv=None):
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     from vla_core.policy import DEFAULT_RENAME_MAP
@@ -115,6 +131,8 @@ def parse_args(argv=None):
     p.add_argument("--rename_map", type=json.loads, default=DEFAULT_RENAME_MAP)
     p.add_argument("--max_steps", type=int, default=520)
     p.add_argument("--max_episodes_per_process", type=int, default=10)
+    p.add_argument("--record_dir", default=None, help="also save every episode for training (step 10)")
+    p.add_argument("--frame_stride", type=int, default=2, help="with --record_dir: images every N steps")
     return p.parse_args(argv)
 
 
@@ -142,6 +160,8 @@ def main(argv=None) -> int:
         raise SystemExit("robosuite_mujoco_patch is not loaded: run with the repo root on PYTHONPATH (FAIL-003)")
     record = collect(str(REPO_ROOT), vars(args))
     record["git_dirty_noise_reachability"] = git_state(str(REPO_ROOT), ("noise_reachability",))["git_dirty"]
+    if args.record_dir:   # the recorder lives in self_filtered_bc/
+        record["git_dirty_sfbc"] = git_state(str(REPO_ROOT), ("self_filtered_bc",))["git_dirty"]
     append_jsonl(str(out / "provenance.jsonl"), record)
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -150,6 +170,9 @@ def main(argv=None) -> int:
     base = load_base_policy(args.policy_path, env_cfg, device=device, n_action_steps=args.n_action_steps,
                             rename_map=args.rename_map)
     cfg = base.policy.config
+    if args.record_dir:
+        sys.path.insert(0, str(REPO_ROOT / "self_filtered_bc"))
+        from rollout_data import EpisodeRecorder, save_episode
     try:
         for k, s in jobs[: args.max_episodes_per_process]:
             uninstall_fixed_noise(base.policy)
@@ -158,7 +181,19 @@ def main(argv=None) -> int:
                                                             s if jitter_seeds else None))
             base.reset()
             t0 = time.time()
-            r = run_episode(env, state, s, lambda obs: base.act(obs, env.task_description)[0], args.max_steps)
+            if args.record_dir:
+                recorder = EpisodeRecorder(args.frame_stride)
+
+                def choose(obs, recorder=recorder):
+                    action, env_obs = base.act(obs, env.task_description)
+                    recorder.add(env_obs, action)
+                    return action
+                r = run_episode(env, state, s, choose, args.max_steps)
+                jitter = s if jitter_seeds else None
+                save_episode(Path(args.record_dir) / "episodes" / record_name(args.family, k, jitter, state, s), recorder,
+                             record_meta(args, env.task_description, k, jitter, s, r))
+            else:
+                r = run_episode(env, state, s, lambda obs: base.act(obs, env.task_description)[0], args.max_steps)
             append_episode_row(path, {"task_id": args.task_id, "seed": s, "init_state": state,
                                       "success": int(r["success"]), "steps": r["steps"]})
             print(f"[search] {args.family} noise {k} seed {s} init {state}: success={int(r['success'])} "

@@ -208,7 +208,8 @@ def check_episode_metas(metas, args) -> None:
 def split_episodes(data_dir, selection, val_init_states, seed, val_demo_every=0):
     """(training paths, validation paths) for --selection; validation episodes come from held-out training
     init states (or held-out demonstrations) and are never trained on."""
-    paths = sorted((Path(data_dir) / "episodes").glob("*.npz"))
+    paths = sorted(p for p in (Path(data_dir) / "episodes").glob("*.npz")
+                   if not p.name.endswith(".tmp.npz"))   # save_episode's temporary file, left by a stopped process
     if not paths:
         raise SystemExit(f"no episodes in {data_dir}/episodes; run --stage collect first")
     metas = [load_meta(p) for p in paths]
