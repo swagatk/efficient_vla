@@ -19,6 +19,7 @@ from analyze_step7 import clopper_pearson  # noqa: E402
 W6 = "week6"
 INPUTS = {
     "step1": f"{W6}/noise_reachability_step1_kaggle/step1_reachability.txt.json",
+    "heldout_all": f"{W6}/noise_reachability_step1_kaggle/heldout_headroom.txt.json",
     "heldout": f"{W6}/noise_reachability_step1_kaggle/heldout_headroom_no_task8.txt.json",
     "step5a": f"{W6}/noise_reachability_step5a_colab/run/step5a_report.txt.json",
     "step8": f"{W6}/noise_reachability_step8_kaggle/run/step8_report.txt.json",
@@ -41,16 +42,41 @@ def table(header, rows):
     return "\n".join(out) + "\n"
 
 
-def headroom_table(step1, held):
+def tex_cell(c) -> str:
+    s = str(c)
+    parts = s.split("`")
+    s = "".join(f"\\texttt{{{p}}}" if i % 2 else p for i, p in enumerate(parts))
+    return s.replace("%", "\\%")
+
+
+def to_tex(md: str) -> str:
+    """A Markdown table (and any trailing note line) from ``table`` as a booktabs tabular."""
+    lines = md.strip("\n").split("\n")
+    rows = [l for l in lines if l.startswith("|")]
+    note = [l for l in lines if l and not l.startswith("|")]
+    cells = [[c.strip() for c in r.strip("|").split("|")] for r in rows if not r.startswith("| ---") and "--- |" not in r]
+    header, body = cells[0], cells[1:]
+    out = ["\\begin{tabular}{" + "l" * len(header) + "}", "\\toprule",
+           " & ".join(tex_cell(c) for c in header) + " \\\\", "\\midrule"]
+    out += [" & ".join(tex_cell(c) for c in r) + " \\\\" for r in body]
+    out += ["\\bottomrule", "\\end{tabular}"]
+    out += [f"\\par\\smallskip{{\\footnotesize {tex_cell(n)}}}" for n in note]
+    return "\n".join(out) + "\n"
+
+
+def headroom_table(step1, held_all, held):
+    """Per task and pooled: pass@1, the seed chosen on the task's other states, pass@n, states at 0 of n."""
     n = step1["n_seeds"]
-    pooled = ["pooled, tasks 0, 4, 6, 7, 8", f"{step1['pass_at_k'][0]:.3f}", f"{step1['pass_at_k'][-1]:.3f}",
-              f"{step1['headroom']:.3f}", "", len(step1["systematic_states"])]
-    rows = [[t, f"{v['pass@1']:.3f}", f"{v[f'pass@{n}']:.3f}", "", "", len(v["systematic"])]
-            for t, v in step1["per_task"].items()]
-    rows.append(pooled)
-    rows.append(["pooled, tasks 0, 4, 6, 7", f"{held['pass@1']:.3f}", f"{held[f'pass@{n}']:.3f}",
-                 f"{held['hindsight_headroom']:.3f}", f"{held['held_out_headroom']:.3f} (p {held['null_p']:.2f})", ""])
-    return table(["Task", "pass@1", f"pass@{n}", "Headroom, hindsight", "Headroom, held out", f"States at 0 of {n}"], rows)
+    rows = [[t, f"{v['pass@1']:.3f}", f"{held_all['per_task'][t]['held_out_choice']:.3f}", f"{v[f'pass@{n}']:.3f}",
+             len(v["systematic"])] for t, v in step1["per_task"].items()]
+    rows.append(["0, 4, 6, 7, 8", f"{step1['pass_at_k'][0]:.3f}", f"{held_all['held_out_choice']:.3f}",
+                 f"{step1['pass_at_k'][-1]:.3f}", len(step1["systematic_states"])])
+    rows.append(["0, 4, 6, 7", f"{held['pass@1']:.3f}", f"{held['held_out_choice']:.3f}", f"{held[f'pass@{n}']:.3f}",
+                 sum(len(step1["per_task"][t]["systematic"]) for t in held["per_task"])])
+    note = (f"Headroom (pass@{n} - pass@1) / (1 - pass@1): tasks 0, 4, 6, 7, 8 {step1['headroom']:.3f} in hindsight, "
+            f"{held_all['held_out_headroom']:.3f} held out (p {held_all['null_p']:.2f}); tasks 0, 4, 6, 7 "
+            f"{held['hindsight_headroom']:.3f} and {held['held_out_headroom']:.3f} (p {held['null_p']:.2f}).")
+    return table(["Task", "pass@1", "Held out", f"pass@{n}", f"At 0 of {n}"], rows) + "\n" + note + "\n"
 
 
 def step5a_table(r):
@@ -86,7 +112,7 @@ def step9_table(r):
 def build(root=ROOT):
     data = {k: json.loads((root / v).read_text()) for k, v in INPUTS.items()}
     return {
-        "4.1_headroom.md": headroom_table(data["step1"], data["heldout"]),
+        "4.1_headroom.md": headroom_table(data["step1"], data["heldout_all"], data["heldout"]),
         "4.2_step5a_families.md": step5a_table(data["step5a"]),
         "4.3_step8_tests.md": step8_table(data["step8"]),
         "4.4_step9_carry_over.md": step9_table(data["step9"]),
@@ -96,6 +122,7 @@ def build(root=ROOT):
 def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--out_dir", required=True)
+    ap.add_argument("--tex_dir", help="also write each table as a booktabs tabular (<name>.tex) here")
     a = ap.parse_args(argv)
     out = Path(a.out_dir)
     out.mkdir(parents=True, exist_ok=True)
@@ -103,6 +130,9 @@ def main(argv=None):
     for name, text in tables.items():
         (out / name).write_text(text)
         print(f"== {name}\n{text}")
+        if a.tex_dir:
+            Path(a.tex_dir).mkdir(parents=True, exist_ok=True)
+            (Path(a.tex_dir) / name.replace(".md", ".tex")).write_text(to_tex(text))
     commit = subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT, capture_output=True, text=True).stdout.strip()
     dirty = bool(subprocess.run(["git", "status", "--porcelain", "--", *INPUTS.values()], cwd=ROOT,
                                 capture_output=True, text=True).stdout.strip())

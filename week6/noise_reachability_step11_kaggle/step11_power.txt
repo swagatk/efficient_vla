@@ -1,0 +1,8 @@
+repeat fixed at step 9's 23/400 (A) and 10/300 (B); sampled at rate p on every state
+sampled 0.25%: P(A passes) 1.000, P(B passes) 0.993, P(both) 0.993
+sampled 0.50%: P(A passes) 1.000, P(B passes) 0.935, P(both) 0.935
+sampled 1.00%: P(A passes) 0.997, P(B passes) 0.647, P(both) 0.647
+sampled 2.00%: P(A passes) 0.818, P(B passes) 0.148, P(both) 0.148
+sampled 3.00%: P(A passes) 0.344, P(B passes) 0.020, P(both) 0.020
+sampled 4.00%: P(A passes) 0.073, P(B passes) 0.002, P(both) 0.002
+sampled 5.75%: P(A passes) 0.002, P(B passes) 0.000, P(both) 0.000
