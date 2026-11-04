@@ -86,7 +86,9 @@ p its success rate over the 16 seeds). `reachability.py` computes all of this.
 8 of 50 init states systematic (task 0: 5; tasks 4, 6, 8: 1 each; task 7: none). Steps 2-4 go ahead as planned.
 The repeat of seed 0 changed 0 of 50 outcomes against 12.4 expected under a fresh seed. Step-3 tasks by the
 rule of step 3: 7 (most reachable states) and 0 (most systematic). Records and discussion:
-`week6/noise_reachability_step1_kaggle/`.
+`week6/noise_reachability_step1_kaggle/`. *Added 2026-11-04, exploratory:* a seed chosen per task on the
+other states realises none of the headroom (tasks 0, 4, 6, 7: held-out headroom -0.025 against 0.664 in hindsight,
+permutation p 0.554; `heldout_headroom.py`, in that folder).
 
 ## Step 2: training-free noise selection per chunk
 
@@ -997,6 +999,8 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
 - `run_step0_action_steps.sh`: step 0 on a Colab or local GPU (`N_ACTION_STEPS`, `OUT_DIR`).
 - `compare_action_steps.py`: step-0 comparison and decision against the `n_action_steps=1` run.
 - `reachability.py`: step-1 pass@k per init state, headroom, systematic states and the repeat check.
+- `heldout_headroom.py`: step 1's headroom with the seed chosen on the task's other states (leave one out).
+- `paper_tables.py`: the paper's result tables, regenerated from the committed result files into `paper_tables/` (with `tables.json`: input sha256, command, commit); `tests/test_paper_tables.py` fails if a committed table no longer matches.
 - `noise_selection.py`: step-2 selectors (scores, and the wrapper around SmolVLA's `sample_actions`).
 - `eval_noise_selection.py`, `run_step2_noise_selection.sh`: step-2 paired evaluation (`STAGE=select|report`,
   `SMOKE=1`); `colab_step2_noise_selection.ipynb` runs it on Colab.

@@ -1,0 +1,12 @@
+50 init states x 16 noise seeds; seed chosen per task on the other states (leave one out)
+
+task | pass@1 | held-out choice | pass@16 (hindsight)
+   0 | 0.256 | 0.273 | 0.500
+   4 | 0.494 | 0.540 | 0.900
+   6 | 0.606 | 0.635 | 0.900
+   7 | 0.562 | 0.418 | 1.000
+   8 | 0.438 | 0.750 | 0.900
+
+pooled: pass@1 0.471, held-out choice 0.523, pass@16 0.840
+headroom: hindsight 0.697, held-out 0.098
+null (seed labels shuffled within state, 2000 permutations, seed 0): mean 0.473, one-sided p 0.220

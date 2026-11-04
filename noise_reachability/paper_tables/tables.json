@@ -1,0 +1,18 @@
+{
+ "command": "python -S noise_reachability/paper_tables.py --out_dir noise_reachability/paper_tables",
+ "git_commit": "9cb2fc63523f2d27571693385dafeb31f395430f",
+ "inputs_dirty": true,
+ "tables": [
+  "4.1_headroom.md",
+  "4.2_step5a_families.md",
+  "4.3_step8_tests.md",
+  "4.4_step9_carry_over.md"
+ ],
+ "inputs": {
+  "week6/noise_reachability_step1_kaggle/step1_reachability.txt.json": "67a1b70ea581827fb700d938275bd8e2bf44e49b32f8e6239a4edc81af985294",
+  "week6/noise_reachability_step1_kaggle/heldout_headroom_no_task8.txt.json": "a24abdd885f60bae4c759227fb6c76f19e11b61582bcadb0ede7caa44a4fc3e5",
+  "week6/noise_reachability_step5a_colab/run/step5a_report.txt.json": "72fa0c2e888d41613c7c1a992d545e1887c4cf152f1fa699c80e2b7bebaad8d8",
+  "week6/noise_reachability_step8_kaggle/run/step8_report.txt.json": "6dab6a0866e533f97254749ca2c9fe63fd31fb4b1da1a6e1f2343a621e278afd",
+  "week6/noise_reachability_step9_kaggle/run/step9_report.txt.json": "4dfa4adebd82745c1a6f3c6b4c22a442ae7633f12ec61b030d594b5073336f16"
+ }
+}

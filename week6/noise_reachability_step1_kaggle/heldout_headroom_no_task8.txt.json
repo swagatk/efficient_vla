@@ -1,0 +1,35 @@
+{
+ "n_seeds": 16,
+ "n_states": 40,
+ "pass@1": 0.4796875,
+ "pass@16": 0.825,
+ "held_out_choice": 0.46654761904761904,
+ "hindsight_headroom": 0.6636636636636637,
+ "held_out_headroom": -0.025253825253825243,
+ "null_mean": 0.480008531954157,
+ "null_p": 0.5545,
+ "perms": 2000,
+ "perm_seed": 0,
+ "per_task": {
+  "0": {
+   "pass@1": 0.25625,
+   "pass@16": 0.5,
+   "held_out_choice": 0.2733333333333333
+  },
+  "4": {
+   "pass@1": 0.49375,
+   "pass@16": 0.9,
+   "held_out_choice": 0.54
+  },
+  "6": {
+   "pass@1": 0.60625,
+   "pass@16": 0.9,
+   "held_out_choice": 0.635
+  },
+  "7": {
+   "pass@1": 0.5625,
+   "pass@16": 1.0,
+   "held_out_choice": 0.41785714285714287
+  }
+ }
+}

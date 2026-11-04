@@ -81,3 +81,17 @@ seeds come from two Kaggle versions at different commits (seeds 0-2 and 3-5).
 - `side_nas1_reachability_seeds0-5.txt` (+ `.json`): the same script with `--seeds 0-5` on
   `week6/smolvla_libero_lerobot_eval_kaggle/per_episode.csv` and `side_nas1_wrong_setting/per_episode.csv`.
 - `nas10_reachability_seeds0-5.txt` (+ `.json`): `--seeds 0-5` on the two `n_action_steps=10` files above.
+- `heldout_headroom.txt` (+ `.json`) and `heldout_headroom_no_task8.txt` (+ `.json`): `python -S
+  noise_reachability/heldout_headroom.py --tasks 0 4 6 7 8` (and `--tasks 0 4 6 7`) `--seeds 0-15` on the two
+  `n_action_steps=10` files of `step1_reachability.txt`, 2,000 permutations, seed 0. Added 2026-11-04 for the paper,
+  exploratory, no new episodes; see below.
+
+## Held-out restatement of the headroom (2026-11-04, exploratory)
+
+pass@16 credits a state when any of its 16 seeds succeeded, which a selector can only realise by trying seeds on that
+state. Choosing one seed per task on the task's other states (leave one state out, ties averaged) and scoring it on the
+held-out state realises none of it: on tasks 0, 4, 6, 7, pass@1 0.480, held-out choice 0.467, pass@16 0.825, so the
+headroom is 0.664 in hindsight and -0.025 held out (permutation null with seed labels shuffled within state: mean 0.480,
+p 0.554). With task 8 the held-out headroom is 0.098 (p 0.220), all from task 8 (0.438 to 0.750), where the seed also
+sets the stove (`noise_reachability/README.md`, step 7), so that gain is not a noise effect. Like step 9 for fixed
+noises, a good seed on some states says nothing about another state.
