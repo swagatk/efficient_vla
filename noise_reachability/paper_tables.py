@@ -14,7 +14,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from analyze_step7 import clopper_pearson  # noqa: E402
+from analyze_step5a import CONTROL_STATE as CONTROL_5A, HARNESS_REFERENCE as REFERENCE_5A  # noqa: E402
+from analyze_step7 import CONTROL as CONTROL_7, clopper_pearson  # noqa: E402
+from analyze_step8 import CONTROL as CONTROL_8  # noqa: E402
 
 W6 = "week6"
 INPUTS = {
@@ -22,6 +24,7 @@ INPUTS = {
     "heldout_all": f"{W6}/noise_reachability_step1_kaggle/heldout_headroom.txt.json",
     "heldout": f"{W6}/noise_reachability_step1_kaggle/heldout_headroom_no_task8.txt.json",
     "step5a": f"{W6}/noise_reachability_step5a_colab/run/step5a_report.txt.json",
+    "step7": f"{W6}/noise_reachability_step7_kaggle/run/step7_report.txt.json",
     "step8": f"{W6}/noise_reachability_step8_kaggle/run/step8_report.txt.json",
     "step9": f"{W6}/noise_reachability_step9_kaggle/run/step9_report.txt.json",
 }
@@ -86,6 +89,40 @@ def step5a_table(r):
     return table(["Family", f"Successes of {n}, states {', '.join(r['states'])}"], rows)
 
 
+def search_states_table(r5a, r7):
+    """Per labelled state of the deep searches (steps 5a and 7): successes of each family's ids, and the jitter class."""
+    rows = []
+    for step, r, task_of in (("5a", r5a, lambda k, s: 0), ("7", r7, lambda k, s: int(k))):
+        for k, s in r["states"].items():
+            state = s.get("state", k)
+            n = s["episodes"] // len(FAMILIES)
+            rows.append([f"{task_of(k, s)}/{state}", step] + [f"{s['per_family'][f]}/{n}" for f in FAMILIES] + [s["class"]])
+    return table(["State", "Step", "`sampled`", "`full`", "`repeat`", "Jitter"], rows)
+
+
+def harness_table(r5a, r7, r8, r9):
+    """The base's successes of 30 (states 0-9 x seeds 0-2) at the start of each run, against step 0's reference."""
+    runs = {"5a": {"0": {"base": r5a["harness"]["base"], "reference": REFERENCE_5A}}, "7": r7["harness"],
+            "8": r8["harness"], "9": r9["harness"]}
+    tasks = sorted({t for h in runs.values() for t in h}, key=int)
+    rows = []
+    for t in tasks:
+        ref = {h[t]["reference"] for h in runs.values() if t in h}
+        assert len(ref) == 1, t
+        rows.append([t, ref.pop()] + [runs[s][t]["base"] if t in runs[s] else "" for s in runs])
+    return table(["Task", "Step 0"] + [f"Step {s}" for s in runs], rows)
+
+
+def control_table(r5a, r7, r8):
+    """Easy control states, successes of 35 noise ids per family, as each run's gate read them."""
+    rows = [["5a", f"0/{CONTROL_5A}"] + [r5a["control"][f] for f in FAMILIES]]
+    for step, r, states in (("7", r7, CONTROL_7), ("8", r8, CONTROL_8)):
+        for t, s in states.items():
+            c = r["control"][str(t)]
+            rows.append([step, f"{t}/{s}"] + [c.get(f, "") for f in FAMILIES])
+    return table(["Step", "State", "`sampled`", "`full`", "`repeat`"], rows)
+
+
 def step8_table(r):
     t1 = next(s for s in r["states"] if (s["task"], s["state"]) == (6, 8))
     p = r["pooled"]
@@ -114,7 +151,10 @@ def build(root=ROOT):
     return {
         "4.1_headroom.md": headroom_table(data["step1"], data["heldout_all"], data["heldout"]),
         "4.2_step5a_families.md": step5a_table(data["step5a"]),
+        "4.2b_search_states.md": search_states_table(data["step5a"], data["step7"]),
         "4.3_step8_tests.md": step8_table(data["step8"]),
+        "3_harness.md": harness_table(data["step5a"], data["step7"], data["step8"], data["step9"]),
+        "3_controls.md": control_table(data["step5a"], data["step7"], data["step8"]),
         "4.4_step9_carry_over.md": step9_table(data["step9"]),
     }
 

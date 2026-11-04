@@ -27,3 +27,11 @@ def test_step1_grid_is_the_reachability_counts():
     zeros = sorted((t, s) for t, row in zip(tasks, grid) for s, c in enumerate(row) if c == 0)
     assert zeros == [(0, 2), (0, 5), (0, 6), (0, 7), (0, 8), (4, 2), (6, 8), (8, 4)]
     assert [sum(row) for row in grid] == [41, 79, 97, 90, 70]
+
+
+def test_step9_points_are_the_report_rates():
+    rows = pf.step9_points(json.loads(pf.STEP9.read_text()))
+    assert [r["label"] for r in rows] == ["0/14", "0/27", "4/18", "4/26", "6/14", "6/20", "7/38", "7/47"]
+    assert rows[0]["library"][0] == pytest.approx(8 / 20) and rows[0]["random"][0] == pytest.approx(4 / 50)
+    assert rows[6]["library"][0] == 0.0 and rows[6]["random"][0] == pytest.approx(7 / 50)
+    assert [r["library_n"] for r in rows] == [20, 20, 6, 6, 20, 20, 25, 25]

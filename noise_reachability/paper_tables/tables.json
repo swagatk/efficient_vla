@@ -1,10 +1,13 @@
 {
  "command": "python -S noise_reachability/paper_tables.py --out_dir noise_reachability/paper_tables --tex_dir /home/swagat/GIT/efficient_vla_notes/rss2027_paper/tables",
- "git_commit": "8980b3733fb2c01e815beaef7a3117b2e4db9691",
+ "git_commit": "f268acb2cfbf4ddc5d47e48bac72c364409a7d04",
  "inputs_dirty": false,
  "tables": [
+  "3_controls.md",
+  "3_harness.md",
   "4.1_headroom.md",
   "4.2_step5a_families.md",
+  "4.2b_search_states.md",
   "4.3_step8_tests.md",
   "4.4_step9_carry_over.md"
  ],
@@ -13,6 +16,7 @@
   "week6/noise_reachability_step1_kaggle/heldout_headroom.txt.json": "3703962beb5065469d381291d0a273a18a2c1b8bbb3bf90c9c7e24f1c0055804",
   "week6/noise_reachability_step1_kaggle/heldout_headroom_no_task8.txt.json": "a24abdd885f60bae4c759227fb6c76f19e11b61582bcadb0ede7caa44a4fc3e5",
   "week6/noise_reachability_step5a_colab/run/step5a_report.txt.json": "72fa0c2e888d41613c7c1a992d545e1887c4cf152f1fa699c80e2b7bebaad8d8",
+  "week6/noise_reachability_step7_kaggle/run/step7_report.txt.json": "9e22c9284d0d56e0b41e3735bf4b66582178a6020ad377bdb1dac1b7724fd9ad",
   "week6/noise_reachability_step8_kaggle/run/step8_report.txt.json": "6dab6a0866e533f97254749ca2c9fe63fd31fb4b1da1a6e1f2343a621e278afd",
   "week6/noise_reachability_step9_kaggle/run/step9_report.txt.json": "4dfa4adebd82745c1a6f3c6b4c22a442ae7633f12ec61b030d594b5073336f16"
  }

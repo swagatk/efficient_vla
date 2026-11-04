@@ -43,3 +43,18 @@ def test_every_table_converts(tmp_path):
         md_rows = [l for l in text.splitlines() if l.startswith("|") and not l.startswith("| ---")]
         assert tex.count(" \\\\") == len(md_rows)                 # header and every body row, nothing dropped
         assert tex.startswith("\\begin{tabular}") and "\\bottomrule" in tex and "|" not in tex
+
+
+def test_search_states_table_matches_steps_5a_and_7():
+    t = pt.build(ROOT)["4.2b_search_states.md"]
+    assert "| 0/8 | 5a | 0/70 | 2/70 | 8/70 | robust |" in t and "| 0/2 | 5a | 0/70 | 0/70 | 1/70 | fragile |" in t
+    assert "| 6/8 | 7 | 0/70 | 0/70 | 3/70 | robust |" in t and "| 8/4 | 7 | 4/70 | 7/70 | 10/70 | robust |" in t
+    assert t.count("\n| ") == 9                       # header and eight states
+
+
+def test_harness_and_control_tables():
+    t = pt.build(ROOT)
+    h, c = t["3_harness.md"], t["3_controls.md"]
+    assert "| 0 | 7 | 5 |  | 6 | 6 |" in h and "| 8 | 15 |  | 13 |  |  |" in h and "| 6 | 20 |  | 16 | 16 | 16 |" in h
+    assert "| 5a | 0/9 | 8 | 12 | 11 |" in c and "| 7 | 6/0 | 14 | 13 | 5 |" in c and "| 8 | 7/4 | 15 |  | 12 |" in c
+    assert c.count("\n| 8 |") == 4 and c.count("\n| 7 |") == 3
