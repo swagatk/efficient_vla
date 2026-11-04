@@ -1,6 +1,6 @@
 {
  "command": "python -S noise_reachability/paper_tables.py --out_dir noise_reachability/paper_tables --tex_dir /home/swagat/GIT/efficient_vla_notes/rss2027_paper/tables",
- "git_commit": "f268acb2cfbf4ddc5d47e48bac72c364409a7d04",
+ "git_commit": "2e5f8173abf54a3671826c520d9d11ec9fa0c324",
  "inputs_dirty": false,
  "tables": [
   "3_controls.md",
