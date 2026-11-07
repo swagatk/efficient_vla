@@ -1,0 +1,25 @@
+zip sha256 fd38be9f9206ec1cdbbc84ee324d286a74c45da5a7719ac41d23d69b7b83dd37
+repo_commit.txt: 1 session(s), commits ['f4369f3e8514232fef3d047a1ede6c1b6287267d']
+harness gate: passed
+provenance: 90 records, commit f4369f3e8514232fef3d047a1ede6c1b6287267d, clean
+replays task 0: 37/56 succeeded, 9 same steps
+replays task 6: 33/33 succeeded, 33 same steps
+replays task 7: 33/33 succeeded, 33 same steps
+  0/6 full: 3/5 succeeded, 0 same steps (found in noise_reachability_step5a_colab/run)
+  0/7 full: 0/1 succeeded, 0 same steps (found in noise_reachability_step5a_colab/run)
+  0/8 full: 6/8 succeeded, 0 same steps (found in noise_reachability_step5a_colab/run)
+  0/2 repeat: 1/2 succeeded, 0 same steps (found in noise_reachability_step5a_colab/run)
+  0/5 repeat: 0/2 succeeded, 0 same steps (found in noise_reachability_step5a_colab/run)
+  0/6 repeat: 6/10 succeeded, 1 same steps (found in noise_reachability_step5a_colab/run)
+  0/7 repeat: 2/6 succeeded, 0 same steps (found in noise_reachability_step5a_colab/run)
+  0/8 repeat: 12/15 succeeded, 1 same steps (found in noise_reachability_step5a_colab/run)
+  0/11 repeat: 7/7 succeeded, 7 same steps (found in noise_reachability_step8_kaggle/run/task_0/test)
+  6/8 repeat: 23/23 succeeded, 23 same steps (found in noise_reachability_step7_kaggle/run/task_6, noise_reachability_step8_kaggle/run/task_6/test)
+  6/12 repeat: 10/10 succeeded, 10 same steps (found in noise_reachability_step8_kaggle/run/task_6/test)
+  7/33 repeat: 33/33 succeeded, 33 same steps (found in noise_reachability_step8_kaggle/run/task_7/test)
+collection task 0: 120 episodes, 50 successes
+adapter A0: step 2000, loss 0.1272, val_loss 0.2026, 5.585 s/step, episodes (train, val) (44, 6)
+adapter A1: step 2000, loss 0.2137, val_loss 0.2018, 5.48 s/step, episodes (train, val) (44, 6)
+eval task 0 base: 208/208 episodes
+eval task 0 A0: 72/208 episodes (partial)
+eval episodes run: 280/2608 (counts only; no success read)
