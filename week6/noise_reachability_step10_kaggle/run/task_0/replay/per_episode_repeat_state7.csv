@@ -1,0 +1,4 @@
+task_id,seed,init_state,success,steps
+0,1015,7,1,256
+0,1030,7,0,520
+0,1055,7,0,520

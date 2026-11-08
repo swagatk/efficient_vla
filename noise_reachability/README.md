@@ -972,6 +972,13 @@ T4s. At step 8's rate about 196 episodes per hour. First session (this week, at 
 collection (about 1.7 h), then A0-A2 and one N adapter (about 5.6 h). Following sessions: the other 8 N adapters (about
 11.2 h) and the 2,608 evaluation episodes (about 13.3 h). About 32 h over four sessions.
 
+**Result (Kaggle, 2026-11-04/08; `week6/noise_reachability_step10_kaggle/`).** Both tests pass. Test 1, trained states
+(192 paired episodes): N0 77, N1 71, N2 83 against base 1 (p 1.3e-23, 1.5e-20, 4.4e-24; 3 of 3 seeds). Test 2, task 0's
+systematic states pooled (240): N 99 against A 6 (p 2.6e-25). Reported: task 0's held-out pair 14-17 of 32 against base
+1, but no transfer to the held-out states of tasks 6 (0 of 64 for every seed) and 7 (6, 0, 0 of 64); one easy-state
+harm, 0/4 base 3 of 16 against 0 for every N seed. Four sessions (`session*_checks.txt`); the base matches
+step 4's base on all 160 shared episodes.
+
 ## Step 11: does fixed noise beat sampling on step 9's eight held-out states? (design 2026-11-04)
 
 Step 8's test 2 passed, but 7/33 gave 25 of its 38 hits. Step 9 then ran 50 fresh `repeat` noise ids (6000-6049) on
@@ -1094,7 +1101,7 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
 Steps 0, 1 and 2 done (above); step 2 is a negative result. Step 3 ran on Colab and failed as a test: the
 critic diverged (above). Step 3b (whether a Monte Carlo critic can tell the base's own noises apart) ran on
 Kaggle and is not read: its shuffled-noise control was biased (above). Step 4 ran on Kaggle (above, 2026-10-31): negative, no arm meets the hypothesis. Step 5a ran on Colab (above, 2026-10-31): "mostly reachable", all 5 systematic states reached by fixed noises, none by
-sampled noise. Step 5b ran on Colab (above, 2026-11-01): no reading on transfer, the learner did not learn at this budget. Step 6 ran on Kaggle (above, 2026-11-01): the labels hold; B's gain was not informative. Step 7 ran on Kaggle (above, 2026-11-02): existence only, `repeat` did not beat `sampled`, and on two of the three states sampling also solved the state. Step 8 ran on Kaggle (above, 2026-11-03): both tests pass, `repeat` beats `sampled` on 6/8 and on four unlabelled states chosen in advance, pooled. Step 9 ran on Kaggle (above, 2026-11-03): not shown, the library did not beat fresh noises pooled (p 0.408); exploratory, it helped on 0/14 and hurt on task 7. Step 10 is running on Kaggle (session 1 started 2026-11-04). Step 11's design is fixed (above, 2026-11-04); its code is built, not yet run.
+sampled noise. Step 5b ran on Colab (above, 2026-11-01): no reading on transfer, the learner did not learn at this budget. Step 6 ran on Kaggle (above, 2026-11-01): the labels hold; B's gain was not informative. Step 7 ran on Kaggle (above, 2026-11-02): existence only, `repeat` did not beat `sampled`, and on two of the three states sampling also solved the state. Step 8 ran on Kaggle (above, 2026-11-03): both tests pass, `repeat` beats `sampled` on 6/8 and on four unlabelled states chosen in advance, pooled. Step 9 ran on Kaggle (above, 2026-11-03): not shown, the library did not beat fresh noises pooled (p 0.408); exploratory, it helped on 0/14 and hurt on task 7. Step 10 ran on Kaggle (above, 2026-11-04/08): both tests pass, N learns the trained states (37-43% against the base 0.5%) and beats A on task 0; it transfers to task 0's held-out states but not to those of tasks 6 and 7. Step 11's design is fixed (above, 2026-11-04); its code is built, not yet run.
 
 Before step 0 ran, smoke tests on the local RTX 4090 (shared with another job), one episode each of task 0,
 seed 0, init state 0: `n_action_steps=10` through `evaluate_all.py` and `n_action_steps=50` through

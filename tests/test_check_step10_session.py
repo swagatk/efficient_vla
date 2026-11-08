@@ -1,5 +1,6 @@
 """check_step10_session.py: the resume check and the evaluation counts refuse what they should, on synthetic folders."""
 import importlib.util
+import json
 import sys
 from pathlib import Path
 
@@ -44,3 +45,28 @@ def test_eval_counts_counts_and_refuses_repeats_and_strays(tmp_path):
     _eval(tmp_path, "A0", [(15, 0)])            # seed 15 is not an evaluation seed
     with pytest.raises(ValueError, match="unplanned"):
         cs.eval_counts(tmp_path)
+
+
+spec4 = importlib.util.spec_from_file_location(
+    "compare_base_with_step4", ROOT / "week6/noise_reachability_step10_kaggle/compare_base_with_step4.py")
+cb = importlib.util.module_from_spec(spec4)
+spec4.loader.exec_module(cb)
+
+
+def test_compare_base_counts_identical_episodes_on_shared_keys_only():
+    old = {(16, 0): (1, 300), (16, 1): (0, 520), (17, 0): (1, 250)}
+    new = {(16, 0): (1, 300), (16, 1): (1, 400), (99, 9): (1, 1)}   # (17, 0) and (99, 9) are not shared
+    assert cb.compare(old, new) == {0: [1, 1, 1, 1], 1: [0, 1, 0, 1]}
+
+
+def test_compare_base_episodes_refuses_repeats(tmp_path):
+    p = tmp_path / "e.csv"
+    p.write_text("task_id,seed,init_state,success,steps\n0,16,0,1,300\n0,16,0,1,300\n6,16,0,1,300\n")
+    with pytest.raises(ValueError, match="twice"):
+        cb.episodes([p])
+
+
+def test_train_states_counts_episodes_per_init_state(tmp_path):
+    names = ["full_n25_j5002_init08_seed5002.npz", "full_n30_init08_seed1030.npz", "seed0_init11.npz"]
+    _write(tmp_path / "runs/N0_0/provenance.jsonl", json.dumps({"settings": {"train_episodes": names}}) + "\n")
+    assert cs.train_states(tmp_path) == {"N0_0": {8: 2, 11: 1}}

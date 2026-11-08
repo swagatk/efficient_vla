@@ -1,0 +1,57 @@
+step 10: can constant-noise successes be learned into the weights? commit f4369f3e8514232fef3d047a1ede6c1b6287267d
+harness task 0: base 6/30 against 7 (gap -1, ok)
+harness task 6: base 16/30 against 20 (gap -4, ok)
+harness task 7: base 14/30 against 18 (gap -4, ok)
+replays task 0: 37 of 56 succeeded again; 9 in the original's number of steps
+replays task 6: 33 of 33 succeeded again; 33 in the original's number of steps
+replays task 7: 33 of 33 succeeded again; 33 in the original's number of steps
+tasks read: [0, 6, 7]
+task 0 state 0 (easy), of 16: base 0 (0.0-20.6%), N0 16 (79.4-100.0%), N1 16 (79.4-100.0%), N2 16 (79.4-100.0%), A0 0 (0.0-20.6%), A1 0 (0.0-20.6%), A2 0 (0.0-20.6%)
+task 0 state 1 (easy), of 16: base 15 (69.8-99.8%), N0 15 (69.8-99.8%), N1 16 (79.4-100.0%), N2 14 (61.7-98.4%), A0 16 (79.4-100.0%), A1 16 (79.4-100.0%), A2 16 (79.4-100.0%)
+task 0 state 2 (trained), of 16: base 0 (0.0-20.6%), N0 6 (15.2-64.6%), N1 1 (0.2-30.2%), N2 7 (19.8-70.1%), A0 0 (0.0-20.6%), A1 0 (0.0-20.6%), A2 0 (0.0-20.6%)
+task 0 state 3 (easy), of 16: base 15 (69.8-99.8%), N0 16 (79.4-100.0%), N1 13 (54.4-96.0%), N2 13 (54.4-96.0%), A0 16 (79.4-100.0%), A1 16 (79.4-100.0%), A2 16 (79.4-100.0%)
+task 0 state 4 (easy), of 16: base 3 (4.0-45.6%), N0 0 (0.0-20.6%), N1 0 (0.0-20.6%), N2 0 (0.0-20.6%), A0 5 (11.0-58.7%), A1 0 (0.0-20.6%), A2 2 (1.6-38.3%)
+task 0 state 5 (trained), of 16: base 0 (0.0-20.6%), N0 2 (1.6-38.3%), N1 1 (0.2-30.2%), N2 4 (7.3-52.4%), A0 0 (0.0-20.6%), A1 0 (0.0-20.6%), A2 0 (0.0-20.6%)
+task 0 state 6 (trained), of 16: base 0 (0.0-20.6%), N0 6 (15.2-64.6%), N1 4 (7.3-52.4%), N2 3 (4.0-45.6%), A0 1 (0.2-30.2%), A1 2 (1.6-38.3%), A2 3 (4.0-45.6%)
+task 0 state 7 (trained), of 16: base 0 (0.0-20.6%), N0 4 (7.3-52.4%), N1 11 (41.3-89.0%), N2 7 (19.8-70.1%), A0 0 (0.0-20.6%), A1 0 (0.0-20.6%), A2 0 (0.0-20.6%)
+task 0 state 8 (trained), of 16: base 0 (0.0-20.6%), N0 13 (54.4-96.0%), N1 14 (61.7-98.4%), N2 16 (79.4-100.0%), A0 0 (0.0-20.6%), A1 0 (0.0-20.6%), A2 0 (0.0-20.6%)
+task 0 state 9 (easy), of 16: base 4 (7.3-52.4%), N0 14 (61.7-98.4%), N1 15 (69.8-99.8%), N2 15 (69.8-99.8%), A0 11 (41.3-89.0%), A1 6 (15.2-64.6%), A2 13 (54.4-96.0%)
+task 0 state 11 (trained), of 16: base 0 (0.0-20.6%), N0 3 (4.0-45.6%), N1 3 (4.0-45.6%), N2 6 (15.2-64.6%)
+task 0 state 14 (held out), of 16: base 1 (0.2-30.2%), N0 10 (35.4-84.8%), N1 8 (24.7-75.3%), N2 7 (19.8-70.1%)
+task 0 state 27 (held out), of 16: base 0 (0.0-20.6%), N0 7 (19.8-70.1%), N1 6 (15.2-64.6%), N2 7 (19.8-70.1%)
+task 6 state 0 (easy), of 32: base 4 (3.5-29.0%), N0 7 (9.3-40.0%), N1 6 (7.2-36.4%), N2 6 (7.2-36.4%)
+task 6 state 8 (trained), of 32: base 0 (0.0-10.9%), N0 5 (5.3-32.8%), N1 4 (3.5-29.0%), N2 7 (9.3-40.0%)
+task 6 state 12 (trained), of 32: base 1 (0.1-16.2%), N0 9 (13.7-46.7%), N1 3 (2.0-25.0%), N2 7 (9.3-40.0%)
+task 6 state 14 (held out), of 32: base 0 (0.0-10.9%), N0 0 (0.0-10.9%), N1 0 (0.0-10.9%), N2 0 (0.0-10.9%)
+task 6 state 20 (held out), of 32: base 0 (0.0-10.9%), N0 0 (0.0-10.9%), N1 0 (0.0-10.9%), N2 0 (0.0-10.9%)
+task 7 state 4 (easy), of 32: base 10 (16.1-50.0%), N0 32 (89.1-100.0%), N1 32 (89.1-100.0%), N2 32 (89.1-100.0%)
+task 7 state 33 (trained), of 32: base 0 (0.0-10.9%), N0 29 (75.0-98.0%), N1 30 (79.2-99.2%), N2 26 (63.6-92.8%)
+task 7 state 38 (held out), of 32: base 0 (0.0-10.9%), N0 1 (0.1-16.2%), N1 0 (0.0-10.9%), N2 0 (0.0-10.9%)
+task 7 state 47 (held out), of 32: base 0 (0.0-10.9%), N0 5 (5.3-32.8%), N1 0 (0.0-10.9%), N2 0 (0.0-10.9%)
+test 1, N0 against base on trained states: 77 against 1 of 192 (only N 76, only base 0), one-sided p 1.32e-23
+test 1, N1 against base on trained states: 71 against 1 of 192 (only N 71, only base 1), one-sided p 1.55e-20
+test 1, N2 against base on trained states: 83 against 1 of 192 (only N 83, only base 1), one-sided p 4.39e-24
+test 1 passes (p < 0.05 in at least 2 of 3 seeds)
+test 2, N against A on task 0's systematic states, pooled over seeds: 99 against 6 of 240 (only N 96, only A 3), one-sided p 2.55e-25, passes
+reported, task 0 held out, N0 against base: 17 against 1 of 32, one-sided p 7.25e-05
+reported, task 0 held out, N1 against base: 14 against 1 of 32, one-sided p 0.000488
+reported, task 0 held out, N2 against base: 14 against 1 of 32, one-sided p 0.000488
+reported, task 0 easy, N0 against base: 61 against 37 of 80, one-sided p 1.93e-05
+reported, task 0 easy, N1 against base: 60 against 37 of 80, one-sided p 5.84e-05
+reported, task 0 easy, N2 against base: 58 against 37 of 80, one-sided p 0.000254
+reported, task 0 systematic, A0 against base: 1 against 0 of 80, one-sided p 0.5
+reported, task 0 systematic, A1 against base: 2 against 0 of 80, one-sided p 0.25
+reported, task 0 systematic, A2 against base: 3 against 0 of 80, one-sided p 0.125
+reported, task 6 held out, N0 against base: 0 against 0 of 64, one-sided p 1
+reported, task 6 held out, N1 against base: 0 against 0 of 64, one-sided p 1
+reported, task 6 held out, N2 against base: 0 against 0 of 64, one-sided p 1
+reported, task 6 easy, N0 against base: 7 against 4 of 32, one-sided p 0.254
+reported, task 6 easy, N1 against base: 6 against 4 of 32, one-sided p 0.377
+reported, task 6 easy, N2 against base: 6 against 4 of 32, one-sided p 0.363
+reported, task 7 held out, N0 against base: 6 against 0 of 64, one-sided p 0.0156
+reported, task 7 held out, N1 against base: 0 against 0 of 64, one-sided p 1
+reported, task 7 held out, N2 against base: 0 against 0 of 64, one-sided p 1
+reported, task 7 easy, N0 against base: 32 against 10 of 32, one-sided p 2.38e-07
+reported, task 7 easy, N1 against base: 32 against 10 of 32, one-sided p 2.38e-07
+reported, task 7 easy, N2 against base: 32 against 10 of 32, one-sided p 2.38e-07
+decision: constant-noise successes make resistant states learnable, beyond what the policy's own successes give

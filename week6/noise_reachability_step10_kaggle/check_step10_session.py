@@ -75,6 +75,20 @@ def adapters(root):
     return out
 
 
+def train_states(root):
+    """Per training run: {init state: training episodes}, from the recording names (``..._init<NN>_...`` or ``..._init<NN>.npz``) that its
+    provenance lists."""
+    out = {}
+    for d in sorted(Path(root, "runs").iterdir()):
+        r = json.loads((d / "provenance.jsonl").read_text().splitlines()[0])
+        counts = {}
+        for name in r["settings"]["train_episodes"]:
+            i = int(re.search(r"_init(\d+)[_.]", name).group(1))
+            counts[i] = counts.get(i, 0) + 1
+        out[d.name] = dict(sorted(counts.items()))
+    return out
+
+
 def kept_from(prev, root):
     """Previous session's CSV files that are a prefix of the same file now, and those that are not."""
     kept, changed = 0, []
@@ -108,6 +122,8 @@ def report(root, prev=None, zip_path=None):
     for name, v in adapters(root).items():
         lines.append(f"adapter {name}: step {v['step']}, loss {v['loss']}, val_loss {v['val_loss']}, "
                      f"{v['sec_per_step']} s/step, episodes (train, val) {v['episodes']}")
+    for name, c in train_states(root).items():
+        lines.append(f"training episodes per init state {name}: {c}")
     done = 0
     for (t, p), (n, want) in eval_counts(root).items():
         done += n

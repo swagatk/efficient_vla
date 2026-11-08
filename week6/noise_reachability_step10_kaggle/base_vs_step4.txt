@@ -1,0 +1,12 @@
+step 4 base: 160 task-0 episodes; step 10 base: 208; shared 160
+state 0: step 4 0/16, step 10 0/16, identical (success and steps) 16/16
+state 1: step 4 15/16, step 10 15/16, identical (success and steps) 16/16
+state 2: step 4 0/16, step 10 0/16, identical (success and steps) 16/16
+state 3: step 4 15/16, step 10 15/16, identical (success and steps) 16/16
+state 4: step 4 3/16, step 10 3/16, identical (success and steps) 16/16
+state 5: step 4 0/16, step 10 0/16, identical (success and steps) 16/16
+state 6: step 4 0/16, step 10 0/16, identical (success and steps) 16/16
+state 7: step 4 0/16, step 10 0/16, identical (success and steps) 16/16
+state 8: step 4 0/16, step 10 0/16, identical (success and steps) 16/16
+state 9: step 4 4/16, step 10 4/16, identical (success and steps) 16/16
+total: step 4 37, step 10 37, identical 160 of 160
