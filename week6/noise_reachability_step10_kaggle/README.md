@@ -11,7 +11,7 @@ Files:
 - `step10_power.txt`: the design's power calculation.
 - `check_step10_session.py`: the checks of one session's zip (harness gate, provenance, replays per state, collection,
   adapters, evaluation episode counts without successes, and that a resume kept the previous session's files).
-- `session1_checks.txt`, `session2_checks.txt`: its output on each session's zip (sha256 in the first line).
+- `session1_checks.txt` to `session3_checks.txt`: its output on each session's zip (sha256 in the first line).
 
 ```bash
 python -I -S week6/noise_reachability_step10_kaggle/check_step10_session.py <unzipped run> \
@@ -24,10 +24,11 @@ python -I -S week6/noise_reachability_step10_kaggle/check_step10_session.py <unz
 |---|---|---|---|---|
 | 1 (`STOP_AT_H` 7.0) | `fd38be9f9206` | harness, 122 replays, arm A's 120 collection episodes, A0, A1 | 2 of 12 | 280 of 2,608 |
 | 2 (`STOP_AT_H` 9.0) | `3f8391ba8240` | A2, N0_0, N6_0, N7_0; evaluation | 6 of 12 | 810 of 2,608 |
+| 3 | `990a4db57627` | N0_1, N6_1, N7_1, N0_2; evaluation | 10 of 12 | 1,330 of 2,608 |
 
-Both sessions: one commit (`f4369f3`) and clean trees in every provenance record (90, then 155), the harness gate
-passes, no traceback in any log. Session 2 kept all
-58 of session 1's CSV files unchanged at their start and repeated no episode.
+Every session: one commit (`f4369f3`) and clean trees in every provenance record (90, 155, then 221), the harness
+gate passes, no traceback in any log. Each resume kept all of the previous session's CSV files unchanged at their start
+(58 after session 1, 66 after session 2) and repeated no episode.
 
 ## Replays: hits reproduce exactly on the hardware they were found on
 
@@ -49,5 +50,6 @@ It stays a *trained* state in the evaluation, as the protocol fixed; expect it n
 ## Adapters so far
 
 All finished 2,000 steps. Arm A: 44 training and 6 validation episodes each; final validation loss A0 0.2026, A1
-0.2018, A2 0.199. Arm N (no validation states, as the protocol says): N0_0 37, N6_0 33, N7_0 33 training episodes,
-the successful replays of each task. A runs took about 5.2-5.6 s per step, N runs about 4.8.
+0.2018, A2 0.199. Arm N (no validation states, as the protocol says): N0_0, N0_1, N0_2 37 training episodes each, N6_0, N6_1, N7_0,
+N7_1 33 each, the successful replays of each task; N6_2 and N7_2 are not trained yet. A runs took about 5.2-5.6 s per
+step, N runs about 4.8-5.2.
