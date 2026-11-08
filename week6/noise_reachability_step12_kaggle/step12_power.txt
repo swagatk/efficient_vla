@@ -1,0 +1,7 @@
+searched states and round-1 rates (step 10, N0-N2 pooled): 0/2 0.292, 0/5 0.146, 0/6 0.271, 0/11 0.250, 6/8 0.167, 6/12 0.198, 6/14 0.000, 7/38 0.010
+192 paired episodes per seed; round 1 at 0.142 on them
+round 2 at round 1 + 0.00 on every searched state: P(test 1 passes) = 0.005
+round 2 at round 1 + 0.03 on every searched state: P(test 1 passes) = 0.078
+round 2 at round 1 + 0.05 on every searched state: P(test 1 passes) = 0.278
+round 2 at round 1 + 0.10 on every searched state: P(test 1 passes) = 0.893
+round 2 at round 1 + 0.15 on every searched state: P(test 1 passes) = 0.999

@@ -18,7 +18,9 @@ seed.
 Results go to ``<output_dir>/per_episode_<family>_state<i>.csv``, or ``confirm_<family>_n<id>_state<i>.csv``; a
 rerun skips finished episodes. With ``--record_dir`` each episode is also saved in self_filtered_bc's episode format
 (``<record_dir>/episodes/<name>.npz``, see ``record_name``) for training on it (step 10); recording only copies what
-the policy saw and did, so it does not change the episode. At most --max_episodes_per_process run per call (exit code 3: call again).
+the policy saw and did, so it does not change the episode. With ``--lora_dir`` the search runs a LoRA-adapted policy
+(self_filtered_bc's adapter, attached as its evaluation attaches it; step 12's round-2 explorer) instead of the base.
+At most --max_episodes_per_process run per call (exit code 3: call again).
 Run from the repo root with the repo root on PYTHONPATH (FAIL-003).
 """
 from __future__ import annotations
@@ -113,7 +115,23 @@ def record_meta(args, task: str, noise_id: int, jitter_seed: int | None, episode
     return {"task_id": args.task_id, "task": task, "seed": episode_seed, "init_state": args.init_state,
             "success": bool(result["success"]), "steps": result["steps"], "policy_path": args.policy_path,
             "n_action_steps": args.n_action_steps, "rename_map": args.rename_map, "source": "noise_search",
-            "noise_family": args.family, "noise_id": noise_id, "jitter_seed": jitter_seed}
+            "noise_family": args.family, "noise_id": noise_id, "jitter_seed": jitter_seed, "lora_dir": args.lora_dir}
+
+
+def keep_recording(args, result: dict) -> bool:
+    """Whether a recorded episode is saved: all of them, or with --record_successes_only only the successes."""
+    return bool(result["success"]) or not args.record_successes_only
+
+
+def attach_adapter(base, args) -> None:
+    """Attach ``args.lora_dir`` to the base policy in place, exactly as self_filtered_bc's evaluation does (it checks
+    that the adapter was trained with this policy, n_action_steps, rename map and task); nothing without it."""
+    if not args.lora_dir:
+        return
+    sys.path.insert(0, str(REPO_ROOT / "self_filtered_bc"))
+    from self_filtered_bc import attach_lora
+
+    attach_lora(base, args.lora_dir, args)
 
 
 def parse_args(argv=None):
@@ -133,6 +151,9 @@ def parse_args(argv=None):
     p.add_argument("--max_episodes_per_process", type=int, default=10)
     p.add_argument("--record_dir", default=None, help="also save every episode for training (step 10)")
     p.add_argument("--frame_stride", type=int, default=2, help="with --record_dir: images every N steps")
+    p.add_argument("--record_successes_only", type=int, default=0,
+                   help="with --record_dir: save only successful episodes (training keeps only those; saves disk)")
+    p.add_argument("--lora_dir", default=None, help="search with this self_filtered_bc LoRA adapter attached (step 12)")
     return p.parse_args(argv)
 
 
@@ -169,6 +190,7 @@ def main(argv=None) -> int:
     env = make_libero_env(env_cfg)
     base = load_base_policy(args.policy_path, env_cfg, device=device, n_action_steps=args.n_action_steps,
                             rename_map=args.rename_map)
+    attach_adapter(base, args)
     cfg = base.policy.config
     if args.record_dir:
         sys.path.insert(0, str(REPO_ROOT / "self_filtered_bc"))
@@ -190,8 +212,9 @@ def main(argv=None) -> int:
                     return action
                 r = run_episode(env, state, s, choose, args.max_steps)
                 jitter = s if jitter_seeds else None
-                save_episode(Path(args.record_dir) / "episodes" / record_name(args.family, k, jitter, state, s), recorder,
-                             record_meta(args, env.task_description, k, jitter, s, r))
+                if keep_recording(args, r):
+                    save_episode(Path(args.record_dir) / "episodes" / record_name(args.family, k, jitter, state, s),
+                                 recorder, record_meta(args, env.task_description, k, jitter, s, r))
             else:
                 r = run_episode(env, state, s, lambda obs: base.act(obs, env.task_description)[0], args.max_steps)
             append_episode_row(path, {"task_id": args.task_id, "seed": s, "init_state": state,

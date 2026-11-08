@@ -1030,6 +1030,69 @@ not test whether a noise can be found without trying it on the state.
 
 **Compute (estimate).** At step 9's rate (662 episodes in 3.9 h), 520 episodes take about 3.1 h, one Kaggle session.
 
+## Step 12: does a second round of constant-noise search and training improve on the first? (design 2026-11-08)
+
+Step 10 was one round of expert iteration with constant noise as the exploration: search, keep the successes, train.
+It made most trained states solvable with sampled noise, but left some weak (task 6's trained states 3-9 of 32, 0/5 at 1-4
+of 16) and did not reach the held-out states of tasks 6 and 7. Step 12 runs the loop once more, exploring with round 1's
+adapter instead of the base, and asks whether the second round improves on the first where the first fell short. It is
+experiment A of the RL follow-ups (the others: online RL on the weights; a learned per-scene noise).
+
+**Hypothesis.** Written before any step-12 episode, after step 10's results: on the states round 1 left weak, the
+round-2 adapter (R) trained on round 1's data plus the round-1 explorer's constant-noise successes succeeds with sampled
+noise at least 10 points more often than round 1's adapter (N) with the same training seed, from about 14% (N0-N2 on
+these states in step 10), on fresh episodes.
+
+**Protocol (fixed before the run).** `lerobot/smolvla_libero` at `a24f1f3804`, `n_action_steps=10`, 520 steps, hard
+resets, Kaggle 2 x T4; tasks 0, 6, 7. Inputs: step 10's last Kaggle version (adapters N<t>_<s> and its recordings).
+
+- *States, by a rule applied to step 10's report* (`analyze_step12.py --selection` reproduces them; nothing is chosen
+  on easy states). A resistant state of step 10 (trained or held out) is *weak* if N0-N2 pooled succeeded in at most 30%
+  of its step-10 episodes. Per task, the highest-numbered weak held-out state is kept *held out*; the other weak states
+  are *searched*. Searched: 0/2, 0/5, 0/6, 0/11, 6/8, 6/12, 6/14, 7/38 (step-10 N rates 0.29, 0.15, 0.27, 0.25, 0.17,
+  0.20, 0.00, 0.01). Held out: 6/20, 7/47. *Check* states, round 1's best trained states: 0/8, 7/33.
+- *Harness, first, stops the run.* Round 1's explorer N<t>_0 on four of its own step-10 evaluation episodes per task
+  (0/8, 6/8, 7/33 x seeds 16-19; 12 episodes): at least 11 of 12 must reproduce step 10 exactly (success and steps).
+  This checks the adapters, the input and the stack in one go; the base reproduced step 4 on 160 of 160.
+- *Search (round 2's exploration).* N<t>_0 (training seed 0 only) with `repeat` noise ids 7000-7049, unused so far, once
+  per searched state, successes recorded (`deep_noise_search.py --lora_dir --record_dir --record_successes_only 1`):
+  400 episodes.
+- *Training.* `self_filtered_bc.py --stage train` with step 10's settings (LoRA r16/alpha32 on the action expert's seven
+  projections, 2,000 steps, batch 16, lr 1e-4, `--selection success`, no validation states), **from the base**, on the
+  union of step 10's recordings of the task and round 2's: R<t>_<s> for tasks 0, 6, 7 x training seeds 0-2 (9 adapters).
+  Retraining from the base on the union keeps R's update the same size as N's, so the comparison is about the data.
+- *Evaluation, sampled noise, fresh episodes* (`self_filtered_bc.py --stage eval --lora_dir`). Seeds 48-63 on task 0 and
+  48-79 on tasks 6 and 7, none used by step 10 (whose seeds also chose the states, so re-using them would favour R by
+  regression to the mean). States: searched, held out and check (task 0: 2, 5, 6, 8, 11; task 6: 8, 12, 14, 20; task 7:
+  33, 38, 47). Policies N0-N2 (step 10's adapters, re-evaluated) and R0-R2: 6 x 304 = 1,824 episodes.
+
+At most 12 + 400 + 1,824 = 2,236 episodes and 9 adapters.
+
+**Rule.** *Test 1:* per training seed i, R_i against N_i on the searched states (4 x 16 + 3 x 32 + 32 = 192 paired
+episodes), exact one-sided McNemar; passes if p < 0.05 for at least 2 of the 3 seeds. *Reported, not part of the rule:*
+R against N pooled over seeds on the held-out states (transfer) and on the check states (two-sided: does round 2 lose
+round 1's gains?), per-state rates with exact intervals, the explorer's search hits per state, and R's training episodes
+per state and round. *Reading:* the harness failed: not read. Test 1 passes: a second round of constant-noise search and
+training improves on the first on the states the first left weak. A pass needs only about 6 points (power 0.28 at
++5), so it shows improvement, not the hypothesised 10; the rates are reported beside it. Otherwise: not shown at this
+budget. The analysis also refuses a round-2 run whose training set is not exactly round 1's training episodes of that
+seed (step 10's committed `runs/N<t>_<s>/provenance.jsonl`) plus a recording of every search success of its task.
+
+**Power (`calibration/step12_power.py`, Monte Carlo with independent episodes, output in
+`week6/noise_reachability_step12_kaggle/step12_power.txt`).** N at its step-10 rate per state (14.2% over the 192
+episodes), R that rate plus d on every state: d = 0 gives a false pass 0.005 of the time; d = 0.03 passes 0.078, 0.05
+0.278, 0.10 0.893, 0.15 0.999. The three seeds share their evaluation episodes, so their tests are correlated: the
+false-pass rate of the 2-of-3 rule is at most 0.075 rather than the 0.005 of independent seeds (step 10's rule had the
+same property). N's rate on fresh seeds is likely above 14.2%, since the states were chosen for a low step-10 rate; that
+costs some power.
+
+**What it cannot show.** Like step 10, searched states are evaluated on their own scenes, so test 1 is about those
+configurations; the held-out pair is the transfer check, one state per task. One explorer seed, one further round, one
+LoRA setting. If a searched state yields no search success, R has no new data there but the state stays in test 1.
+
+**Compute (estimate).** At step 10's rates (about 170 evaluation episodes per hour on 2 x T4, 2.7-3.2 h per adapter, two
+at a time): search about 2.4 h, training about 15 h, evaluation about 10.7 h; about 28 h over three sessions of 11 h.
+
 ## Compute
 
 Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a month) for steps 2-4. At
@@ -1052,6 +1115,7 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
 | 9 | Kaggle 2 x T4 | done: 662 episodes, 3.9 h between first and last provenance records, one session |
 | 10 | Kaggle 2 x T4 | estimate: 2,940 episodes and 12 adapters, about 32 h over four sessions |
 | 11 | Kaggle 2 x T4 | estimate: at most 520 episodes, about 3.1 h, one session |
+| 12 | Kaggle 2 x T4 | estimate: at most 2,236 episodes and 9 adapters, about 28 h over three sessions |
 
 ## Files
 
@@ -1095,13 +1159,16 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
   --record_dir`), training and evaluation (`self_filtered_bc/self_filtered_bc.py`) on Kaggle over several sessions.
 - `analyze_step11.py`: step-11 harness gate, jobs, the pairing with step 9's committed `repeat` arm, tests A and B and
   reading; `kaggle_step11_replication.ipynb` (built by `build_step11_notebook.py`) runs it on Kaggle.
+- `analyze_step12.py`: step-12 state selection from step 10's report, harness gate (round 1's adapter against step
+  10's own episodes), provenance per folder, test 1 and reading; `kaggle_step12_expert_iteration.ipynb` (built by
+  `build_step12_notebook.py`) runs it on Kaggle. `deep_noise_search.py --lora_dir` searches with an adapter attached.
 
 ## Status
 
 Steps 0, 1 and 2 done (above); step 2 is a negative result. Step 3 ran on Colab and failed as a test: the
 critic diverged (above). Step 3b (whether a Monte Carlo critic can tell the base's own noises apart) ran on
 Kaggle and is not read: its shuffled-noise control was biased (above). Step 4 ran on Kaggle (above, 2026-10-31): negative, no arm meets the hypothesis. Step 5a ran on Colab (above, 2026-10-31): "mostly reachable", all 5 systematic states reached by fixed noises, none by
-sampled noise. Step 5b ran on Colab (above, 2026-11-01): no reading on transfer, the learner did not learn at this budget. Step 6 ran on Kaggle (above, 2026-11-01): the labels hold; B's gain was not informative. Step 7 ran on Kaggle (above, 2026-11-02): existence only, `repeat` did not beat `sampled`, and on two of the three states sampling also solved the state. Step 8 ran on Kaggle (above, 2026-11-03): both tests pass, `repeat` beats `sampled` on 6/8 and on four unlabelled states chosen in advance, pooled. Step 9 ran on Kaggle (above, 2026-11-03): not shown, the library did not beat fresh noises pooled (p 0.408); exploratory, it helped on 0/14 and hurt on task 7. Step 10 ran on Kaggle (above, 2026-11-04/08): both tests pass, N learns the trained states (37-43% against the base 0.5%) and beats A on task 0; it transfers to task 0's held-out states but not to those of tasks 6 and 7. Step 11's design is fixed (above, 2026-11-04); its code is built, not yet run.
+sampled noise. Step 5b ran on Colab (above, 2026-11-01): no reading on transfer, the learner did not learn at this budget. Step 6 ran on Kaggle (above, 2026-11-01): the labels hold; B's gain was not informative. Step 7 ran on Kaggle (above, 2026-11-02): existence only, `repeat` did not beat `sampled`, and on two of the three states sampling also solved the state. Step 8 ran on Kaggle (above, 2026-11-03): both tests pass, `repeat` beats `sampled` on 6/8 and on four unlabelled states chosen in advance, pooled. Step 9 ran on Kaggle (above, 2026-11-03): not shown, the library did not beat fresh noises pooled (p 0.408); exploratory, it helped on 0/14 and hurt on task 7. Step 10 ran on Kaggle (above, 2026-11-04/08): both tests pass, N learns the trained states (37-43% against the base 0.5%) and beats A on task 0; it transfers to task 0's held-out states but not to those of tasks 6 and 7. Step 11's design is fixed (above, 2026-11-04); its code is built, not yet run. Step 12 (a second round of constant-noise search and training) is designed (above, 2026-11-08); its code is built, not yet reviewed or run.
 
 Before step 0 ran, smoke tests on the local RTX 4090 (shared with another job), one episode each of task 0,
 seed 0, init state 0: `n_action_steps=10` through `evaluate_all.py` and `n_action_steps=50` through
