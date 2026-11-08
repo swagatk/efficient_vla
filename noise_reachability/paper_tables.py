@@ -8,6 +8,7 @@ command and the git commit. Standard library only.
 import argparse
 import hashlib
 import json
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -27,7 +28,24 @@ INPUTS = {
     "step7": f"{W6}/noise_reachability_step7_kaggle/run/step7_report.txt.json",
     "step8": f"{W6}/noise_reachability_step8_kaggle/run/step8_report.txt.json",
     "step9": f"{W6}/noise_reachability_step9_kaggle/run/step9_report.txt.json",
+    "step10": f"{W6}/noise_reachability_step10_kaggle/run/step10_report.txt.json",
+    "step10_train_0": f"{W6}/noise_reachability_step10_kaggle/run/runs/N0_0/provenance.jsonl",
+    "step10_train_6": f"{W6}/noise_reachability_step10_kaggle/run/runs/N6_0/provenance.jsonl",
+    "step10_train_7": f"{W6}/noise_reachability_step10_kaggle/run/runs/N7_0/provenance.jsonl",
 }
+# Step 10's table rows: label, role every state must have in the report, and (task, state) pairs.
+STEP10_ROWS = (
+    ("Trained", "trained", ((0, 2), (0, 5), (0, 6), (0, 7), (0, 8))),
+    ("Trained", "trained", ((0, 11),)),
+    ("Trained", "trained", ((6, 8), (6, 12))),
+    ("Trained", "trained", ((7, 33),)),
+    ("Held out", "held out", ((0, 14), (0, 27))),
+    ("Held out", "held out", ((6, 14), (6, 20))),
+    ("Held out", "held out", ((7, 38), (7, 47))),
+    ("Easy", "easy", ((0, 0),)),
+    ("Easy", "easy", ((0, 1), (0, 3), (0, 4), (0, 9))),
+    ("Easy", "easy", ((6, 0), (7, 4))),
+)
 FAMILIES = ("sampled", "full", "repeat")
 
 
@@ -146,8 +164,40 @@ def step9_table(r):
     return table(["Task", "Held-out states", "Earlier hits", "Fresh ids"], rows) + f"\nPermutation p {r['p']:.3g}.\n"
 
 
+def train_counts(provenance_line: dict) -> dict[int, int]:
+    """{init state: training episodes} of one training run, from the recording names its provenance lists."""
+    out = {}
+    for name in provenance_line["settings"]["train_episodes"]:
+        i = int(re.search(r"_init(\d+)[_.]", name).group(1))
+        out[i] = out.get(i, 0) + 1
+    return out
+
+
+def step10_table(r, train):
+    """Per group of states: N's training episodes, then successes of base, N0-N2 and A0-A2 (A on task 0's states 0-9
+    only); n per policy. ``train`` is {task: {state: episodes}} (the same for N's three seeds)."""
+    states = {(s["task"], s["state"]): s for s in r["states"]}
+    rows = []
+    for label, role, keys in STEP10_ROWS:
+        assert all(states[k]["role"] == role for k in keys), (label, keys)
+        n = sum(states[k]["episodes"] for k in keys)
+        tot = lambda p: sum(states[k][p][0] for k in keys)
+        has_a = all("A0" in states[k] for k in keys)
+        rows.append([label, ", ".join(f"{t}/{s}" for t, s in keys), sum(train[t].get(s, 0) for t, s in keys), n,
+                     tot("base"), ", ".join(str(tot(f"N{i}")) for i in range(3)),
+                     ", ".join(str(tot(f"A{i}")) for i in range(3)) if has_a else "--"])
+    t1, t2 = r["tests"]["test 1"], r["tests"]["test 2"]
+    note = ("Test 1 (trained states, " + f"{t1['per_seed']['0']['n']} paired episodes): N0, N1, N2 "
+            + ", ".join(str(v["first"]) for v in t1["per_seed"].values()) + f" against base {t1['per_seed']['0']['second']}, "
+            + "p " + ", ".join(f"{v['p']:.1g}" for v in t1["per_seed"].values())
+            + f". Test 2 (0/2, 0/5-0/8, seeds pooled, {t2['n']}): N {t2['first']} against A {t2['second']}, p {t2['p']:.1g}.")
+    header = ["Role", "States", "N train", "n", "Base", "N0, N1, N2", "A0, A1, A2"]
+    return table(header, rows) + "\n" + note + "\n"
+
+
 def build(root=ROOT):
-    data = {k: json.loads((root / v).read_text()) for k, v in INPUTS.items()}
+    data = {k: (json.loads((root / v).read_text()) if v.endswith(".json") else
+                json.loads((root / v).read_text().splitlines()[0])) for k, v in INPUTS.items()}
     return {
         "4.1_headroom.md": headroom_table(data["step1"], data["heldout_all"], data["heldout"]),
         "4.2_step5a_families.md": step5a_table(data["step5a"]),
@@ -156,6 +206,7 @@ def build(root=ROOT):
         "3_harness.md": harness_table(data["step5a"], data["step7"], data["step8"], data["step9"]),
         "3_controls.md": control_table(data["step5a"], data["step7"], data["step8"]),
         "4.4_step9_carry_over.md": step9_table(data["step9"]),
+        "4.6_step10_learned.md": step10_table(data["step10"], {t: train_counts(data[f"step10_train_{t}"]) for t in (0, 6, 7)}),
     }
 
 

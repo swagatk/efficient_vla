@@ -58,3 +58,20 @@ def test_harness_and_control_tables():
     assert "| 0 | 7 | 5 |  | 6 | 6 |" in h and "| 8 | 15 |  | 13 |  |  |" in h and "| 6 | 20 |  | 16 | 16 | 16 |" in h
     assert "| 5a | 0/9 | 8 | 12 | 11 |" in c and "| 7 | 6/0 | 14 | 13 | 5 |" in c and "| 8 | 7/4 | 15 |  | 12 |" in c
     assert c.count("\n| 8 |") == 4 and c.count("\n| 7 |") == 3
+
+
+def test_step10_table_matches_the_report():
+    t = pt.build(ROOT)["4.6_step10_learned.md"]
+    assert "| Trained | 0/2, 0/5, 0/6, 0/7, 0/8 | 30 | 80 | 0 | 31, 31, 37 | 1, 2, 3 |" in t
+    assert "| Trained | 7/33 | 33 | 32 | 0 | 29, 30, 26 | -- |" in t
+    assert "| Easy | 0/0 | 0 | 16 | 0 | 16, 16, 16 | 0, 0, 0 |" in t
+    assert "| Held out | 6/14, 6/20 | 0 | 64 | 0 | 0, 0, 0 | -- |" in t
+    assert "N0, N1, N2 77, 71, 83 against base 1" in t and "N 99 against A 6" in t
+    trained = [l for l in t.splitlines() if l.startswith("| Trained")]
+    n = [sum(int(l.split("|")[6].split(",")[i]) for l in trained) for i in range(3)]
+    assert n == [77, 71, 83]                       # the trained rows add up to test 1's counts
+
+
+def test_train_counts_reads_both_name_forms():
+    line = {"settings": {"train_episodes": ["full_n25_j5002_init08_seed5002.npz", "seed0_init10.npz", "x_init08_y.npz"]}}
+    assert pt.train_counts(line) == {8: 2, 10: 1}

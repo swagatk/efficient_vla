@@ -1,6 +1,6 @@
 {
  "command": "python -S noise_reachability/paper_tables.py --out_dir noise_reachability/paper_tables --tex_dir /home/swagat/GIT/efficient_vla_notes/rss2027_paper/tables",
- "git_commit": "2e5f8173abf54a3671826c520d9d11ec9fa0c324",
+ "git_commit": "07c51253c2782b5a6e60de29d5308abe2b770f50",
  "inputs_dirty": false,
  "tables": [
   "3_controls.md",
@@ -9,7 +9,8 @@
   "4.2_step5a_families.md",
   "4.2b_search_states.md",
   "4.3_step8_tests.md",
-  "4.4_step9_carry_over.md"
+  "4.4_step9_carry_over.md",
+  "4.6_step10_learned.md"
  ],
  "inputs": {
   "week6/noise_reachability_step1_kaggle/step1_reachability.txt.json": "67a1b70ea581827fb700d938275bd8e2bf44e49b32f8e6239a4edc81af985294",
@@ -18,6 +19,10 @@
   "week6/noise_reachability_step5a_colab/run/step5a_report.txt.json": "72fa0c2e888d41613c7c1a992d545e1887c4cf152f1fa699c80e2b7bebaad8d8",
   "week6/noise_reachability_step7_kaggle/run/step7_report.txt.json": "9e22c9284d0d56e0b41e3735bf4b66582178a6020ad377bdb1dac1b7724fd9ad",
   "week6/noise_reachability_step8_kaggle/run/step8_report.txt.json": "6dab6a0866e533f97254749ca2c9fe63fd31fb4b1da1a6e1f2343a621e278afd",
-  "week6/noise_reachability_step9_kaggle/run/step9_report.txt.json": "4dfa4adebd82745c1a6f3c6b4c22a442ae7633f12ec61b030d594b5073336f16"
+  "week6/noise_reachability_step9_kaggle/run/step9_report.txt.json": "4dfa4adebd82745c1a6f3c6b4c22a442ae7633f12ec61b030d594b5073336f16",
+  "week6/noise_reachability_step10_kaggle/run/step10_report.txt.json": "de11396b1b5af57f28c23fdab7b0c87b6dbefd54df75ac80e6ed825e158ee6dd",
+  "week6/noise_reachability_step10_kaggle/run/runs/N0_0/provenance.jsonl": "d743bfdb40bcab6d71548e54252279ad3ad0c731ee3fb87f54082c7def12752b",
+  "week6/noise_reachability_step10_kaggle/run/runs/N6_0/provenance.jsonl": "6b3b667915faac4ccb59e2910ed1f233a103db052afb143401b7f49c49069587",
+  "week6/noise_reachability_step10_kaggle/run/runs/N7_0/provenance.jsonl": "3c37fb3bf3ec23e4a824415322506878259c334ff18d81835172a2c16441effa"
  }
 }
