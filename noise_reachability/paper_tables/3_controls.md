@@ -1,4 +1,4 @@
-| Step | State | `sampled` | `full` | `repeat` |
+| Exp. | State | `sampled` | `full` | `repeat` |
 | --- | --- | --- | --- | --- |
 | 5a | 0/9 | 8 | 12 | 11 |
 | 7 | 4/5 | 8 | 14 | 10 |

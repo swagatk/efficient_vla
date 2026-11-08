@@ -116,7 +116,7 @@ def search_states_table(r5a, r7):
             state = s.get("state", k)
             n = s["episodes"] // len(FAMILIES)
             rows.append([f"{task_of(k, s)}/{state}", step] + [f"{s['per_family'][f]}/{n}" for f in FAMILIES] + [s["class"]])
-    return table(["State", "Step", "`sampled`", "`full`", "`repeat`", "Jitter"], rows)
+    return table(["State", "Exp.", "`sampled`", "`full`", "`repeat`", "Jitter"], rows)
 
 
 def harness_table(r5a, r7, r8, r9):
@@ -129,7 +129,7 @@ def harness_table(r5a, r7, r8, r9):
         ref = {h[t]["reference"] for h in runs.values() if t in h}
         assert len(ref) == 1, t
         rows.append([t, ref.pop()] + [runs[s][t]["base"] if t in runs[s] else "" for s in runs])
-    return table(["Task", "Step 0"] + [f"Step {s}" for s in runs], rows)
+    return table(["Task", "E0"] + [f"E{s}" for s in runs], rows)
 
 
 def control_table(r5a, r7, r8):
@@ -139,7 +139,7 @@ def control_table(r5a, r7, r8):
         for t, s in states.items():
             c = r["control"][str(t)]
             rows.append([step, f"{t}/{s}"] + [c.get(f, "") for f in FAMILIES])
-    return table(["Step", "State", "`sampled`", "`full`", "`repeat`"], rows)
+    return table(["Exp.", "State", "`sampled`", "`full`", "`repeat`"], rows)
 
 
 def step8_table(r):
