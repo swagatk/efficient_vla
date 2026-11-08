@@ -1,0 +1,218 @@
+{
+ "provenance": {
+  "records": 60,
+  "commit": "8980b3733fb2c01e815beaef7a3117b2e4db9691",
+  "policy_path": "/root/.cache/huggingface/hub/models--lerobot--smolvla_libero/snapshots/a24f1f380461b665158d52acd140152c79e8b36d"
+ },
+ "step9": {
+  "records": 40,
+  "commit": "f2a067e629557b44996b423c08835647544178b9",
+  "sha256": {
+   "task_0/test/random/per_episode_repeat_state14.csv": "b977adc273c66517aea12592d0fcc8ca854a48c6f4fdb12331f08aa372e3698c",
+   "task_0/test/random/per_episode_repeat_state27.csv": "0416676f43e0318afc48561a9cc5ac479960d852ad95e8504abe06349db1326a",
+   "task_4/test/random/per_episode_repeat_state18.csv": "043f9404422cdb3bf021188f24ecb92cf130c27b2bedcce795eb6b4cc906ba03",
+   "task_4/test/random/per_episode_repeat_state26.csv": "ea6b54901168e70ebeb0712e2679dedbf9bc568069ef45342bdc61450c4152f5",
+   "task_6/test/random/per_episode_repeat_state14.csv": "2c049ae02301bf2ae092e6f246fd42e94a8067badf1f37664f36047faa692b13",
+   "task_6/test/random/per_episode_repeat_state20.csv": "012fbf04a807a67b212be6019c53ff7f3baf4beb645854531cc6493bf97e98d1",
+   "task_7/test/random/per_episode_repeat_state38.csv": "94ec76e110eaf7dc6a0bade97e19352539c742d82df85931668d3de9d8ba4bd2",
+   "task_7/test/random/per_episode_repeat_state47.csv": "a435e82b7c4e7e9ed2a911c2f02698c0475103b70664fcd9fdda2e9e0ea732d7"
+  },
+  "pinned": true,
+  "packages": "{\"lerobot\": {\"commit\": \"b6ec0060779550c0a157ae34feb89e0cf86012a8\", \"version\": \"0.6.2\"}, \"mujoco\": {\"commit\": null, \"version\": \"3.13.0\"}, \"robosuite\": {\"commit\": null, \"version\": \"1.4.1\"}, \"torch\": {\"commit\": null, \"version\": \"2.11.0\"}}"
+ },
+ "harness": {
+  "0": {
+   "base": 6,
+   "reference": 7,
+   "gap": -1,
+   "ok": true
+  },
+  "4": {
+   "base": 15,
+   "reference": 14,
+   "gap": 1,
+   "ok": true
+  },
+  "6": {
+   "base": 16,
+   "reference": 20,
+   "gap": -4,
+   "ok": true
+  },
+  "7": {
+   "base": 14,
+   "reference": 18,
+   "gap": -4,
+   "ok": true
+  }
+ },
+ "states": [
+  {
+   "task": 0,
+   "state": 14,
+   "episodes": 50,
+   "repeat": 4,
+   "sampled": 2,
+   "repeat_only": 4,
+   "sampled_only": 2
+  },
+  {
+   "task": 0,
+   "state": 27,
+   "episodes": 50,
+   "repeat": 1,
+   "sampled": 0,
+   "repeat_only": 1,
+   "sampled_only": 0
+  },
+  {
+   "task": 4,
+   "state": 18,
+   "episodes": 50,
+   "repeat": 2,
+   "sampled": 0,
+   "repeat_only": 2,
+   "sampled_only": 0
+  },
+  {
+   "task": 4,
+   "state": 26,
+   "episodes": 50,
+   "repeat": 3,
+   "sampled": 0,
+   "repeat_only": 3,
+   "sampled_only": 0
+  },
+  {
+   "task": 6,
+   "state": 14,
+   "episodes": 50,
+   "repeat": 0,
+   "sampled": 0,
+   "repeat_only": 0,
+   "sampled_only": 0
+  },
+  {
+   "task": 6,
+   "state": 20,
+   "episodes": 50,
+   "repeat": 0,
+   "sampled": 0,
+   "repeat_only": 0,
+   "sampled_only": 0
+  },
+  {
+   "task": 7,
+   "state": 38,
+   "episodes": 50,
+   "repeat": 7,
+   "sampled": 1,
+   "repeat_only": 7,
+   "sampled_only": 1
+  },
+  {
+   "task": 7,
+   "state": 47,
+   "episodes": 50,
+   "repeat": 6,
+   "sampled": 0,
+   "repeat_only": 6,
+   "sampled_only": 0
+  }
+ ],
+ "packages_match_step9": true,
+ "scene_failed": [],
+ "test A": {
+  "states": [
+   [
+    0,
+    14
+   ],
+   [
+    0,
+    27
+   ],
+   [
+    4,
+    18
+   ],
+   [
+    4,
+    26
+   ],
+   [
+    6,
+    14
+   ],
+   [
+    6,
+    20
+   ],
+   [
+    7,
+    38
+   ],
+   [
+    7,
+    47
+   ]
+  ],
+  "episodes": 400,
+  "repeat": 23,
+  "sampled": 3,
+  "repeat_interval": [
+   0.03679551950927155,
+   0.08503159529781046
+  ],
+  "sampled_interval": [
+   0.0015493589499056453,
+   0.021760668514417155
+  ],
+  "p": 3.4312345872344524e-05,
+  "mcnemar_cross_check": 4.398822784423828e-05,
+  "passes": true
+ },
+ "test B": {
+  "states": [
+   [
+    0,
+    14
+   ],
+   [
+    0,
+    27
+   ],
+   [
+    4,
+    18
+   ],
+   [
+    4,
+    26
+   ],
+   [
+    6,
+    14
+   ],
+   [
+    6,
+    20
+   ]
+  ],
+  "episodes": 300,
+  "repeat": 10,
+  "sampled": 2,
+  "repeat_interval": [
+   0.016098167562619302,
+   0.06044532220126553
+  ],
+  "sampled_interval": [
+   0.0008083864127997904,
+   0.023873497572173715
+  ],
+  "p": 0.018352775009601672,
+  "mcnemar_cross_check": 0.019287109375,
+  "passes": true
+ },
+ "decision": "replicated: fixed noise beats sampling on eight new resistant states chosen in advance, and without task 7"
+}

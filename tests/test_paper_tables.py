@@ -75,3 +75,10 @@ def test_step10_table_matches_the_report():
 def test_train_counts_reads_both_name_forms():
     line = {"settings": {"train_episodes": ["full_n25_j5002_init08_seed5002.npz", "seed0_init10.npz", "x_init08_y.npz"]}}
     assert pt.train_counts(line) == {8: 2, 10: 1}
+
+
+def test_step11_table_matches_the_report():
+    t = pt.build(ROOT)["4.5_step11_replication.md"]
+    assert "| A: all eight | 23/400 (3.7-8.5%) | 3/400 (0.2-2.2%) | 3.4e-05 | passes |" in t
+    assert "| B: tasks 0, 4, 6 | 10/300 (1.6-6.0%) | 2/300 (0.1-2.4%) | 0.018 | passes |" in t
+    assert "0/14 4-2" in t and "7/47 6-0" in t and "6/20 0-0" in t

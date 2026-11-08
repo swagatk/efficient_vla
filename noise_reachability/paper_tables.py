@@ -29,6 +29,7 @@ INPUTS = {
     "step8": f"{W6}/noise_reachability_step8_kaggle/run/step8_report.txt.json",
     "step9": f"{W6}/noise_reachability_step9_kaggle/run/step9_report.txt.json",
     "step10": f"{W6}/noise_reachability_step10_kaggle/run/step10_report.txt.json",
+    "step11": f"{W6}/noise_reachability_step11_kaggle/run/step11_report.txt.json",
     "step10_train_0": f"{W6}/noise_reachability_step10_kaggle/run/runs/N0_0/provenance.jsonl",
     "step10_train_6": f"{W6}/noise_reachability_step10_kaggle/run/runs/N6_0/provenance.jsonl",
     "step10_train_7": f"{W6}/noise_reachability_step10_kaggle/run/runs/N7_0/provenance.jsonl",
@@ -164,6 +165,18 @@ def step9_table(r):
     return table(["Task", "Held-out states", "Earlier hits", "Fresh ids"], rows) + f"\nPermutation p {r['p']:.3g}.\n"
 
 
+def step11_table(r):
+    """Tests A and B of step 11: step 9's repeat arm against step 11's sampled arm, with exact intervals and Holm."""
+    rows = []
+    for name, label in (("test A", "A: all eight"), ("test B", "B: tasks 0, 4, 6")):
+        v = r[name]
+        rows.append([label, rate(v["repeat"], v["episodes"], v["repeat_interval"]),
+                     rate(v["sampled"], v["episodes"], v["sampled_interval"]), f"{v['p']:.2g}",
+                     "passes" if v["passes"] else "does not pass"])
+    per = ", ".join(f"{s['task']}/{s['state']} {s['repeat']}-{s['sampled']}" for s in r["states"])
+    return table(["Test", "`repeat` (step 9)", "`sampled`", "p", "Holm"], rows) + f"\nPer state, repeat-sampled of 50: {per}.\n"
+
+
 def train_counts(provenance_line: dict) -> dict[int, int]:
     """{init state: training episodes} of one training run, from the recording names its provenance lists."""
     out = {}
@@ -206,6 +219,7 @@ def build(root=ROOT):
         "3_harness.md": harness_table(data["step5a"], data["step7"], data["step8"], data["step9"]),
         "3_controls.md": control_table(data["step5a"], data["step7"], data["step8"]),
         "4.4_step9_carry_over.md": step9_table(data["step9"]),
+        "4.5_step11_replication.md": step11_table(data["step11"]),
         "4.6_step10_learned.md": step10_table(data["step10"], {t: train_counts(data[f"step10_train_{t}"]) for t in (0, 6, 7)}),
     }
 
