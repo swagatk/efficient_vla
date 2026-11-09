@@ -82,3 +82,72 @@ def test_step11_table_matches_the_report():
     assert "| A: all eight | 23/400 (3.7-8.5%) | 3/400 (0.2-2.2%) | 3.4e-05 | passes |" in t
     assert "| B: tasks 0, 4, 6 | 10/300 (1.6-6.0%) | 2/300 (0.1-2.4%) | 0.018 | passes |" in t
     assert "0/14 4-2" in t and "7/47 6-0" in t and "6/20 0-0" in t
+
+
+# ---- step 12 (no result yet: a synthetic run through the real analysis gives the report's exact shape) -------------
+
+def _step12_report(tmp_path):
+    import json
+    sys.path.insert(0, str(ROOT / "tests"))
+    from test_analyze_step12 import make_run
+    import analyze_step12 as s12
+
+    def success(t, p, seed, s):          # R wins on searched states, N on held-out ones; distinct counts per seed
+        i = int(p[1])
+        if s in s12.SEARCHED[t]:
+            return int(p[0] == "R" and seed % 4 != i or p[0] == "N" and seed % 8 == i)
+        if s in s12.HELD_OUT[t]:
+            return int(p[0] == "N" and seed % 2 == 0)
+        return int(seed % 4 == 0)
+    make_run(tmp_path / "run", tmp_path / "s10", success=success)
+    return json.loads(json.dumps(s12.analyse(tmp_path / "run", tmp_path / "s10"))), s12
+
+
+def test_step12_table_counts_match_the_analysis(tmp_path):
+    r, s12 = _step12_report(tmp_path)
+    t = pt.step12_table(r)
+    rows = [l for l in t.splitlines() if l.startswith("| ") and "---" not in l][1:]
+    assert len(rows) == 7                                   # 3 searched, 2 held-out and 2 check groups
+    assert rows[0] == "| Searched | 0/2, 0/5, 0/6, 0/11 | 20/200 | 64 | 8, 8, 8 | 48, 48, 48 |"
+    assert rows[2] == "| Searched | 7/38 | 5/50 | 32 | 4, 4, 4 | 24, 24, 24 |"
+    assert rows[3] == "| Held out | 6/20 | -- | 32 | 16, 16, 16 | 0, 0, 0 |"
+    assert rows[5] == "| Check | 0/8 | -- | 16 | 4, 4, 4 | 4, 4, 4 |"
+    seeds = r["tests"]["test 1"]["per_seed"]
+    for i in range(3):                                      # searched rows add up to test 1's counts, per seed
+        cells = [r_.split(" | ") for r_ in rows[:3]]
+        assert sum(int(c[5].strip(" |").split(", ")[i]) for c in cells) == seeds[str(i)]["first"]
+        assert sum(int(c[4].split(", ")[i]) for c in cells) == seeds[str(i)]["second"]
+    assert ("Test 1 (searched states, 192 paired episodes per seed): R0, R1, R2 144, 144, 144 against N0, N1, N2 "
+            "24, 24, 24") in t and "; passes (p < 0.05 in at least 2 of 3 seeds)." in t
+    v = r["reported"]["held out, R against N, seeds pooled"]
+    assert f"Held out, seeds pooled: R 0 against N {v['second']} of {v['n']}, two-sided p" in t and v["second"] == 96
+    assert "Check, seeds pooled: R 36 against N 36 of 144, two-sided p 1." in t   # 0/8 4 x 3, 7/33 8 x 3
+
+
+def test_step12_table_refuses_a_state_with_another_role(tmp_path):
+    import pytest
+    r, _ = _step12_report(tmp_path)
+    next(s for s in r["states"] if (s["task"], s["state"]) == (6, 20))["role"] = "check"
+    with pytest.raises(AssertionError):
+        pt.step12_table(r)
+    for s in r["states"]:
+        s["role"] = {(6, 20): "held out", (0, 5): "check"}.get((s["task"], s["state"]), s["role"])
+    with pytest.raises(AssertionError):                     # one of a group's four states mislabelled
+        pt.step12_table(r)
+    r, _ = _step12_report(tmp_path / "b")
+    r["states"].pop()
+    with pytest.raises(AssertionError, match="states in the report"):
+        pt.step12_table(r)
+
+
+def test_step12_table_is_built_only_when_the_report_exists(tmp_path, monkeypatch):
+    missing = tmp_path / "none.json"
+    monkeypatch.setattr(pt, "OPTIONAL_INPUTS", {"step12": str(missing)})
+    assert "4.7_step12_second_round.md" not in pt.build(ROOT) and "step12" not in pt.read_inputs(ROOT)
+    import json
+    r, _ = _step12_report(tmp_path)
+    missing.write_text(json.dumps(r))
+    t = pt.build(ROOT)
+    assert t["4.7_step12_second_round.md"] == pt.step12_table(r) and pt.read_inputs(ROOT)["step12"] == str(missing)
+    tex = pt.to_tex(t["4.7_step12_second_round.md"])
+    assert tex.count(" \\\\") == 8 and "|" not in tex

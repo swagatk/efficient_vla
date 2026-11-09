@@ -18,6 +18,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from analyze_step5a import CONTROL_STATE as CONTROL_5A, HARNESS_REFERENCE as REFERENCE_5A  # noqa: E402
 from analyze_step7 import CONTROL as CONTROL_7, clopper_pearson  # noqa: E402
 from analyze_step8 import CONTROL as CONTROL_8  # noqa: E402
+import analyze_step12 as s12  # noqa: E402
 
 W6 = "week6"
 INPUTS = {
@@ -33,6 +34,10 @@ INPUTS = {
     "step10_train_0": f"{W6}/noise_reachability_step10_kaggle/run/runs/N0_0/provenance.jsonl",
     "step10_train_6": f"{W6}/noise_reachability_step10_kaggle/run/runs/N6_0/provenance.jsonl",
     "step10_train_7": f"{W6}/noise_reachability_step10_kaggle/run/runs/N7_0/provenance.jsonl",
+}
+# Results not yet produced: a table is made only when its file exists, and tables.json records which were used.
+OPTIONAL_INPUTS = {
+    "step12": f"{W6}/noise_reachability_step12_kaggle/run/step12_report.txt.json",
 }
 # Step 10's table rows: label, role every state must have in the report, and (task, state) pairs.
 STEP10_ROWS = (
@@ -208,10 +213,58 @@ def step10_table(r, train):
     return table(header, rows) + "\n" + note + "\n"
 
 
+def step12_rows():
+    """Step 12's table rows from the analysis's own state lists: (role in the report, label, task, states)."""
+    rows = []
+    for role, label, sets in (("searched", "Searched", s12.SEARCHED), ("held out", "Held out", s12.HELD_OUT),
+                              ("check", "Check", s12.CHECK)):
+        rows += [(role, label, t, states) for t, states in sets.items() if states]
+    return rows
+
+
+def step12_table(r):
+    """Per task and role: the explorer's search successes (round 2's new training episodes), then successes of round 1's
+    N0-N2 and round 2's R0-R2 on fresh episodes; n per policy. Note: test 1 per seed and the seeds-pooled comparisons."""
+    states = {(s["task"], s["state"]): s for s in r["states"]}
+    assert len(states) == len(r["states"]) == sum(len(st) for *_, st in step12_rows()), "states in the report"
+    rows = []
+    for role, label, t, keys in step12_rows():
+        assert all(states[(t, s)]["role"] == role for s in keys), (role, t, keys)
+        tot = lambda p: sum(states[(t, s)][p][0] for s in keys)
+        hits = (f'{sum(r["search"][f"{t}/{s}"]["hits"] for s in keys)}/'
+                f'{sum(r["search"][f"{t}/{s}"]["episodes"] for s in keys)}' if role == "searched" else "--")
+        rows.append([label, ", ".join(f"{t}/{s}" for s in keys), hits, sum(states[(t, s)]["episodes"] for s in keys),
+                     ", ".join(str(tot(f"N{i}")) for i in s12.TRAIN_SEEDS),
+                     ", ".join(str(tot(f"R{i}")) for i in s12.TRAIN_SEEDS)])
+    t1 = r["tests"]["test 1"]
+    seeds = t1["per_seed"]
+    n = {v["n"] for v in seeds.values()}
+    assert len(n) == 1, "test 1: one pair count per seed"
+    note = (f"Test 1 (searched states, {n.pop()} paired episodes per seed): R0, R1, R2 "
+            + ", ".join(str(v["first"]) for v in seeds.values()) + " against N0, N1, N2 "
+            + ", ".join(str(v["second"]) for v in seeds.values()) + ", one-sided McNemar p "
+            + ", ".join(f"{v['p']:.2g}" for v in seeds.values())
+            + f"; {'passes' if t1['passes'] else 'does not pass'} (p < 0.05 in at least {s12.MIN_SEEDS} of "
+            + f"{len(s12.TRAIN_SEEDS)} seeds).")
+    for key, label in (("held out, R against N, seeds pooled", "Held out"),
+                       ("check states, R against N, seeds pooled", "Check")):
+        v = r["reported"][key]
+        note += (f" {label}, seeds pooled: R {v['first']} against N {v['second']} of {v['n']}, two-sided p "
+                 f"{v['p_two_sided']:.2g}.")
+    header = ["Role", "States", "Search", "n", "N0, N1, N2", "R0, R1, R2"]
+    return table(header, rows) + "\n" + note + "\n"
+
+
+def read_inputs(root=ROOT) -> dict:
+    """{name: path} of every input used: INPUTS, and each OPTIONAL_INPUTS file that exists."""
+    return dict(INPUTS, **{k: v for k, v in OPTIONAL_INPUTS.items() if (Path(root) / v).exists()})
+
+
 def build(root=ROOT):
+    used = read_inputs(root)
     data = {k: (json.loads((root / v).read_text()) if v.endswith(".json") else
-                json.loads((root / v).read_text().splitlines()[0])) for k, v in INPUTS.items()}
-    return {
+                json.loads((root / v).read_text().splitlines()[0])) for k, v in used.items()}
+    tables = {
         "4.1_headroom.md": headroom_table(data["step1"], data["heldout_all"], data["heldout"]),
         "4.2_step5a_families.md": step5a_table(data["step5a"]),
         "4.2b_search_states.md": search_states_table(data["step5a"], data["step7"]),
@@ -222,6 +275,9 @@ def build(root=ROOT):
         "4.5_step11_replication.md": step11_table(data["step11"]),
         "4.6_step10_learned.md": step10_table(data["step10"], {t: train_counts(data[f"step10_train_{t}"]) for t in (0, 6, 7)}),
     }
+    if "step12" in data:
+        tables["4.7_step12_second_round.md"] = step12_table(data["step12"])
+    return tables
 
 
 def main(argv=None):
@@ -239,11 +295,13 @@ def main(argv=None):
             Path(a.tex_dir).mkdir(parents=True, exist_ok=True)
             (Path(a.tex_dir) / name.replace(".md", ".tex")).write_text(to_tex(text))
     commit = subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT, capture_output=True, text=True).stdout.strip()
-    dirty = bool(subprocess.run(["git", "status", "--porcelain", "--", *INPUTS.values()], cwd=ROOT,
+    used = read_inputs(ROOT)
+    dirty = bool(subprocess.run(["git", "status", "--porcelain", "--", *used.values()], cwd=ROOT,
                                 capture_output=True, text=True).stdout.strip())
     prov = {"command": "python -S noise_reachability/paper_tables.py " + " ".join(argv or sys.argv[1:]),
             "git_commit": commit, "inputs_dirty": dirty, "tables": sorted(tables),
-            "inputs": {v: hashlib.sha256((ROOT / v).read_bytes()).hexdigest() for v in INPUTS.values()}}
+            "inputs": {v: hashlib.sha256((ROOT / v).read_bytes()).hexdigest() for v in used.values()},
+            "optional_inputs_missing": sorted(v for k, v in OPTIONAL_INPUTS.items() if k not in used)}
     (out / "tables.json").write_text(json.dumps(prov, indent=1) + "\n")
 
 
