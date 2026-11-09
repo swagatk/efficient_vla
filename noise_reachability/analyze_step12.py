@@ -227,9 +227,10 @@ def train_episodes(provenance: Path) -> list[str]:
     return json.loads(Path(provenance).read_text().splitlines()[0])["settings"]["train_episodes"]
 
 
-def check_training_data(root, search: dict, step10=STEP10) -> dict:
+def check_training_data(root, search: dict, step10=STEP10, skip_missing: bool = False) -> dict:
     """Every round-2 run trained on exactly round 1's training episodes of its seed (step 10's N<t>_<s>, committed)
-    plus a recording of every search success of its task, nothing else. Returns {run: (round 1, round 2) counts}."""
+    plus a recording of every search success of its task, nothing else. Returns {run: (round 1, round 2) counts}.
+    skip_missing checks only the runs present (a session's interim check); otherwise a missing run is refused."""
     out = {}
     for t in TASKS:
         new = {record_name(SEARCH_FAMILY, k, None, s, EPISODE_SEED_BASE + k) for (task, s), v in search.items()
@@ -238,6 +239,8 @@ def check_training_data(root, search: dict, step10=STEP10) -> dict:
             name = f"R{t}_{i}"
             path = Path(root, "runs", name, "provenance.jsonl")
             if not path.exists():
+                if skip_missing:
+                    continue
                 raise ValueError(f"{name}: no training run; finish the run")
             old = set(train_episodes(Path(step10, "runs", f"N{t}_{i}", "provenance.jsonl")))
             got = train_episodes(path)

@@ -273,6 +273,11 @@ def test_round_2_training_set_must_be_round_1_plus_every_search_hit(tmp_path):
     (tmp_path / "run/runs/R6_2/provenance.jsonl").unlink()
     with pytest.raises(ValueError, match="R6_2: no training run"):
         a.check_training_data(tmp_path / "run", search, tmp_path / "s10")
+    got = a.check_training_data(tmp_path / "run", search, tmp_path / "s10", skip_missing=True)
+    assert "R6_2" not in got and got["R6_1"] == (2, 15) and len(got) == 8
+    _rewrite_train(f, names[:-1])                                      # present runs are still checked
+    with pytest.raises(ValueError, match="R6_1"):
+        a.check_training_data(tmp_path / "run", search, tmp_path / "s10", skip_missing=True)
 
 
 def test_round_2_names_are_deep_noise_search_names():

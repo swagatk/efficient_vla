@@ -1,0 +1,32 @@
+zip sha256 257a3c6c44533dc96d88652b08dad59207c4aae686b68d31999b4cd79da6f4c0
+repo_commit.txt: 1 session(s), commits ['844f8dbcc61d7f5cfc7803750320700ad69e4dfb']
+harness gate: passed, 12/12 episodes the same as step 10 in success and steps (at least 11)
+  task 0 state 8: 4/4 the same, successes 4 (step 10 4)
+  task 6 state 8: 4/4 the same, successes 1 (step 10 1)
+  task 7 state 33: 4/4 the same, successes 4 (step 10 4)
+provenance: 93 records, commit 844f8dbcc61d7f5cfc7803750320700ad69e4dfb, clean
+search 0/2: 2/50 successes, noise ids [7002, 7047]
+search 0/5: 2/50 successes, noise ids [7004, 7037]
+search 0/6: 4/50 successes, noise ids [7004, 7018, 7037, 7048]
+search 0/11: 5/50 successes, noise ids [7000, 7002, 7031, 7036, 7037]
+search 6/8: 6/50 successes, noise ids [7001, 7029, 7030, 7035, 7044, 7045]
+search 6/12: 2/50 successes, noise ids [7029, 7033]
+search 6/14: 0/50 successes, noise ids []
+search 7/38: 0/50 successes, noise ids []
+search total: 21/400
+training set R0_0: round 1's 37 episodes plus 13 search successes, as the protocol says; per init state {"round 1": {"2": 1, "6": 9, "7": 2, "8": 18, "11": 7}, "round 2": {"2": 2, "5": 2, "6": 4, "11": 5}}
+training set R0_1: round 1's 37 episodes plus 13 search successes, as the protocol says; per init state {"round 1": {"2": 1, "6": 9, "7": 2, "8": 18, "11": 7}, "round 2": {"2": 2, "5": 2, "6": 4, "11": 5}}
+training set R6_0: round 1's 33 episodes plus 8 search successes, as the protocol says; per init state {"round 1": {"8": 23, "12": 10}, "round 2": {"8": 6, "12": 2}}
+training set R7_0: round 1's 33 episodes plus 0 search successes, as the protocol says; per init state {"round 1": {"33": 33}}
+adapter R0_0: step 2000, loss 0.1681, 4.93 s/step
+adapter R0_1: step 2000, loss 0.1932, 5.01 s/step
+adapter R6_0: step 2000, loss 0.1469, 4.934 s/step
+adapter R7_0: step 2000, loss 0.1492, 4.928 s/step
+R7_0 trained on round 1's set only: loss equal to N7_0's at 41/41 logged steps
+eval task 0 N0: 80/80 episodes
+eval task 0 N1: 80/80 episodes
+eval task 0 N2: 80/80 episodes
+eval task 0 R0: 80/80 episodes
+eval task 0 R1: 80/80 episodes
+eval task 6 N0: 41/128 episodes (partial)
+eval episodes run: 441/1824 (counts only; no success read)
