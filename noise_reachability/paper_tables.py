@@ -6,6 +6,7 @@ command and the git commit. Standard library only.
     python -S noise_reachability/paper_tables.py --out_dir noise_reachability/paper_tables
 """
 import argparse
+import glob
 import hashlib
 import json
 import re
@@ -34,6 +35,7 @@ INPUTS = {
     "step10_train_0": f"{W6}/noise_reachability_step10_kaggle/run/runs/N0_0/provenance.jsonl",
     "step10_train_6": f"{W6}/noise_reachability_step10_kaggle/run/runs/N6_0/provenance.jsonl",
     "step10_train_7": f"{W6}/noise_reachability_step10_kaggle/run/runs/N7_0/provenance.jsonl",
+    "step6": f"{W6}/noise_reachability_step6_kaggle/run/step6_report.txt.json",
 }
 # Results not yet produced: a table is made only when its file exists, and tables.json records which were used.
 OPTIONAL_INPUTS = {
@@ -53,6 +55,46 @@ STEP10_ROWS = (
     ("Easy", "easy", ((6, 0), (7, 4))),
 )
 FAMILIES = ("sampled", "full", "repeat")
+
+# Table I. Episodes: every simulator episode an experiment ran (training, harness, confirmation and evaluation), counted
+# as data rows of these committed per-episode files (part files only where a merged copy exists too); pilots and the
+# step-1 run at the wrong setting are left out. Step 0 (the n_action_steps check) has no row.
+S = W6 + "/noise_reachability_step"
+OVERVIEW = (
+    ("E1", "Per-state success over 16 seeds", (f"{S}1_kaggle/nas10_step1/per_episode.csv",
+                                               f"{S}1_kaggle/nas10_step1_repeat/per_episode.csv")),
+    ("E2", "Training-free chunk selection", (f"{S}2_colab/*/task_*/per_episode_*.csv",)),
+    ("E3", "Learned noise critics", (f"{S}3_colab/run/task_*/train_log.csv", f"{S}3_colab/run/task_*/eval/per_episode_*.csv",
+                                     f"{S}3b_kaggle/run/seed_*/task_*/train_log.csv")),
+    ("E4", "LoRA on the policy's own successes", (f"{S}4_kaggle/run/data/part*/collection.csv",
+                                                 f"{S}4_kaggle/run/eval/*/part*/per_episode_*.csv",
+                                                 f"{S}4_kaggle/run/harness_check/part*/per_episode_base.csv")),
+    ("E5a", "Fixed noise on task 0's systematic states", (f"{S}5a_colab/run/per_episode_*_state*.csv",
+                                                          f"{S}5a_colab/run/confirm_*.csv",
+                                                          f"{S}5a_colab/run/harness/seed*/per_episode_base.csv")),
+    ("E5b", "Learned per-episode noise", (f"{S}5b_colab/run/eval/*/part*/per_episode_*.csv",
+                                         f"{S}5b_colab/run/train/seed*/train_log.csv")),
+    ("E6", "Do the labels hold on fresh seeds?", (f"{S}6_kaggle/run/eval/*/task_*/part*/per_episode_*.csv",)),
+    ("E7", "Fixed noise beyond task 0", (f"{S}7_kaggle/run/task_*/per_episode_*.csv", f"{S}7_kaggle/run/task_*/confirm_*.csv",
+                                         f"{S}7_kaggle/run/task_*/harness/seed*/per_episode_base.csv")),
+    ("E8", "Fixed noise on resistant states", (f"{S}8_kaggle/run/task_*/harness/seed*/*.csv",
+                                               f"{S}8_kaggle/run/task_*/screen/*.csv", f"{S}8_kaggle/run/task_*/control/*.csv",
+                                               f"{S}8_kaggle/run/task_*/test/*.csv")),
+    ("E9", "Do found noises transfer between states?", (f"{S}9_kaggle/run/task_*/harness/seed*/*.csv",
+                                                        f"{S}9_kaggle/run/task_*/test/*/*.csv")),
+    ("E10", "Distil noise successes into weights", (f"{S}10_kaggle/run/task_*/collect/part*/collection.csv",
+                                                    f"{S}10_kaggle/run/task_*/eval/*/part*/*.csv",
+                                                    f"{S}10_kaggle/run/task_*/harness/seed*/*.csv",
+                                                    f"{S}10_kaggle/run/task_*/replay/*.csv")),
+    ("E11", "Replicate E8 on eight new states", (f"{S}11_kaggle/run/task_*/harness/seed*/*.csv",
+                                                 f"{S}11_kaggle/run/task_*/test/*/*.csv")),
+    ("E12", "Second round of search and training", (f"{S}12_kaggle/run/task_*/harness/*.csv",
+                                                    f"{S}12_kaggle/run/task_*/search/*.csv",
+                                                    f"{S}12_kaggle/run/task_*/eval/*/part*/*.csv")),
+)
+# Readings that are words in the experiment's README, not numbers; the others are read from the reports below.
+READINGS = {"E2": "negative", "E3": "not read", "E4": "negative", "E5b": "did not learn",
+            "E7": "failed; labels too coarse", "E9": "not shown"}
 
 
 def pct(lo_hi):
@@ -76,14 +118,17 @@ def tex_cell(c) -> str:
     return s.replace("%", "\\%")
 
 
-def to_tex(md: str) -> str:
+COLSPECS = {"1_overview.md": "@{}lp{3.3cm}rp{2.2cm}@{}"}       # column layout of the paper's tabular, where not all "l"
+
+
+def to_tex(md: str, colspec: str | None = None) -> str:
     """A Markdown table (and any trailing note line) from ``table`` as a booktabs tabular."""
     lines = md.strip("\n").split("\n")
     rows = [l for l in lines if l.startswith("|")]
     note = [l for l in lines if l and not l.startswith("|")]
     cells = [[c.strip() for c in r.strip("|").split("|")] for r in rows if not r.startswith("| ---") and "--- |" not in r]
     header, body = cells[0], cells[1:]
-    out = ["\\begin{tabular}{" + "l" * len(header) + "}", "\\toprule",
+    out = ["\\begin{tabular}{" + (colspec or "l" * len(header)) + "}", "\\toprule",
            " & ".join(tex_cell(c) for c in header) + " \\\\", "\\midrule"]
     out += [" & ".join(tex_cell(c) for c in r) + " \\\\" for r in body]
     out += ["\\bottomrule", "\\end{tabular}"]
@@ -213,6 +258,71 @@ def step10_table(r, train):
     return table(header, rows) + "\n" + note + "\n"
 
 
+def episode_files(root, patterns) -> list[Path]:
+    files = sorted({Path(f) for pat in patterns for f in glob.glob(str(Path(root) / pat))})
+    assert len(files) == len({f.resolve() for f in files}), patterns
+    return files
+
+
+def count_rows(files) -> int:
+    n = 0
+    for f in files:
+        lines = [l for l in Path(f).read_text().splitlines() if l.strip()]
+        n += len(lines) - 1
+    return n
+
+
+def passes(*tests) -> str:
+    return "both tests pass" if all(t["passes"] for t in tests) else (
+        "one of two tests passes" if any(t["passes"] for t in tests) else "neither test passes")
+
+
+def outcomes(data) -> dict[str, str]:
+    """The Outcome column: a reading from each experiment's report where it has one, else READINGS."""
+    s1, s5a, s6 = data["step1"], data["step5a"], data["step6"]
+    systematic = [s for s, v in s5a["states"].items() if int(s) != CONTROL_5A]
+    reached = sum(s5a["states"][s]["hits"] > 0 for s in systematic)
+    out = dict(READINGS)
+    out["E1"] = f"{len(s1['systematic_states'])} of {s1['n_states']} states at 0"
+    out["E5a"] = f"all {len(systematic)} reached" if reached == len(systematic) else f"{reached} of {len(systematic)} reached"
+    out["E6"] = f"{'yes' if s6['labels_hold'] else 'no'}, {s6['label_hits']} of {s6['label_episodes']}"
+    out["E8"] = passes(data["step8"]["tests"]["test 1"], data["step8"]["tests"]["test 2"])
+    out["E10"] = passes(data["step10"]["tests"]["test 1"], data["step10"]["tests"]["test 2"])
+    out["E11"] = passes(data["step11"]["test A"], data["step11"]["test B"])
+    if "step12" in data:
+        out["E12"] = "test 1 passes" if data["step12"]["tests"]["test 1"]["passes"] else "test 1 does not pass"
+    else:
+        out["E12"] = "running"
+    return out
+
+
+def overview_table(data, root=ROOT):
+    """Table I: per experiment, its question, the episodes it ran (from the files in OVERVIEW) and its outcome."""
+    out = outcomes(data)
+    rows = []
+    for exp, question, patterns in OVERVIEW:
+        files = episode_files(root, patterns)
+        if exp == "E12" and "step12" not in data:
+            n = "--"
+        else:
+            assert files, (exp, patterns)
+            n = f"{count_rows(files):,}"
+        rows.append([exp, question, n, out[exp]])
+    return table(["Exp.", "Question", "Episodes", "Outcome"], rows)
+
+
+def overview_inputs(root=ROOT) -> dict[str, dict]:
+    """Per experiment: how many episode files Table I counted and one sha256 over their paths and contents."""
+    out = {}
+    for exp, _, patterns in OVERVIEW:
+        files = episode_files(root, patterns)
+        h = hashlib.sha256()
+        for f in files:
+            h.update(str(Path(f).relative_to(root)).encode() + b"\0" + hashlib.sha256(Path(f).read_bytes()).digest())
+        out[exp] = {"files": len(files), "sha256": h.hexdigest()}
+    return out
+
+
 def step12_rows():
     """Step 12's table rows from the analysis's own state lists: (role in the report, label, task, states)."""
     rows = []
@@ -277,6 +387,7 @@ def build(root=ROOT):
     }
     if "step12" in data:
         tables["4.7_step12_second_round.md"] = step12_table(data["step12"])
+    tables["1_overview.md"] = overview_table(data, root)
     return tables
 
 
@@ -293,15 +404,17 @@ def main(argv=None):
         print(f"== {name}\n{text}")
         if a.tex_dir:
             Path(a.tex_dir).mkdir(parents=True, exist_ok=True)
-            (Path(a.tex_dir) / name.replace(".md", ".tex")).write_text(to_tex(text))
+            (Path(a.tex_dir) / name.replace(".md", ".tex")).write_text(to_tex(text, COLSPECS.get(name)))
     commit = subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT, capture_output=True, text=True).stdout.strip()
     used = read_inputs(ROOT)
-    dirty = bool(subprocess.run(["git", "status", "--porcelain", "--", *used.values()], cwd=ROOT,
+    episode_dirs = sorted({str(Path(pat).parent).split("/run")[0] for _, _, pats in OVERVIEW for pat in pats})
+    dirty = bool(subprocess.run(["git", "status", "--porcelain", "--", *used.values(), *episode_dirs], cwd=ROOT,
                                 capture_output=True, text=True).stdout.strip())
     prov = {"command": "python -S noise_reachability/paper_tables.py " + " ".join(argv or sys.argv[1:]),
             "git_commit": commit, "inputs_dirty": dirty, "tables": sorted(tables),
             "inputs": {v: hashlib.sha256((ROOT / v).read_bytes()).hexdigest() for v in used.values()},
-            "optional_inputs_missing": sorted(v for k, v in OPTIONAL_INPUTS.items() if k not in used)}
+            "optional_inputs_missing": sorted(v for k, v in OPTIONAL_INPUTS.items() if k not in used),
+            "overview_episode_files": overview_inputs(ROOT)}
     (out / "tables.json").write_text(json.dumps(prov, indent=1) + "\n")
 
 

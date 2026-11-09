@@ -1,8 +1,9 @@
 {
- "command": "python -S noise_reachability/paper_tables.py --out_dir noise_reachability/paper_tables --tex_dir /home/swagat/GIT/efficient_vla_notes/rss2027_paper/tables",
- "git_commit": "9cb18c68d794c0aa9fd950cb18c1e758e87ac7a3",
+ "command": "python -S noise_reachability/paper_tables.py --out_dir noise_reachability/paper_tables --tex_dir /home/swagat/GIT/efficient_vla_notes/rss2027_paper/tables_v2",
+ "git_commit": "8634956e35b630b7b3716b31c58008acb9c7498b",
  "inputs_dirty": false,
  "tables": [
+  "1_overview.md",
   "3_controls.md",
   "3_harness.md",
   "4.1_headroom.md",
@@ -25,6 +26,64 @@
   "week6/noise_reachability_step11_kaggle/run/step11_report.txt.json": "cd2b9b6446bf0726c4cb0c4d061d7eb87d69231ab7cf3ae5102e9bb2d0bd35b1",
   "week6/noise_reachability_step10_kaggle/run/runs/N0_0/provenance.jsonl": "d743bfdb40bcab6d71548e54252279ad3ad0c731ee3fb87f54082c7def12752b",
   "week6/noise_reachability_step10_kaggle/run/runs/N6_0/provenance.jsonl": "6b3b667915faac4ccb59e2910ed1f233a103db052afb143401b7f49c49069587",
-  "week6/noise_reachability_step10_kaggle/run/runs/N7_0/provenance.jsonl": "3c37fb3bf3ec23e4a824415322506878259c334ff18d81835172a2c16441effa"
+  "week6/noise_reachability_step10_kaggle/run/runs/N7_0/provenance.jsonl": "3c37fb3bf3ec23e4a824415322506878259c334ff18d81835172a2c16441effa",
+  "week6/noise_reachability_step6_kaggle/run/step6_report.txt.json": "91fa78c813fab1e4b83c667293a06bde12adc2208fee25594b12ca8ef80a1e50"
+ },
+ "optional_inputs_missing": [
+  "week6/noise_reachability_step12_kaggle/run/step12_report.txt.json"
+ ],
+ "overview_episode_files": {
+  "E1": {
+   "files": 2,
+   "sha256": "11f59ef90375f037c51693a59a6fc0a3b5992ab3630b8474f7eeda5e70064cd2"
+  },
+  "E2": {
+   "files": 40,
+   "sha256": "452af40219d6cee9710038810674016583173db44c85dcbe1e237496b3420e39"
+  },
+  "E3": {
+   "files": 10,
+   "sha256": "162f1cbb57b517e406313e22b3bd1318ed10d92c67a0fdcd9c286dff13682330"
+  },
+  "E4": {
+   "files": 40,
+   "sha256": "051c3f5bd44f7ce7a1d532e99368630b74a7b5865ee2a4323b1990fbc56f959a"
+  },
+  "E5a": {
+   "files": 37,
+   "sha256": "2936eaf3fd5cfbf5d7350f50654dc2219bd3b5ef520995bf0d5f6242d82c4091"
+  },
+  "E5b": {
+   "files": 27,
+   "sha256": "a41d692c12ce72c855d905f4b4287a55b0f70c0ec413a2b732f31ceee37e5248"
+  },
+  "E6": {
+   "files": 32,
+   "sha256": "5212389bff1bee5535308e9e9d15c9a71cca5a3bd0160034d6ea1a5afce0b530"
+  },
+  "E7": {
+   "files": 42,
+   "sha256": "54c6e67c1195068962aead742526c26c0a0c372e5d5150c9b59cac7376c775a3"
+  },
+  "E8": {
+   "files": 108,
+   "sha256": "24a92b3f046c0c7eea2524b66196524601c29d12c48ec76eaaeab34aa7479d6e"
+  },
+  "E9": {
+   "files": 28,
+   "sha256": "434a73e6b9d74eabd92e8b561c07311ea0bc1262a312b56b5ab3b45115163126"
+  },
+  "E10": {
+   "files": 141,
+   "sha256": "55371b0a79e3f05287c67ec8b861708f7277688620558efd0d86af98c7998c25"
+  },
+  "E11": {
+   "files": 20,
+   "sha256": "68b7d36460e56bc17b724e4f02352ab35b00767b0a70bc1a4fa010c75a303e02"
+  },
+  "E12": {
+   "files": 0,
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
  }
 }
