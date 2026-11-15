@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import argparse
 import faulthandler
+import hashlib
 import json
 import os
 import resource
@@ -220,6 +221,25 @@ def split_episodes(data_dir, selection, val_init_states, seed, val_demo_every=0)
     return [paths[rest[k]] for k in chosen], [paths[val[k]] for k in val_chosen], metas
 
 
+def file_sha256(path) -> str:
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for block in iter(lambda: f.read(1 << 20), b""):
+            h.update(block)
+    return h.hexdigest()
+
+
+def data_provenance(train_paths, val_paths, metas) -> dict:
+    """What a training run read: episode names (as before) and, since 2026-11-15, the sha256 of every training and
+    validation file, so a later check can tell a re-recorded episode under the same name from the original."""
+    return {"train_episodes": [p.name for p in train_paths], "val_episodes": [p.name for p in val_paths],
+            "train_episode_sha256": {p.name: file_sha256(p) for p in train_paths},
+            "val_episode_sha256": {p.name: file_sha256(p) for p in val_paths},
+            "n_collected": len(metas), "n_collected_success": sum(m["success"] for m in metas),
+            "n_demonstrations": sum(map(is_demo, metas)),
+            "demo_datasets": sorted({f"{m['dataset']}@{m['dataset_revision']}" for m in metas if is_demo(m)})}
+
+
 def policy_batch(sample_batch: dict, preprocessor, device) -> dict:
     """Collated RolloutDataset samples -> the batch SmolVLA's forward expects (renamed, normalised, tokenised)."""
     batch = dict(sample_batch)
@@ -274,11 +294,7 @@ def train(args) -> int:
     check_episode_metas(metas, args)
     out = Path(args.output_dir)
     out.mkdir(parents=True, exist_ok=True)
-    data_info = {"train_episodes": [p.name for p in train_paths], "val_episodes": [p.name for p in val_paths],
-                 "n_collected": len(metas), "n_collected_success": sum(m["success"] for m in metas),
-                 "n_demonstrations": sum(map(is_demo, metas)),
-                 "demo_datasets": sorted({f"{m['dataset']}@{m['dataset_revision']}" for m in metas if is_demo(m)})}
-    write_provenance(out, args, {"stage": "train", **data_info})
+    write_provenance(out, args, {"stage": "train", **data_provenance(train_paths, val_paths, metas)})
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     base = load_base_policy(args.policy_path, libero_env_config(args.task_id, episode_length=args.max_steps),

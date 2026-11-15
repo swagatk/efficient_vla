@@ -207,6 +207,24 @@ def test_split_holds_out_validation_init_states(tmp_path):
     assert len(train) == 2 and not {p.name for p in train} & {"seed0_init13.npz", "seed0_init14.npz"}
 
 
+def test_data_provenance_hashes_every_file_and_sees_a_rerecording(tmp_path):
+    import hashlib
+
+    import self_filtered_bc as sfbc
+
+    save_fake_episodes(tmp_path, [(10, True), (11, False), (12, True), (13, True)])
+    train, val, metas = sfbc.split_episodes(tmp_path, "success", {13}, seed=0)
+    info = sfbc.data_provenance(train, val, metas)
+    assert info["train_episodes"] == ["seed0_init10.npz", "seed0_init12.npz"] and info["val_episodes"] == ["seed0_init13.npz"]
+    assert info["n_collected"] == 4 and info["n_collected_success"] == 3 and info["n_demonstrations"] == 0
+    assert set(info["train_episode_sha256"]) == set(info["train_episodes"])
+    assert set(info["val_episode_sha256"]) == set(info["val_episodes"])
+    p = train[0]
+    assert info["train_episode_sha256"][p.name] == hashlib.sha256(p.read_bytes()).hexdigest()
+    p.write_bytes(p.read_bytes() + b"x")                  # same name, different content: the hash must change
+    assert sfbc.data_provenance(train, val, metas)["train_episode_sha256"][p.name] != info["train_episode_sha256"][p.name]
+
+
 def test_policy_batch_passes_pad_mask_after_preprocessing(tmp_path):
     import self_filtered_bc as sfbc
 
