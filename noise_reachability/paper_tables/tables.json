@@ -1,7 +1,7 @@
 {
- "command": "python -S noise_reachability/paper_tables.py --out_dir noise_reachability/paper_tables --tex_dir /home/swagat/GIT/efficient_vla_notes/rss2027_paper/tables_v2",
- "git_commit": "8634956e35b630b7b3716b31c58008acb9c7498b",
- "inputs_dirty": false,
+ "command": "python -S noise_reachability/paper_tables.py --out_dir noise_reachability/paper_tables",
+ "git_commit": "d97ad122d2e39bd9ad309b02478967dacddb3b67",
+ "inputs_dirty": true,
  "tables": [
   "1_overview.md",
   "3_controls.md",
@@ -12,7 +12,8 @@
   "4.3_step8_tests.md",
   "4.4_step9_carry_over.md",
   "4.5_step11_replication.md",
-  "4.6_step10_learned.md"
+  "4.6_step10_learned.md",
+  "4.7_step12_second_round.md"
  ],
  "inputs": {
   "week6/noise_reachability_step1_kaggle/step1_reachability.txt.json": "67a1b70ea581827fb700d938275bd8e2bf44e49b32f8e6239a4edc81af985294",
@@ -27,11 +28,10 @@
   "week6/noise_reachability_step10_kaggle/run/runs/N0_0/provenance.jsonl": "d743bfdb40bcab6d71548e54252279ad3ad0c731ee3fb87f54082c7def12752b",
   "week6/noise_reachability_step10_kaggle/run/runs/N6_0/provenance.jsonl": "6b3b667915faac4ccb59e2910ed1f233a103db052afb143401b7f49c49069587",
   "week6/noise_reachability_step10_kaggle/run/runs/N7_0/provenance.jsonl": "3c37fb3bf3ec23e4a824415322506878259c334ff18d81835172a2c16441effa",
-  "week6/noise_reachability_step6_kaggle/run/step6_report.txt.json": "91fa78c813fab1e4b83c667293a06bde12adc2208fee25594b12ca8ef80a1e50"
+  "week6/noise_reachability_step6_kaggle/run/step6_report.txt.json": "91fa78c813fab1e4b83c667293a06bde12adc2208fee25594b12ca8ef80a1e50",
+  "week6/noise_reachability_step12_kaggle/run/step12_report.txt.json": "09164e7267b262e40ef8bdb0afe64c4d1d44199f163aae91b82c36fb89070888"
  },
- "optional_inputs_missing": [
-  "week6/noise_reachability_step12_kaggle/run/step12_report.txt.json"
- ],
+ "optional_inputs_missing": [],
  "overview_episode_files": {
   "E1": {
    "files": 2,
@@ -82,8 +82,8 @@
    "sha256": "68b7d36460e56bc17b724e4f02352ab35b00767b0a70bc1a4fa010c75a303e02"
   },
   "E12": {
-   "files": 0,
-   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+   "files": 131,
+   "sha256": "268cfc86a26274d362d500704e227bc36637e0e11b4211e6470bf56b4ab74091"
   }
  }
 }

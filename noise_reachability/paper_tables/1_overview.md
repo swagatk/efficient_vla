@@ -12,4 +12,4 @@
 | E9 | Do found noises transfer between states? | 662 | not shown |
 | E10 | Distil noise successes into weights | 2,940 | both tests pass |
 | E11 | Replicate E8 on eight new states | 520 | both tests pass |
-| E12 | Second round of search and training | -- | running |
+| E12 | Second round of search and training | 2,236 | test 1 passes |

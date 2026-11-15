@@ -1,0 +1,39 @@
+step 12: a second round of constant-noise search and training? commit 844f8dbcc61d7f5cfc7803750320700ad69e4dfb
+harness: 12 of 12 of round 1's episodes reproduce step 10 (ok; per task 0 4/4, 6 4/4, 7 4/4)
+search 0/2: 2 of 50 fixed noises succeeded
+search 0/5: 2 of 50 fixed noises succeeded
+search 0/6: 4 of 50 fixed noises succeeded
+search 0/11: 5 of 50 fixed noises succeeded
+search 6/8: 6 of 50 fixed noises succeeded
+search 6/12: 2 of 50 fixed noises succeeded
+search 6/14: 0 of 50 fixed noises succeeded
+search 7/38: 0 of 50 fixed noises succeeded
+training data R0_0: round 1 {8: 18, 6: 9, 11: 7, 7: 2, 2: 1}; round 2 {11: 5, 2: 2, 5: 2, 6: 4}
+training data R0_1: round 1 {8: 18, 6: 9, 11: 7, 7: 2, 2: 1}; round 2 {11: 5, 2: 2, 5: 2, 6: 4}
+training data R0_2: round 1 {8: 18, 6: 9, 11: 7, 7: 2, 2: 1}; round 2 {11: 5, 2: 2, 5: 2, 6: 4}
+training data R6_0: round 1 {8: 23, 12: 10}; round 2 {8: 6, 12: 2}
+training data R6_1: round 1 {8: 23, 12: 10}; round 2 {8: 6, 12: 2}
+training data R6_2: round 1 {8: 23, 12: 10}; round 2 {8: 6, 12: 2}
+training data R7_0: round 1 {33: 33}
+training data R7_1: round 1 {33: 33}
+training data R7_2: round 1 {33: 33}
+task 0 state 2 (searched), of 16: N0 7 (19.8-70.1%), N1 4 (7.3-52.4%), N2 6 (15.2-64.6%), R0 11 (41.3-89.0%), R1 11 (41.3-89.0%), R2 9 (29.9-80.2%)
+task 0 state 5 (searched), of 16: N0 3 (4.0-45.6%), N1 2 (1.6-38.3%), N2 6 (15.2-64.6%), R0 2 (1.6-38.3%), R1 12 (47.6-92.7%), R2 5 (11.0-58.7%)
+task 0 state 6 (searched), of 16: N0 5 (11.0-58.7%), N1 4 (7.3-52.4%), N2 4 (7.3-52.4%), R0 6 (15.2-64.6%), R1 5 (11.0-58.7%), R2 4 (7.3-52.4%)
+task 0 state 8 (check), of 16: N0 12 (47.6-92.7%), N1 13 (54.4-96.0%), N2 16 (79.4-100.0%), R0 10 (35.4-84.8%), R1 12 (47.6-92.7%), R2 10 (35.4-84.8%)
+task 0 state 11 (searched), of 16: N0 5 (11.0-58.7%), N1 6 (15.2-64.6%), N2 8 (24.7-75.3%), R0 15 (69.8-99.8%), R1 14 (61.7-98.4%), R2 12 (47.6-92.7%)
+task 6 state 8 (searched), of 32: N0 4 (3.5-29.0%), N1 5 (5.3-32.8%), N2 7 (9.3-40.0%), R0 5 (5.3-32.8%), R1 10 (16.1-50.0%), R2 8 (11.5-43.4%)
+task 6 state 12 (searched), of 32: N0 4 (3.5-29.0%), N1 6 (7.2-36.4%), N2 1 (0.1-16.2%), R0 6 (7.2-36.4%), R1 5 (5.3-32.8%), R2 8 (11.5-43.4%)
+task 6 state 14 (searched), of 32: N0 0 (0.0-10.9%), N1 0 (0.0-10.9%), N2 0 (0.0-10.9%), R0 0 (0.0-10.9%), R1 0 (0.0-10.9%), R2 0 (0.0-10.9%)
+task 6 state 20 (held out), of 32: N0 0 (0.0-10.9%), N1 0 (0.0-10.9%), N2 0 (0.0-10.9%), R0 0 (0.0-10.9%), R1 0 (0.0-10.9%), R2 0 (0.0-10.9%)
+task 7 state 33 (check), of 32: N0 28 (71.0-96.5%), N1 26 (63.6-92.8%), N2 26 (63.6-92.8%), R0 28 (71.0-96.5%), R1 26 (63.6-92.8%), R2 26 (63.6-92.8%)
+task 7 state 38 (searched), of 32: N0 1 (0.1-16.2%), N1 0 (0.0-10.9%), N2 0 (0.0-10.9%), R0 1 (0.1-16.2%), R1 0 (0.0-10.9%), R2 0 (0.0-10.9%)
+task 7 state 47 (held out), of 32: N0 0 (0.0-10.9%), N1 1 (0.1-16.2%), N2 0 (0.0-10.9%), R0 0 (0.0-10.9%), R1 1 (0.1-16.2%), R2 0 (0.0-10.9%)
+test 1, R0 against N0 on searched states: 46 against 29 of 192 (only R 27, only N 10), one-sided p 0.00382
+test 1, R1 against N1 on searched states: 57 against 27 of 192 (only R 39, only N 9), one-sided p 7.61e-06
+test 1, R2 against N2 on searched states: 46 against 32 of 192 (only R 26, only N 12), one-sided p 0.0168
+test 1 passes (p < 0.05 in at least 2 of 3 seeds)
+reported, held out, R against N, seeds pooled: 1 against 1 of 192 (only R 0, only N 0), one-sided p 1, two-sided p 1
+reported, check states, R against N, seeds pooled: 112 against 121 of 144 (only R 2, only N 11), one-sided p 0.998, two-sided p 0.0225
+reported, searched, R against N, seeds pooled: 149 against 88 of 576 (only R 92, only N 31), one-sided p 1.66e-08, two-sided p 3.32e-08
+decision: a second round of constant-noise search and training improves on the first on the states the first left weak

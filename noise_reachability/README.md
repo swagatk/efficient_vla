@@ -1099,6 +1099,13 @@ LoRA setting. If a searched state yields no search success, R has no new data th
 **Compute (estimate).** At step 10's rates (about 170 evaluation episodes per hour on 2 x T4, 2.7-3.2 h per adapter, two
 at a time): search about 2.4 h, training about 15 h, evaluation about 10.7 h; about 28 h over three sessions of 11 h.
 
+**Result (Kaggle, 2026-11-08/14; `week6/noise_reachability_step12_kaggle/`).** Test 1 passes in all three seeds: R
+against N on the searched states 46/29, 57/27 and 46/32 of 192 (one-sided McNemar p 0.0038, 7.6e-6, 0.017); pooled
+149 against 88 of 576 (+10.6 points). The gain is on the states that got new data (task 0 60 to 106 of 192, task 6 27
+to 42 of 288); 6/14 and 7/38, with no search success, did not move. Held out 1 against 1 of 192 (no transfer). Check
+states 112 against 121 of 144 (two-sided p 0.023), all on 0/8 (41 to 32 of 48). R7 equals N7 in all 288 episodes, so
+evaluation was deterministic.
+
 ## Compute
 
 Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a month) for steps 2-4. At
@@ -1121,7 +1128,7 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
 | 9 | Kaggle 2 x T4 | done: 662 episodes, 3.9 h between first and last provenance records, one session |
 | 10 | Kaggle 2 x T4 | estimate: 2,940 episodes and 12 adapters, about 32 h over four sessions |
 | 11 | Kaggle 2 x T4 | done: 520 episodes, 2.9 h between first and last provenance records, one session |
-| 12 | Kaggle 2 x T4 | estimate: at most 2,236 episodes and 9 adapters, about 28 h over three sessions |
+| 12 | Kaggle 2 x T4 | done: 2,236 episodes and 9 adapters over three sessions (10.8 h, 10.8 h and 6.8 h between first and last provenance records) |
 
 ## Files
 
@@ -1176,7 +1183,7 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
 Steps 0, 1 and 2 done (above); step 2 is a negative result. Step 3 ran on Colab and failed as a test: the
 critic diverged (above). Step 3b (whether a Monte Carlo critic can tell the base's own noises apart) ran on
 Kaggle and is not read: its shuffled-noise control was biased (above). Step 4 ran on Kaggle (above, 2026-10-31): negative, no arm meets the hypothesis. Step 5a ran on Colab (above, 2026-10-31): "mostly reachable", all 5 systematic states reached by fixed noises, none by
-sampled noise. Step 5b ran on Colab (above, 2026-11-01): no reading on transfer, the learner did not learn at this budget. Step 6 ran on Kaggle (above, 2026-11-01): the labels hold; B's gain was not informative. Step 7 ran on Kaggle (above, 2026-11-02): existence only, `repeat` did not beat `sampled`, and on two of the three states sampling also solved the state. Step 8 ran on Kaggle (above, 2026-11-03): both tests pass, `repeat` beats `sampled` on 6/8 and on four unlabelled states chosen in advance, pooled. Step 9 ran on Kaggle (above, 2026-11-03): not shown, the library did not beat fresh noises pooled (p 0.408); exploratory, it helped on 0/14 and hurt on task 7. Step 10 ran on Kaggle (above, 2026-11-04/08): both tests pass, N learns the trained states (37-43% against the base 0.5%) and beats A on task 0; it transfers to task 0's held-out states but not to those of tasks 6 and 7. Step 11 ran on Kaggle (above, 2026-11-08): replicated, fixed noise beats sampling on step 9's eight states (p 3.4e-5) and without task 7 (p 0.018). Step 12 (a second round of constant-noise search and training) is running on Kaggle (protocol above, 2026-11-08): session 1 of about three passed its checks (`week6/noise_reachability_step12_kaggle/`); task 7's search found no success, so R7 trains on N7's set and test 1 can gain only on tasks 0 and 6.
+sampled noise. Step 5b ran on Colab (above, 2026-11-01): no reading on transfer, the learner did not learn at this budget. Step 6 ran on Kaggle (above, 2026-11-01): the labels hold; B's gain was not informative. Step 7 ran on Kaggle (above, 2026-11-02): existence only, `repeat` did not beat `sampled`, and on two of the three states sampling also solved the state. Step 8 ran on Kaggle (above, 2026-11-03): both tests pass, `repeat` beats `sampled` on 6/8 and on four unlabelled states chosen in advance, pooled. Step 9 ran on Kaggle (above, 2026-11-03): not shown, the library did not beat fresh noises pooled (p 0.408); exploratory, it helped on 0/14 and hurt on task 7. Step 10 ran on Kaggle (above, 2026-11-04/08): both tests pass, N learns the trained states (37-43% against the base 0.5%) and beats A on task 0; it transfers to task 0's held-out states but not to those of tasks 6 and 7. Step 11 ran on Kaggle (above, 2026-11-08): replicated, fixed noise beats sampling on step 9's eight states (p 3.4e-5) and without task 7 (p 0.018). Step 12 ran on Kaggle (above, 2026-11-08/14): test 1 passes, a second round of search and training beats the first on the states it left weak in 3/3 seeds (+10.6 points pooled); no transfer to the held-out states, and round 1's best state 0/8 lost ground (41 to 32 of 48).
 
 Before step 0 ran, smoke tests on the local RTX 4090 (shared with another job), one episode each of task 0,
 seed 0, init state 0: `n_action_steps=10` through `evaluate_all.py` and `n_action_steps=50` through

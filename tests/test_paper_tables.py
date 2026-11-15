@@ -149,7 +149,11 @@ def test_step12_table_is_built_only_when_the_report_exists(tmp_path, monkeypatch
     import json
     r, _ = _step12_report(tmp_path)
     missing.write_text(json.dumps(r))
-    with pytest.raises(AssertionError, match="E12"):        # a step-12 report but no committed E12 episode files
+    # A step-12 report but no E12 episode files must be refused. E12's run is committed since 2026-11-15, so its
+    # patterns are pointed at a path that does not exist instead of relying on the repo having no files there.
+    no_files = tuple((e, q, ("week6/no_such_step12_run/*.csv",)) if e == "E12" else (e, q, p) for e, q, p in pt.OVERVIEW)
+    monkeypatch.setattr(pt, "OVERVIEW", no_files)
+    with pytest.raises(AssertionError, match="E12"):
         pt.build(ROOT)
     monkeypatch.setattr(pt, "OVERVIEW", tuple(x for x in pt.OVERVIEW if x[0] != "E12"))
     t = pt.build(ROOT)
@@ -166,7 +170,7 @@ def test_overview_counts_every_experiment_from_its_files():
             "E4": ("1,430", "negative"), "E5a": ("1,249", "all 5 reached"), "E5b": ("5,280", "did not learn"),
             "E6": ("1,280", "yes, 1 of 48"), "E7": ("1,095", "failed; labels too coarse"),
             "E8": ("3,172", "both tests pass"), "E9": ("662", "not shown"), "E10": ("2,940", "both tests pass"),
-            "E11": ("520", "both tests pass"), "E12": ("--", "running")}
+            "E11": ("520", "both tests pass"), "E12": ("2,236", "test 1 passes")}   # 12 harness + 400 search + 1,824 eval
     rows = {c[0]: (c[2], c[3]) for c in ([x.strip() for x in l.strip("|").split("|")] for l in t.splitlines()[2:])}
     assert rows == want
 
