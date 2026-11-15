@@ -1103,7 +1103,7 @@ at a time): search about 2.4 h, training about 15 h, evaluation about 10.7 h; ab
 against N on the searched states 46/29, 57/27 and 46/32 of 192 (one-sided McNemar p 0.0038, 7.6e-6, 0.017); pooled
 149 against 88 of 576 (+10.6 points). The gain is on the states that got new data (task 0 60 to 106 of 192, task 6 27
 to 42 of 288); 6/14 and 7/38, with no search success, did not move. Held out 1 against 1 of 192 (no transfer). Check
-states 112 against 121 of 144 (two-sided p 0.023), all on 0/8 (41 to 32 of 48). R7 equals N7 in all 288 episodes, so
+states 112 against 121 of 144 (two-sided p 0.022), all on 0/8 (41 to 32 of 48). R7 equals N7 in all 288 episodes, so
 evaluation was deterministic.
 
 ## Compute
