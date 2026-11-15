@@ -20,11 +20,16 @@ recordings: the Kaggle output of `expert-iteration-step-12`, archived (see `tool
 
 Pooled over seeds 149 of 576 against 88 of 576 (+10.6 points; mean over seeds +10.6, std 4.4). The hypothesis'
 10 points is met on average, by seed 1 alone of the three; as the protocol says, the pass shows improvement, not its
-size. The gain is where round 2 added data: task 0 60 to 106 of 192 (mostly 0/2 and 0/11), task 6 27 to 42 of 288;
+size. The gain is where round 2 added data: task 0 60 to 106 of 192 (64 episodes per seed, three seeds pooled; mostly 0/2 and 0/11), task 6 27 to 42 of
+288 (96 per seed, pooled);
 6/14 0 in every policy, 7/38 1 against 1.
 
 Reported, not part of the rule: held out (6/20, 7/47) 1 against 1 of 192, no transfer; check states 112 against 121
-of 144 (two-sided p 0.0225), all on 0/8 (N 41, R 32 of 48): round 2 lost part of round 1's gain on its best state.
+of 144, all on 0/8: R below N in every seed (R0-R2 10, 12, 10 of 16 against N0-N2 12, 13, 16), most of it in seed 2
+(N2 was 16 of 16), so round 2 may cost part of round 1's gain on its best state. The report's seeds-pooled McNemar
+(two-sided p 0.0225) is not quoted: N0-N2 and R0-R2 share their evaluation episodes and evaluation is deterministic,
+so the 3 x 48 pairs are not independent and the pooled p overstates the evidence (independent review, 2026-11-15).
+The same holds for the report's pooled searched-state p (1.66e-08); test 1, per seed, is not affected.
 
 **Checks.** R7_<s> trained on N7_<s>'s set with the same seed, and its 96 evaluation episodes equal N7_<s>'s in success
 and steps for every seed (288 of 288): evaluation is deterministic here, so the differences on tasks 0 and 6 come from

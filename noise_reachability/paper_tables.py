@@ -356,11 +356,13 @@ def step12_table(r):
             + ", ".join(f"{v['p']:.2g}" for v in seeds.values())
             + f"; {'passes' if t1['passes'] else 'does not pass'} (p < 0.05 in at least {s12.MIN_SEEDS} of "
             + f"{len(s12.TRAIN_SEEDS)} seeds).")
+    # N0-N2 and R0-R2 are evaluated on the same episodes, so the report's McNemar over the seeds-pooled pairs treats
+    # correlated pairs as independent and overstates the evidence: pooled counts only, per-seed counts in the rows.
     for key, label in (("held out, R against N, seeds pooled", "Held out"),
                        ("check states, R against N, seeds pooled", "Check")):
         v = r["reported"][key]
-        note += (f" {label}, seeds pooled: R {v['first']} against N {v['second']} of {v['n']}, two-sided p "
-                 f"{v['p_two_sided']:.2g}.")
+        note += f" {label}, seeds pooled: R {v['first']} against N {v['second']} of {v['n']}."
+    note += " No pooled p-value: the seeds share their evaluation episodes."
     header = ["Role", "States", "Search", "n", "N0, N1, N2", "R0, R1, R2"]
     return table(header, rows) + "\n" + note + "\n"
 

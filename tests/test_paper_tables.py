@@ -121,8 +121,11 @@ def test_step12_table_counts_match_the_analysis(tmp_path):
     assert ("Test 1 (searched states, 192 paired episodes per seed): R0, R1, R2 144, 144, 144 against N0, N1, N2 "
             "24, 24, 24") in t and "; passes (p < 0.05 in at least 2 of 3 seeds)." in t
     v = r["reported"]["held out, R against N, seeds pooled"]
-    assert f"Held out, seeds pooled: R 0 against N {v['second']} of {v['n']}, two-sided p" in t and v["second"] == 96
-    assert "Check, seeds pooled: R 36 against N 36 of 144, two-sided p 1." in t   # 0/8 4 x 3, 7/33 8 x 3
+    assert f"Held out, seeds pooled: R 0 against N {v['second']} of {v['n']}." in t and v["second"] == 96
+    assert "Check, seeds pooled: R 36 against N 36 of 144." in t   # 0/8 4 x 3, 7/33 8 x 3
+    # N0-N2 and R0-R2 share their evaluation episodes, so a McNemar over the seeds-pooled pairs treats correlated
+    # pairs as independent: the table gives pooled counts only (per-seed counts are in the rows), never a pooled p.
+    assert "two-sided p" not in t and "seeds share their evaluation episodes" in t
 
 
 def test_step12_table_refuses_a_state_with_another_role(tmp_path):
