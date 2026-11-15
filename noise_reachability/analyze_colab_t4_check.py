@@ -88,7 +88,7 @@ def provenance(root, step10=STEP10) -> dict:
                     raise ValueError(f"{path}: policy {st['policy_path']}")
                 if flag == "lora" and Path(st["lora_dir"]).parent.name != f"N{t}_0":
                     raise ValueError(f"{path}: adapter {st['lora_dir']}, expected step 10's N{t}_0")
-                if r.get("git_dirty") or not r.get("git_commit"):
+                if r.get("git_dirty") is not False or r.get("git_dirty_sfbc") is not False or not r.get("git_commit"):
                     raise ValueError(f"{path}: commit {r.get('git_commit')}, dirty {r.get('git_dirty')}")
                 if not r.get("gpus") or any("T4" not in g for g in r["gpus"]):
                     raise ValueError(f"{path}: GPUs {r.get('gpus')}, expected T4")

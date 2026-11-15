@@ -51,7 +51,7 @@ def make_run(root, change=None, gpus=T4, settings=None, packages=None):
                   "policy_path": "/x/snapshots/a24f1f380461b665158d52acd140152c79e8b36d",
                   "lora_dir": f"/content/drive/in/N{t}_0/adapter"}
             st.update((settings or {}).get((pol, t), {}))
-            rec = {"git_commit": "abc", "git_dirty": False, "gpus": gpus, "settings": st,
+            rec = {"git_commit": "abc", "git_dirty": False, "git_dirty_sfbc": False, "gpus": gpus, "settings": st,
                    "packages": packages or {"torch": {"version": "2.11.0"}}}
             (d / "provenance.jsonl").write_text(json.dumps(rec) + "\n")
 
@@ -191,3 +191,13 @@ def test_same_packages_in_another_key_order_are_one_set(tmp_path, step10):
     rec = json.loads(p.read_text())
     p.write_text(json.dumps(dict(rec, packages={"torch": {"version": "2.11.0"}, "a": 1})) + "\n")
     c.provenance(tmp_path / "run", step10)
+
+
+@pytest.mark.parametrize("change", [{"git_dirty_sfbc": True}, {"git_dirty": None}, {"git_dirty_sfbc": None}])
+def test_refuses_missing_or_dirty_flags(tmp_path, step10, change):
+    make_run(tmp_path / "run")
+    p = tmp_path / "run" / "task_6" / "base" / "provenance.jsonl"
+    rec = dict(json.loads(p.read_text()), **change)
+    p.write_text(json.dumps({k: v for k, v in rec.items() if v is not None}) + "\n")
+    with pytest.raises(ValueError, match="dirty"):
+        c.provenance(tmp_path / "run", step10)
