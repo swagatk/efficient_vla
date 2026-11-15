@@ -1107,6 +1107,69 @@ states 112 against 121 of 144, all on 0/8: R below N in every seed (10, 12, 10 a
 seed 2; the report's seeds-pooled p is not quoted, since the seeds share their evaluation episodes. R7 equals N7 in all 288 episodes, so
 evaluation was deterministic.
 
+## Step 14: is round 2's loss on 0/8 real, and is it dilution? (design 2026-11-15)
+
+In step 12, round 2's adapters R0_s scored below round 1's N0_s on round 1's best trained state 0/8 in every training
+seed (R 10, 12, 10 against N 12, 13, 16 of 16), most of it in seed 2. The base never solves 0/8 (0 of 16 in step 10), so
+the gain there comes only from training on its constant-noise successes. R0_s trained on round 1's 37 task-0 episodes
+plus 13 search successes, for the same 2,000 steps as N0_s. Training samples frames uniformly, and R0_s's set has 7,309
+frames against N0_s's 5,473 (the archived recordings), so each frame, 0/8's 2,582 among them, was sampled about 25% less
+often. Step 14 asks whether the loss is real and whether this dilution causes it. Task 0 only; no search.
+
+**Hypothesis.** Written before any step-14 episode. (A) On 0/8 with fresh seeds, N0_s succeeds more often than R0_s
+(step 12: 85% against 67%, seeds pooled). (B) An adapter L0_s trained on exactly R0_s's training set but for 2,671
+steps, so that each frame is sampled as often as in round 1 (2,000 x 7,309 / 5,473 steps), succeeds more often on 0/8 than
+R0_s, close to N0_s. Step 12's 0/8 gap rests mostly on one seed, so the true gap may well be smaller than 0.19.
+
+**Protocol (fixed before the run).** `lerobot/smolvla_libero` at `a24f1f3804`, `n_action_steps=10`, 520 steps, hard
+resets, Kaggle 2 x T4. Inputs: step 10's last Kaggle version (adapters N0_s, round 1's recordings) and step 12's last
+version (adapters R0_s, the search's recordings).
+
+- *Harness, first, stops the run.* N0_0 on step 12's harness episodes (0/8, seeds 16-19) and R0_0 on four of step 12's
+  own evaluation episodes (0/8, seeds 48-51): at least 7 of these 8 must equal the committed rows (success and steps).
+- *Training.* L0_s for training seeds 0-2: `self_filtered_bc.py --stage train` with step 10's and step 12's settings
+  (LoRA r16/alpha32 on the action expert's seven projections, batch 16, lr 1e-4, warmup 100, `--selection success`, no
+  validation states), from the base, on the same recordings as R0_s (step 10's task-0 recordings and step 12's task-0
+  search successes), except `--train_steps 2671`. The cosine schedule decays over the run, so it is stretched with it.
+  The analysis refuses an L0_s whose training episodes are not exactly R0_s's (step 12's committed provenance).
+- *Evaluation, sampled noise, fresh seeds* (none used before; step 10 used 16-47, step 12 48-79). *Check:* 0/8 x seeds
+  80-175 (96) for N0-N2, R0-R2 and L0-L2: 864 episodes. *Searched:* 0/2, 0/5, 0/6, 0/11 x seeds 80-95 (16) for R0-R2 and
+  L0-L2: 384 episodes.
+
+At most 8 + 864 + 384 = 1,256 episodes and 3 adapters.
+
+**Rule.** *Test A:* per training seed s, N_s against R_s on 0/8 (96 paired episodes), exact one-sided McNemar (N
+better); passes if p < 0.05 in at least 2 of 3 seeds. *Test B:* per seed, L_s against R_s on 0/8, one-sided (L better),
+the same 2-of-3 rule. The two answer different questions and are read separately. *Reported, not part of the rule:* L
+against N on 0/8 per seed (two-sided), L against R on the searched states per seed (two-sided: does longer training
+keep round 2's gain?), per-state counts with exact intervals, and counts pooled over seeds without a pooled p (the
+seeds share their evaluation episodes, so pooled pairs are not independent). *Reading:* the harness failed: not read.
+A and B pass: round 2's loss on 0/8 is real and training long enough to keep round 1's passes per episode reduces it,
+so dilution is a cause. A passes, B does not: the loss is real; longer training was not shown to remove it. A does not
+pass: the loss is not replicated at this budget, and B, if it passes, shows only that longer training raises 0/8 above
+R.
+
+**Power (`calibration/step14_power.py`, Monte Carlo, independent episodes; the cautious side; output in
+`week6/noise_reachability_step14_kaggle/step14_power.txt`).** Higher policy at step 12's N rate on 0/8 (0.854), 96
+episodes per seed, 2-of-3 rule: equal rates pass 0.003 of the time; a gap of 0.05 passes 0.086, 0.10 0.474, 0.19
+(step 12's) 0.974. At 64 episodes per seed the last two would be 0.271 and 0.845. The three seeds share their
+evaluation episodes, so their tests are correlated and the false-pass rate of the 2-of-3 rule is above the 0.003 of
+independent seeds (at most the per-seed rate, about 0.05; step 12 has the same property).
+
+**What it cannot show.** One task, one state for the loss; one way of compensating for dilution (more steps; balanced
+sampling between rounds is another). A pass of B does not separate "more passes per round-1 episode" from "more training
+overall".
+
+**Compute (estimate).** N and R are evaluated first (768 episodes, about 4.5 h at about 170 per hour), then L0_0 and
+L0_1 train together and L0_2 alone (about 3.8 h each at step 12's 5.2 s per step; one T4 waits during the third), then L
+is evaluated (480 episodes, about 2.8 h): about 15 h, two sessions.
+
+**Checks before the run (2026-11-15).** The union of step 10's and step 12's archived task-0 recordings, put through
+`self_filtered_bc.split_episodes` with `--selection success`, gives exactly R0_s's committed 50 training episodes, in
+the same order, for all three seeds. `check_step14_data.py`, which the
+notebook runs on the linked folder before training, reports the same. One 0/8 episode of R0_0 (archived adapter) ran locally through the notebook's
+evaluation command and wrote the folder layout and provenance the analysis reads.
+
 ## Colab T4 check: does a Colab T4 reproduce Kaggle T4 episodes? (design 2026-11-15)
 
 Not an experiment of the paper but a check of the platform, before Colab T4 time (Colab Pro, about 1.15 compute units
@@ -1203,6 +1266,9 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
   --record_dir`), training and evaluation (`self_filtered_bc/self_filtered_bc.py`) on Kaggle over several sessions.
 - `analyze_step11.py`: step-11 harness gate, jobs, the pairing with step 9's committed `repeat` arm, tests A and B and
   reading; `kaggle_step11_replication.ipynb` (built by `build_step11_notebook.py`) runs it on Kaggle.
+- `analyze_step14.py`: step-14 harness gate, provenance per folder, L's training set against R's, tests A and B
+  and reading; `kaggle_step14_dilution.ipynb` (built by `build_step14_notebook.py`) runs it on Kaggle;
+  `calibration/step14_power.py`: the power table.
 - `analyze_colab_t4_check.py`, `colab_t4_check.ipynb` (built by `build_colab_t4_check_notebook.py`): the Colab T4
   check (does a Colab T4 reproduce 24 Kaggle T4 episodes of step 10 exactly).
 - `analyze_step12.py`: step-12 state selection from step 10's report, harness gate (round 1's adapter against step

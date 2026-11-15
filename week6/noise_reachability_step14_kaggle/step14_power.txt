@@ -1,0 +1,5 @@
+step 12 on 0/8: N 0.854, R 0.667 (seeds pooled)
+n = 32 episodes per seed on 0/8, higher policy at 0.854: P(pass) gap 0.00: 0.001, gap 0.05: 0.013, gap 0.10: 0.069, gap 0.19: 0.396
+n = 48 episodes per seed on 0/8, higher policy at 0.854: P(pass) gap 0.00: 0.003, gap 0.05: 0.032, gap 0.10: 0.162, gap 0.19: 0.678
+n = 64 episodes per seed on 0/8, higher policy at 0.854: P(pass) gap 0.00: 0.003, gap 0.05: 0.051, gap 0.10: 0.271, gap 0.19: 0.845
+n = 96 episodes per seed on 0/8, higher policy at 0.854: P(pass) gap 0.00: 0.003, gap 0.05: 0.086, gap 0.10: 0.474, gap 0.19: 0.974
