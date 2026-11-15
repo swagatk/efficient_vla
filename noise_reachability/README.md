@@ -1107,6 +1107,36 @@ states 112 against 121 of 144, all on 0/8: R below N in every seed (10, 12, 10 a
 seed 2; the report's seeds-pooled p is not quoted, since the seeds share their evaluation episodes. R7 equals N7 in all 288 episodes, so
 evaluation was deterministic.
 
+## Colab T4 check: does a Colab T4 reproduce Kaggle T4 episodes? (design 2026-11-15)
+
+Not an experiment of the paper but a check of the platform, before Colab T4 time (Colab Pro, about 1.15 compute units
+per hour) is used for experiments that pair with, or continue, the Kaggle T4 runs. A fixed noise reproduces an episode
+on the same GPU type but not across types (all 73 Kaggle T4 successes replayed on Kaggle T4; 30 of 49 A100 successes
+replayed on T4). The same GPU model on another platform can still differ through the driver, the CUDA build of PyTorch
+or the image's libraries, so the question is tested, not assumed.
+
+**Protocol (fixed before the run).** `lerobot/smolvla_libero` at `a24f1f3804`, `n_action_steps=10`, 520 steps, the
+install of the Kaggle notebooks (step 8's cells), Colab T4 runtime. Episodes: step 12's harness episodes, task 0 state 8,
+task 6 state 8, task 7 state 33, seeds 16-19 (12 episodes), each run twice: by the frozen base and by step 10's adapter
+N<t>_0 (24 episodes). Step 10 ran all 24 on Kaggle T4 (`week6/noise_reachability_step10_kaggle/run/task_<t>/eval/
+<base|N0>/`), and step 12's harness reproduced the 12 N0 episodes on Kaggle T4 in 12 of 12. The adapters are step 10's
+archived files, read from the archive's copy on Google Drive and checked against their sha256. `noise_reachability/colab_t4_check.ipynb` (built by
+`build_colab_t4_check_notebook.py`); `analyze_colab_t4_check.py` compares.
+
+**Rule.** An episode reproduces if its success and its number of steps equal step 10's. Colab T4 is interchangeable
+with Kaggle T4 for paired comparisons and for continuing the Kaggle runs if at least 11 of 12 reproduce for each policy
+(the threshold step 12 used for its own sessions). Otherwise Colab T4 is used only for self-contained experiments, in
+which every compared arm runs on Colab T4. The analysis reports the episodes that differ and whether the package
+versions equal step 10's, and refuses a run on another GPU, at other settings, or with missing or extra episodes.
+
+**What it cannot show.** 24 episodes on three tasks: a pass makes large differences unlikely, not impossible; a Colab
+session on another driver could still differ, so a Colab experiment that pairs with Kaggle episodes repeats this check
+as its own harness.
+
+**Compute (estimate).** About 1 h with the install, about 1-2 compute units. A local smoke run (RTX 4090) of one base and
+one N0_0 episode through the notebook's command: both ran and wrote the expected files; N0_0's episode took 265 steps
+against 268 on Kaggle T4, an example of the GPU-type sensitivity this checks.
+
 ## Compute
 
 Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a month) for steps 2-4. At
@@ -1173,6 +1203,8 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
   --record_dir`), training and evaluation (`self_filtered_bc/self_filtered_bc.py`) on Kaggle over several sessions.
 - `analyze_step11.py`: step-11 harness gate, jobs, the pairing with step 9's committed `repeat` arm, tests A and B and
   reading; `kaggle_step11_replication.ipynb` (built by `build_step11_notebook.py`) runs it on Kaggle.
+- `analyze_colab_t4_check.py`, `colab_t4_check.ipynb` (built by `build_colab_t4_check_notebook.py`): the Colab T4
+  check (does a Colab T4 reproduce 24 Kaggle T4 episodes of step 10 exactly).
 - `analyze_step12.py`: step-12 state selection from step 10's report, harness gate (round 1's adapter against step
   10's own episodes), provenance per folder, test 1 and reading; `kaggle_step12_expert_iteration.ipynb` (built by
   `build_step12_notebook.py`) runs it on Kaggle. `deep_noise_search.py --lora_dir` searches with an adapter attached.
