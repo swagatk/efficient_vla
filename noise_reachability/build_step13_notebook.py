@@ -37,7 +37,7 @@ N_RUN = sum(len(a.STATES[t]) * len(a.SEEDS) * len(a.run_policies(t)) for t in a.
 N_HARNESS = len(a.TASKS) * len(a.HARNESS_SEEDS)
 SETTINGS = step8_cell("T_SESSION = time.time()")
 SETTINGS = swap(SETTINGS, SETTINGS.split('REPO_REF = "')[1].split('"')[0], REF)
-SETTINGS = SETTINGS[:SETTINGS.index("# The protocol of README.md step 8")] + f'''# The protocol of README.md step 13; nothing here is meant to be edited. The analysis refuses anything else.
+SETTINGS = SETTINGS[:SETTINGS.index("# The protocol of README.md step 8")] + f'''# The protocol of README.md step 13; nothing here but STOP_AT_H is meant to be edited. The analysis refuses anything else.
 CHECKPOINT_REPO, CHECKPOINT_REVISION = "lerobot/smolvla_libero", "a24f1f380461b665158d52acd140152c79e8b36d"
 TASKS = {list(a.TASKS)}
 N_ACTION_STEPS = 10
@@ -53,7 +53,11 @@ RUNS_IN = {{"N": f"{{ARCHIVE}}/noise-reachability-step-10/output/step10/runs",
 ADAPTER_SHA256 = {dict(a.ADAPTER_SHA256)}
 DRIVE_DIR = "/content/drive/MyDrive/efficient_vla_runs/step13"
 OUT_ROOT = f"{{DRIVE_DIR}}/run"
-STOP_AT_H = 20.0                   # no new work after this many hours of the session; running jobs are stopped
+STOP_AT_H = 20.0  #@param {{type:"number"}}
+# STOP_AT_H: the session's length in hours, the one setting meant to be edited (also in the form on the right). At that
+# time no new episodes start, running ones are stopped (re-run next session), then the zip downloads and step 12
+# releases the runtime. Unfinished work continues with the next Run all.
+assert 0.5 <= STOP_AT_H <= 24, f"STOP_AT_H = {{STOP_AT_H}}: choose 0.5-24 hours"
 GB_PER_JOB = 6                     # base policy + one episode in RAM per simulator process
 
 ''' + SETTINGS[SETTINGS.index("# Commits of the editable installs"):]
@@ -93,7 +97,7 @@ whose R weights are N's).
 `noise-reachability-step-10/` and `expert-iteration-step-12/` (as `tools/archive_kaggle_output.sh` wrote them). Step 6
 checks every adapter's sha256 against the archive manifests.
 
-**Runtime: T4 GPU.** **Run all.** Nothing needs editing. Every session first re-runs 12 of step 10's Kaggle T4 episodes
+**Runtime: T4 GPU.** Set the session length `STOP_AT_H` in step 1 (hours, default 20; e.g. 8 for a working day), then **Run all**. Every session first re-runs 12 of step 10's Kaggle T4 episodes
 (harness) and stops if fewer than 11 reproduce. Keep the tab open; about 45 h of runtime in all (estimate), so several
 sessions: after a disconnect or the end of a session, **Run all** again. Finished episodes are kept on Drive and skipped.
 

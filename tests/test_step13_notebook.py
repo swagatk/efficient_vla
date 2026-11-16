@@ -141,3 +141,16 @@ def test_last_cell_syncs_drive_then_releases_the_runtime_even_after_a_failure(tm
                                          "raise RuntimeError(FAILURE)")]
     assert order == sorted(order)
     assert release.index("runtime.unassign()") > release.index("if RELEASE_RUNTIME:")
+
+
+def test_session_length_is_a_form_field_with_a_checked_range(tmp_path):
+    import pytest
+
+    settings = cell(build(tmp_path)[0], "T_SESSION = time.time()")
+    assert 'STOP_AT_H = 20.0  #@param {type:"number"}' in settings
+    for bad in ("30", "0.1"):
+        with pytest.raises(AssertionError, match="choose 0.5-24 hours"):
+            exec(settings.replace("STOP_AT_H = 20.0", f"STOP_AT_H = {bad}"), {})
+    ns = namespace(build(tmp_path)[0])
+    exec(settings.replace("STOP_AT_H = 20.0", "STOP_AT_H = 8"), ns)   # the session clock starts in this cell
+    assert ns["STOP_AT_H"] == 8 and 7.99 < ns["hours_left"]() <= 8
