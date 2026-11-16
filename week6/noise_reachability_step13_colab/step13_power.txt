@@ -1,0 +1,4 @@
+base at 0.4 on 59 states; per seed k episodes per state; change found if two-sided p < 0.05 in at least 2 of 3 seeds in the same direction
+k = 4 (236 pairs per seed): d +0.00: 0.002, d +0.03: 0.013, d +0.05: 0.074, d +0.10: 0.601, d -0.05: 0.077, d -0.10: 0.629
+k = 8 (472 pairs per seed): d +0.00: 0.002, d +0.03: 0.053, d +0.05: 0.244, d +0.10: 0.948, d -0.05: 0.245, d -0.10: 0.954
+k = 12 (708 pairs per seed): d +0.00: 0.004, d +0.03: 0.097, d +0.05: 0.434, d +0.10: 0.996, d -0.05: 0.435, d -0.10: 0.996

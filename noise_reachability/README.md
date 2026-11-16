@@ -1107,6 +1107,59 @@ states 112 against 121 of 144, all on 0/8: R below N in every seed (10, 12, 10 a
 seed 2; the report's seeds-pooled p is not quoted, since the seeds share their evaluation episodes. R7 equals N7 in all 288 episodes, so
 evaluation was deterministic.
 
+## Step 13: do the distilled adapters change success on initial states they never trained on? (design 2026-11-15)
+
+Steps 10 and 12 evaluated their adapters on the trained states, a few check states and two held-out states per task;
+neither showed transfer to held-out states of tasks 6 and 7, and step 10 saw one consistent harm (0/4, base 3 of 16, every
+N 0 of 16). Whether distillation helps or hurts SmolVLA on the rest of a task's initial states, the question for the
+procedure as a whole, was not measured. Step 13 measures it on Colab T4 (interchangeable with Kaggle T4: "Colab T4
+check"). No training.
+
+**Hypothesis.** Written before any step-13 episode. Neither round's adapters change task success on initial states they
+never trained on by 10 points or more (steps 10 and 12 found no transfer to held-out states); a harm is as plausible
+as a gain (0/4).
+
+**Protocol (fixed before the run).** `lerobot/smolvla_libero` at `a24f1f3804`, `n_action_steps=10`, 520 steps, hard
+resets, sampled noise, Colab T4 with step 8's install (one process at a time on a standard runtime).
+
+- *States.* Tasks 0, 6, 7, initial states 30-49, minus every state in any N or R training set (from their committed
+  provenance: only 7/33), so 59 states, chosen by this rule and not by outcome. 7/38 and 7/47 (resistant, searched or
+  held out in step 12) are part of the population.
+- *Policies.* The frozen base, step 10's N<t>_0-N<t>_2 and step 12's R<t>_0-R<t>_2, read from the archive on Google Drive
+  and checked against the archive manifests' sha256. R7_s's weights are byte-identical to N7_s's (step 12 retrained
+  them on the same data with the same seed), so R7_s is not run: its episodes are N7_s's, and the notebook and the
+  analysis check the identity before using it.
+- *Episodes.* Seeds 200-207 (8; no (task, state, seed) episode of these ran before) x the 59 states for each policy: 472 per policy, 3,304 minus R7's 456
+  = 2,848 run.
+- *Harness, every session, stops the session.* N<t>_0 on the Colab T4 check's 12 episodes (step 10's, Kaggle T4): at
+  least 11 of 12 must reproduce exactly, and the session's package versions must equal the accepted sessions', so a
+  session on another driver or PyTorch build is caught before it adds episodes.
+
+**Rule.** Per training seed s and adapter family X in {N, R}: X_s against the base on the 472 paired episodes, exact
+two-sided McNemar. X *changes* task success if p < 0.05 in at least 2 of 3 seeds with the same sign; the sign is the
+reading (helps or hurts). N and R are read separately. *Reported, not part of the rule:* per task and per seed counts with
+exact intervals, R against N per seed (two-sided), per-state counts, and counts pooled over seeds without a pooled p (the
+seeds share their episodes). *Reading:* a harness failed: that session is not read (its episodes are refused). N or R
+changes: distillation helps (or hurts) SmolVLA on unseen initial states of the trained tasks. Neither changes: no change
+of 10 points or more shown; smaller changes are not ruled out.
+
+**Power (`calibration/step13_power.py`, Monte Carlo, base at 0.40, independent episodes; the cautious side; output in
+`week6/noise_reachability_step13_colab/step13_power.txt`).** 8 seeds per state: no change is found 0.002 of the time
+with independent seeds (more, at most about 0.05, since the seeds share their episodes); a change of 10 points in
+either direction is found 0.95 of the time, 5 points 0.24, 3 points 0.05. 12 seeds would give 0.43 at 5 points for 1.5
+times the episodes.
+
+**What it cannot show.** Three tasks and one checkpoint; states 30-49 only; an adapter's effect on other tasks (each
+adapter is evaluated only on its own task).
+
+**Compute (estimate).** About 70 episodes per hour on one Colab T4 process (measured in the Colab T4 check) less model
+loading: about 45 h of runtime, about 50 compute units at 1.15 per hour, over several sessions.
+
+**Checks before the run (2026-11-15).** Two base episodes of task 7 (states 30 and 49, seed 200) ran locally through the
+notebook's evaluation command and wrote the folder layout the analysis reads. Each session's harness runs in
+`harness_pending/` and is moved to `harness/` only when it passes (to `harness_failed/` otherwise), so a session cut
+short or on another stack leaves nothing the analysis reads.
+
 ## Step 14: is round 2's loss on 0/8 real, and is it dilution? (design 2026-11-15)
 
 In step 12, round 2's adapters R0_s scored below round 1's N0_s on round 1's best trained state 0/8 in every training
@@ -1266,6 +1319,9 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
   --record_dir`), training and evaluation (`self_filtered_bc/self_filtered_bc.py`) on Kaggle over several sessions.
 - `analyze_step11.py`: step-11 harness gate, jobs, the pairing with step 9's committed `repeat` arm, tests A and B and
   reading; `kaggle_step11_replication.ipynb` (built by `build_step11_notebook.py`) runs it on Kaggle.
+- `analyze_step13.py`: step-13 harness per session, provenance per folder (T4 only), R7 = N7 by the weights' sha256,
+  the two-sided tests for N and R against the base and reading; `colab_step13_unseen_states.ipynb` (built by
+  `build_step13_notebook.py`) runs it on Colab T4; `calibration/step13_power.py`: the power table.
 - `analyze_step14.py`: step-14 harness gate, provenance per folder, L's training set against R's, tests A and B
   and reading; `kaggle_step14_dilution.ipynb` (built by `build_step14_notebook.py`) runs it on Kaggle;
   `calibration/step14_power.py`: the power table.
