@@ -130,3 +130,14 @@ def test_leftover_processes_are_stopped_before_harness_and_evaluation(tmp_path):
     helpers = cell(cells, "def stop_leftovers(")
     assert "pkill -f 'self_filtered_bc/self_filtered_bc[.]py'" in helpers      # [.] keeps pkill off its own shell
     assert "gate_rc := sh(" in harness and ") == 1:" in harness and "elif gate_rc != 0:" in harness
+
+
+def test_last_cell_syncs_drive_then_releases_the_runtime_even_after_a_failure(tmp_path):
+    cells = build(tmp_path)[0]
+    download, release = cells[-2], cells[-1]
+    assert 'files.download("/content/step13_results.zip")' in download and "raise" not in download
+    assert "RELEASE_RUNTIME = True" in release
+    order = [release.index(s) for s in ("drive.flush_and_unmount()", "time.sleep(90)", "runtime.unassign()",
+                                         "raise RuntimeError(FAILURE)")]
+    assert order == sorted(order)
+    assert release.index("runtime.unassign()") > release.index("if RELEASE_RUNTIME:")

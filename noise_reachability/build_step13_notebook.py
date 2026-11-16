@@ -98,6 +98,9 @@ checks every adapter's sha256 against the archive manifests.
 sessions: after a disconnect or the end of a session, **Run all** again. Finished episodes are kept on Drive and skipped.
 
 When step 10 says every episode is done, download `step13_results.zip`.
+
+At the end of every session, step 11 downloads `step13_results.zip` and step 12 syncs Drive and, after 90 s, releases
+the runtime so it stops using compute units (set `RELEASE_RUNTIME = False` there to keep it).
 """)
 
 md("## 1. Settings")
@@ -268,6 +271,20 @@ sh(f"cd '{OUT_ROOT}' && zip -q -r /content/step13_results.zip . -x '*.pyc' -x '*
 from google.colab import files
 files.download("/content/step13_results.zip")
 print(f"session time used: {(time.time() - T_SESSION) / 3600:.1f} h")
+''')
+
+md("## 12. Release the runtime (stops the compute-unit charge; the results are on Drive and in the zip)")
+code('''
+RELEASE_RUNTIME = True             # False keeps the GPU assigned after the session's work
+if FAILURE:
+    print("THIS SESSION FAILED:", FAILURE)
+drive.flush_and_unmount()          # every episode file written to Drive before the machine goes
+print("Drive synced and unmounted")
+if RELEASE_RUNTIME:
+    print("releasing the runtime in 90 s (time for the browser to save step13_results.zip)", flush=True)
+    time.sleep(90)
+    from google.colab import runtime
+    runtime.unassign()
 if FAILURE:
     raise RuntimeError(FAILURE)
 ''')
