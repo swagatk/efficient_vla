@@ -1,0 +1,24 @@
+step 14: is round 2's loss on 0/8 real, and is it dilution? commit 0f152b8e1c9d196cab39291991a7451181ff6d43
+harness: 8 of 8 committed episodes reproduce (ok; N0 4/4, R0 4/4)
+training sets: L0_0 50 episodes (as R), L0_1 50 episodes (as R), L0_2 50 episodes (as R); the same 50 files (sha256) for all three
+0/8 (eval_check), of 96: N0 83 (78.0-92.6%), N1 86 (81.7-94.9%), N2 89 (85.6-97.0%), R0 73 (66.3-84.2%), R1 82 (76.7-91.8%), R2 84 (79.2-93.4%), L0 84 (79.2-93.4%), L1 69 (61.8-80.6%), L2 78 (72.0-88.5%)
+0/2 (eval_searched), of 16: R0 13 (54.4-96.0%), R1 12 (47.6-92.7%), R2 10 (35.4-84.8%), L0 13 (54.4-96.0%), L1 14 (61.7-98.4%), L2 14 (61.7-98.4%)
+0/5 (eval_searched), of 16: R0 2 (1.6-38.3%), R1 6 (15.2-64.6%), R2 3 (4.0-45.6%), L0 11 (41.3-89.0%), L1 12 (47.6-92.7%), L2 10 (35.4-84.8%)
+0/6 (eval_searched), of 16: R0 4 (7.3-52.4%), R1 3 (4.0-45.6%), R2 4 (7.3-52.4%), L0 4 (7.3-52.4%), L1 4 (7.3-52.4%), L2 3 (4.0-45.6%)
+0/11 (eval_searched), of 16: R0 14 (61.7-98.4%), R1 14 (61.7-98.4%), R2 12 (47.6-92.7%), L0 14 (61.7-98.4%), L1 11 (41.3-89.0%), L2 14 (61.7-98.4%)
+test A, N0 against R0 on 0/8: 83 against 73 of 96 (only N 15, only R 5), one-sided p 0.0207
+test A, N1 against R1 on 0/8: 86 against 82 of 96 (only N 12, only R 8), one-sided p 0.252
+test A, N2 against R2 on 0/8: 89 against 84 of 96 (only N 10, only R 5), one-sided p 0.151
+test A does not pass (p < 0.05 in at least 2 of 3 seeds)
+test B, L0 against R0 on 0/8: 84 against 73 of 96 (only L 19, only R 8), one-sided p 0.0261
+test B, L1 against R1 on 0/8: 69 against 82 of 96 (only L 7, only R 20), one-sided p 0.997
+test B, L2 against R2 on 0/8: 78 against 84 of 96 (only L 9, only R 15), one-sided p 0.924
+test B does not pass (p < 0.05 in at least 2 of 3 seeds)
+reported, L against N on 0/8, seed 0: 84 against 83 of 96, two-sided p 1
+reported, L against N on 0/8, seed 1: 69 against 86 of 96, two-sided p 0.00232
+reported, L against N on 0/8, seed 2: 78 against 89 of 96, two-sided p 0.00739
+reported, L against R on the searched states, seed 0: 42 against 33 of 64, two-sided p 0.049
+reported, L against R on the searched states, seed 1: 41 against 35 of 64, two-sided p 0.286
+reported, L against R on the searched states, seed 2: 41 against 29 of 64, two-sided p 0.0169
+reported, eval_check, L seeds pooled 231, eval_check, N seeds pooled 258, eval_check, R seeds pooled 239, eval_searched, L seeds pooled 124, eval_searched, R seeds pooled 97
+decision: round 2's loss on 0/8 was not replicated at this budget, and longer training was not shown to help
