@@ -1257,7 +1257,8 @@ Inputs: step 10's last Kaggle version (adapters N7_0-N7_2, checked against their
 - *Harness, first, stops the run.* The base on 10 of step 9's 7/38 episodes (ids 6017, 6019, 6021, 6023, 6025, 6030,
   6040, its seven successes, and 6000-6002) and N7_0 on step 12's harness episodes of 7/33 (seeds 16-19, sampled noise):
   at least 13 of these 14 must equal the committed rows (success and steps). Step 9 ran at another commit (`f2a067e`),
-  and its constant-noise episodes have not been replayed exactly in a later session, so this also tests that.
+  and its constant-noise episodes have not been replayed exactly in a later session, so this also tests that. The
+  harness stops test A as well (one harness for the run's stack), even if 7/38 fails its scene check.
 - *Test A episodes:* the base on 6/14 and on 6/20 with ids 9000-9399 (400 each, 800). Every success is replayed once
   with the same id; a success counts only if the replay also succeeds.
 - *Test B episodes:* the base, N7_0, N7_1 and N7_2 on 7/38 with ids 9000-9199 (200 each, 800).
@@ -1285,8 +1286,11 @@ step 9's 0.14, 200 paired ids per seed: equal rates pass 0.017 of the time; N7 a
 compares one adapter family on one untrained state of task 7; it does not show whether the same holds on other tasks,
 nor why.
 
-**Compute (estimate).** At about 170 episodes per hour on 2 x T4 (step 9: 662 in 3.9 h), about 9.5 h plus the install,
-within the 14 h left this week; the notebook resumes, so a second short session can finish it.
+**Compute (estimate).** Almost every episode fails and runs all 520 steps, so step 9's overall rate (662 episodes in
+3.9 h, many short successes) is too high. With four jobs at once, a 10-episode process took 14.3 min for the base on
+task 6 (step 9) and 15.8 min for N7_0 on 7/38 (step 12; median gaps between provenance records): about 4.8 h per
+200-episode job of the base and 5.3 h per adapter job, about 10 h for the eight jobs in two waves, plus about 0.8 h for
+the install, checks and harness. So two sessions: one of 11 h and one of about 1.5 h, within the 14 h left this week.
 
 ## Colab T4 check: does a Colab T4 reproduce Kaggle T4 episodes? (design 2026-11-15)
 
