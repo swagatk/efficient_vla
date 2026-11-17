@@ -1223,6 +1223,71 @@ the same order, for all three seeds. `check_step14_data.py`, which the
 notebook runs on the linked folder before training, reports the same. One 0/8 episode of R0_0 (archived adapter) ran locally through the notebook's
 evaluation command and wrote the folder layout and provenance the analysis reads.
 
+**Result (Kaggle, 2026-11-15/16; `week6/noise_reachability_step14_kaggle/`).** Neither test passes: round 2's loss on
+0/8 is not replicated at this budget, and longer training was not shown to help. Test A, N against R on 0/8: 83/73,
+86/82, 89/84 of 96 (one-sided p 0.021, 0.25, 0.15). Test B, L against R: 84/73, 69/82, 78/84 (p 0.026, 0.997, 0.92).
+Reported: L below N in seeds 1 and 2 (two-sided p 0.0023, 0.0074); L above R on the searched states (42/33, 41/35,
+41/29 of 64), mostly on 0/5. Harness 8 of 8.
+
+## Step 15: are 6/14 and 6/20 unreachable, and did distillation lose 7/38's constant-noise solutions? (design 2026-11-16)
+
+Two of task 6's resistant states have never been solved by anything, and one state of task 7 lost its solutions after
+training (committed runs, all on Kaggle T4). **6/14 and 6/20** are the only states in the committed runs on which a
+constant noise has never succeeded: 0 of 70 `repeat` episodes of the base on each (step 9: 50 fresh ids and 20 library
+noises), on 6/14 also 0 of 50 of round 1's adapter N6_0 (step 12's search), and on each 0 of 114 sampled-noise episodes
+of the base (steps 8, 10, 11) and 0 of 288 of N0-N2 and R0-R2 (steps 10, 12). Every other state searched with constant
+noise (23 states, tasks 0, 4, 6, 7, 8) was solved at least twice. They bear on the paper's reading that sampling's
+failures are rare rather than unreachable. **7/38** is solvable: the base solved it with 7 of 50 fresh `repeat` ids
+(step 9), but N7_0, trained on 7/33 only, solved 0 of 50 (step 12's search, other ids). If distillation removed
+constant-noise solutions the base had, exploring with the current adapter, as step 12 did, loses them, which matters
+for further rounds. No training.
+
+**Hypotheses.** Written before any step-15 episode. (A) 6/14 and 6/20 are rare, not unreachable: the base with fresh
+`repeat` noises solves each at a rate of at least 0.5%, so 400 noises find at least one success on each. (B) On 7/38,
+round 1's adapters N7_0-N7_2 succeed with constant noise less often than the base on the same noises (step 9's base
+7 of 50 against step 12's N7_0 0 of 50).
+
+**Protocol (fixed before the run).** `lerobot/smolvla_libero` at `a24f1f3804`, `n_action_steps=10`, 520 steps, hard
+resets, Kaggle 2 x T4, `deep_noise_search.py --family repeat` (step 12's command; `--lora_dir` for the adapters).
+Inputs: step 10's last Kaggle version (adapters N7_0-N7_2, checked against their archived sha256). Fresh noise ids
+9000-9399, unused so far (the `repeat` ids in committed runs are 0-69, 100-399, 1000-1599, 6000-6049, 7000-7049).
+
+- *Scene check, first* (`check_scene.py`, as steps 9 and 11): 6/14, 6/20 and 7/38; a state that fails is dropped, not
+  replaced.
+- *Harness, first, stops the run.* The base on 10 of step 9's 7/38 episodes (ids 6017, 6019, 6021, 6023, 6025, 6030,
+  6040, its seven successes, and 6000-6002) and N7_0 on step 12's harness episodes of 7/33 (seeds 16-19, sampled noise):
+  at least 13 of these 14 must equal the committed rows (success and steps). Step 9 ran at another commit (`f2a067e`),
+  and its constant-noise episodes have not been replayed exactly in a later session, so this also tests that.
+- *Test A episodes:* the base on 6/14 and on 6/20 with ids 9000-9399 (400 each, 800). Every success is replayed once
+  with the same id; a success counts only if the replay also succeeds.
+- *Test B episodes:* the base, N7_0, N7_1 and N7_2 on 7/38 with ids 9000-9199 (200 each, 800).
+
+At most 14 + 800 + 800 = 1,614 episodes plus the replays of A's successes.
+
+**Rule.** *Test A, per state:* passes if at least one success replays. Otherwise the reading is an exact one-sided 95%
+upper bound of 0.75% on the base's per-noise rate there (0 of 400). *Test B:* per training seed s, the base against
+N7_s on the 200 paired noise ids, exact one-sided McNemar (base better); passes if p < 0.05 in at least 2 of 3 seeds.
+The three readings (6/14, 6/20, B) are made separately. *Reported, not part of the rule:* success counts with exact
+intervals per policy and state, N7_s against the base two-sided, and the steps of the successes. *Reading:* the harness
+failed: not read. A passes on a state: it is rare, not unreachable. A passes on both: every resistant state searched so
+far has been solved by a constant noise. A does not pass on a state: it stays unsolved below 0.75% per noise, a limit
+the paper states. B passes: distillation on 7/33 removed constant-noise solutions of 7/38 that the base had, so later
+rounds should also search with the base. B does not pass: step 12's 0 of 50 is not shown to be more than chance at
+this budget.
+
+**Power (`calibration/step15_power.py`; exact for A, Monte Carlo for B with the base's outcome per id shared by the three
+seeds, the cautious side; output in `week6/noise_reachability_step15_kaggle/step15_power.txt`).** A, 400 noises per
+state: a true rate of 0.2% is found 0.55 of the time, 0.5% 0.87, 1% 0.98 (600 noises: 0.70, 0.95, 0.998). B, base at
+step 9's 0.14, 200 paired ids per seed: equal rates pass 0.017 of the time; N7 at 0.10 passes 0.24, 0.07 0.72, 0.035
+0.99, 0 1.00 (100 ids: 0.13, 0.40, 0.84, 1.00).
+
+**What it cannot show.** A uses the base only, and a pass shows that a solution exists, not that it is easy to find. B
+compares one adapter family on one untrained state of task 7; it does not show whether the same holds on other tasks,
+nor why.
+
+**Compute (estimate).** At about 170 episodes per hour on 2 x T4 (step 9: 662 in 3.9 h), about 9.5 h plus the install,
+within the 14 h left this week; the notebook resumes, so a second short session can finish it.
+
 ## Colab T4 check: does a Colab T4 reproduce Kaggle T4 episodes? (design 2026-11-15)
 
 Not an experiment of the paper but a check of the platform, before Colab T4 time (Colab Pro, about 1.15 compute units

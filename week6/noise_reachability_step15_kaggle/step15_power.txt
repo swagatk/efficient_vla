@@ -1,0 +1,5 @@
+test A, n = 300 per state: P(at least one success) p 0.002: 0.452, p 0.005: 0.778, p 0.010: 0.951, p 0.020: 0.998; 0 of 300 gives an upper bound of 0.0099
+test A, n = 400 per state: P(at least one success) p 0.002: 0.551, p 0.005: 0.865, p 0.010: 0.982, p 0.020: 1.000; 0 of 400 gives an upper bound of 0.0075
+test A, n = 600 per state: P(at least one success) p 0.002: 0.699, p 0.005: 0.951, p 0.010: 0.998, p 0.020: 1.000; 0 of 600 gives an upper bound of 0.0050
+test B, n = 100 paired per seed on 7/38, base at 0.140: P(pass) N7 at 0.140: 0.016, N7 at 0.100: 0.125, N7 at 0.070: 0.400, N7 at 0.035: 0.836, N7 at 0.000: 0.999
+test B, n = 200 paired per seed on 7/38, base at 0.140: P(pass) N7 at 0.140: 0.017, N7 at 0.100: 0.244, N7 at 0.070: 0.718, N7 at 0.035: 0.991, N7 at 0.000: 1.000
