@@ -1,0 +1,16 @@
+step 15: are 6/14 and 6/20 unreachable, and did distillation lose 7/38's solutions? commit 16a03fb31a21e4ed96c308ed99585317082bbaf2
+harness: 14 of 14 committed episodes reproduce (ok; base 10/10, N0 4/4)
+test A, 6/14: base 1 of 400 fresh repeat noises succeeded (ids [9008]), 1 replayed (0.01-1.38%); passes
+test A, 6/14: steps of the successes (search, replay): {'9008': [391, 391]}
+test A, 6/20: base 3 of 400 fresh repeat noises succeeded (ids [9056, 9174, 9212]), 3 replayed (0.15-2.18%); passes
+test A, 6/20: steps of the successes (search, replay): {'9056': [286, 286], '9174': [425, 425], '9212': [412, 412]}
+test B, 7/38, of 200 paired noises: base 19 (5.8-14.4%), N0 5 (0.8-5.7%), N1 7 (1.4-7.1%), N2 2 (0.1-3.6%)
+test B, steps of the successes: {'base': [229, 235, 281, 282, 283, 285, 288, 290, 291, 298, 313, 327, 339, 343, 351, 359, 417, 451, 476], 'N0': [326, 414, 428, 454, 509], 'N1': [252, 302, 331, 348, 349, 488, 504], 'N2': [455, 479]}
+test B, base against N7_0: 19 against 5 (only base 18, only N 4), one-sided p 0.00217, two-sided 0.00434
+test B, base against N7_1: 19 against 7 (only base 15, only N 3), one-sided p 0.00377, two-sided 0.00754
+test B, base against N7_2: 19 against 2 (only base 18, only N 1), one-sided p 3.81e-05, two-sided 7.63e-05
+test B passes (p < 0.05 in at least 2 of 3 seeds)
+decision, 6/14: rare, not unreachable: a constant noise solves it
+decision, 6/20: rare, not unreachable: a constant noise solves it
+decision, 7/38: distillation on 7/33 removed constant-noise solutions of 7/38 that the base had: later rounds should also search with the base
+decision, both task-6 states: every resistant state searched so far has been solved by a constant noise
