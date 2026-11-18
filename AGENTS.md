@@ -16,11 +16,11 @@ Read [plan.md](plan.md) first for the intended 12-week roadmap. Use the weekly s
 ## Key Entry Points
 
 - [rl_based_tuning/train_online_sac.py](rl_based_tuning/train_online_sac.py): residual SAC training and paired evaluation (`--task_id 0-9`), run via `rl_based_tuning/run_sac_residual.sh`. The PPO script there is retired; see `rl_based_tuning/README.md` for why the week-5 runs are invalid.
-- [train_hybrid_diffusion.py](train_hybrid_diffusion.py): training loop for the Hybrid Diffusion model (Week 6 in progress).
-- [rl_residual_agent.py](rl_residual_agent.py) / [hybrid_diffusion_agent.py](hybrid_diffusion_agent.py): agent architectures containing the frozen SmolVLA plus trainable components.
+- [rl_based_tuning/sac_residual.py](rl_based_tuning/sac_residual.py): the residual SAC agent. The root `sac_residual_agent.py` and `ppo_residual_agent.py` are pre-fix code kept only for `reproduce_task.py`.
+- [hybrid_diffusion/train_hybrid_diffusion.py](hybrid_diffusion/train_hybrid_diffusion.py): training loop for the Hybrid Diffusion model (Week 6 in progress).
+- [hybrid_diffusion/hybrid_diffusion_agent.py](hybrid_diffusion/hybrid_diffusion_agent.py): agent architecture containing the frozen SmolVLA plus trainable components.
 - [visual_prompt_wrapper.py](visual_prompt_wrapper.py): GroundingDINO and FastSAM overlay plus text-hint injection.
 - [eval_week2_visual_prompting.py](eval_week2_visual_prompting.py): evaluation wrapper that injects visual prompting into LeRobot eval.
-- [week1_repro_baseline_lock.sh](week1_repro_baseline_lock.sh): baseline reproduction script.
 - [week2_visual_prompting_3seed.sh](week2_visual_prompting_3seed.sh): week-2 evaluation runs.
 - [week3_stage1_performance_sweep.sh](week3_stage1_performance_sweep.sh): week-3 prompt sweep.
 - [week4_stage2_eval.sh](week4_stage2_eval.sh): best visual-prompt configuration eval.
@@ -39,54 +39,9 @@ Read [plan.md](plan.md) first for the intended 12-week roadmap. Use the weekly s
 - GroundingDINO weights are expected under `~/model_weights/groundingdino_swint_ogc.pth` and the config file in this repo.
 - `train_online_rl.py` patches `torch.load` for PyTorch 2.6+ compatibility with LIBERO init-state loading.
 
-## Common Commands
-
-Baseline reproduction:
-
-```bash
-bash week1_repro_baseline_lock.sh
-```
-
-Visual prompting eval:
-
-```bash
-bash week2_visual_prompting_3seed.sh
-```
-
-Prompt sweep:
-
-```bash
-bash week3_stage1_performance_sweep.sh
-```
-
-Best week-3 config eval:
-
-```bash
-bash week4_stage2_eval.sh
-```
-
-Residual RL training on a single task:
-
-```bash
-python train_online_rl.py --task_id 0
-```
-
 ## RL Investigation Workflow
 
-If the task is about why residual RL is not improving performance, inspect these areas in order before widening scope:
-
-1. [train_online_rl.py](train_online_rl.py): reward shaping, rollout storage, PPO update inputs, and success logging.
-2. [rl_residual_agent.py](rl_residual_agent.py): what observations the residual head actually consumes and whether the update path matches rollout-time inputs.
-3. [visual_prompt_wrapper.py](visual_prompt_wrapper.py): whether RL training is still using week-2 or week-3 prompting even though the wrapper path was deprioritized.
-4. Existing W&B logs under `wandb/` and checkpoints under `checkpoints_task_*/` for evidence of reward trends, entropy collapse, or resume behavior.
-
-When reviewing RL behavior, verify these assumptions explicitly rather than assuming they are correct:
-
-- `done` means true task success rather than time-limit termination.
-- PPO updates are replaying the same observation modalities used during rollout.
-- The reward scale is compatible with the BC anchor and PPO losses.
-- The residual head receives the information needed to correct base-policy failures.
-- Visual prompting is intentional in RL training rather than an inherited week-2 default.
+If the task is about why residual RL is not improving performance, follow `.claude/skills/residual-rl-debugging/SKILL.md`.
 
 ## Notes For Future Agents
 

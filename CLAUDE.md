@@ -1,13 +1,8 @@
 # CLAUDE.md
 
-Research workspace for improving SmolVLA on LIBERO-10. Project history, entry points, environment assumptions and the RL investigation workflow live in AGENTS.md, imported here:
+Research workspace for improving SmolVLA on LIBERO-10. Project history, entry points and environment assumptions live in AGENTS.md, imported here:
 
 @AGENTS.md
-
-Some paths in AGENTS.md are stale. The current locations are:
-
-- Hybrid diffusion: `hybrid_diffusion/train_hybrid_diffusion.py`, `hybrid_diffusion/hybrid_diffusion_agent.py`
-- Residual RL: `rl_based_tuning/train_online_sac.py`, `rl_based_tuning/sac_residual.py`, run via `rl_based_tuning/run_sac_residual.sh` (see `rl_based_tuning/README.md`). `rl_based_tuning/train_online_ppo.py` is retired. The root `sac_residual_agent.py` and `ppo_residual_agent.py` are pre-fix code kept only for `reproduce_task.py`; there is no `train_online_rl.py` or `rl_residual_agent.py`
 
 The rest of this file is about how to write, verify and commit code here.
 
