@@ -37,7 +37,6 @@ Read [plan.md](plan.md) first for the intended 12-week roadmap. Use the weekly s
 - Headless eval and training assume `MUJOCO_GL=egl` and usually `PYOPENGL_PLATFORM=egl`.
 - LIBERO expects `LIBERO_CONFIG_PATH/config.yaml`; the shell scripts and [eval_week2_visual_prompting.py](eval_week2_visual_prompting.py) can generate it.
 - GroundingDINO weights are expected under `~/model_weights/groundingdino_swint_ogc.pth` and the config file in this repo.
-- `train_online_rl.py` patches `torch.load` for PyTorch 2.6+ compatibility with LIBERO init-state loading.
 
 ## RL Investigation Workflow
 
