@@ -1,0 +1,18 @@
+step 13: do the distilled adapters change success on unseen initial states? commit 26fe1d481941d652fb6a7319d7c0e4bb3a458d4e
+harness: session1 12/12, session2 12/12, session3 12/12, session4 12/12, session5 12/12, session6 12/12, session7 12/12, session8 12/12 (ok; at least 11 each); sessions stopped by a failed harness, without episodes: none
+task 0: base 58/160, N0 99/160, N1 99/160, N2 87/160, R0 89/160, R1 94/160, R2 87/160
+task 6: base 89/160, N0 71/160, N1 85/160, N2 77/160, R0 89/160, R1 96/160, R2 84/160
+task 7: base 106/152, N0 90/152, N1 102/152, N2 89/152, R0 90/152, R1 102/152, R2 89/152
+N against base, seed 0: 260 against 253 of 472 (only adapter 92, only base 85), two-sided p 0.652
+N against base, seed 1: 286 against 253 of 472 (only adapter 107, only base 74), two-sided p 0.0171
+N against base, seed 2: 253 against 253 of 472 (only adapter 82, only base 82), two-sided p 1
+N against base: no change shown (p < 0.05 in at least 2 of 3 seeds, one sign)
+R against base, seed 0: 268 against 253 of 472 (only adapter 96, only base 81), two-sided p 0.293
+R against base, seed 1: 292 against 253 of 472 (only adapter 115, only base 76), two-sided p 0.00582
+R against base, seed 2: 260 against 253 of 472 (only adapter 90, only base 83), two-sided p 0.648
+R against base: no change shown (p < 0.05 in at least 2 of 3 seeds, one sign)
+reported, R0 against N0: 268 against 260 of 472, two-sided p 0.466
+reported, R1 against N1: 292 against 286 of 472, two-sided p 0.556
+reported, R2 against N2: 260 against 253 of 472, two-sided p 0.5
+reported, pooled counts: N 799, R 820, base x 3 759
+decision: N (round 1): no change of 10 points or more shown on unseen initial states; R (round 2): no change of 10 points or more shown on unseen initial states

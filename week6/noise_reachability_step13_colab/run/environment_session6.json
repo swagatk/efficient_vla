@@ -1,0 +1,14 @@
+{
+ "gpus": [
+  [
+   "Tesla T4",
+   "15360 MiB",
+   "7.5",
+   "580.82.07"
+  ]
+ ],
+ "cuda_driver": 13.0,
+ "torch_build": "cu130 (as pinned)",
+ "ram_available_gb": 12.0,
+ "started": "2026-11-18 19:56:15"
+}
