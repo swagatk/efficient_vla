@@ -13,3 +13,6 @@
 | E10 | Distil noise successes into weights | 2,940 | both tests pass |
 | E11 | Replicate E8 on eight new states | 520 | both tests pass |
 | E12 | Second round of search and training | 2,236 | test 1 passes |
+| E13 | Do the adapters change success on unseen states? | 2,944 | no change shown |
+| E14 | Is round 2's loss on 0/8 real? | 1,256 | neither test passes |
+| E15 | Zero-hit states: unreachable, or solutions lost? | 1,618 | both tests pass |

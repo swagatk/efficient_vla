@@ -173,7 +173,10 @@ def test_overview_counts_every_experiment_from_its_files():
             "E4": ("1,430", "negative"), "E5a": ("1,249", "all 5 reached"), "E5b": ("5,280", "did not learn"),
             "E6": ("1,280", "yes, 1 of 48"), "E7": ("1,095", "failed; labels too coarse"),
             "E8": ("3,172", "both tests pass"), "E9": ("662", "not shown"), "E10": ("2,940", "both tests pass"),
-            "E11": ("520", "both tests pass"), "E12": ("2,236", "test 1 passes")}   # 12 harness + 400 search + 1,824 eval
+            "E11": ("520", "both tests pass"), "E12": ("2,236", "test 1 passes"),   # 12 harness + 400 search + 1,824 eval
+            "E13": ("2,944", "no change shown"),        # 8 sessions x 12 harness + 2,848 evaluation
+            "E14": ("1,256", "neither test passes"),    # 8 harness + 864 check + 384 searched
+            "E15": ("1,618", "both tests pass")}        # 14 harness + 800 test A + 800 test B + 4 replays
     rows = {c[0]: (c[2], c[3]) for c in ([x.strip() for x in l.strip("|").split("|")] for l in t.splitlines()[2:])}
     assert rows == want
 
@@ -187,6 +190,9 @@ def test_overview_leaves_out_merged_copies_pilots_and_summaries():
     assert not any("wrong_setting" in f or "_timing" in f or "consolidated" in f for f in files["E1"])
     assert f"{s}10_kaggle/run/task_0/collect_data/collection.csv" not in files["E10"]
     assert f"{s}8_kaggle/run/task_0/harness/seed0/per_episode_base.csv" in files["E8"]
+    assert len(files["E13"]) == 8 * 3 + 36 and f"{s}13_colab/run/harness/session8/task_7/per_episode_lora.csv" in files["E13"]
+    assert len(files["E14"]) == 2 + 54 + 24 and len(files["E15"]) == 2 + 8 + 2
+    assert f"{s}15_kaggle/run/task_6/replay/per_episode_repeat_state20.csv" in files["E15"]
 
 
 def test_count_rows_and_readings(tmp_path):
@@ -212,6 +218,22 @@ def test_overview_outcomes_follow_the_reports():
     assert o["E12"] == "test 1 does not pass" and pt.outcomes(data)["E12"] == "running"
     d["step12"]["tests"]["test 1"]["passes"] = True
     assert pt.outcomes(d)["E12"] == "test 1 passes"
+    d["step13"]["tests"]["R against base"].update(changes=True, direction="hurts")
+    d["step14"]["tests"]["test B"]["passes"] = True
+    d["step15"]["test A"]["20"]["passes"] = False
+    o = pt.outcomes(d)
+    assert o["E13"] == "N no change; R hurts" and o["E14"] == "one of two tests passes"
+    assert o["E15"] == "A on 1 of 2 states, B passes"
+    d["step15"]["test A"]["14"]["passes"] = False
+    d["step15"]["test B"]["passes"] = False
+    assert pt.outcomes(d)["E15"] == "neither test passes"
+
+
+def test_step13_outcome_needs_a_change_in_either_family():
+    no, helps = {"changes": False, "direction": None}, {"changes": True, "direction": "helps"}
+    assert pt.step13_outcome({"N against base": no, "R against base": no}) == "no change shown"
+    assert pt.step13_outcome({"N against base": helps, "R against base": helps}) == "N helps; R helps"
+    assert pt.step13_outcome({"N against base": helps, "R against base": no}) == "N helps; R no change"
 
 
 def test_overview_tex_keeps_the_papers_column_layout():

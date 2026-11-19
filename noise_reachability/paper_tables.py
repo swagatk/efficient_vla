@@ -36,6 +36,9 @@ INPUTS = {
     "step10_train_6": f"{W6}/noise_reachability_step10_kaggle/run/runs/N6_0/provenance.jsonl",
     "step10_train_7": f"{W6}/noise_reachability_step10_kaggle/run/runs/N7_0/provenance.jsonl",
     "step6": f"{W6}/noise_reachability_step6_kaggle/run/step6_report.txt.json",
+    "step13": f"{W6}/noise_reachability_step13_colab/run/step13_report.txt.json",
+    "step14": f"{W6}/noise_reachability_step14_kaggle/run/step14_report.txt.json",
+    "step15": f"{W6}/noise_reachability_step15_kaggle/run/step15_report.txt.json",
 }
 # Results not yet produced: a table is made only when its file exists, and tables.json records which were used.
 OPTIONAL_INPUTS = {
@@ -91,6 +94,14 @@ OVERVIEW = (
     ("E12", "Second round of search and training", (f"{S}12_kaggle/run/task_*/harness/*.csv",
                                                     f"{S}12_kaggle/run/task_*/search/*.csv",
                                                     f"{S}12_kaggle/run/task_*/eval/*/part*/*.csv")),
+    ("E13", "Do the adapters change success on unseen states?", (f"{S}13_colab/run/harness/session*/task_*/*.csv",
+                                                                f"{S}13_colab/run/eval/*/task_*/part*/*.csv")),
+    ("E14", "Is round 2's loss on 0/8 real?", (f"{S}14_kaggle/run/harness/*/*.csv",
+                                               f"{S}14_kaggle/run/eval_check/*/part*/*.csv",
+                                               f"{S}14_kaggle/run/eval_searched/*/part*/*.csv")),
+    ("E15", "Zero-hit states: unreachable, or solutions lost?", (f"{S}15_kaggle/run/harness/*/*.csv",
+                                                                 f"{S}15_kaggle/run/task_*/search/*/*.csv",
+                                                                 f"{S}15_kaggle/run/task_*/replay/*.csv")),
 )
 # Readings that are words in the experiment's README, not numbers; the others are read from the reports below.
 READINGS = {"E2": "negative", "E3": "not read", "E4": "negative", "E5b": "did not learn",
@@ -293,7 +304,26 @@ def outcomes(data) -> dict[str, str]:
         out["E12"] = "test 1 passes" if data["step12"]["tests"]["test 1"]["passes"] else "test 1 does not pass"
     else:
         out["E12"] = "running"
+    out["E13"] = step13_outcome(data["step13"]["tests"])
+    out["E14"] = passes(data["step14"]["tests"]["test A"], data["step14"]["tests"]["test B"])
+    out["E15"] = step15_outcome(data["step15"])
     return out
+
+
+def step13_outcome(tests) -> str:
+    """E13: N (round 1) and R (round 2) against the base; 'no change shown' unless one changes success (2 of 3 seeds)."""
+    n, r = tests["N against base"], tests["R against base"]
+    if not n["changes"] and not r["changes"]:
+        return "no change shown"
+    return "; ".join(f"{x} {v['direction'] if v['changes'] else 'no change'}" for x, v in (("N", n), ("R", r)))
+
+
+def step15_outcome(r) -> str:
+    """E15: test A is read per state (6/14, 6/20), test B once; 'both tests pass' only if A passes on every state."""
+    a = [v["passes"] for v in r["test A"].values()]
+    if all(a) or not any(a):
+        return passes({"passes": all(a)}, r["test B"])
+    return f"A on {sum(a)} of {len(a)} states, B {'passes' if r['test B']['passes'] else 'does not pass'}"
 
 
 def overview_table(data, root=ROOT):
