@@ -1,6 +1,6 @@
 {
- "command": "python -S noise_reachability/paper_tables.py --out_dir noise_reachability/paper_tables --tex_dir /home/swagat/GIT/efficient_vla_notes/rss2027_paper/tables_v3",
- "git_commit": "df6934fc64acf18ebeddef4ef524e9d5a18eb321",
+ "command": "python -S noise_reachability/paper_tables.py --out_dir noise_reachability/paper_tables --tex_dir /home/swagat/GIT/efficient_vla_notes/rss2027_paper/tables_v3 --note_size scriptsize",
+ "git_commit": "e03436c5e564ac88b840ad67c5094d4704cd7a27",
  "inputs_dirty": false,
  "tables": [
   "1_overview.md",

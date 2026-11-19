@@ -38,6 +38,14 @@ def test_tex_table():
                                 "\\par\\smallskip{\\footnotesize Permutation p 0.408.}"]
 
 
+def test_tex_escapes_comparisons_and_sets_the_note_size():
+    md = pt.table(["a"], [["p < 0.05"]]) + "\npasses (p < 0.05, n > 3).\n"
+    tex = pt.to_tex(md, note_size="scriptsize")
+    assert "p $<$ 0.05 \\\\" in tex and "<" not in tex.replace("$<$", "") and ">" not in tex.replace("$>$", "")
+    assert tex.splitlines()[-1] == "\\par\\smallskip{\\scriptsize passes (p $<$ 0.05, n $>$ 3).}"
+    assert "{\\footnotesize passes" in pt.to_tex(md)
+
+
 def test_every_table_converts(tmp_path):
     for name, text in pt.build(ROOT).items():
         tex = pt.to_tex(text)

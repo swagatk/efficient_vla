@@ -126,14 +126,15 @@ def tex_cell(c) -> str:
     s = str(c)
     parts = s.split("`")
     s = "".join(f"\\texttt{{{p}}}" if i % 2 else p for i, p in enumerate(parts))
-    return s.replace("%", "\\%")
+    # Text-mode < and > print as inverted punctuation in the paper's OT1 font encoding, so they go into math mode.
+    return s.replace("%", "\\%").replace("<", "$<$").replace(">", "$>$")
 
 
 COLSPECS = {"1_overview.md": "@{}lp{3.3cm}rp{2.2cm}@{}"}       # column layout of the paper's tabular, where not all "l"
 
 
-def to_tex(md: str, colspec: str | None = None) -> str:
-    """A Markdown table (and any trailing note line) from ``table`` as a booktabs tabular."""
+def to_tex(md: str, colspec: str | None = None, note_size: str = "footnotesize") -> str:
+    """A Markdown table (and any trailing note line, set in ``note_size``) from ``table`` as a booktabs tabular."""
     lines = md.strip("\n").split("\n")
     rows = [l for l in lines if l.startswith("|")]
     note = [l for l in lines if l and not l.startswith("|")]
@@ -143,7 +144,7 @@ def to_tex(md: str, colspec: str | None = None) -> str:
            " & ".join(tex_cell(c) for c in header) + " \\\\", "\\midrule"]
     out += [" & ".join(tex_cell(c) for c in r) + " \\\\" for r in body]
     out += ["\\bottomrule", "\\end{tabular}"]
-    out += [f"\\par\\smallskip{{\\footnotesize {tex_cell(n)}}}" for n in note]
+    out += [f"\\par\\smallskip{{\\{note_size} {tex_cell(n)}}}" for n in note]
     return "\n".join(out) + "\n"
 
 
@@ -427,6 +428,8 @@ def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--out_dir", required=True)
     ap.add_argument("--tex_dir", help="also write each table as a booktabs tabular (<name>.tex) here")
+    ap.add_argument("--note_size", default="footnotesize", choices=["footnotesize", "scriptsize"],
+                    help="LaTeX size of the note line under a --tex_dir table")
     a = ap.parse_args(argv)
     out = Path(a.out_dir)
     out.mkdir(parents=True, exist_ok=True)
@@ -436,7 +439,7 @@ def main(argv=None):
         print(f"== {name}\n{text}")
         if a.tex_dir:
             Path(a.tex_dir).mkdir(parents=True, exist_ok=True)
-            (Path(a.tex_dir) / name.replace(".md", ".tex")).write_text(to_tex(text, COLSPECS.get(name)))
+            (Path(a.tex_dir) / name.replace(".md", ".tex")).write_text(to_tex(text, COLSPECS.get(name), a.note_size))
     commit = subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT, capture_output=True, text=True).stdout.strip()
     used = read_inputs(ROOT)
     episode_dirs = sorted({str(Path(pat).parent).split("/run")[0] for _, _, pats in OVERVIEW for pat in pats})
