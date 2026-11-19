@@ -13,8 +13,9 @@ notebook and reproduced exactly by
 `python3 -S noise_reachability/analyze_step13.py --root week6/noise_reachability_step13_colab/run`.
 Power: `step13_power.txt`.
 
-**Result under the rule fixed in advance: neither N nor R changes task success on unseen initial states.** No change of
-10 points or more is shown; smaller changes are not ruled out. This is what the hypothesis expected.
+**Result under the rule fixed in advance: neither N nor R is shown to change task success on unseen initial states by
+10 points or more; smaller changes are not ruled out** (power 0.24 at 5 points, `step13_power.txt`). Consistent with the
+hypothesis.
 
 Per training seed, adapter against the base on the same 472 paired episodes, exact two-sided McNemar (from the report):
 
@@ -41,7 +42,7 @@ Per task (reported, not part of the rule; successes of 160 for tasks 0 and 6, of
 
 The per-task counts point in different directions: on task 0 every adapter is above the base, on task 7 every one is
 below it, and on task 6 all but R1 are at or below it. The pooled test combines these. No per-task test was fixed in
-advance, so any per-task reading is post hoc.
+advance, so any per-task reading is post hoc; per-task p-values are not quoted, since the episodes cluster by state.
 
 **Checks.**
 

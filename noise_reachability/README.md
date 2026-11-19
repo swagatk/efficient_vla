@@ -1160,6 +1160,14 @@ notebook's evaluation command and wrote the folder layout the analysis reads. Ea
 `harness_pending/` and is moved to `harness/` only when it passes (to `harness_failed/` otherwise), so a session cut
 short or on another stack leaves nothing the analysis reads.
 
+**Result (Colab T4, 2026-11-16/19, eight sessions; `week6/noise_reachability_step13_colab/`).** Neither N nor R is shown
+to change task success on the unseen states by 10 points or more; smaller changes are not ruled out (power 0.24 at 5
+points). Consistent with the hypothesis. Per seed, against the base's 253 of 472: N 260, 286, 253 (two-sided McNemar p
+0.65, 0.017, 1), R 268, 292, 260 (p 0.29, 0.0058, 0.65); only seed 1 is below 0.05. Reported, not part of the rule: R
+against N p 0.47, 0.56, 0.5; per task (post hoc, not tested), every adapter is above the base on task 0 (87-99 of 160
+against 58) and 7 of the 9 distinct adapters are below it on tasks 6 and 7 (task 7: N0, N1, N2 90, 102, 89 against 106
+of 152). Harness 12 of 12 in every session.
+
 ## Step 14: is round 2's loss on 0/8 real, and is it dilution? (design 2026-11-15)
 
 In step 12, round 2's adapters R0_s scored below round 1's N0_s on round 1's best trained state 0/8 in every training
@@ -1291,6 +1299,11 @@ nor why.
 task 6 (step 9) and 15.8 min for N7_0 on 7/38 (step 12; median gaps between provenance records): about 4.8 h per
 200-episode job of the base and 5.3 h per adapter job, about 10 h for the eight jobs in two waves, plus about 0.8 h for
 the install, checks and harness. So two sessions: one of 11 h and one of about 1.5 h, within the 14 h left this week.
+
+**Result (Kaggle, 2026-11-17, one session; `week6/noise_reachability_step15_kaggle/`).** Tests A and B pass. A: the
+base solves 6/14 with 1 of 400 fresh `repeat` noises and 6/20 with 3 of 400, every success replays, so both are rare,
+not unreachable. B: on 7/38 the base succeeds with 19 of 200 paired noises against 5, 7 and 2 for N7_0-N7_2 (one-sided
+McNemar p 0.0022, 0.0038, 3.8e-5), so distillation on 7/33 removed solutions the base had. Harness 14 of 14.
 
 ## Colab T4 check: does a Colab T4 reproduce Kaggle T4 episodes? (design 2026-11-15)
 

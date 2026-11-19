@@ -182,7 +182,7 @@ def test_overview_counts_every_experiment_from_its_files():
             "E6": ("1,280", "yes, 1 of 48"), "E7": ("1,095", "failed; labels too coarse"),
             "E8": ("3,172", "both tests pass"), "E9": ("662", "not shown"), "E10": ("2,940", "both tests pass"),
             "E11": ("520", "both tests pass"), "E12": ("2,236", "test 1 passes"),   # 12 harness + 400 search + 1,824 eval
-            "E13": ("2,944", "no change shown"),        # 8 sessions x 12 harness + 2,848 evaluation
+            "E13": ("2,944", "no 10-point change shown"),        # 8 sessions x 12 harness + 2,848 evaluation
             "E14": ("1,256", "neither test passes"),    # 8 harness + 864 check + 384 searched
             "E15": ("1,618", "both tests pass")}        # 14 harness + 800 test A + 800 test B + 4 replays
     rows = {c[0]: (c[2], c[3]) for c in ([x.strip() for x in l.strip("|").split("|")] for l in t.splitlines()[2:])}
@@ -239,7 +239,7 @@ def test_overview_outcomes_follow_the_reports():
 
 def test_step13_outcome_needs_a_change_in_either_family():
     no, helps = {"changes": False, "direction": None}, {"changes": True, "direction": "helps"}
-    assert pt.step13_outcome({"N against base": no, "R against base": no}) == "no change shown"
+    assert pt.step13_outcome({"N against base": no, "R against base": no}) == "no 10-point change shown"
     assert pt.step13_outcome({"N against base": helps, "R against base": helps}) == "N helps; R helps"
     assert pt.step13_outcome({"N against base": helps, "R against base": no}) == "N helps; R no change"
 

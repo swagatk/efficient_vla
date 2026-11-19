@@ -312,10 +312,11 @@ def outcomes(data) -> dict[str, str]:
 
 
 def step13_outcome(tests) -> str:
-    """E13: N (round 1) and R (round 2) against the base; 'no change shown' unless one changes success (2 of 3 seeds)."""
+    """E13: N (round 1) and R (round 2) against the base; unless one changes success (2 of 3 seeds), the rule's reading:
+    no change of 10 points or more shown (smaller ones are not ruled out, so not 'no change')."""
     n, r = tests["N against base"], tests["R against base"]
     if not n["changes"] and not r["changes"]:
-        return "no change shown"
+        return "no 10-point change shown"
     return "; ".join(f"{x} {v['direction'] if v['changes'] else 'no change'}" for x, v in (("N", n), ("R", r)))
 
 
