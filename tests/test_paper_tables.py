@@ -246,7 +246,8 @@ def test_step13_outcome_needs_a_change_in_either_family():
 
 def test_overview_tex_keeps_the_papers_column_layout():
     tex = pt.to_tex(pt.build(ROOT)["1_overview.md"], pt.COLSPECS["1_overview.md"])
-    assert tex.startswith("\\begin{tabular}{@{}lp{3.3cm}rp{2.2cm}@{}}\n\\toprule\nExp. & Question & Episodes & Outcome")
+    assert tex.startswith("\\begin{tabular}{@{}l>{\\raggedright\\arraybackslash}p{122pt}r>{\\raggedright\\arraybackslash}"
+                          "p{76.5pt}@{}}\n\\toprule\nExp. & Question & Episodes & Outcome")
     assert "E4 & LoRA on the policy's own successes & 1,430 & negative \\\\" in tex
 
 

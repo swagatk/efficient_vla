@@ -130,7 +130,10 @@ def tex_cell(c) -> str:
     return s.replace("%", "\\%").replace("<", "$<$").replace(">", "$>$")
 
 
-COLSPECS = {"1_overview.md": "@{}lp{3.3cm}rp{2.2cm}@{}"}       # column layout of the paper's tabular, where not all "l"
+# Column layout of the paper's tabular, where not all "l". Table I spans the 252pt column of IEEEtran conference at
+# \scriptsize with \tabcolsep 2.5pt: Exp. 13pt + Episodes 25.3pt + 15pt of gaps leave 198.7pt; Outcome 76.5pt holds the
+# longest outcome (76.0pt) on one line, Question 122pt. Ragged-right p columns need \usepackage{array}.
+COLSPECS = {"1_overview.md": "@{}l>{\\raggedright\\arraybackslash}p{122pt}r>{\\raggedright\\arraybackslash}p{76.5pt}@{}"}
 
 
 def to_tex(md: str, colspec: str | None = None, note_size: str = "footnotesize") -> str:
