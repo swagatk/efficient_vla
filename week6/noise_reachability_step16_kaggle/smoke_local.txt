@@ -1,0 +1,25 @@
+Step 16 local smoke run, 2026-11-20 (RTX 4090 laptop, shared with another training job; local CPU fault: checks that the code runs, no rate).
+Commands: the notebook's SEARCH / SCENE commands with --max_episodes_per_process 1, MUJOCO_GL=egl, via tools/logged_run.sh.
+
+== scene check 0/0 (task_0/scene/scene_state0.json): same, moved, outcomes
+True {} [[0, 120], [0, 120]]
+
+== harness/base/per_episode_repeat_state38.csv (first of the 12 harness ids; step 15's committed row for seed 10000: 0, 520)
+task_id,seed,init_state,success,steps
+7,10000,38,0,520
+
+== task_0/map/part0/per_episode_repeat_state0.csv
+task_id,seed,init_state,success,steps
+0,11000,0,1,276
+
+== log lines
+[search] per_episode_repeat_state38.csv: 12 episodes to run
+[search] repeat noise 9000 seed 10000 init 38: success=0 steps=520 time=102.5s
+[search] per_episode_repeat_state0.csv: 10 episodes to run
+[search] repeat noise 10000 seed 11000 init 0: success=1 steps=276 time=63.8s
+
+== provenance: folder, ids, n_action_steps, max_steps, gpus, git_dirty, git_dirty_noise_reachability
+harness/base 9000-9005,9007-9008,9012,9019,9022,9045 10 520 ['NVIDIA GeForce RTX 4090 Laptop GPU'] False True
+task_0/map/part0 10000-10009 10 520 ['NVIDIA GeForce RTX 4090 Laptop GPU'] False True
+task_0/scene None 10 520 ['NVIDIA GeForce RTX 4090 Laptop GPU'] False True
+analyze_step16.check_settings accepted every record; check_provenance refused the run for the uncommitted tree (expected locally).
