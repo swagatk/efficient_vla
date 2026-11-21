@@ -1,0 +1,18 @@
+M1 noise processes: local checks, 2026-11-21 (RTX 4090 laptop; the local CPU fault makes local rates suspect: these
+check that the code runs and the switched-off case is exact, no rate).
+
+check_noise_processes.py (real SmolVLA, task 0, init state 0, noise id 0):
+[check] ok   ar_repeat rho 1 = repeat at every inference, bit for bit: max |diff| per inference [0.0, 0.0, 0.0]
+[check] ok   ar_repeat rho 0.5 = repeat at the first inference
+[check] ok   ar_repeat rho 0.5 changes the second inference: max |diff| 0.169
+[check] ok   scaled: repeats across torch seeds
+[check] ok   scaled: a fresh noise at the second inference: max |diff| 0.19
+[check] ok   zero: repeats across torch seeds
+[check] ok   zero: the same chunk at two inferences
+[check] all passed
+
+Smoke episode through the entry point:
+deep_noise_search.py --family ar_repeat --rho 0.5 --task_id 0 --init_state 0 --noise_ids 10000-10001 --max_episodes_per_process 1
+[search] per_episode_ar_repeat_rho0.5_state0.csv: 2 episodes to run
+[search] ar_repeat_rho0.5 noise 10000 seed 11000 init 0: success=0 steps=520 time=71.5s     (exit 3: one id left)
+provenance settings: family ar_repeat, rho 0.5, sigma None, noise_ids 10000-10001, n_action_steps 10

@@ -6,7 +6,10 @@ One work unit is one noise family on one init state of one task. Families:
 - ``sampled``: the base policy, a fresh noise at every inference (step 1's sampling, more seeds);
 - ``full``: one fixed noise of shape (chunk_size, max_action_dim), used at every inference of the episode;
 - ``repeat``: one fixed vector of size max_action_dim, repeated along the chunk (the form of arXiv:2610.13943),
-  used at every inference of the episode.
+  used at every inference of the episode;
+- ``ar_repeat`` (``--rho``), ``scaled`` (``--sigma``), ``zero``: noise processes over the inferences, for the mechanism
+  ablation M1 (noise_processes.py); result files are named by ``noise_processes.family_label`` (e.g.
+  ``per_episode_ar_repeat_rho0.5_state3.csv``).
 
 ``noise_id`` k gives episode seed 1000 + k (``seed`` column of the results) in every family, so the families are
 comparable, and fixed noises come from a generator of their own, the same on every machine. A fixed noise makes an
@@ -87,6 +90,28 @@ def uninstall_fixed_noise(policy) -> None:
     vars(policy.model).pop("sample_actions", None)
 
 
+def check_family_args(args) -> None:
+    """--rho / --sigma belong to the noise processes only; jitter only to the fixed families."""
+    from noise_processes import PROCESS_FAMILIES, check_params
+
+    check_params(args.family, args.rho, args.sigma)
+    if args.family in PROCESS_FAMILIES and args.jitter_seeds:
+        raise ValueError("--jitter_seeds perturbs one fixed noise, not a noise process")
+
+
+def install_family(policy, args, noise_id: int, episode_seed: int, jitter: bool) -> None:
+    """Install the family's noise for one episode (nothing for sampled)."""
+    from noise_processes import PROCESS_FAMILIES, NoiseProcess, install_noise_process
+
+    cfg = policy.config
+    if args.family in PROCESS_FAMILIES:
+        install_noise_process(policy, NoiseProcess(args.family, noise_id, cfg.chunk_size, cfg.max_action_dim,
+                                                   rho=args.rho, sigma=args.sigma))
+    elif args.family != "sampled":
+        install_fixed_noise(policy, make_noise(args.family, noise_id, cfg.chunk_size, cfg.max_action_dim,
+                                               episode_seed if jitter else None))
+
+
 def plan_jobs(family, noise_ids, jitter_seeds, done) -> list[tuple[int, int]]:
     """(noise_id, episode seed) pairs still to run; ``done`` holds finished episode seeds."""
     if jitter_seeds:
@@ -115,7 +140,8 @@ def record_meta(args, task: str, noise_id: int, jitter_seed: int | None, episode
     return {"task_id": args.task_id, "task": task, "seed": episode_seed, "init_state": args.init_state,
             "success": bool(result["success"]), "steps": result["steps"], "policy_path": args.policy_path,
             "n_action_steps": args.n_action_steps, "rename_map": args.rename_map, "source": "noise_search",
-            "noise_family": args.family, "noise_id": noise_id, "jitter_seed": jitter_seed, "lora_dir": args.lora_dir}
+            "noise_family": args.family, "noise_id": noise_id, "jitter_seed": jitter_seed, "lora_dir": args.lora_dir,
+            "noise_rho": getattr(args, "rho", None), "noise_sigma": getattr(args, "sigma", None)}
 
 
 def keep_recording(args, result: dict) -> bool:
@@ -139,7 +165,11 @@ def parse_args(argv=None):
     from vla_core.policy import DEFAULT_RENAME_MAP
 
     p.add_argument("--task_id", type=int, default=0)
-    p.add_argument("--family", choices=FAMILIES, required=True)
+    from noise_processes import PROCESS_FAMILIES
+
+    p.add_argument("--family", choices=FAMILIES + PROCESS_FAMILIES, required=True)
+    p.add_argument("--rho", type=float, default=None, help="ar_repeat: correlation of consecutive inferences' noise")
+    p.add_argument("--sigma", type=float, default=None, help="scaled: scale of a fresh noise at every inference")
     p.add_argument("--init_state", type=int, required=True)
     p.add_argument("--noise_ids", required=True, help="e.g. 0-69")
     p.add_argument("--jitter_seeds", default=None, help="perturb one fixed noise with these jitter seeds")
@@ -154,11 +184,17 @@ def parse_args(argv=None):
     p.add_argument("--record_successes_only", type=int, default=0,
                    help="with --record_dir: save only successful episodes (training keeps only those; saves disk)")
     p.add_argument("--lora_dir", default=None, help="search with this self_filtered_bc LoRA adapter attached (step 12)")
-    return p.parse_args(argv)
+    args = p.parse_args(argv)
+    try:
+        check_family_args(args)
+    except ValueError as e:
+        p.error(str(e))
+    return args
 
 
 def main(argv=None) -> int:
     args = parse_args(argv)
+    from noise_processes import family_label
     import torch
 
     from vla_core.envs import libero_env_config, make_libero_env, parse_index_ranges
@@ -170,7 +206,8 @@ def main(argv=None) -> int:
     jitter_seeds = parse_index_ranges(args.jitter_seeds) if args.jitter_seeds else None
     out = Path(args.output_dir)
     out.mkdir(parents=True, exist_ok=True)
-    path = result_file(out, args.family, args.init_state, noise_ids, jitter_seeds)
+    label = family_label(args.family, args.rho, args.sigma)
+    path = result_file(out, label, args.init_state, noise_ids, jitter_seeds)
     state = args.init_state
     done = {s for s, _ in load_episode_rows(path)}
     jobs = plan_jobs(args.family, noise_ids, jitter_seeds, done)
@@ -191,16 +228,13 @@ def main(argv=None) -> int:
     base = load_base_policy(args.policy_path, env_cfg, device=device, n_action_steps=args.n_action_steps,
                             rename_map=args.rename_map)
     attach_adapter(base, args)
-    cfg = base.policy.config
     if args.record_dir:
         sys.path.insert(0, str(REPO_ROOT / "self_filtered_bc"))
         from rollout_data import EpisodeRecorder, save_episode
     try:
         for k, s in jobs[: args.max_episodes_per_process]:
             uninstall_fixed_noise(base.policy)
-            if args.family != "sampled":
-                install_fixed_noise(base.policy, make_noise(args.family, k, cfg.chunk_size, cfg.max_action_dim,
-                                                            s if jitter_seeds else None))
+            install_family(base.policy, args, k, s, bool(jitter_seeds))
             base.reset()
             t0 = time.time()
             if args.record_dir:
@@ -213,13 +247,13 @@ def main(argv=None) -> int:
                 r = run_episode(env, state, s, choose, args.max_steps)
                 jitter = s if jitter_seeds else None
                 if keep_recording(args, r):
-                    save_episode(Path(args.record_dir) / "episodes" / record_name(args.family, k, jitter, state, s),
+                    save_episode(Path(args.record_dir) / "episodes" / record_name(label, k, jitter, state, s),
                                  recorder, record_meta(args, env.task_description, k, jitter, s, r))
             else:
                 r = run_episode(env, state, s, lambda obs: base.act(obs, env.task_description)[0], args.max_steps)
             append_episode_row(path, {"task_id": args.task_id, "seed": s, "init_state": state,
                                       "success": int(r["success"]), "steps": r["steps"]})
-            print(f"[search] {args.family} noise {k} seed {s} init {state}: success={int(r['success'])} "
+            print(f"[search] {label} noise {k} seed {s} init {state}: success={int(r['success'])} "
                   f"steps={r['steps']} time={time.time() - t0:.1f}s", flush=True)
     finally:
         uninstall_fixed_noise(base.policy)
