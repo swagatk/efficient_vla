@@ -1335,6 +1335,109 @@ as its own harness.
 one N0_0 episode through the notebook's command: both ran and wrote the expected files; N0_0's episode took 265 steps
 against 268 on Kaggle T4, an example of the GPU-type sensitivity this checks.
 
+## Step 16: is which constant noise suits a state shared across a task, and predictable from the scene? (design 2026-11-20)
+
+The first experiment of the full paper (stage 2). The paper's method helps only the states it searched (steps 10, 12
+and 13), and step 9 found no evidence that a noise which solves one state helps another, at power of only 0.25-0.55.
+A method that chooses one constant noise per episode for a state it has never searched (a learned critic or prior over
+the noise, or a per-task "golden ticket", arXiv 2603.15757) needs one of two things: noises whose quality is shared by
+a task's states, or a link between the scene and which noise suits it. The committed runs cannot measure either: their
+4,364 `repeat` episodes cover 25 states, mostly with different noise ids on each. Step 16 runs the same fresh noise ids
+on every state 0-29 of the four weak tasks with a fixed scene (a crossed map). No training. It is also the training
+data of such a method and gives the per-task ticket baseline.
+
+**Split, fixed now for the full paper.** *Search split:* states 0-29 of tasks 0, 4, 6 and 7 (every earlier
+constant-noise search is among them). *Held out:* states 30-49 of the same tasks, without 7/33, 7/38 and 7/47, which
+were searched (steps 8, 9, 15); they are kept for testing a method later and are used for no design or tuning decision
+before then. Task 8 stays out (its initial state does not fix the stove).
+
+**Hypotheses.** Written before any step-16 episode. (T1) A constant noise's quality is shared across a task's states:
+for a state, the ids that succeed more often on the task's other states also succeed more often on it. (T2) Which
+noise suits a state depends on the scene: the ids that succeed on the states nearest to it in scene (initial object
+poses) rank its successes better than the ids that succeed on the task's states as a whole.
+
+**Protocol (fixed before the run).** `lerobot/smolvla_libero` at `a24f1f3804`, `n_action_steps=10`, 520 steps, hard
+resets, Kaggle 2 x T4, `deep_noise_search.py --family repeat` of the base (step 9's command). Fresh noise ids
+10000-10049 (the `repeat` ids in committed runs are 0-69, 100-399, 1000-1599, 6000-6049, 7000-7049, 9000-9399), episode
+seed 1000 + id, in five parts of 10 ids (one process per state and part).
+
+- *Scene check, first* (`check_scene.py`, four at a time): every one of the 120 states; a state that fails is dropped,
+  not replaced.
+- *Harness, first, stops the run.* The base on 12 of step 15's committed 7/38 episodes (Kaggle T4, commit 16a03fb):
+  ids 9007, 9008, 9012, 9019, 9022 and 9045 (successes) and 9000-9005 (failures). At least 11 of the 12 must equal the
+  committed rows (success and steps).
+- *Map:* part j runs ids 10000 + 10j to 10009 + 10j once on every state that passed its scene check: 1,200 episodes per
+  part, 6,000 in all.
+- *Part 1's gate.* Parts 2-5 run only if, after part 1, at least 10% of the 120 states (12) have both a success and a
+  failure (a dropped state counts as not having both). Otherwise the map cannot tell noises apart within a state and
+  the step stops for a redesign, reported as such.
+
+At most 120 scene checks + 12 + 6,000 episodes.
+
+**Rule (`step16_g1.py`, run locally on the finished map; parts 1-5).** A state is *informative* if it has at least one
+success and one failure among its 50 episodes. For state s and id k of task t, *flat(s, k)* is the success rate of k on
+t's other map states and *near(s, k)* its rate on the 8 map states of t nearest to s, by Euclidean distance in the
+varying object coordinates of the LIBERO init-state vectors (the objects' x-y positions, 8-16 per task; the arm's
+joints, columns 1-7, are left out), each z-scored over the task's 50 init states (`step16_contexts.json`, written by
+`step16_g1.py --write_contexts` from LIBERO's installed files, sha256 recorded; information the policy does not get).
+AUROC_s(score) is the Mann-Whitney AUROC of the score for s's successes against its failures, ties counting one half.
+Both statistics rank ids within a state, so a state's difficulty does not enter the statistics; it can enter T2's null,
+which is why that null is stratified.
+
+- *T1* = mean over informative states (tasks pooled) of AUROC_s(flat) - 0.5. Null: each state's outcomes are permuted
+  over its ids independently.
+- *T2* = mean over informative states of AUROC_s(near) - AUROC_s(flat). Null: within each task the contexts are permuted
+  only among states of similar difficulty: the task's states sorted by success count (ties by index) in consecutive
+  strata of 5 (a remainder joins the last stratum). This keeps every outcome and the link between scene and difficulty,
+  and breaks only the link between scene and which ids succeed. A free permutation would be invalid: if the scene sets
+  a state's difficulty, its near neighbours share that difficulty and so carry the shared id effect better than random
+  ones, and T2 would pass without any scene-dependent choice of noise (found in the pre-launch review; see the power
+  table). Given the success counts, a model logit = a_s + b_k leaves the outcomes independent of the scene, so the
+  stratified permutation is exact within equal counts and approximate within strata.
+
+Each test is one-sided, p = (1 + #{permuted >= observed}) / (1 + 5,000), permutation seeds 16 and 17, and the two are
+Holm-corrected at 0.05. `step16_g1.py` refuses any table but the complete map (tasks 0, 4, 6 and 7, ids 10000-10049,
+states within 0-29), so the step is read on all five parts only; the notebook names each session's table by its number
+of parts (`step16_table_parts<n>.csv`). *Reported, not part of the rule:* per-task success counts, the informative states per task,
+the per-task statistics, and the best global ticket per task (the id with the highest rate over its task's states).
+
+**Reading.** *The harness failed:* not read. *Part 1's gate fails:* stop; too few states with both outcomes to learn
+from. *T2 passes:* which noise suits a state is predictable from the scene; the next step replaces the privileged
+init-state vector by the policy's own features of the first observation and tests a learned choice on the held-out
+states. *T1 passes, T2 does not:* a noise's quality is shared within a task, but no link to the scene is shown; a
+per-task ticket is the ceiling for choosing one noise without search. *Neither:* good noise is not shown to be shared
+or predictable from the scene, a well-powered statement in place of step 9's null.
+
+**Power (`calibration/step16_power.py`; Monte Carlo with the tests' own code, 100 simulations of 100 permutations at
+level 0.025, the stricter Holm level; outputs in `week6/noise_reachability_step16_kaggle/step16_power.txt` and
+`step16_level.txt`; estimates).** Outcomes are simulated with logit = a_s + b_k + c_sk: state difficulty a_s, sd 2, a
+shared id effect b_k ~ N(0, sd^2) per task (T1), and a scene-dependent effect c_sk = sd x <z_s, v_k> / sqrt(2), smooth
+in a 2-d scene latent z_s (T2), seen through a context of z_s plus 0 or 13 irrelevant coordinates. At 50 ids per state,
+T1: id sd 0, 0.3, 0.5, 1.0 -> 0.04, 0.70, 1.00, 1.00 (10 ids: 0.02, 0.26, 0.78, 1.00). T2 with 8 neighbours and strata
+of 5: interaction sd 0, 0.5, 1.0, 1.5 -> 0.02, 0.73, 1.00, 1.00 without irrelevant coordinates and 0.00, 0.23, 0.91, 1.00
+with 13 (5 neighbours: 0.02, 0.18, 0.91, 1.00 with 13; 20 ids: 0.01, 0.09, 0.69, 1.00). *The confound:* difficulty set
+by the scene (a_s = conf x z_s1 plus the rest of its variance), id sd 1.0, no scene-dependent effect, so T2 must not
+pass. A free permutation of the contexts rejects in up to 0.11 of simulations (conf 2); the stratified null in 300
+simulations rejects at 0.020 and 0.040 (conf 0 and 2, no irrelevant coordinates) and 0.033 and 0.007 (13 irrelevant)
+at level 0.025 (0.043-0.067 at 0.05): approximately valid, somewhat liberal when the scene sets difficulty strongly.
+The neighbour count (8) and stratum size (5) were chosen on these simulations, before any step-16 episode; the step is
+read on all five parts only.
+
+**What it cannot show.** The context is the simulator's initial state, not what the policy sees, so a pass of T2 shows
+that a link exists, not that the policy's observations carry it. One checkpoint, four tasks, the base only; a fixed
+noise is deterministic per GPU type, so the map holds for Kaggle T4. Nearest neighbours in an unweighted pose space
+can miss a link carried by a few coordinates, so a failed T2 does not exclude one.
+
+**Compute (estimate).** About 167 episodes per hour with four jobs (steps 9 and 15): about 7.2 h per part, plus about
+1 h for the 120 scene checks and 0.8 h for the install, wrapper checks and harness. Part 1 in one session (about 9 h,
+STOP_AT_H 11), parts 2-5 in about three more (about 29 h): about 38 h in all, within roughly one week of the Kaggle
+quota. A local smoke run (RTX 4090, shared with another job) through the notebook's commands, one episode each: the scene
+check of 0/0 passed, the harness episode (id 9000) equalled step 15's committed row, a map episode on 0/0 wrote its row
+(64 s), and every provenance record met the analysis's rules for its folder (the full check refused it, as it should,
+for the uncommitted tree and the GPU); `week6/noise_reachability_step16_kaggle/smoke_local.txt`. It checks that the code
+runs, not any rate, and ran before the review's changes, which touch only the analysis (`step16_g1.py`), the contexts
+and the notebook's table names, not the episode commands.
+
 ## Compute
 
 Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a month) for steps 2-4. At
@@ -1358,6 +1461,7 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
 | 10 | Kaggle 2 x T4 | estimate: 2,940 episodes and 12 adapters, about 32 h over four sessions |
 | 11 | Kaggle 2 x T4 | done: 520 episodes, 2.9 h between first and last provenance records, one session |
 | 12 | Kaggle 2 x T4 | done: 2,236 episodes and 9 adapters over three sessions (10.8 h, 10.8 h and 6.8 h between first and last provenance records) |
+| 16 | Kaggle 2 x T4 | estimate: 120 scene checks, 12 harness and 6,000 map episodes in five parts, about 38 h over four sessions |
 
 ## Files
 
@@ -1407,6 +1511,10 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
 - `analyze_step14.py`: step-14 harness gate, provenance per folder, L's training set against R's, tests A and B
   and reading; `kaggle_step14_dilution.ipynb` (built by `build_step14_notebook.py`) runs it on Kaggle;
   `calibration/step14_power.py`: the power table.
+- `analyze_step16.py`: step-16 provenance per folder, harness gate, scene checks, the complete parts, part 1's gate
+  and the table; `kaggle_step16_crossed_map.ipynb` (built by `build_step16_notebook.py`) runs it on Kaggle;
+  `step16_g1.py`: tests T1 and T2 on the finished table, locally, with `step16_contexts.json` (LIBERO init-state
+  contexts); `calibration/step16_power.py`: the power table.
 - `analyze_colab_t4_check.py`, `colab_t4_check.ipynb` (built by `build_colab_t4_check_notebook.py`): the Colab T4
   check (does a Colab T4 reproduce 24 Kaggle T4 episodes of step 10 exactly).
 - `analyze_step12.py`: step-12 state selection from step 10's report, harness gate (round 1's adapter against step
@@ -1420,7 +1528,7 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
 Steps 0, 1 and 2 done (above); step 2 is a negative result. Step 3 ran on Colab and failed as a test: the
 critic diverged (above). Step 3b (whether a Monte Carlo critic can tell the base's own noises apart) ran on
 Kaggle and is not read: its shuffled-noise control was biased (above). Step 4 ran on Kaggle (above, 2026-10-31): negative, no arm meets the hypothesis. Step 5a ran on Colab (above, 2026-10-31): "mostly reachable", all 5 systematic states reached by fixed noises, none by
-sampled noise. Step 5b ran on Colab (above, 2026-11-01): no reading on transfer, the learner did not learn at this budget. Step 6 ran on Kaggle (above, 2026-11-01): the labels hold; B's gain was not informative. Step 7 ran on Kaggle (above, 2026-11-02): existence only, `repeat` did not beat `sampled`, and on two of the three states sampling also solved the state. Step 8 ran on Kaggle (above, 2026-11-03): both tests pass, `repeat` beats `sampled` on 6/8 and on four unlabelled states chosen in advance, pooled. Step 9 ran on Kaggle (above, 2026-11-03): not shown, the library did not beat fresh noises pooled (p 0.408); exploratory, it helped on 0/14 and hurt on task 7. Step 10 ran on Kaggle (above, 2026-11-04/08): both tests pass, N learns the trained states (37-43% against the base 0.5%) and beats A on task 0; it transfers to task 0's held-out states but not to those of tasks 6 and 7. Step 11 ran on Kaggle (above, 2026-11-08): replicated, fixed noise beats sampling on step 9's eight states (p 3.4e-5) and without task 7 (p 0.018). Step 12 ran on Kaggle (above, 2026-11-08/14): test 1 passes, a second round of search and training beats the first on the states it left weak in 3/3 seeds (+10.6 points pooled); no transfer to the held-out states, and on round 1's best state 0/8 R was below N in every seed (R 32 against N 41 of 48, pooled).
+sampled noise. Step 5b ran on Colab (above, 2026-11-01): no reading on transfer, the learner did not learn at this budget. Step 6 ran on Kaggle (above, 2026-11-01): the labels hold; B's gain was not informative. Step 7 ran on Kaggle (above, 2026-11-02): existence only, `repeat` did not beat `sampled`, and on two of the three states sampling also solved the state. Step 8 ran on Kaggle (above, 2026-11-03): both tests pass, `repeat` beats `sampled` on 6/8 and on four unlabelled states chosen in advance, pooled. Step 9 ran on Kaggle (above, 2026-11-03): not shown, the library did not beat fresh noises pooled (p 0.408); exploratory, it helped on 0/14 and hurt on task 7. Step 10 ran on Kaggle (above, 2026-11-04/08): both tests pass, N learns the trained states (37-43% against the base 0.5%) and beats A on task 0; it transfers to task 0's held-out states but not to those of tasks 6 and 7. Step 11 ran on Kaggle (above, 2026-11-08): replicated, fixed noise beats sampling on step 9's eight states (p 3.4e-5) and without task 7 (p 0.018). Step 12 ran on Kaggle (above, 2026-11-08/14): test 1 passes, a second round of search and training beats the first on the states it left weak in 3/3 seeds (+10.6 points pooled); no transfer to the held-out states, and on round 1's best state 0/8 R was below N in every seed (R 32 against N 41 of 48, pooled). Step 16 (the full paper's first experiment, the crossed map) was designed on 2026-11-20 and has not run.
 
 Before step 0 ran, smoke tests on the local RTX 4090 (shared with another job), one episode each of task 0,
 seed 0, init state 0: `n_action_steps=10` through `evaluate_all.py` and `n_action_steps=50` through

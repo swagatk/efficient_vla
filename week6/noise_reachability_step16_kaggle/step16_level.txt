@@ -1,0 +1,9 @@
+step 16 power: 4 tasks x 30 states, state sd 2.0, 100 simulations, 100 permutations, level 0.025, seed 2017; an estimate, not a result
+command: python noise_reachability/calibration/step16_power.py --sims 100 --n_perm 100 --seed 2017; commit d46068dcdc20a4ccc2e214a55784954644906b90 with uncommitted noise_reachability changes
+command: ... --level_sims 300 --n_perm 100 --seed 2017
+T2 stratified null, level: 300 simulations, K 50, m 8, id sd 1.0, no scene-dependent effect; rate of p < 0.025 (and < 0.05)
+  0 irrelevant, conf 0.0: 0.020 (0.043)
+  0 irrelevant, conf 2.0: 0.040 (0.067)
+  13 irrelevant, conf 0.0: 0.033 (0.057)
+  13 irrelevant, conf 2.0: 0.007 (0.043)
+(214 s)

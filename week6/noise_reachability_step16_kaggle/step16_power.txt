@@ -1,0 +1,19 @@
+step 16 power: 4 tasks x 30 states, state sd 2.0, 100 simulations, 100 permutations, level 0.025, seed 2016; an estimate, not a result
+command: python noise_reachability/calibration/step16_power.py --sims 100 --n_perm 100 --seed 2016; commit d46068dcdc20a4ccc2e214a55784954644906b90 with uncommitted noise_reachability changes
+T1 (shared id effect), by ids per state K and id sd:
+  K 10: id sd 0, 0.3, 0.5, 1.0 -> 0.02, 0.26, 0.78, 1.00
+  K 20: id sd 0, 0.3, 0.5, 1.0 -> 0.01, 0.34, 0.95, 1.00
+  K 50: id sd 0, 0.3, 0.5, 1.0 -> 0.04, 0.70, 1.00, 1.00
+T2 false positives under the confound (difficulty from the scene, id sd 1.0, no scene-dependent effect), K 50, m 8, by scene weight conf 0, 1, 2:
+  free permutation (invalid), 0 irrelevant: 0.02, 0.01, 0.11
+  free permutation (invalid), 13 irrelevant: 0.00, 0.03, 0.07
+  strata of 5, 0 irrelevant: 0.04, 0.02, 0.02
+  strata of 5, 13 irrelevant: 0.06, 0.02, 0.03
+T2 (scene-dependent effect, strata of 5), by K, neighbours m, irrelevant context coordinates and interaction sd:
+  K 50, m 5, 0 irrelevant: inter sd 0, 0.5, 1.0, 1.5 -> 0.02, 0.67, 1.00, 1.00
+  K 50, m 5, 13 irrelevant: inter sd 0, 0.5, 1.0, 1.5 -> 0.02, 0.18, 0.91, 1.00
+  K 50, m 8, 0 irrelevant: inter sd 0, 0.5, 1.0, 1.5 -> 0.02, 0.73, 1.00, 1.00
+  K 50, m 8, 13 irrelevant: inter sd 0, 0.5, 1.0, 1.5 -> 0.00, 0.23, 0.91, 1.00
+  K 20, m 8, 0 irrelevant: inter sd 0, 0.5, 1.0, 1.5 -> 0.02, 0.50, 1.00, 1.00
+  K 20, m 8, 13 irrelevant: inter sd 0, 0.5, 1.0, 1.5 -> 0.01, 0.09, 0.69, 1.00
+(751 s)
