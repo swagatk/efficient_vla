@@ -1,0 +1,7 @@
+step 16, descriptive (not part of the rule), 5000 permutations
+T2 0.0028; stratified null mean -0.0320, sd 0.0098, 95th percentile -0.0161, max 0.0055; z 3.5; p 0.0005999
+task | informative states | mean AUROC flat | mean AUROC near (m = 8)
+0 | 26 | 0.651 | 0.614
+4 | 30 | 0.650 | 0.672
+6 | 29 | 0.640 | 0.666
+7 | 30 | 0.731 | 0.726

@@ -1,0 +1,35 @@
+{
+ "provenance": {
+  "records": 728,
+  "commit": "e7b7cd9f5de7f71865ddb3b609e6241ed135a3ec"
+ },
+ "harness": {
+  "same": 12,
+  "episodes": 12,
+  "differ": [],
+  "passes": true
+ },
+ "parts": 5,
+ "scene_failed": [],
+ "episodes": 6000,
+ "successes": 2049,
+ "per_task": {
+  "0": [
+   448,
+   1500
+  ],
+  "4": [
+   457,
+   1500
+  ],
+  "6": [
+   485,
+   1500
+  ],
+  "7": [
+   659,
+   1500
+  ]
+ },
+ "decision": "parts 1-5 complete: run step16_g1.py on the table"
+}

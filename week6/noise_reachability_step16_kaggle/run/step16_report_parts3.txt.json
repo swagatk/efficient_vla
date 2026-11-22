@@ -1,0 +1,35 @@
+{
+ "provenance": {
+  "records": 567,
+  "commit": "e7b7cd9f5de7f71865ddb3b609e6241ed135a3ec"
+ },
+ "harness": {
+  "same": 12,
+  "episodes": 12,
+  "differ": [],
+  "passes": true
+ },
+ "parts": 3,
+ "scene_failed": [],
+ "episodes": 3600,
+ "successes": 1179,
+ "per_task": {
+  "0": [
+   269,
+   900
+  ],
+  "4": [
+   261,
+   900
+  ],
+  "6": [
+   265,
+   900
+  ],
+  "7": [
+   384,
+   900
+  ]
+ },
+ "decision": "parts 1-3 complete: run step16_g1.py on the table only after every part is done"
+}

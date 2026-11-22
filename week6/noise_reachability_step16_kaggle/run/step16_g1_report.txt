@@ -1,0 +1,8 @@
+step 16 tests over tasks {'0': 30, '4': 30, '6': 30, '7': 30} states and {'0': 50, '4': 50, '6': 50, '7': 50} ids, 5000 permutations
+T1: statistic 0.1689 over 115 informative states (null mean -0.0001), one-sided p 0.0002; passes (Holm, 0.05)
+T2: statistic 0.0028 over 115 informative states (null mean -0.0320, m = 8, strata of 5), one-sided p 0.0005999; passes (Holm, 0.05)
+task 0 (reported, not tested): 448 of 1500 episodes, 26 of 30 states informative, T1 0.1512, T2 -0.0367; best ticket id 10009 (19 of 30 states)
+task 4 (reported, not tested): 457 of 1500 episodes, 30 of 30 states informative, T1 0.1496, T2 0.0220; best ticket id 10004 (17 of 30 states)
+task 6 (reported, not tested): 485 of 1500 episodes, 29 of 30 states informative, T1 0.1402, T2 0.0263; best ticket id 10036 (19 of 30 states)
+task 7 (reported, not tested): 659 of 1500 episodes, 30 of 30 states informative, T1 0.2313, T2 -0.0049; best ticket id 10017 (23 of 30 states)
+reading: which noise suits a state is predictable from the scene: ENEI goes ahead, next with the VLA's own features of the initial observation in place of the privileged state

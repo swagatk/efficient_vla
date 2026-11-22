@@ -1,0 +1,41 @@
+{
+ "provenance": {
+  "records": 335,
+  "commit": "e7b7cd9f5de7f71865ddb3b609e6241ed135a3ec"
+ },
+ "harness": {
+  "same": 12,
+  "episodes": 12,
+  "differ": [],
+  "passes": true
+ },
+ "parts": 1,
+ "scene_failed": [],
+ "episodes": 1200,
+ "successes": 355,
+ "per_task": {
+  "0": [
+   102,
+   300
+  ],
+  "4": [
+   71,
+   300
+  ],
+  "6": [
+   69,
+   300
+  ],
+  "7": [
+   113,
+   300
+  ]
+ },
+ "part1_gate": {
+  "informative_states": 98,
+  "map_states": 120,
+  "needed": 12.0,
+  "passes": true
+ },
+ "decision": "part 1's gate passes: run parts 2-5"
+}

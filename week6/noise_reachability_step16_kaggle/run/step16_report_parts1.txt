@@ -1,0 +1,5 @@
+step 16: the crossed constant-noise map, parts 1-1, commit e7b7cd9f5de7f71865ddb3b609e6241ed135a3ec
+harness: 12 of 12 committed episodes reproduce (ok)
+map: 1200 episodes, 355 successes; per task (successes, episodes): {'0': [102, 300], '4': [71, 300], '6': [69, 300], '7': [113, 300]}
+part 1 gate: 98 of 120 states have both outcomes, 12 needed (passes)
+decision: part 1's gate passes: run parts 2-5

@@ -1,0 +1,74 @@
+{
+ "T1": {
+  "statistic": 0.1689172242924434,
+  "informative_states": 115,
+  "p": 0.0001999600079984003,
+  "null_mean": -0.00012452203829651964,
+  "passes": true
+ },
+ "T2": {
+  "statistic": 0.0027557948099039,
+  "informative_states": 115,
+  "p": 0.0005998800239952009,
+  "null_mean": -0.032017083903393334,
+  "m": 8,
+  "stratum_size": 5,
+  "passes": true
+ },
+ "reading": "which noise suits a state is predictable from the scene: ENEI goes ahead, next with the VLA's own features of the initial observation in place of the privileged state",
+ "per_task": {
+  "0": {
+   "successes": 448,
+   "episodes": 1500,
+   "informative_states": 26,
+   "T1": 0.1512277535279272,
+   "T2": -0.03674134986799506,
+   "best_ticket": 10009,
+   "best_ticket_successes": 19,
+   "states": 30
+  },
+  "4": {
+   "successes": 457,
+   "episodes": 1500,
+   "informative_states": 30,
+   "T1": 0.1495673168152408,
+   "T2": 0.02195011663198663,
+   "best_ticket": 10004,
+   "best_ticket_successes": 17,
+   "states": 30
+  },
+  "6": {
+   "successes": 485,
+   "episodes": 1500,
+   "informative_states": 29,
+   "T1": 0.14023449941664554,
+   "T2": 0.026255423712875713,
+   "best_ticket": 10036,
+   "best_ticket_successes": 19,
+   "states": 30
+  },
+  "7": {
+   "successes": 659,
+   "episodes": 1500,
+   "informative_states": 30,
+   "T1": 0.2313246404788313,
+   "T2": -0.004923976230872486,
+   "best_ticket": 10017,
+   "best_ticket_successes": 23,
+   "states": 30
+  }
+ },
+ "states": {
+  "0": 30,
+  "4": 30,
+  "6": 30,
+  "7": 30
+ },
+ "ids": {
+  "0": 50,
+  "4": 50,
+  "6": 50,
+  "7": 50
+ },
+ "n_perm": 5000
+}

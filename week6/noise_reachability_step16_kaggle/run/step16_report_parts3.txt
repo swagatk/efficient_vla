@@ -1,0 +1,4 @@
+step 16: the crossed constant-noise map, parts 1-3, commit e7b7cd9f5de7f71865ddb3b609e6241ed135a3ec
+harness: 12 of 12 committed episodes reproduce (ok)
+map: 3600 episodes, 1179 successes; per task (successes, episodes): {'0': [269, 900], '4': [261, 900], '6': [265, 900], '7': [384, 900]}
+decision: parts 1-3 complete: run step16_g1.py on the table only after every part is done

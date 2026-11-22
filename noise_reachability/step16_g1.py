@@ -165,8 +165,9 @@ def stratified_permutation(rng, groups: list[np.ndarray], n: int) -> np.ndarray:
 
 
 def t2_test(tasks: dict, m: int = M_NEAR, n_perm: int = N_PERM, seed: int = PERM_SEED + 1,
-            stratum_size: int | None = STRATUM_SIZE) -> dict:
-    """``stratum_size=None`` permutes freely (the invalid null, kept only to show the confound in calibration)."""
+            stratum_size: int | None = STRATUM_SIZE, return_null: bool = False) -> dict:
+    """``stratum_size=None`` permutes freely (the invalid null, kept only to show the confound in calibration);
+    ``return_null`` adds the permuted statistics under "null" (for step16_describe.py; the report leaves it out)."""
     obs, n = t2_stat(tasks, m)
     rng = np.random.default_rng(seed)
     base_nb = {t: neighbours(C, m) for t, (_, C) in tasks.items()}
@@ -179,8 +180,11 @@ def t2_test(tasks: dict, m: int = M_NEAR, n_perm: int = N_PERM, seed: int = PERM
             inv = np.argsort(perm)
             nbs[t] = inv[base_nb[t][perm]]
         null[i] = t2_stat(tasks, m, nbs)[0]
-    return {"statistic": obs, "informative_states": n, "p": perm_p(obs, null), "null_mean": float(null.mean()), "m": m,
-            "stratum_size": stratum_size}
+    out = {"statistic": obs, "informative_states": n, "p": perm_p(obs, null), "null_mean": float(null.mean()), "m": m,
+           "stratum_size": stratum_size}
+    if return_null:
+        out["null"] = null
+    return out
 
 
 def holm(ps: dict, alpha: float = ALPHA) -> dict:

@@ -1,0 +1,29 @@
+{
+ "task_id": 6,
+ "init_state": 8,
+ "noise_id": 3000,
+ "seeds": [
+  7000,
+  7001
+ ],
+ "same": true,
+ "moved": {},
+ "actions": {
+  "max": 0.0,
+  "first_step": null,
+  "lengths": [
+   120,
+   120
+  ]
+ },
+ "outcomes": [
+  [
+   0,
+   120
+  ],
+  [
+   0,
+   120
+  ]
+ ]
+}
