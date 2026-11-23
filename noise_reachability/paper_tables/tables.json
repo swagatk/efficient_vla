@@ -1,6 +1,6 @@
 {
  "command": "python -S noise_reachability/paper_tables.py --out_dir noise_reachability/paper_tables --tex_dir /home/swagat/GIT/efficient_vla_notes/rss2027_paper/tables_v3 --note_size scriptsize",
- "git_commit": "70a161ea23a38f9033677c9b8db489c87ff3c5da",
+ "git_commit": "622da7545e6df32b012364534e4e7f173bfeb2bc",
  "inputs_dirty": false,
  "tables": [
   "1_overview.md",
@@ -32,6 +32,7 @@
   "week6/noise_reachability_step13_colab/run/step13_report.txt.json": "dd9c9e0a207052f9618051263ed34f21a3f5643646da32e4f8ee6346853a61da",
   "week6/noise_reachability_step14_kaggle/run/step14_report.txt.json": "ee86f900f2317ae0b0c87683cc63342f26dcee14730741fd6a6654d34929abdd",
   "week6/noise_reachability_step15_kaggle/run/step15_report.txt.json": "6cc79efe8faefae163b00e52e21f39de881ffdcb4fe407d16a8f96aecd075723",
+  "week6/noise_reachability_step16_kaggle/run/step16_g1_report.txt.json": "6c20f3f003a07baa6e9af3450af43be38bfffc626f175167a78c12079f4600e9",
   "week6/noise_reachability_step12_kaggle/run/step12_report.txt.json": "09164e7267b262e40ef8bdb0afe64c4d1d44199f163aae91b82c36fb89070888"
  },
  "optional_inputs_missing": [],
@@ -99,6 +100,10 @@
   "E15": {
    "files": 12,
    "sha256": "8252be22a916d4cf3e6aae4b5098c2a690584b702974630f4b63c1e8e3b590ab"
+  },
+  "E16": {
+   "files": 601,
+   "sha256": "3e66d496e1dcd3c73fede3784431c5a425a1127e50e1bad7c9389e666347d859"
   }
  }
 }

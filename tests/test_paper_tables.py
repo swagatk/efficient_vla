@@ -184,7 +184,8 @@ def test_overview_counts_every_experiment_from_its_files():
             "E11": ("520", "both tests pass"), "E12": ("2,236", "test 1 passes"),   # 12 harness + 400 search + 1,824 eval
             "E13": ("2,944", "no 10-point change shown"),        # 8 sessions x 12 harness + 2,848 evaluation
             "E14": ("1,256", "neither test passes"),    # 8 harness + 864 check + 384 searched
-            "E15": ("1,618", "both tests pass")}        # 14 harness + 800 test A + 800 test B + 4 replays
+            "E15": ("1,618", "both tests pass"),        # 14 harness + 800 test A + 800 test B + 4 replays
+            "E16": ("6,012", "both tests pass")}        # 12 harness + 6,000 map (4 tasks x 30 states x 50 ids)
     rows = {c[0]: (c[2], c[3]) for c in ([x.strip() for x in l.strip("|").split("|")] for l in t.splitlines()[2:])}
     assert rows == want
 
@@ -201,6 +202,8 @@ def test_overview_leaves_out_merged_copies_pilots_and_summaries():
     assert len(files["E13"]) == 8 * 3 + 36 and f"{s}13_colab/run/harness/session8/task_7/per_episode_lora.csv" in files["E13"]
     assert len(files["E14"]) == 2 + 54 + 24 and len(files["E15"]) == 2 + 8 + 2
     assert f"{s}15_kaggle/run/task_6/replay/per_episode_repeat_state20.csv" in files["E15"]
+    assert len(files["E16"]) == 1 + 4 * 5 * 30                                          # harness + every map part file
+    assert not any("table_parts" in f for f in files["E16"])                           # session summaries, not episodes
 
 
 def test_count_rows_and_readings(tmp_path):
@@ -235,6 +238,10 @@ def test_overview_outcomes_follow_the_reports():
     d["step15"]["test A"]["14"]["passes"] = False
     d["step15"]["test B"]["passes"] = False
     assert pt.outcomes(d)["E15"] == "neither test passes"
+    d["step16"]["T2"]["passes"] = False
+    assert pt.outcomes(d)["E16"] == "one of two tests passes"
+    d["step16"]["T1"]["passes"] = False
+    assert pt.outcomes(d)["E16"] == "neither test passes"
 
 
 def test_step13_outcome_needs_a_change_in_either_family():

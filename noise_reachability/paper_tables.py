@@ -39,6 +39,7 @@ INPUTS = {
     "step13": f"{W6}/noise_reachability_step13_colab/run/step13_report.txt.json",
     "step14": f"{W6}/noise_reachability_step14_kaggle/run/step14_report.txt.json",
     "step15": f"{W6}/noise_reachability_step15_kaggle/run/step15_report.txt.json",
+    "step16": f"{W6}/noise_reachability_step16_kaggle/run/step16_g1_report.txt.json",
 }
 # Results not yet produced: a table is made only when its file exists, and tables.json records which were used.
 OPTIONAL_INPUTS = {
@@ -102,6 +103,8 @@ OVERVIEW = (
     ("E15", "Zero-hit states: unreachable, or solutions lost?", (f"{S}15_kaggle/run/harness/*/*.csv",
                                                                  f"{S}15_kaggle/run/task_*/search/*/*.csv",
                                                                  f"{S}15_kaggle/run/task_*/replay/*.csv")),
+    ("E16", "Is a good noise shared, or set by the scene?", (f"{S}16_kaggle/run/harness/*/*.csv",
+                                                             f"{S}16_kaggle/run/task_*/map/part*/*.csv")),
 )
 # Readings that are words in the experiment's README, not numbers; the others are read from the reports below.
 READINGS = {"E2": "negative", "E3": "not read", "E4": "negative", "E5b": "did not learn",
@@ -311,6 +314,7 @@ def outcomes(data) -> dict[str, str]:
     out["E13"] = step13_outcome(data["step13"]["tests"])
     out["E14"] = passes(data["step14"]["tests"]["test A"], data["step14"]["tests"]["test B"])
     out["E15"] = step15_outcome(data["step15"])
+    out["E16"] = passes(data["step16"]["T1"], data["step16"]["T2"])
     return out
 
 
