@@ -1,0 +1,14 @@
+step 17 power, stage select: 4 tasks x 30 states x 50 ids, state sd 2.0, features 64-d from a 2-d scene latent and 20 irrelevant directions; 50 simulations, 50 permutations, rule p <= 0.05, U1 > 0, D > 0; seed 2017; an estimate, not a result
+command: python noise_reachability/calibration/step17_power.py --stage select; commit caa2b43d5f0cdcdbc1fb884813bdea8d044be1b6 with uncommitted noise_reachability changes
+pass rate at sd_inter 1.0, id sd 0.5, by (d, lambda) and share 0.05, 0.2, 0.5 (mean U1, D at share 0.2):
+  d 2, lambda 0.1: 0.10, 0.94, 1.00 (mean 0.68; U1 +0.043, D +0.049)
+  d 2, lambda 1: 0.08, 0.86, 1.00 (mean 0.65; U1 +0.038, D +0.038)
+  d 2, lambda 10: 0.08, 0.78, 1.00 (mean 0.62; U1 +0.017, D +0.012)
+  d 4, lambda 0.1: 0.04, 0.90, 1.00 (mean 0.65; U1 +0.047, D +0.045)
+  d 4, lambda 1: 0.12, 0.90, 0.98 (mean 0.67; U1 +0.049, D +0.043)
+  d 4, lambda 10: 0.14, 0.84, 0.98 (mean 0.65; U1 +0.025, D +0.026)
+  d 8, lambda 0.1: 0.04, 0.84, 0.98 (mean 0.62; U1 +0.037, D +0.042)
+  d 8, lambda 1: 0.12, 0.92, 1.00 (mean 0.68; U1 +0.045, D +0.043)
+  d 8, lambda 10: 0.34, 0.94, 0.96 (mean 0.75; U1 +0.028, D +0.027)
+highest mean power: d 8, lambda 10 (0.75); check its level next
+(2543 s, 28 workers)

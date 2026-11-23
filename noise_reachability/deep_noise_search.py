@@ -23,6 +23,9 @@ rerun skips finished episodes. With ``--record_dir`` each episode is also saved 
 (``<record_dir>/episodes/<name>.npz``, see ``record_name``) for training on it (step 10); recording only copies what
 the policy saw and did, so it does not change the episode. With ``--lora_dir`` the search runs a LoRA-adapted policy
 (self_filtered_bc's adapter, attached as its evaluation attaches it; step 12's round-2 explorer) instead of the base.
+With ``--feature_dir`` (step 17) each episode also stores SmolVLA's prefix features at its first inference
+(``first_features.py``) as ``<feature_dir>/features_state<i>_id<k>.json``, written before the episode's row, so a row
+always has its features; the recorder hands every call to the noise wrapper unchanged.
 At most --max_episodes_per_process run per call (exit code 3: call again).
 Run from the repo root with the repo root on PYTHONPATH (FAIL-003).
 """
@@ -184,6 +187,7 @@ def parse_args(argv=None):
     p.add_argument("--record_successes_only", type=int, default=0,
                    help="with --record_dir: save only successful episodes (training keeps only those; saves disk)")
     p.add_argument("--lora_dir", default=None, help="search with this self_filtered_bc LoRA adapter attached (step 12)")
+    p.add_argument("--feature_dir", default=None, help="also store each episode's first-inference prefix features (step 17)")
     args = p.parse_args(argv)
     try:
         check_family_args(args)
@@ -235,6 +239,10 @@ def main(argv=None) -> int:
         for k, s in jobs[: args.max_episodes_per_process]:
             uninstall_fixed_noise(base.policy)
             install_family(base.policy, args, k, s, bool(jitter_seeds))
+            if args.feature_dir:
+                from first_features import install_first_features
+                store: dict = {}
+                install_first_features(base.policy, store)
             base.reset()
             t0 = time.time()
             if args.record_dir:
@@ -251,6 +259,11 @@ def main(argv=None) -> int:
                                  recorder, record_meta(args, env.task_description, k, jitter, s, r))
             else:
                 r = run_episode(env, state, s, lambda obs: base.act(obs, env.task_description)[0], args.max_steps)
+            if args.feature_dir:
+                from first_features import feature_file, write_features
+                write_features(feature_file(args.feature_dir, state, k), store,
+                               {"task_id": args.task_id, "init_state": state, "noise_id": k, "seed": s,
+                                "success": int(r["success"]), "steps": r["steps"]})
             append_episode_row(path, {"task_id": args.task_id, "seed": s, "init_state": state,
                                       "success": int(r["success"]), "steps": r["steps"]})
             print(f"[search] {label} noise {k} seed {s} init {state}: success={int(r['success'])} "

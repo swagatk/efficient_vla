@@ -90,15 +90,17 @@ def check_settings(root, f: Path, r: dict) -> None:
     raise ValueError(f"provenance: an unexpected folder {f.parent}")
 
 
-def check_provenance(root) -> dict:
+def check_provenance(root, settings_check=None) -> dict:
     """One commit, clean trees, T4 GPUs only, n_action_steps 10, 520 steps, one checkpoint and one package set in every
-    record; each record has the protocol's settings for its folder."""
+    record; each record has the protocol's settings for its folder (``settings_check(root, f, r)``, step 16's
+    ``check_settings`` by default; step 17 passes its own)."""
+    settings_check = settings_check or check_settings
     records = []
     for f in sorted(Path(root).rglob("provenance.jsonl")):
         for line in open(f):
             r = json.loads(line)
             st = r["settings"]
-            check_settings(root, f, r)
+            settings_check(root, f, r)
             flags = [r[k] for k in DIRTY_KEYS if k in r]
             _require(r.get("git_dirty") is False and flags and all(v is False for v in flags), f, "a dirty tree")
             _require(st["n_action_steps"] == 10 and st["max_steps"] == 520, f, "n_action_steps or max_steps")

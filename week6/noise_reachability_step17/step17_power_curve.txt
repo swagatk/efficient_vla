@@ -1,0 +1,7 @@
+step 17 power, stage curve: 4 tasks x 30 states x 50 ids, state sd 2.0, features 64-d from a 2-d scene latent and 20 irrelevant directions; 100 simulations, 100 permutations, rule p <= 0.05, U1 > 0, D > 0; seed 2017; an estimate, not a result
+command: python noise_reachability/calibration/step17_power.py --stage curve --d 8 --lam 10; commit caa2b43d5f0cdcdbc1fb884813bdea8d044be1b6 with uncommitted noise_reachability changes
+power, d 8, lambda 10, id sd 0.5, by share and sd_inter 0, 0.5, 1.0, 1.5:
+  share 0.05: 0.02, 0.12, 0.24, 0.52
+  share 0.2: 0.04, 0.39, 0.89, 0.97
+  share 0.5: 0.01, 0.51, 0.94, 1.00
+(3400 s, 28 workers)

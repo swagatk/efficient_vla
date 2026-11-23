@@ -1,0 +1,13 @@
+step 17 local smoke run (RTX 4090 Laptop GPU, 2026-11-23, uncommitted tree on caa2b43): checks that the code runs, not any rate
+command 1: deep_noise_search.py --n_action_steps 10 --family repeat --task_id 0 --init_state 0 --noise_ids 10000-10001 --output_dir rec --feature_dir rec/json
+command 2: the same with --noise_ids 10000 --output_dir plain (no recorder)
+rows with the recorder:
+task_id,seed,init_state,success,steps
+0,11000,0,1,276
+0,11001,0,1,272
+row without the recorder:
+task_id,seed,init_state,success,steps
+0,11000,0,1,276
+-> id 10000 identical with and without the recorder (success 1, 276 steps)
+features: dim 968, float32, 28 inferences recorded per episode (276 and 272 steps), id 10000 and 10001 bit-identical, all finite
+step 16's committed T4 row for 0/0 id 10000: success 1, 279 steps (the 4090 differs, as expected: outcomes are deterministic per GPU type)

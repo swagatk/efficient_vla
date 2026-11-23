@@ -1,0 +1,40 @@
+noise_reachability/analyze_step17.py: 34 mutants; tests: tests/test_analyze_step17.py
+[1/34] killed   line 91 in run_rows(): operator Div -> Mult
+[2/34] killed   line 93 in run_rows(): name any -> all
+[3/34] killed   line 93 in run_rows(): comparison NotEq -> Eq
+[4/34] killed   line 95 in run_rows(): operator Sub -> Add
+[5/34] killed   line 96 in run_rows(): comparison NotEq -> Eq
+[6/34] killed   line 103 in read_record(): dropped Not
+[7/34] killed   line 107 in read_record(): operator Add -> Sub
+[8/34] killed   line 108 in read_record(): constant 0 -> 1
+[9/34] killed   line 108 in read_record(): constant 1 -> 2
+[10/34] killed   line 109 in read_record(): name any -> all
+[11/34] killed   line 109 in read_record(): comparison NotEq -> Eq
+[12/34] killed   line 109 in read_record(): comparison NotEq -> Eq
+[13/34] killed   line 111 in read_record(): comparison NotEq -> Eq
+[14/34] killed   line 111 in read_record(): comparison NotEq -> Eq
+[15/34] killed   line 111 in read_record(): comparison Lt -> LtE
+[16/34] killed   line 111 in read_record(): constant 1 -> 2
+[17/34] killed   line 114 in read_record(): dropped Not
+[18/34] killed   line 114 in read_record(): name all -> any
+[19/34] killed   line 167 in format_report(): operator Add -> Sub
+[20/34] killed   line 167 in format_report(): operator Add -> Sub
+[21/34] killed   line 169 in format_report(): dropped Not
+[22/34] killed   line 174 in format_report(): operator Add -> Sub
+[23/34] SURVIVED line 179 in main(): constant True -> False
+[24/34] killed   line 186 in main(): operator Add -> Sub
+[25/34] SURVIVED line 186 in main(): comparison Is -> IsNot
+[26/34] killed   line 187 in main(): comparison Is -> IsNot
+[27/34] killed   line 187 in main(): constant 0 -> 1
+[28/34] killed   line 187 in main(): constant 1 -> 2
+[29/34] killed   line 193 in main(): operator Add -> Sub
+[30/34] killed   line 193 in main(): operator Add -> Sub
+[31/34] SURVIVED line 193 in main(): constant 1 -> 2
+[32/34] killed   line 194 in main(): comparison IsNot -> Is
+[33/34] killed   line 195 in main(): operator Add -> Sub
+[34/34] killed   line 196 in main(): constant 0 -> 1
+
+31 of 34 mutants killed in 26 s; 3 survived:
+  line 179 in main(): constant True -> False
+  line 186 in main(): comparison Is -> IsNot
+  line 193 in main(): constant 1 -> 2

@@ -1,0 +1,8 @@
+step 17 power, stage level: 4 tasks x 30 states x 50 ids, state sd 2.0, features 64-d from a 2-d scene latent and 20 irrelevant directions; 300 simulations, 100 permutations, rule p <= 0.05, U1 > 0, D > 0; seed 2017; an estimate, not a result
+command: python noise_reachability/calibration/step17_power.py --stage level --d 8 --lam 10; commit caa2b43d5f0cdcdbc1fb884813bdea8d044be1b6 with uncommitted noise_reachability changes
+pass rate without interaction (level), d 8, lambda 10, id sd 1.0, by share and conf:
+  share 0.2, conf 0.0: 0.027 (se 0.009; mean U1 -0.0030, D -0.0020)
+  share 0.2, conf 2.0: 0.030 (se 0.010; mean U1 -0.0028, D -0.0007)
+  share 0.5, conf 0.0: 0.023 (se 0.009; mean U1 -0.0036, D -0.0034)
+  share 0.5, conf 2.0: 0.033 (se 0.010; mean U1 -0.0029, D -0.0027)
+(4159 s, 28 workers)

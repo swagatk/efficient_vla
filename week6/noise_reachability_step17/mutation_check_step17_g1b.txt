@@ -1,0 +1,168 @@
+noise_reachability/step17_g1b.py: 143 mutants; tests: tests/test_step17_g1b.py
+[1/143] killed   line 73 in pca_fit(): constant 0 -> 1
+[2/143] killed   line 73 in pca_fit(): constant 0 -> 1
+[3/143] SURVIVED line 74 in pca_fit(): comparison Gt -> GtE
+[4/143] killed   line 75 in pca_fit(): operator Div -> Mult
+[5/143] killed   line 75 in pca_fit(): operator Sub -> Add
+[6/143] SURVIVED line 76 in pca_fit(): constant False -> True
+[7/143] killed   line 77 in pca_fit(): comparison Gt -> GtE
+[8/143] SURVIVED line 81 in pca_fit(): operator Mult -> Div
+[9/143] killed   line 81 in pca_fit(): attribute .argmax -> .argmin
+[10/143] killed   line 81 in pca_fit(): constant 1 -> 2
+[11/143] killed   line 82 in pca_fit(): constant 0 -> 1
+[12/143] SURVIVED line 83 in pca_fit(): comparison Lt -> LtE
+[13/143] SURVIVED line 83 in pca_fit(): constant 1.0 -> 2.0
+[14/143] killed   line 88 in pca_apply(): operator Div -> Mult
+[15/143] killed   line 88 in pca_apply(): operator Div -> Mult
+[16/143] killed   line 88 in pca_apply(): operator Sub -> Add
+[17/143] killed   line 94 in _unpack(): operator Add -> Sub
+[18/143] killed   line 95 in _unpack(): operator Add -> Sub
+[19/143] killed   line 101 in critic_loss(): constant 1 -> 2
+[20/143] killed   line 103 in critic_loss(): operator Add -> Sub
+[21/143] killed   line 103 in critic_loss(): operator Add -> Sub
+[22/143] killed   line 104 in critic_loss(): operator Sub -> Add
+[23/143] killed   line 104 in critic_loss(): constant 0.0 -> 1.0
+[24/143] killed   line 104 in critic_loss(): operator Mult -> Div
+[25/143] killed   line 105 in critic_loss(): operator Add -> Sub
+[26/143] killed   line 105 in critic_loss(): operator Mult -> Div
+[27/143] killed   line 105 in critic_loss(): operator Pow -> Mult
+[28/143] killed   line 105 in critic_loss(): constant 2 -> 3
+[29/143] killed   line 105 in critic_loss(): operator Mult -> Div
+[30/143] killed   line 105 in critic_loss(): operator Add -> Sub
+[31/143] killed   line 105 in critic_loss(): operator Pow -> Mult
+[32/143] killed   line 105 in critic_loss(): constant 2 -> 3
+[33/143] killed   line 105 in critic_loss(): operator Pow -> Mult
+[34/143] killed   line 105 in critic_loss(): constant 2 -> 3
+[35/143] killed   line 106 in critic_loss(): operator Sub -> Add
+[36/143] killed   line 106 in critic_loss(): operator Div -> Mult
+[37/143] killed   line 106 in critic_loss(): constant 1.0 -> 2.0
+[38/143] killed   line 106 in critic_loss(): operator Add -> Sub
+[39/143] killed   line 106 in critic_loss(): constant 1.0 -> 2.0
+[40/143] killed   line 106 in critic_loss(): dropped USub
+[41/143] killed   line 107 in critic_loss(): operator Add -> Sub
+[42/143] killed   line 107 in critic_loss(): constant 1 -> 2
+[43/143] killed   line 107 in critic_loss(): operator Mult -> Div
+[44/143] killed   line 107 in critic_loss(): operator Mult -> Div
+[45/143] killed   line 107 in critic_loss(): constant 2 -> 3
+[46/143] killed   line 107 in critic_loss(): operator Add -> Sub
+[47/143] killed   line 107 in critic_loss(): constant 0 -> 1
+[48/143] killed   line 107 in critic_loss(): operator Mult -> Div
+[49/143] killed   line 107 in critic_loss(): operator Mult -> Div
+[50/143] killed   line 107 in critic_loss(): constant 2 -> 3
+[51/143] killed   line 107 in critic_loss(): operator Add -> Sub
+[52/143] killed   line 107 in critic_loss(): operator Mult -> Div
+[53/143] killed   line 107 in critic_loss(): operator Mult -> Div
+[54/143] killed   line 107 in critic_loss(): constant 2 -> 3
+[55/143] killed   line 116 in fit_critic(): constant 1 -> 2
+[56/143] killed   line 117 in fit_critic(): operator Add -> Sub
+[57/143] killed   line 117 in fit_critic(): operator Add -> Sub
+[58/143] killed   line 117 in fit_critic(): operator Mult -> Div
+[59/143] killed   line 117 in fit_critic(): constant True -> False
+[60/143] SURVIVED line 118 in fit_critic(): constant 2000 -> 2001
+[61/143] SURVIVED line 118 in fit_critic(): constant 1e-06 -> 1.000001
+[62/143] killed   line 119 in fit_critic(): dropped Not
+[63/143] killed   line 119 in fit_critic(): comparison NotIn -> In
+[64/143] killed   line 127 in critic_scores(): constant 0 -> 1
+[65/143] killed   line 130 in critic_scores(): comparison NotEq -> Eq
+[66/143] killed   line 133 in critic_scores(): operator Add -> Sub
+[67/143] killed   line 133 in critic_scores(): operator Add -> Sub
+[68/143] SURVIVED line 133 in critic_scores(): constant 1 -> 2
+[69/143] killed   line 133 in critic_scores(): constant 0 -> 1
+[70/143] killed   line 139 in top_rate(): dropped USub
+[71/143] killed   line 139 in top_rate(): constant 1 -> 2
+[72/143] killed   line 140 in top_rate(): constant 1 -> 2
+[73/143] killed   line 140 in top_rate(): constant 1 -> 2
+[74/143] killed   line 149 in u1_parts(): comparison IsNot -> Is
+[75/143] killed   line 153 in u1_parts(): operator Sub -> Add
+[76/143] killed   line 154 in u1_parts(): operator Sub -> Add
+[77/143] killed   line 156 in u1_parts(): attribute .any -> .all
+[78/143] killed   line 156 in u1_parts(): operator Sub -> Add
+[79/143] killed   line 157 in u1_parts(): attribute .any -> .all
+[80/143] killed   line 158 in u1_parts(): attribute .any -> .all
+[81/143] killed   line 159 in u1_parts(): dropped Not
+[82/143] killed   line 166 in u1_test(): constant False -> True
+[83/143] killed   line 171 in u1_test(): constant 0 -> 1
+[84/143] killed   line 176 in u1_test(): constant 0 -> 1
+[85/143] killed   line 182 in u1_test(): comparison LtE -> Lt
+[86/143] killed   line 182 in u1_test(): comparison Gt -> GtE
+[87/143] killed   line 182 in u1_test(): constant 0 -> 1
+[88/143] killed   line 182 in u1_test(): comparison Gt -> GtE
+[89/143] killed   line 182 in u1_test(): constant 0 -> 1
+[90/143] killed   line 188 in paired_ci(): constant 0.95 -> 1.95
+[91/143] killed   line 191 in paired_ci(): comparison Eq -> NotEq
+[92/143] killed   line 191 in paired_ci(): constant 0 -> 1
+[93/143] killed   line 194 in paired_ci(): constant 0 -> 1
+[94/143] killed   line 194 in paired_ci(): constant 1 -> 2
+[95/143] killed   line 195 in paired_ci(): operator Div -> Mult
+[96/143] killed   line 195 in paired_ci(): operator Sub -> Add
+[97/143] killed   line 195 in paired_ci(): constant 1 -> 2
+[98/143] SURVIVED line 195 in paired_ci(): constant 2 -> 3
+[99/143] killed   line 195 in paired_ci(): operator Sub -> Add
+[100/143] killed   line 195 in paired_ci(): constant 1 -> 2
+[101/143] killed   line 195 in paired_ci(): operator Div -> Mult
+[102/143] killed   line 195 in paired_ci(): operator Sub -> Add
+[103/143] killed   line 195 in paired_ci(): constant 1 -> 2
+[104/143] SURVIVED line 195 in paired_ci(): constant 2 -> 3
+[105/143] killed   line 211 in reading(): comparison LtE -> Lt
+[106/143] killed   line 224 in load_inputs(): comparison Eq -> NotEq
+[107/143] killed   line 226 in load_inputs(): comparison NotEq -> Eq
+[108/143] killed   line 230 in load_inputs(): comparison NotEq -> Eq
+[109/143] killed   line 235 in load_inputs(): comparison In -> NotIn
+[110/143] killed   line 238 in load_inputs(): comparison NotEq -> Eq
+[111/143] killed   line 238 in load_inputs(): constant 0 -> 1
+[112/143] SURVIVED line 239 in load_inputs(): constant 0 -> 1
+[113/143] killed   line 242 in load_inputs(): constant 2 -> 3
+[114/143] SURVIVED line 242 in load_inputs(): comparison Eq -> NotEq
+[115/143] SURVIVED line 242 in load_inputs(): constant 0 -> 1
+[116/143] killed   line 243 in load_inputs(): constant 1 -> 2
+[117/143] killed   line 243 in load_inputs(): comparison Eq -> NotEq
+[118/143] killed   line 243 in load_inputs(): constant 0 -> 1
+[119/143] killed   line 243 in load_inputs(): comparison In -> NotIn
+[120/143] killed   line 244 in load_inputs(): comparison NotEq -> Eq
+[121/143] killed   line 244 in load_inputs(): dropped Not
+[122/143] killed   line 244 in load_inputs(): comparison LtE -> Lt
+[123/143] killed   line 244 in load_inputs(): comparison Lt -> LtE
+[124/143] killed   line 244 in load_inputs(): constant 10 -> 11
+[125/143] SURVIVED line 245 in load_inputs(): constant 0 -> 1
+[126/143] SURVIVED line 245 in load_inputs(): dropped USub
+[127/143] SURVIVED line 245 in load_inputs(): constant 1 -> 2
+[128/143] killed   line 246 in load_inputs(): comparison NotIn -> In
+[129/143] SURVIVED line 248 in load_inputs(): constant 3 -> 4
+[130/143] killed   line 261 in format_report(): comparison In -> NotIn
+[131/143] SURVIVED line 263 in format_report(): constant 0 -> 1
+[132/143] killed   line 263 in format_report(): constant 1 -> 2
+[133/143] SURVIVED line 264 in format_report(): constant 0 -> 1
+[134/143] killed   line 264 in format_report(): constant 1 -> 2
+[135/143] killed   line 267 in format_report(): comparison Is -> IsNot
+[136/143] killed   line 273 in format_report(): operator Add -> Sub
+[137/143] SURVIVED line 279 in main(): constant True -> False
+[138/143] killed   line 283 in main(): comparison Is -> IsNot
+[139/143] killed   line 283 in main(): comparison Is -> IsNot
+[140/143] killed   line 292 in main(): operator Add -> Sub
+[141/143] killed   line 292 in main(): operator Add -> Sub
+[142/143] SURVIVED line 292 in main(): constant 1 -> 2
+[143/143] killed   line 293 in main(): constant 0 -> 1
+
+122 of 143 mutants killed in 390 s; 21 survived:
+  line 74 in pca_fit(): comparison Gt -> GtE
+  line 76 in pca_fit(): constant False -> True
+  line 81 in pca_fit(): operator Mult -> Div
+  line 83 in pca_fit(): comparison Lt -> LtE
+  line 83 in pca_fit(): constant 1.0 -> 2.0
+  line 118 in fit_critic(): constant 2000 -> 2001
+  line 118 in fit_critic(): constant 1e-06 -> 1.000001
+  line 133 in critic_scores(): constant 1 -> 2
+  line 195 in paired_ci(): constant 2 -> 3
+  line 195 in paired_ci(): constant 2 -> 3
+  line 239 in load_inputs(): constant 0 -> 1
+  line 242 in load_inputs(): comparison Eq -> NotEq
+  line 242 in load_inputs(): constant 0 -> 1
+  line 245 in load_inputs(): constant 0 -> 1
+  line 245 in load_inputs(): dropped USub
+  line 245 in load_inputs(): constant 1 -> 2
+  line 248 in load_inputs(): constant 3 -> 4
+  line 263 in format_report(): constant 0 -> 1
+  line 264 in format_report(): constant 0 -> 1
+  line 279 in main(): constant True -> False
+  line 292 in main(): constant 1 -> 2
+exit 1

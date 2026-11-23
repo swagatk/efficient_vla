@@ -1,0 +1,25 @@
+noise_reachability/step17_g1b.py: 22 mutants; tests: tests/test_step17_g1b.py
+[1/22] killed   line 188 in paired_ci(): constant 0.95 -> 1.95
+[2/22] killed   line 191 in paired_ci(): comparison Eq -> NotEq
+[3/22] killed   line 191 in paired_ci(): constant 0 -> 1
+[4/22] killed   line 194 in paired_ci(): constant 0 -> 1
+[5/22] killed   line 194 in paired_ci(): constant 1 -> 2
+[6/22] killed   line 195 in paired_ci(): operator Div -> Mult
+[7/22] killed   line 195 in paired_ci(): operator Sub -> Add
+[8/22] killed   line 195 in paired_ci(): constant 1 -> 2
+[9/22] killed   line 195 in paired_ci(): constant 2 -> 3
+[10/22] killed   line 195 in paired_ci(): operator Sub -> Add
+[11/22] killed   line 195 in paired_ci(): constant 1 -> 2
+[12/22] killed   line 195 in paired_ci(): operator Div -> Mult
+[13/22] killed   line 195 in paired_ci(): operator Sub -> Add
+[14/22] killed   line 195 in paired_ci(): constant 1 -> 2
+[15/22] killed   line 195 in paired_ci(): constant 2 -> 3
+[16/22] killed   line 261 in format_report(): comparison In -> NotIn
+[17/22] killed   line 263 in format_report(): constant 0 -> 1
+[18/22] killed   line 263 in format_report(): constant 1 -> 2
+[19/22] killed   line 264 in format_report(): constant 0 -> 1
+[20/22] killed   line 264 in format_report(): constant 1 -> 2
+[21/22] killed   line 267 in format_report(): comparison Is -> IsNot
+[22/22] killed   line 273 in format_report(): operator Add -> Sub
+
+22 of 22 mutants killed in 109 s; 0 survived:

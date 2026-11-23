@@ -1,0 +1,19 @@
+noise_reachability/first_features.py: 15 mutants; tests: tests/test_first_features.py
+[1/15] killed   line 28 in sample_actions(): comparison NotIn -> In
+[2/15] killed   line 35 in sample_actions(): comparison NotEq -> Eq
+[3/15] killed   line 35 in sample_actions(): constant 0 -> 1
+[4/15] killed   line 35 in sample_actions(): constant 1 -> 2
+[5/15] SURVIVED line 36 in sample_actions(): constant 0 -> 1
+[6/15] killed   line 37 in sample_actions(): constant 0 -> 1
+[7/15] killed   line 38 in sample_actions(): operator Add -> Sub
+[8/15] killed   line 38 in sample_actions(): constant 0 -> 1
+[9/15] killed   line 38 in sample_actions(): constant 1 -> 2
+[10/15] killed   line 52 in write_features(): comparison NotIn -> In
+[11/15] killed   line 55 in write_features(): constant 0 -> 1
+[12/15] killed   line 57 in write_features(): constant True -> False
+[13/15] killed   line 57 in write_features(): constant True -> False
+[14/15] killed   line 58 in write_features(): operator Add -> Sub
+[15/15] killed   line 59 in write_features(): operator Add -> Sub
+
+14 of 15 mutants killed in 17 s; 1 survived:
+  line 36 in sample_actions(): constant 0 -> 1

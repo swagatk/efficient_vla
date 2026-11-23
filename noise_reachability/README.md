@@ -1446,6 +1446,149 @@ terms: near (8 states) ranks the ids about as well as flat (all other states), m
 0.640-0.731 by task (`step16_describe.txt`, descriptive). ENEI goes ahead as the reading says; its next test has to
 beat the per-task ticket. Harness 12 of 12; 6,000 map episodes, 2,049 successes.
 
+## Step 17: does what the policy sees choose a state's noise better than the per-task ticket? (draft 2026-11-23)
+
+*Draft. d and lambda are fixed (2026-11-23, by `calibration/step17_power.py`); the rest is fixed once a fresh-context
+review has read it. No step-17 feature has been computed.*
+
+Gate G1 of the Stage 2 plan, finished. Step 16 showed that which constant noise suits a state has a scene-dependent
+component, but only with privileged contexts (the simulator's object poses) and a nearest-neighbour score, and that
+score ranked the ids no better than the per-task ticket in absolute terms. A method that picks one noise per scene
+without search (ENEI) sees only the policy's own inputs, and it has to beat that ticket. Step 17 asks both questions on
+step 16's map, which is its training data: no new map episodes, and no training of the policy.
+
+**Data, fixed now.** Step 16's complete table: tasks 0, 4, 6 and 7, states 0-29, ids 10000-10049, one `repeat` episode
+each on Kaggle T4 (6,000 episodes, 115 informative states). States 30-49 stay held out for H1': step 17 computes no
+feature of them and uses them for nothing. The step-16 outcomes are already known (T1, T2 and the descriptive table);
+no step-17 choice is made on them. The free choices (below) are fixed on simulated maps before any feature exists.
+
+**Hypothesis (U1).** Written before any step-17 feature. A critic over the policy's features of the first observation
+and the noise id ranks a left-out state's ids better than the per-task ticket: the ids it scores higher succeed more
+often on that state than the ids the task's other states favour.
+
+**Features (Kaggle 2 x T4, the step-16 stack: `lerobot/smolvla_libero` at `a24f1f3804`, `n_action_steps=10`, hard
+resets).** For each of the 120 map states, one episode of id 10000 (`deep_noise_search.py --family repeat`, step 16's
+command, with `--feature_dir`) with a recording wrapper (`first_features.py`) around the fixed-noise wrapper: at the
+episode's first inference it stores
+`noise_steering.prefix_features` (the VLM prefix output averaged over valid tokens, plus the first 8 entries of the
+normalised state; the code steps 3 and 5b used), then the episode continues unchanged. The prefix pass draws no
+random numbers and comes before any action, so the features do not depend on the noise id; the episode itself is the
+check that the features come from the map's scene.
+
+- *Feature check, stops the run (`analyze_step17.py --gate features`).* The 120 episodes must equal step 16's committed
+  rows for id 10000 (success and steps) on at least 114 of 120 states; a state that differs is dropped. On four states
+  (0/0, 4/0, 6/0, 7/0) a second episode, id 10001, must equal its committed row and store bit-identical features. These
+  episodes are the run's harness; step 16's scene checks are not repeated (an episode that reproduces its committed
+  row was run on the committed scene).
+- Features: one JSON file per episode (968 float32 values, written exactly; the results zip leaves npz files out),
+  written before the episode's row, with the episode's task, state, id, seed, success and steps. `analyze_step17.py`
+  collects the kept states into `step17_features.json`; `step17_g1b.py` reads it with step 16's committed table
+  (sha256-checked). Provenance: one clean commit, T4 only, as step 16's.
+
+**Critic (`step17_g1b.py`, run locally on CPU).** Per task and left-out state s (leave one state out), fitted on the
+task's other 29 states x 50 ids:
+
+    logit P(success | r, k) = a_r + b_k + f(r) . w_k
+
+f(r) is the first d principal components of the training states' features (the PCA and its z-scoring are fitted on
+those 29 states only, then applied to s), a_r a per-state difficulty, b_k a shared id effect, w_k an id's response to
+the scene. Ridge penalty lambda on w, 1e-3 on a and b; L-BFGS (`scipy.optimize`) from zero, so the fit is
+deterministic. The score of id k on s is b_k + f(s) . w_k (a_s does not change a ranking within s). With w = 0 it is a
+smoothed per-task ticket.
+
+- *d = 8, lambda = 10*, chosen from d in {2, 4, 8} and lambda in {0.1, 1, 10} by `calibration/step17_power.py` before
+  any feature was computed: the pair with the highest mean power over feature shares 0.05, 0.2 and 0.5 at interaction
+  sd 1.0 (stage `select`), then its level without an interaction under the confound (stage `level`), which had to stay
+  at or below 0.05 within its standard error (else the next pair by power). Results under "Power".
+
+**Rule.** As step 16, AUROC_s is the Mann-Whitney AUROC of a score for s's successes against its failures over its 50
+ids (midranks), and flat(s, k) is id k's success rate on the task's other states (the per-task ticket's ranking).
+
+- *U1* = mean over informative states (tasks pooled) of AUROC_s(critic) - AUROC_s(flat). Null: step 16's stratified
+  permutation of the feature rows within each task (strata of 5 states by success count), with the PCA and the critic
+  refitted on every permuted copy; this keeps every outcome and the link between scene and difficulty, and breaks only
+  the link between scene and which ids succeed. One-sided p = (1 + #{permuted >= observed}) / (1 + 1,000), permutation
+  seed 18, level 0.05 (one test, no correction).
+- *D* (decision value) = mean over all kept states (120 unless the feature check dropped some; flat is computed over
+  the kept states too) of the success rate of the critic's 5 top-scored ids minus that of flat's 5 (ties broken by the
+  lower id; flat's rates in steps of 1/29 tie often, the critic's scores rarely). It measures what choosing a noise by
+  the critic gains over the ticket.
+- **U1 passes** if p <= 0.05, U1 > 0 and D > 0. The two sign conditions are there because step 16's T2 passed its
+  permutation test while near ranked the ids no better than flat: beating the null is not beating the ticket.
+
+The sign conditions rest on point estimates, and the permutation p compares the critic with critics on shuffled
+features, not with the ticket; so a pass says the critic is above the null and not below the ticket, and the reported
+intervals below say by how much it is above (review of 2026-11-23).
+
+*Reported, not part of the rule:* per-task U1 and D; a paired bootstrap 95% interval over states for U1 and for D
+(2,000 resamples, seed 19; approximate, since a task's leave-one-out fits share data); and U1 and D of the critic with
+its interaction switched off (lambda 1e8, w ~ 0, a smoothed per-task ticket), which separates "the features help" from
+"the logistic smoothing helps" (all in `step17_g1b.py`'s report); and, in a `step17_describe.py` written after
+the run and before U1 is read, the same rule with a nearest-neighbour score in feature space (m = 8, step 16's near)
+and with step 16's privileged contexts in the critic, for comparison, and a probe of whether the features carry the
+scene: leave-one-state-out ridge R^2 from the features to the privileged object coordinates.
+
+**Reading.** *The feature check fails:* not read. *U1 passes:* the critic over the policy's own view of the first observation ranks a state's
+noises above the shuffled-feature null and not below the ticket, by the margin the intervals show; D1 and H1' go ahead
+with this critic, fixed on states 0-29, as ENEI's first version, and H1' still has to beat the ticket on held-out
+states. If the switched-off critic's U1 is as large as the critic's, the gain is the smoothing, not the features. *p <= 0.05 but U1 or D is not above 0:* a scene signal reaches the features but does not beat the
+ticket; ENEI reduces to the per-task ticket, and D1 is not run for it. *p > 0.05:* not shown that the policy's view
+predicts which noise suits a scene; the ticket is the ceiling for choosing one noise without search. If the probe
+shows that the features carry the object poses poorly, a failure is about the pooled features, not about the scene.
+
+**Power (`calibration/step17_power.py`; Monte Carlo with the rule's own code, as step 16's; estimates, local CPU,
+outputs in `week6/noise_reachability_step17/step17_power_{select,level,curve}.txt`).** Simulated maps as in step 16's
+power (logit = a_s + b_k + c_sk, c_sk smooth in a 2-d scene latent, state sd 2), seen through simulated 64-d features:
+the latent mixed in with 20 irrelevant directions, the latent carrying a share 0.05, 0.2 or 0.5 of the feature
+variance (nothing is known about this share in the real features, so a range). A simulation passes under the rule's
+own condition (p <= 0.05, U1 > 0, D > 0).
+
+- *select* (50 simulations of 50 permutations per cell, interaction sd 1.0, id sd 0.5), pass rate at shares 0.05, 0.2,
+  0.5: d 8, lambda 10: 0.34, 0.94, 0.96 (mean 0.75, the highest); the other eight pairs 0.04-0.14, 0.78-0.94,
+  0.96-1.00 (means 0.62-0.68). The lead comes from share 0.05; at 0.2 and 0.5 the pairs are within noise of each other.
+- *level* (d 8, lambda 10; 300 simulations of 100 permutations; no interaction, id sd 1.0): share 0.2: 0.027 (se
+  0.009) and 0.030 (0.010) with the scene setting difficulty at conf 0 and 2; share 0.5: 0.023 (0.009) and 0.033
+  (0.010). The stratified null holds its level under the confound here.
+- *curve* (d 8, lambda 10; 100 simulations of 100 permutations, id sd 0.5), pass rate at interaction sd 0, 0.5, 1.0,
+  1.5: share 0.05: 0.02, 0.12, 0.24, 0.52; share 0.2: 0.04, 0.39, 0.89, 0.97; share 0.5: 0.01, 0.51, 0.94, 1.00. Power
+  0.8 needs an interaction sd of about 1.0 when a fifth or more of the feature variance follows the scene, and is not
+  reached below 1.5 when only 5% does. For scale (step 16's power, privileged contexts): T2 had power 0.73 at sd 0.5
+  and 1.00 at sd 1.0 with no irrelevant coordinates.
+
+If only a small share of the feature variance follows the scene (0.05), no setting has much power; the probe (above)
+is what shows which regime the real features are in. These figures hold for the simulated layout (a 2-d scene latent
+against 20 equal irrelevant directions in 64 dimensions); the real features have 968 columns, at most 28 directions in
+29 training rows, and an unknown spectrum, so they say how to read a result, not what power the real run has.
+
+*Provenance of the power figures.* They ran on the uncommitted tree on caa2b43 (12:53-15:43 UTC, 2026-11-23). Changes
+to `step17_g1b.py` after that touched only the constants D_PCA and LAM, the input loader, the report and `main()`, and
+added the reported intervals; the functions the simulation calls (`pca_fit` to `u1_test`, except that `u1_parts` now
+also returns its per-state values) are unchanged. The mutation checks were re-run on the committed files.
+
+**What it cannot show.** 29 training states per fold is little for a critic with 50 x d interaction weights; a failure
+may be about data, which D1 would add. The critic is linear in d components of mean-pooled features, which can wash out
+object positions (the probe reports this). One checkpoint, four tasks, the base only; outcomes are deterministic per
+GPU type, so the map and the features hold for Kaggle T4.
+
+**Compute (estimate).** 124 feature episodes on Kaggle 2 x T4 in 120 one-state jobs, four at a time: one model load
+per job dominates, about 1-1.5 h, plus about 0.8 h for the install and the wrapper check: about 2 h, one session
+(`STOP_AT_H` 4). The analysis is CPU: 120 critic fits per copy, 1,001 copies (about 0.7 s per copy locally).
+
+**Code.** `first_features.py` (the recorder; `tests/test_first_features.py`), `deep_noise_search.py --feature_dir`,
+`step17_g1b.py` (the rule; `tests/test_step17_g1b.py`), `calibration/step17_power.py`,
+`analyze_step17.py` (`tests/test_analyze_step17.py`) and `build_step17_notebook.py`
+(`tests/test_build_step17_notebook.py`), which writes `kaggle_step17_features.ipynb` pinned to a clean commit.
+Mutation checks (`week6/noise_reachability_step17/`): `step17_g1b.py` 122 of 143 killed, `analyze_step17.py` 52 of 59,
+`first_features.py` 18 of 20; the real gaps among the survivors got tests and are killed in a re-check of their
+functions, and the rest (tolerances, error-message text, JSON layout, argparse `required`) are listed with reasons in
+`mutation_survivors.md`.
+
+**Smoke run (local RTX 4090, one state, 2026-11-23; `week6/noise_reachability_step17/smoke_local.txt`).** The
+notebook's command on 0/0 with ids 10000-10001, and id 10000 again without the recorder: the episode was the same
+with and without it (success, 276 steps), both records had 968 values from 28 inferences, and ids 10000 and 10001 gave
+bit-identical features. It checks that the code runs, not any rate; the 4090's row differs from step 16's T4 row
+(279 steps), which is why the run is on Kaggle T4.
+
 ## Compute
 
 Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a month) for steps 2-4. At
@@ -1524,6 +1667,11 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
   `step16_g1.py`: tests T1 and T2 on the finished table, locally, with `step16_contexts.json` (LIBERO init-state
   contexts); `step16_describe.py`: descriptive breakdown of T2 (per-task AUROCs, the null's spread);
   `calibration/step16_power.py`: the power table.
+- `first_features.py`: step 17's recorder of the first inference's prefix features (`deep_noise_search.py
+  --feature_dir`); `analyze_step17.py`: step-17 provenance, the feature check against step 16's committed rows and the
+  features file; `kaggle_step17_features.ipynb` (built by `build_step17_notebook.py`) runs it on Kaggle;
+  `step17_g1b.py`: test U1 on the features, locally; `calibration/step17_power.py`: its power, level and the choice of
+  d and lambda.
 - `analyze_colab_t4_check.py`, `colab_t4_check.ipynb` (built by `build_colab_t4_check_notebook.py`): the Colab T4
   check (does a Colab T4 reproduce 24 Kaggle T4 episodes of step 10 exactly).
 - `analyze_step12.py`: step-12 state selection from step 10's report, harness gate (round 1's adapter against step
