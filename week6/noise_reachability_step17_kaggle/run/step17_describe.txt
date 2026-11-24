@@ -1,0 +1,18 @@
+step 17, descriptive (not part of the rule; the critic on the policy's features is U1, not computed here)
+inputs: table sha256 ed0b3e32ee140d639b57415b3c690230a8c84bb96939563a11eeb4d42c1e036b, features sha256 07abc733f4e1ac481bdfe542dcba582bcfa8a4063de4394401580438ba0de015, contexts sha256 cdef67838ab47ab876dc6ccf65a73f6d2ef4076e6c8bc62a0f7c4aae1eb21e4f
+states per task {'0': 30, '4': 30, '6': 30, '7': 30}; near m 8 (5000 permutations, seed 17); critic d 8, lambda 10.0 (1000 permutations, seed 18); intervals: paired bootstrap over states (2000, seed 19)
+score | informative states | U1-style (score - ticket) [95%] | p (stratified null) | D (top 5, score - ticket) [95%]
+near, features | 115 | -0.0196 [-0.0373, -0.0016] | 0.008398 | -0.0300 [-0.0650, +0.0050]
+near, contexts | 115 | +0.0028 [-0.0153, +0.0210] | 0.0005999 | +0.0050 [-0.0283, +0.0383]
+critic, contexts | 115 | +0.0142 [+0.0054, +0.0244] | 0.000999 | -0.0033 [-0.0267, +0.0183]
+per task, U1-style / D / mean AUROC score / mean AUROC ticket:
+  near, features: 0 -0.072 / -0.053 / 0.579 / 0.651; 4 +0.004 / +0.080 / 0.654 / 0.650; 6 -0.010 / -0.053 / 0.630 / 0.640; 7 -0.007 / -0.093 / 0.725 / 0.731
+  near, contexts: 0 -0.037 / -0.020 / 0.614 / 0.651; 4 +0.022 / +0.113 / 0.672 / 0.650; 6 +0.026 / -0.053 / 0.666 / 0.640; 7 -0.005 / -0.020 / 0.726 / 0.731
+  critic, contexts: 0 -0.000 / +0.000 / 0.651 / 0.651; 4 +0.020 / +0.060 / 0.669 / 0.650; 6 +0.022 / -0.027 / 0.662 / 0.640; 7 +0.015 / -0.047 / 0.746 / 0.731
+probe (leave-one-state-out Q^2, features -> privileged object coordinates; chance: rows permuted, 200 copies, seed 21):
+setting | pooled Q^2 | chance mean | chance 95th pct | per task
+ridge alpha 0.01 | +0.140 | -0.395 | -0.301 | 0 -0.061, 4 +0.306, 6 +0.401, 7 +0.083
+ridge alpha 0.1 | +0.159 | -0.311 | -0.234 | 0 -0.012, 4 +0.303, 6 +0.383, 7 +0.111
+ridge alpha 1 | +0.164 | -0.094 | -0.061 | 0 +0.082, 4 +0.228, 6 +0.277, 7 +0.142
+ridge alpha 10 | +0.058 | -0.005 | +0.003 | 0 +0.044, 4 +0.065, 6 +0.086, 7 +0.052
+critic input (pca 8) | +0.081 | -0.118 | -0.087 | 0 +0.017, 4 +0.116, 6 +0.163, 7 +0.083

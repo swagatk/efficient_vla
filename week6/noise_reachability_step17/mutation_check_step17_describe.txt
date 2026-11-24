@@ -1,0 +1,115 @@
+noise_reachability/step17_describe.py: 90 mutants; tests: tests/test_step17_describe.py
+[1/90] killed   line 59 in zscore_columns(): constant 0 -> 1
+[2/90] SURVIVED line 60 in zscore_columns(): comparison Gt -> GtE
+[3/90] killed   line 61 in zscore_columns(): dropped Not
+[4/90] killed   line 61 in zscore_columns(): attribute .any -> .all
+[5/90] killed   line 63 in zscore_columns(): operator Div -> Mult
+[6/90] killed   line 63 in zscore_columns(): operator Sub -> Add
+[7/90] killed   line 63 in zscore_columns(): constant 0 -> 1
+[8/90] killed   line 71 in near_row(): dropped Not
+[9/90] SURVIVED line 71 in near_row(): constant 0 -> 1
+[10/90] SURVIVED line 71 in near_row(): constant 1e-12 -> 1.000000000001
+[11/90] killed   line 79 in critic_row(): comparison Is -> IsNot
+[12/90] killed   line 80 in critic_row(): comparison Is -> IsNot
+[13/90] killed   line 94 in loo_ridge_predictions(): constant 0 -> 1
+[14/90] killed   line 97 in loo_ridge_predictions(): comparison NotEq -> Eq
+[15/90] killed   line 98 in loo_ridge_predictions(): constant 0 -> 1
+[16/90] killed   line 98 in loo_ridge_predictions(): constant 0 -> 1
+[17/90] SURVIVED line 99 in loo_ridge_predictions(): comparison Gt -> GtE
+[18/90] killed   line 100 in loo_ridge_predictions(): operator Div -> Mult
+[19/90] killed   line 100 in loo_ridge_predictions(): operator Sub -> Add
+[20/90] killed   line 101 in loo_ridge_predictions(): operator Div -> Mult
+[21/90] killed   line 101 in loo_ridge_predictions(): operator Sub -> Add
+[22/90] killed   line 102 in loo_ridge_predictions(): constant 0 -> 1
+[23/90] SURVIVED line 103 in loo_ridge_predictions(): operator Sub -> Add
+[24/90] killed   line 107 in loo_ridge_predictions(): operator Mult -> Div
+[25/90] killed   line 108 in loo_ridge_predictions(): operator Add -> Sub
+[26/90] killed   line 108 in loo_ridge_predictions(): operator Div -> Mult
+[27/90] killed   line 108 in loo_ridge_predictions(): operator Add -> Sub
+[28/90] killed   line 115 in loo_pca_predictions(): comparison Is -> IsNot
+[29/90] killed   line 116 in loo_pca_predictions(): constant 0 -> 1
+[30/90] killed   line 119 in loo_pca_predictions(): comparison NotEq -> Eq
+[31/90] killed   line 121 in loo_pca_predictions(): operator Add -> Sub
+[32/90] SURVIVED line 121 in loo_pca_predictions(): constant 1 -> 2
+[33/90] killed   line 121 in loo_pca_predictions(): constant 0 -> 1
+[34/90] killed   line 122 in loo_pca_predictions(): constant 0 -> 1
+[35/90] killed   line 123 in loo_pca_predictions(): constant 0 -> 1
+[36/90] SURVIVED line 124 in loo_pca_predictions(): operator Add -> Sub
+[37/90] SURVIVED line 124 in loo_pca_predictions(): operator Sub -> Add
+[38/90] SURVIVED line 124 in loo_pca_predictions(): operator Sub -> Add
+[39/90] killed   line 124 in loo_pca_predictions(): operator Mult -> Div
+[40/90] SURVIVED line 124 in loo_pca_predictions(): operator Sub -> Add
+[41/90] SURVIVED line 124 in loo_pca_predictions(): operator Sub -> Add
+[42/90] killed   line 125 in loo_pca_predictions(): operator Add -> Sub
+[43/90] SURVIVED line 125 in loo_pca_predictions(): operator Sub -> Add
+[44/90] killed   line 131 in press_parts(): constant 0 -> 1
+[45/90] killed   line 132 in press_parts(): operator Div -> Mult
+[46/90] killed   line 132 in press_parts(): operator Sub -> Add
+[47/90] killed   line 132 in press_parts(): constant 0 -> 1
+[48/90] SURVIVED line 132 in press_parts(): constant True -> False
+[49/90] killed   line 132 in press_parts(): operator Sub -> Add
+[50/90] killed   line 132 in press_parts(): constant 1 -> 2
+[51/90] killed   line 133 in press_parts(): operator Pow -> Mult
+[52/90] killed   line 133 in press_parts(): operator Sub -> Add
+[53/90] killed   line 133 in press_parts(): constant 2 -> 3
+[54/90] killed   line 133 in press_parts(): operator Pow -> Mult
+[55/90] killed   line 133 in press_parts(): operator Sub -> Add
+[56/90] killed   line 133 in press_parts(): constant 2 -> 3
+[57/90] killed   line 138 in q2(): operator Sub -> Add
+[58/90] killed   line 138 in q2(): constant 1.0 -> 2.0
+[59/90] killed   line 138 in q2(): operator Div -> Mult
+[60/90] killed   line 144 in probe(): constant 0.0 -> 1.0
+[61/90] killed   line 145 in probe(): constant 0.0 -> 1.0
+[62/90] killed   line 155 in probe(): operator Sub -> Add
+[63/90] killed   line 155 in probe(): constant 1.0 -> 2.0
+[64/90] killed   line 155 in probe(): operator Div -> Mult
+[65/90] killed   line 156 in probe(): operator Sub -> Add
+[66/90] killed   line 156 in probe(): constant 1.0 -> 2.0
+[67/90] killed   line 156 in probe(): operator Div -> Mult
+[68/90] killed   line 164 in probe_chance(): constant 0 -> 1
+[69/90] killed   line 167 in probe_chance(): constant 0.95 -> 1.95
+[70/90] SURVIVED line 177 in context_tasks(): name any -> all
+[71/90] killed   line 177 in context_tasks(): comparison GtE -> Gt
+[72/90] killed   line 177 in context_tasks(): constant 30 -> 31
+[73/90] killed   line 196 in describe(): constant 0 -> 1
+[74/90] killed   line 208 in format_report(): operator Add -> Sub
+[75/90] SURVIVED line 215 in format_report(): constant 0 -> 1
+[76/90] killed   line 216 in format_report(): constant 1 -> 2
+[77/90] SURVIVED line 216 in format_report(): constant 0 -> 1
+[78/90] killed   line 217 in format_report(): constant 1 -> 2
+[79/90] killed   line 220 in format_report(): operator Add -> Sub
+[80/90] SURVIVED line 222 in format_report(): comparison IsNot -> Is
+[81/90] killed   line 228 in format_report(): operator Add -> Sub
+[82/90] killed   line 230 in format_report(): operator Add -> Sub
+[83/90] SURVIVED line 240 in main(): constant True -> False
+[84/90] SURVIVED line 251 in main(): constant 12 -> 13
+[85/90] SURVIVED line 251 in main(): constant 12 -> 13
+[86/90] SURVIVED line 252 in main(): constant 12 -> 13
+[87/90] killed   line 258 in main(): operator Add -> Sub
+[88/90] killed   line 258 in main(): operator Add -> Sub
+[89/90] SURVIVED line 258 in main(): constant 1 -> 2
+[90/90] killed   line 259 in main(): constant 0 -> 1
+
+68 of 90 mutants killed in 413 s; 22 survived:
+  line 60 in zscore_columns(): comparison Gt -> GtE
+  line 71 in near_row(): constant 0 -> 1
+  line 71 in near_row(): constant 1e-12 -> 1.000000000001
+  line 99 in loo_ridge_predictions(): comparison Gt -> GtE
+  line 103 in loo_ridge_predictions(): operator Sub -> Add
+  line 121 in loo_pca_predictions(): constant 1 -> 2
+  line 124 in loo_pca_predictions(): operator Add -> Sub
+  line 124 in loo_pca_predictions(): operator Sub -> Add
+  line 124 in loo_pca_predictions(): operator Sub -> Add
+  line 124 in loo_pca_predictions(): operator Sub -> Add
+  line 124 in loo_pca_predictions(): operator Sub -> Add
+  line 125 in loo_pca_predictions(): operator Sub -> Add
+  line 132 in press_parts(): constant True -> False
+  line 177 in context_tasks(): name any -> all
+  line 215 in format_report(): constant 0 -> 1
+  line 216 in format_report(): constant 0 -> 1
+  line 222 in format_report(): comparison IsNot -> Is
+  line 240 in main(): constant True -> False
+  line 251 in main(): constant 12 -> 13
+  line 251 in main(): constant 12 -> 13
+  line 252 in main(): constant 12 -> 13
+  line 258 in main(): constant 1 -> 2

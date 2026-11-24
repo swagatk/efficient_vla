@@ -38,3 +38,21 @@ The real gap (`mkdir(parents=True)` -> `parents=False`, line 57) got a test that
 (`test_two_records_go_into_one_folder`). The 1 left:
 
 - line 36: text inside an error message (the batch size it reports).
+
+## step17_describe.py (descriptive, written after the run, before U1): 90 mutants, 68 killed in the full check; context_tasks, format_report, main then 15 of 17
+
+The real gaps of the full check (the held-out-state refusal `any` -> `all`, line 177; the interval order and the
+no-informative-state branch of the report, lines 215, 216, 222; the provenance hashes, line 251-252, now full sha256)
+got tests (`test_context_tasks_take_the_rows_of_the_kept_states`,
+`test_report_prints_intervals_in_order_and_tasks_without_informative_states`, `test_main_runs_end_to_end_on_small_files`).
+The survivors kept:
+
+- lines 60, 99 (`sd > MIN_STD` -> `>=`): differ only for a column whose sd is exactly 1e-8.
+- line 71 (the tolerance of the near-vs-T2 consistency assertion): a guard; a looser tolerance cannot change a number.
+- lines 103, 124, 125 (signs of the centring terms `T - tm`, `F - fm`, `f - fm`): the features are z-scored (ridge) or
+  PCA-projected (pca probe) on the training states, so their training columns have mean 0: Z^T 1 = 0 makes the target
+  centring a no-op in the ridge solution, and fm = 0 up to rounding. Equivalent mutants.
+- line 121 (`X[s:s + 1][0]` -> `X[s:s + 2][0]`): the same row.
+- line 132 (`keepdims=True` -> `False`): broadcasting gives the same array.
+- line 240 (`required=True` -> `False` for `--features`): only matters when the flag is left out.
+- line 258 (`indent=1` -> `2`): JSON layout of the report.

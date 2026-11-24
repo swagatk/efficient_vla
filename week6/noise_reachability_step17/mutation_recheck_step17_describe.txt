@@ -1,0 +1,22 @@
+noise_reachability/step17_describe.py: 17 mutants; tests: tests/test_step17_describe.py
+[1/17] killed   line 177 in context_tasks(): name any -> all
+[2/17] killed   line 177 in context_tasks(): comparison GtE -> Gt
+[3/17] killed   line 177 in context_tasks(): constant 30 -> 31
+[4/17] killed   line 208 in format_report(): operator Add -> Sub
+[5/17] killed   line 215 in format_report(): constant 0 -> 1
+[6/17] killed   line 216 in format_report(): constant 1 -> 2
+[7/17] killed   line 216 in format_report(): constant 0 -> 1
+[8/17] killed   line 217 in format_report(): constant 1 -> 2
+[9/17] killed   line 220 in format_report(): operator Add -> Sub
+[10/17] killed   line 222 in format_report(): comparison IsNot -> Is
+[11/17] killed   line 228 in format_report(): operator Add -> Sub
+[12/17] killed   line 230 in format_report(): operator Add -> Sub
+[13/17] SURVIVED line 240 in main(): constant True -> False
+[14/17] killed   line 258 in main(): operator Add -> Sub
+[15/17] killed   line 258 in main(): operator Add -> Sub
+[16/17] SURVIVED line 258 in main(): constant 1 -> 2
+[17/17] killed   line 259 in main(): constant 0 -> 1
+
+15 of 17 mutants killed in 95 s; 2 survived:
+  line 240 in main(): constant True -> False
+  line 258 in main(): constant 1 -> 2
