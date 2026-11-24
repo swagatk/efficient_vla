@@ -87,7 +87,10 @@ head = sh(f"git -C {REPO} rev-parse HEAD").stdout.strip()
 assert head == REPO_REF, f"checked out {head}, expected {REPO_REF}"
 dirty = sh(f"git -C {REPO} status --porcelain").stdout.strip()
 assert not dirty, f"the clone is not clean: {dirty}"
-sh(f"{sys.executable} -m venv {VENV} && {PY} -m pip install -q numpy=={NUMPY} scipy=={SCIPY} pytest")
+sh("python -m pip install -q uv")   # Kaggle's Python has no ensurepip, so no plain venv (as the step-17 notebook)
+if not Path(PY).exists():
+    sh(f"uv venv {VENV} --python 3.12")
+sh(f"uv pip install -q --python {PY} numpy=={NUMPY} scipy=={SCIPY} pytest")
 print(sh(f"{PY} -c 'import numpy, scipy, sys; print(numpy.__version__, scipy.__version__, sys.version.split()[0])'").stdout)
 print(f"{os.cpu_count()} CPU cores; {platform.processor() or platform.machine()}")
 ''')
