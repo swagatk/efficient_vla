@@ -1,0 +1,19 @@
+{
+ "date": "2026-11-24T17:10:18+0000",
+ "git_commit": "3bc5f3086fd6e824b50b2efc853dba045cd6c06e",
+ "git_dirty": false,
+ "command": "cd /tmp/efficient_vla && /tmp/venv_u1/bin/python -u noise_reachability/step17_g1b.py --features /kaggle/input/notebooks/swagatk/noise-reachability-step-17/step17/step17_features.json --out /kaggle/working/step17_u1/step17_u1.txt",
+ "threads": {
+  "OMP_NUM_THREADS": "1",
+  "OPENBLAS_NUM_THREADS": "1",
+  "MKL_NUM_THREADS": "1"
+ },
+ "numpy": "2.2.6",
+ "scipy": "1.17.1",
+ "features": "/kaggle/input/notebooks/swagatk/noise-reachability-step-17/step17/step17_features.json",
+ "features_sha256": "07abc733f4e1ac481bdfe542dcba582bcfa8a4063de4394401580438ba0de015",
+ "cpu_count": 4,
+ "cpu": "Intel(R) Xeon(R) CPU @ 2.20GHz",
+ "u1_minutes": 31.2,
+ "session_minutes": 31.6
+}

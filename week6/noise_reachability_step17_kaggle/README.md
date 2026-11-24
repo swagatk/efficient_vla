@@ -42,8 +42,28 @@ training mean; chance = feature rows permuted, 200 copies, seed 21):
 
 The features carry the object poses above chance but weakly; task 0 least (per task in `run/step17_describe.txt`).
 
-**Test U1:** not yet run with the protocol's 1,000 permutations. The first local attempt (all BLAS threads) was stopped
-after 3.5 h without output. It is to run on Kaggle CPU with `noise_reachability/kaggle_step17_u1_cpu.ipynb` (built by
-`build_step17_u1_notebook.py`, pinned to `3bc5f30`, single-threaded). A local smoke of that notebook with 3
-permutations printed the point estimates, which do not depend on the permutations; they will be reported from the full
-run's output.
+**Test U1** (`u1/`, from `step17_u1_results.zip`, sha256
+`e6a32fa2fcb7a11aa257690f9d0f574391085d11fa8898addf819584d6c5164d`; notebook
+`noise_reachability/kaggle_step17_u1_cpu.ipynb` pinned to `3bc5f30`, Kaggle CPU, 2026-11-24). Command (in
+`u1/provenance.json`): `noise_reachability/step17_g1b.py --features .../step17/step17_features.json --out
+.../step17_u1.txt`. The first local attempt (all BLAS threads) was stopped after 3.5 h without output, so U1 ran on
+Kaggle with one BLAS thread, 31.2 min.
+
+Checks (2026-11-24): commit `3bc5f30` with a clean tree; features sha256 `07abc733...0015`, the same as `run/`; one
+BLAS thread; numpy 2.2.6, scipy 1.17.1. U1, D, the intervals and the per-task values match a local smoke run with 3
+permutations exactly (the point estimates do not depend on the permutations). `step17_u1.txt` and
+`step17_u1_stdout.txt` are identical. `tools/validate_run.py` does not apply, since this run has no episodes.
+
+| | Value |
+|---|---|
+| U1 (115 informative states) | +0.0072, 95% interval +0.0006 to +0.0136 |
+| stratified null (1,000 permutations, strata of 5) | mean -0.0035, sd 0.0030; one-sided p 0.000999 |
+| D (top 5 ids, critic - ticket, 120 states) | -0.0083, 95% interval -0.025 to +0.008 |
+| interaction off (lambda 1e8) | U1 +0.0033, D -0.0033 |
+| per task 0 / 4 / 6 / 7 (reported, not tested): U1 | -0.0083 / +0.0170 / +0.0080 / +0.0100 |
+| per task: D | -0.0067 / +0.0067 / 0.0000 / -0.0333 |
+| per task: mean AUROC critic / ticket | 0.643/0.651, 0.667/0.650, 0.648/0.640, 0.741/0.731 |
+
+**U1 does not pass**: p <= 0.05 and U1 > 0, but D is below 0. The README's reading for this case applies: a scene
+signal reaches the features but does not beat the per-task ticket, so ENEI reduces to the ticket and D1 is not run for
+it. Per state, D is +0.2 on 10 states, -0.2 on 15 and 0 on 95.

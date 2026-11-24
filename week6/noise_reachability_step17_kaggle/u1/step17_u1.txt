@@ -1,0 +1,8 @@
+step 17 test U1 over 115 informative states, critic d 8, lambda 10.0, 1000 permutations (strata of 5)
+U1: 0.0072 (null mean -0.0035, sd 0.0030), one-sided p 0.000999; D (top 5 ids, critic - ticket): -0.0083; does not pass
+reported, not part of the rule: U1 95% interval +0.0006 to +0.0136, D -0.0250 to +0.0083 (paired bootstrap over states, 2000); interaction off (w ~ 0): U1 +0.0033, D -0.0033
+task 0 (reported, not tested): U1 -0.0083, D -0.0067, mean AUROC critic 0.643 / ticket 0.651 over 26 states
+task 4 (reported, not tested): U1 0.0170, D 0.0067, mean AUROC critic 0.667 / ticket 0.650 over 30 states
+task 6 (reported, not tested): U1 0.0080, D 0.0000, mean AUROC critic 0.648 / ticket 0.640 over 29 states
+task 7 (reported, not tested): U1 0.0100, D -0.0333, mean AUROC critic 0.741 / ticket 0.731 over 30 states
+reading: a scene signal reaches the features but does not beat the per-task ticket (U1 or D not above 0): ENEI reduces to the ticket, and D1 is not run for it

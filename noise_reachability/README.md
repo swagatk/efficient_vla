@@ -1589,6 +1589,25 @@ with and without it (success, 276 steps), both records had 968 values from 28 in
 bit-identical features. It checks that the code runs, not any rate; the 4090's row differs from step 16's T4 row
 (279 steps), which is why the run is on Kaggle T4.
 
+**Result (Kaggle, 2026-11-23/24; `week6/noise_reachability_step17_kaggle/`).** U1 does not pass: p ≤ 0.05 but D is
+below 0. The feature check passed (120 of 120 states). Over 115 informative states, U1 is +0.0072 (stratified null
+mean -0.0035, sd 0.0030), one-sided p 0.000999, the smallest 1,000 permutations can give, so the critic over the
+policy's features ranks a state's ids above critics on shuffled features. D is -0.0083: the critic's top 5 ids beat
+the ticket's by one success on 10 states, lose by one on 15 and tie on the rest. Reported intervals: U1 +0.0006 to
++0.0136, D -0.025 to +0.008. With the interaction switched off (a smoothed per-task ticket), U1 is +0.0033 and D
+-0.0033, so about half of U1 comes from the smoothing, not the features. Per task (not tested), U1 is -0.008, +0.017,
++0.008 and +0.010 for tasks 0, 4, 6 and 7. Reading (fixed above): a scene signal reaches the features but does not
+beat the ticket. ENEI reduces to the per-task ticket, and D1 is not run for it.
+
+D's interval includes 0, so the critic is not shown to be worse than the ticket, only not better. Two descriptive
+results, computed before U1 was read, point the same way. The same critic given step 16's privileged object poses
+has D -0.003 [-0.027, +0.018] (`step17_describe.txt`). The features carry the poses only weakly: pooled probe Q^2 is
+0.06-0.16, and 0.08 for the critic's 8 components, with task 0 weakest. "Power" above shows little power when only
+about 5% of the feature variance follows the scene. The result therefore says that at 29 training states per task,
+with mean-pooled first-observation features, no better choice than the ticket was found. It does not say that good
+noise is independent of the scene. U1 ran on Kaggle CPU (`kaggle_step17_u1_cpu.ipynb` at `3bc5f30`, one BLAS thread,
+31.2 min). Its point estimates match a local 3-permutation smoke run exactly.
+
 ## Compute
 
 Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a month) for steps 2-4. At
@@ -1613,6 +1632,7 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
 | 11 | Kaggle 2 x T4 | done: 520 episodes, 2.9 h between first and last provenance records, one session |
 | 12 | Kaggle 2 x T4 | done: 2,236 episodes and 9 adapters over three sessions (10.8 h, 10.8 h and 6.8 h between first and last provenance records) |
 | 16 | Kaggle 2 x T4 | done: 120 scene checks, 12 harness and 6,000 map episodes, three sessions (10.8 h, 10.8 h and 7.0 h between first and last provenance records) |
+| 17 | Kaggle 2 x T4, then Kaggle CPU | done: 124 feature episodes in one session (1.1 h between first and last provenance records); test U1 31.2 min on CPU |
 
 ## Files
 
@@ -1685,7 +1705,7 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
 Steps 0, 1 and 2 done (above); step 2 is a negative result. Step 3 ran on Colab and failed as a test: the
 critic diverged (above). Step 3b (whether a Monte Carlo critic can tell the base's own noises apart) ran on
 Kaggle and is not read: its shuffled-noise control was biased (above). Step 4 ran on Kaggle (above, 2026-10-31): negative, no arm meets the hypothesis. Step 5a ran on Colab (above, 2026-10-31): "mostly reachable", all 5 systematic states reached by fixed noises, none by
-sampled noise. Step 5b ran on Colab (above, 2026-11-01): no reading on transfer, the learner did not learn at this budget. Step 6 ran on Kaggle (above, 2026-11-01): the labels hold; B's gain was not informative. Step 7 ran on Kaggle (above, 2026-11-02): existence only, `repeat` did not beat `sampled`, and on two of the three states sampling also solved the state. Step 8 ran on Kaggle (above, 2026-11-03): both tests pass, `repeat` beats `sampled` on 6/8 and on four unlabelled states chosen in advance, pooled. Step 9 ran on Kaggle (above, 2026-11-03): not shown, the library did not beat fresh noises pooled (p 0.408); exploratory, it helped on 0/14 and hurt on task 7. Step 10 ran on Kaggle (above, 2026-11-04/08): both tests pass, N learns the trained states (37-43% against the base 0.5%) and beats A on task 0; it transfers to task 0's held-out states but not to those of tasks 6 and 7. Step 11 ran on Kaggle (above, 2026-11-08): replicated, fixed noise beats sampling on step 9's eight states (p 3.4e-5) and without task 7 (p 0.018). Step 12 ran on Kaggle (above, 2026-11-08/14): test 1 passes, a second round of search and training beats the first on the states it left weak in 3/3 seeds (+10.6 points pooled); no transfer to the held-out states, and on round 1's best state 0/8 R was below N in every seed (R 32 against N 41 of 48, pooled). Step 16 ran on Kaggle (above, 2026-11-21/22): T1 and T2 pass, a noise's success is shared within a task and a scene-dependent component exists, but near neighbours rank ids no better than the per-task ticket in absolute terms.
+sampled noise. Step 5b ran on Colab (above, 2026-11-01): no reading on transfer, the learner did not learn at this budget. Step 6 ran on Kaggle (above, 2026-11-01): the labels hold; B's gain was not informative. Step 7 ran on Kaggle (above, 2026-11-02): existence only, `repeat` did not beat `sampled`, and on two of the three states sampling also solved the state. Step 8 ran on Kaggle (above, 2026-11-03): both tests pass, `repeat` beats `sampled` on 6/8 and on four unlabelled states chosen in advance, pooled. Step 9 ran on Kaggle (above, 2026-11-03): not shown, the library did not beat fresh noises pooled (p 0.408); exploratory, it helped on 0/14 and hurt on task 7. Step 10 ran on Kaggle (above, 2026-11-04/08): both tests pass, N learns the trained states (37-43% against the base 0.5%) and beats A on task 0; it transfers to task 0's held-out states but not to those of tasks 6 and 7. Step 11 ran on Kaggle (above, 2026-11-08): replicated, fixed noise beats sampling on step 9's eight states (p 3.4e-5) and without task 7 (p 0.018). Step 12 ran on Kaggle (above, 2026-11-08/14): test 1 passes, a second round of search and training beats the first on the states it left weak in 3/3 seeds (+10.6 points pooled); no transfer to the held-out states, and on round 1's best state 0/8 R was below N in every seed (R 32 against N 41 of 48, pooled). Step 16 ran on Kaggle (above, 2026-11-21/22): T1 and T2 pass, a noise's success is shared within a task and a scene-dependent component exists, but near neighbours rank ids no better than the per-task ticket in absolute terms. Step 17 ran on Kaggle (above, 2026-11-23/24): U1 does not pass, a critic over the policy's features beats the shuffled-feature null (p 0.001) but not the per-task ticket (D -0.008); ENEI reduces to the ticket and D1 is not run for it.
 
 Before step 0 ran, smoke tests on the local RTX 4090 (shared with another job), one episode each of task 0,
 seed 0, init state 0: `n_action_steps=10` through `evaluate_all.py` and `n_action_steps=50` through
