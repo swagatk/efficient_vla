@@ -17,3 +17,4 @@
 | E14 | Is round 2's loss on 0/8 real? | 1,256 | neither test passes |
 | E15 | Zero-hit states: unreachable, or solutions lost? | 1,618 | both tests pass |
 | E16 | Is a good noise shared, or set by the scene? | 6,012 | both tests pass |
+| E17 | Do the policy's features beat the per-task noise? | 124 | beats the null, not the ticket |

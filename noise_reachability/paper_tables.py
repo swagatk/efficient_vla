@@ -40,6 +40,7 @@ INPUTS = {
     "step14": f"{W6}/noise_reachability_step14_kaggle/run/step14_report.txt.json",
     "step15": f"{W6}/noise_reachability_step15_kaggle/run/step15_report.txt.json",
     "step16": f"{W6}/noise_reachability_step16_kaggle/run/step16_g1_report.txt.json",
+    "step17": f"{W6}/noise_reachability_step17_kaggle/u1/step17_u1.txt.json",
 }
 # Results not yet produced: a table is made only when its file exists, and tables.json records which were used.
 OPTIONAL_INPUTS = {
@@ -105,6 +106,7 @@ OVERVIEW = (
                                                                  f"{S}15_kaggle/run/task_*/replay/*.csv")),
     ("E16", "Is a good noise shared, or set by the scene?", (f"{S}16_kaggle/run/harness/*/*.csv",
                                                              f"{S}16_kaggle/run/task_*/map/part*/*.csv")),
+    ("E17", "Do the policy's features beat the per-task noise?", (f"{S}17_kaggle/run/task_*/features/*.csv",)),
 )
 # Readings that are words in the experiment's README, not numbers; the others are read from the reports below.
 READINGS = {"E2": "negative", "E3": "not read", "E4": "negative", "E5b": "did not learn",
@@ -315,7 +317,16 @@ def outcomes(data) -> dict[str, str]:
     out["E14"] = passes(data["step14"]["tests"]["test A"], data["step14"]["tests"]["test B"])
     out["E15"] = step15_outcome(data["step15"])
     out["E16"] = passes(data["step16"]["T1"], data["step16"]["T2"])
+    out["E17"] = step17_outcome(data["step17"])
     return out
+
+
+def step17_outcome(u1) -> str:
+    """E17: rule U1 passes only if p <= 0.05, U1 > 0 and D > 0; a p below the level alone beats the shuffled-feature
+    null, not the per-task ticket (noise_reachability/README.md, step 17, "Reading")."""
+    if u1["passes"]:
+        return "test passes"
+    return "beats the null, not the ticket" if u1["p"] <= 0.05 else "test does not pass"
 
 
 def step13_outcome(tests) -> str:
