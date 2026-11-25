@@ -1,0 +1,52 @@
+noise_reachability/analyze_step18.py: 46 mutants; tests: tests/test_analyze_step18.py
+[1/46] killed   line 174 in sessions(): comparison NotEq -> Eq
+[2/46] SURVIVED line 175 in sessions(): operator Sub -> Add
+[3/46] SURVIVED line 175 in sessions(): constant 1 -> 2
+[4/46] killed   line 202 in check_settings(): comparison Eq -> NotEq
+[5/46] killed   line 202 in check_settings(): constant 3 -> 4
+[6/46] killed   line 202 in check_settings(): comparison Eq -> NotEq
+[7/46] killed   line 202 in check_settings(): constant 0 -> 1
+[8/46] killed   line 202 in check_settings(): constant 1 -> 2
+[9/46] killed   line 202 in check_settings(): comparison In -> NotIn
+[10/46] killed   line 202 in check_settings(): constant 2 -> 3
+[11/46] killed   line 203 in check_settings(): constant 2 -> 3
+[12/46] killed   line 204 in check_settings(): constant 1.0 -> 2.0
+[13/46] killed   line 205 in check_settings(): comparison Eq -> NotEq
+[14/46] killed   line 205 in check_settings(): comparison Eq -> NotEq
+[15/46] killed   line 206 in check_settings(): comparison Eq -> NotEq
+[16/46] killed   line 210 in check_settings(): comparison Eq -> NotEq
+[17/46] killed   line 210 in check_settings(): constant 3 -> 4
+[18/46] killed   line 210 in check_settings(): comparison In -> NotIn
+[19/46] killed   line 210 in check_settings(): constant 0 -> 1
+[20/46] killed   line 210 in check_settings(): comparison In -> NotIn
+[21/46] killed   line 210 in check_settings(): constant 1 -> 2
+[22/46] killed   line 210 in check_settings(): comparison In -> NotIn
+[23/46] killed   line 210 in check_settings(): constant 2 -> 3
+[24/46] killed   line 211 in check_settings(): constant 0 -> 1
+[25/46] killed   line 211 in check_settings(): constant 1 -> 2
+[26/46] killed   line 212 in check_settings(): constant 2 -> 3
+[27/46] killed   line 213 in check_settings(): constant 3 -> 4
+[28/46] killed   line 214 in check_settings(): comparison Eq -> NotEq
+[29/46] killed   line 214 in check_settings(): comparison Eq -> NotEq
+[30/46] killed   line 214 in check_settings(): comparison In -> NotIn
+[31/46] killed   line 217 in check_settings(): comparison LtE -> Lt
+[32/46] SURVIVED line 217 in check_settings(): comparison Lt -> LtE
+[33/46] killed   line 217 in check_settings(): constant 0 -> 1
+[34/46] killed   line 217 in check_settings(): comparison Eq -> NotEq
+[35/46] killed   line 256 in session_harness(): operator Sub -> Add
+[36/46] killed   line 257 in session_harness(): comparison Eq -> NotEq
+[37/46] killed   line 258 in session_harness(): comparison NotEq -> Eq
+[38/46] killed   line 261 in session_harness(): name all -> any
+[39/46] killed   line 261 in session_harness(): comparison Eq -> NotEq
+[40/46] killed   line 272 in harness(): dropped Not
+[41/46] killed   line 275 in harness(): constant 0 -> 1
+[42/46] killed   line 276 in harness(): constant 1 -> 2
+[43/46] killed   line 276 in harness(): dropped Not
+[44/46] killed   line 277 in harness(): constant 0 -> 1
+[45/46] killed   line 278 in harness(): comparison GtE -> Gt
+[46/46] killed   line 278 in harness(): dropped Not
+
+43 of 46 mutants killed in 67 s; 3 survived:
+  line 175 in sessions(): operator Sub -> Add
+  line 175 in sessions(): constant 1 -> 2
+  line 217 in check_settings(): comparison Lt -> LtE

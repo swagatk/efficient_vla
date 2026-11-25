@@ -1,0 +1,18 @@
+candidates (>= 50 episodes of each, sampled under 1%): 16
+  0/2: repeat 5/120 (0.042), sampled 0/70
+  0/5: repeat 2/120 (0.017), sampled 0/70
+  0/6: repeat 12/120 (0.100), sampled 0/70  chosen
+  0/7: repeat 3/120 (0.025), sampled 0/70
+  0/8: repeat 16/120 (0.133), sampled 0/70  chosen
+  0/11: repeat 3/200 (0.015), sampled 0/182
+  0/27: repeat 1/100 (0.010), sampled 0/82
+  4/11: repeat 6/200 (0.030), sampled 0/182  chosen
+  4/18: repeat 3/100 (0.030), sampled 0/82
+  4/26: repeat 4/100 (0.040), sampled 0/82  chosen
+  6/8: repeat 15/420 (0.036), sampled 2/370  chosen
+  6/12: repeat 8/200 (0.040), sampled 1/182  chosen
+  6/14: repeat 1/500 (0.002), sampled 0/82
+  6/20: repeat 4/500 (0.008), sampled 0/82
+  7/33: repeat 25/150 (0.167), sampled 0/182  chosen
+  7/47: repeat 6/50 (0.120), sampled 0/82  chosen
+chosen: 0/8, 0/6, 4/26, 4/11, 6/12, 6/8, 7/33, 7/47

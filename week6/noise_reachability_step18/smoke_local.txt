@@ -1,0 +1,42 @@
+# step 18 local smoke (RTX 4090 laptop, 2026-11-25, uncommitted tree on 979d190; tools/logged_run.sh, 406 s)
+# commands: /tmp/claude-1000/-home-swagat-GIT-efficient-vla/2c44e3ab-0067-4ebb-9d34-9c1749e84ac2/scratchpad/smoke18/run.sh
+set -e
+cd /home/swagat/GIT/efficient_vla
+export MUJOCO_GL=egl PYOPENGL_PLATFORM=egl PYTHONPATH=/home/swagat/GIT/efficient_vla
+PY=/home/swagat/miniconda3/envs/lerobot_env/bin/python
+SEARCH="$PY -u noise_reachability/deep_noise_search.py --policy_path lerobot/smolvla_libero --n_action_steps 10"
+$PY -u noise_reachability/check_noise_processes.py --task_id 4 --policy_path lerobot/smolvla_libero --n_action_steps 10
+$SEARCH --family ar_repeat --rho 1 --task_id 4 --init_state 26 --noise_ids 10000,10033 --output_dir <out>/harness/task4_state26
+$SEARCH --family zero --task_id 4 --init_state 26 --noise_ids 20400,20401 --output_dir <out>/task_4/zero/block0
+$SEARCH --family scaled --sigma 0.5 --task_id 4 --init_state 26 --noise_ids 20400 --output_dir <out>/task_4/scaled_sigma0.5/block0
+echo SMOKE_DONE
+
+# output (gym / weight-loading lines removed)
+[check] ok   ar_repeat rho 1 = repeat at every inference, bit for bit: max |diff| per inference [0.0, 0.0, 0.0]
+[check] ok   ar_repeat rho 0.5 = repeat at the first inference
+[check] ok   ar_repeat rho 0.5 changes the second inference: max |diff| 0.153
+[check] ok   scaled: repeats across torch seeds
+[check] ok   scaled: a fresh noise at the second inference: max |diff| 0.123
+[check] ok   zero: repeats across torch seeds
+[check] ok   zero: the same chunk at two inferences
+[check] all passed
+[search] per_episode_ar_repeat_rho1_state26.csv: 2 episodes to run
+[search] ar_repeat_rho1 noise 10000 seed 11000 init 26: success=0 steps=520 time=61.8s
+[search] ar_repeat_rho1 noise 10033 seed 11033 init 26: success=0 steps=520 time=60.4s
+[search] per_episode_zero_state26.csv: 2 episodes to run
+[search] zero noise 20400 seed 21400 init 26: success=0 steps=520 time=60.0s
+[search] zero noise 20401 seed 21401 init 26: success=0 steps=520 time=56.9s
+[search] per_episode_scaled_sigma0.5_state26.csv: 1 episodes to run
+[search] scaled_sigma0.5 noise 20400 seed 21400 init 26: success=0 steps=520 time=78.5s
+SMOKE_DONE
+## harness/task4_state26/per_episode_ar_repeat_rho1_state26.csv
+task_id,seed,init_state,success,steps
+4,11000,26,0,520
+4,11033,26,0,520
+## task_4/scaled_sigma0.5/block0/per_episode_scaled_sigma0.5_state26.csv
+task_id,seed,init_state,success,steps
+4,21400,26,0,520
+## task_4/zero/block0/per_episode_zero_state26.csv
+task_id,seed,init_state,success,steps
+4,21400,26,0,520
+4,21401,26,0,520

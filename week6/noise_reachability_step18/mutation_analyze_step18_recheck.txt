@@ -1,0 +1,79 @@
+noise_reachability/analyze_step18.py: 72 mutants; tests: tests/test_analyze_step18.py
+[1/72] killed   line 82 in ratio_interval(): operator Add -> Sub
+[2/72] killed   line 83 in ratio_interval(): comparison Eq -> NotEq
+[3/72] killed   line 83 in ratio_interval(): constant 0 -> 1
+[4/72] killed   line 84 in ratio_interval(): constant 0.0 -> 1.0
+[5/72] killed   line 86 in ratio_interval(): operator Div -> Mult
+[6/72] killed   line 86 in ratio_interval(): operator Sub -> Add
+[7/72] killed   line 86 in ratio_interval(): constant 1 -> 2
+[8/72] killed   line 86 in ratio_interval(): comparison GtE -> Gt
+[9/72] killed   line 86 in ratio_interval(): constant 1 -> 2
+[10/72] killed   line 86 in ratio_interval(): operator Div -> Mult
+[11/72] killed   line 86 in ratio_interval(): operator Sub -> Add
+[12/72] killed   line 86 in ratio_interval(): constant 1 -> 2
+[13/72] killed   line 120 in rule(): comparison Lt -> LtE
+[14/72] killed   line 121 in rule(): constant False -> True
+[15/72] killed   line 124 in rule(): constant True -> False
+[16/72] killed   line 125 in rule(): operator Add -> Sub
+[17/72] killed   line 125 in rule(): comparison In -> NotIn
+[18/72] killed   line 127 in rule(): comparison Gt -> GtE
+[19/72] killed   line 129 in rule(): comparison In -> NotIn
+[20/72] killed   line 130 in rule(): comparison Gt -> GtE
+[21/72] killed   line 179 in _family(): comparison Eq -> NotEq
+[22/72] killed   line 179 in _family(): comparison Eq -> NotEq
+[23/72] killed   line 179 in _family(): comparison Eq -> NotEq
+[24/72] killed   line 181 in _family(): name all -> any
+[25/72] killed   line 181 in _family(): comparison Is -> IsNot
+[26/72] killed   line 212 in _checked(): comparison In -> NotIn
+[27/72] killed   line 214 in _checked(): comparison NotEq -> Eq
+[28/72] killed   line 305 in analyse(): dropped Not
+[29/72] killed   line 311 in analyse(): constant 1 -> 2
+[30/72] SURVIVED line 312 in analyse(): name all -> any
+[31/72] killed   line 312 in analyse(): comparison Eq -> NotEq
+[32/72] killed   line 312 in analyse(): constant 1 -> 2
+[33/72] killed   line 313 in analyse(): constant 0 -> 1
+[34/72] killed   line 313 in analyse(): operator Add -> Sub
+[35/72] killed   line 327 in analyse(): comparison Eq -> NotEq
+[36/72] killed   line 329 in analyse(): constant 3 -> 4
+[37/72] killed   line 330 in analyse(): constant 0 -> 1
+[38/72] killed   line 330 in analyse(): constant 1 -> 2
+[39/72] killed   line 331 in analyse(): constant 0 -> 1
+[40/72] killed   line 331 in analyse(): constant 0 -> 1
+[41/72] killed   line 333 in analyse(): constant 1 -> 2
+[42/72] killed   line 333 in analyse(): constant 0 -> 1
+[43/72] killed   line 333 in analyse(): dropped Not
+[44/72] killed   line 333 in analyse(): constant 0 -> 1
+[45/72] killed   line 334 in analyse(): constant 1 -> 2
+[46/72] killed   line 334 in analyse(): constant 0 -> 1
+[47/72] killed   line 334 in analyse(): dropped Not
+[48/72] killed   line 334 in analyse(): constant 0 -> 1
+[49/72] killed   line 340 in analyse(): comparison Eq -> NotEq
+[50/72] killed   line 340 in analyse(): constant 1 -> 2
+[51/72] killed   line 347 in _rate(): operator Div -> Mult
+[52/72] killed   line 347 in _rate(): operator Mult -> Div
+[53/72] killed   line 347 in _rate(): constant 100 -> 101
+[54/72] killed   line 355 in format_report(): dropped Not
+[55/72] killed   line 358 in format_report(): comparison NotIn -> In
+[56/72] killed   line 360 in format_report(): operator Add -> Sub
+[57/72] killed   line 362 in format_report(): operator Add -> Sub
+[58/72] killed   line 373 in format_report(): operator Add -> Sub
+[59/72] killed   line 376 in format_report(): comparison In -> NotIn
+[60/72] killed   line 384 in format_report(): operator Add -> Sub
+[61/72] killed   line 385 in format_report(): operator Add -> Sub
+[62/72] killed   line 386 in format_report(): operator Add -> Sub
+[63/72] SURVIVED line 399 in main(): constant True -> False
+[64/72] killed   line 409 in main(): operator Add -> Sub
+[65/72] SURVIVED line 409 in main(): constant 1 -> 2
+[66/72] killed   line 410 in main(): constant 0 -> 1
+[67/72] killed   line 410 in main(): constant 1 -> 2
+[68/72] killed   line 416 in main(): operator Add -> Sub
+[69/72] killed   line 416 in main(): operator Add -> Sub
+[70/72] SURVIVED line 416 in main(): constant 1 -> 2
+[71/72] killed   line 417 in main(): comparison IsNot -> Is
+[72/72] killed   line 419 in main(): constant 0 -> 1
+
+68 of 72 mutants killed in 141 s; 4 survived:
+  line 312 in analyse(): name all -> any
+  line 399 in main(): constant True -> False
+  line 409 in main(): constant 1 -> 2
+  line 416 in main(): constant 1 -> 2

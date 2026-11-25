@@ -1,0 +1,160 @@
+noise_reachability/analyze_step18.py: 135 mutants; tests: tests/test_analyze_step18.py
+[1/135] killed   line 82 in ratio_interval(): operator Add -> Sub
+[2/135] killed   line 83 in ratio_interval(): comparison Eq -> NotEq
+[3/135] SURVIVED line 83 in ratio_interval(): constant 0 -> 1
+[4/135] killed   line 84 in ratio_interval(): constant 0.0 -> 1.0
+[5/135] killed   line 86 in ratio_interval(): operator Div -> Mult
+[6/135] killed   line 86 in ratio_interval(): operator Sub -> Add
+[7/135] killed   line 86 in ratio_interval(): constant 1 -> 2
+[8/135] killed   line 86 in ratio_interval(): comparison GtE -> Gt
+[9/135] killed   line 86 in ratio_interval(): constant 1 -> 2
+[10/135] killed   line 86 in ratio_interval(): operator Div -> Mult
+[11/135] killed   line 86 in ratio_interval(): operator Sub -> Add
+[12/135] killed   line 86 in ratio_interval(): constant 1 -> 2
+[13/135] killed   line 102 in overall_reading(): dropped Not
+[14/135] killed   line 108 in overall_reading(): dropped Not
+[15/135] killed   line 110 in overall_reading(): dropped Not
+[16/135] killed   line 120 in rule(): comparison Lt -> LtE
+[17/135] killed   line 121 in rule(): constant False -> True
+[18/135] killed   line 124 in rule(): constant True -> False
+[19/135] killed   line 125 in rule(): operator Add -> Sub
+[20/135] killed   line 125 in rule(): comparison In -> NotIn
+[21/135] SURVIVED line 127 in rule(): comparison Gt -> GtE
+[22/135] killed   line 129 in rule(): comparison In -> NotIn
+[23/135] SURVIVED line 130 in rule(): comparison Gt -> GtE
+[24/135] killed   line 143 in condition_ids(): operator Add -> Sub
+[25/135] killed   line 143 in condition_ids(): operator Add -> Sub
+[26/135] killed   line 143 in condition_ids(): operator Mult -> Div
+[27/135] killed   line 143 in condition_ids(): constant 3 -> 4
+[28/135] killed   line 148 in blocks(): operator Add -> Sub
+[29/135] killed   line 148 in blocks(): constant 0 -> 1
+[30/135] killed   line 156 in block_file(): operator Div -> Mult
+[31/135] killed   line 164 in harness_file(): operator Div -> Mult
+[32/135] killed   line 168 in harness_ids(): constant 2 -> 3
+[33/135] killed   line 174 in _require(): dropped Not
+[34/135] killed   line 179 in _family(): comparison Eq -> NotEq
+[35/135] killed   line 179 in _family(): comparison Eq -> NotEq
+[36/135] killed   line 179 in _family(): comparison Eq -> NotEq
+[37/135] SURVIVED line 181 in _family(): name all -> any
+[38/135] killed   line 181 in _family(): comparison Is -> IsNot
+[39/135] killed   line 190 in check_settings(): comparison Eq -> NotEq
+[40/135] killed   line 190 in check_settings(): constant 2 -> 3
+[41/135] killed   line 190 in check_settings(): comparison Eq -> NotEq
+[42/135] killed   line 190 in check_settings(): constant 0 -> 1
+[43/135] killed   line 190 in check_settings(): comparison In -> NotIn
+[44/135] killed   line 190 in check_settings(): constant 1 -> 2
+[45/135] killed   line 191 in check_settings(): constant 1 -> 2
+[46/135] killed   line 192 in check_settings(): constant 1.0 -> 2.0
+[47/135] killed   line 193 in check_settings(): comparison Eq -> NotEq
+[48/135] killed   line 193 in check_settings(): comparison Eq -> NotEq
+[49/135] killed   line 194 in check_settings(): comparison Eq -> NotEq
+[50/135] killed   line 197 in check_settings(): comparison Eq -> NotEq
+[51/135] killed   line 197 in check_settings(): constant 3 -> 4
+[52/135] killed   line 197 in check_settings(): comparison In -> NotIn
+[53/135] killed   line 197 in check_settings(): constant 0 -> 1
+[54/135] killed   line 197 in check_settings(): comparison In -> NotIn
+[55/135] killed   line 197 in check_settings(): constant 1 -> 2
+[56/135] killed   line 197 in check_settings(): constant 2 -> 3
+[57/135] killed   line 198 in check_settings(): constant 0 -> 1
+[58/135] killed   line 198 in check_settings(): constant 1 -> 2
+[59/135] killed   line 199 in check_settings(): constant 3 -> 4
+[60/135] killed   line 201 in check_settings(): comparison Eq -> NotEq
+[61/135] killed   line 201 in check_settings(): comparison In -> NotIn
+[62/135] killed   line 202 in check_settings(): constant 2 -> 3
+[63/135] killed   line 204 in check_settings(): comparison LtE -> Lt
+[64/135] SURVIVED line 204 in check_settings(): comparison Lt -> LtE
+[65/135] killed   line 204 in check_settings(): constant 0 -> 1
+[66/135] killed   line 204 in check_settings(): comparison Eq -> NotEq
+[67/135] SURVIVED line 212 in _checked(): comparison In -> NotIn
+[68/135] killed   line 214 in _checked(): comparison NotEq -> Eq
+[69/135] killed   line 227 in committed_harness(): comparison Eq -> NotEq
+[70/135] killed   line 231 in committed_harness(): operator Add -> Sub
+[71/135] killed   line 232 in committed_harness(): comparison NotEq -> Eq
+[72/135] killed   line 232 in committed_harness(): constant 0 -> 1
+[73/135] killed   line 232 in committed_harness(): constant 1 -> 2
+[74/135] killed   line 232 in committed_harness(): comparison NotEq -> Eq
+[75/135] killed   line 232 in committed_harness(): constant 0 -> 1
+[76/135] killed   line 232 in committed_harness(): constant 0 -> 1
+[77/135] killed   line 244 in harness(): operator Sub -> Add
+[78/135] killed   line 245 in harness(): comparison Eq -> NotEq
+[79/135] killed   line 246 in harness(): comparison NotEq -> Eq
+[80/135] killed   line 248 in harness(): name all -> any
+[81/135] killed   line 248 in harness(): comparison Eq -> NotEq
+[82/135] killed   line 253 in harness(): comparison GtE -> Gt
+[83/135] killed   line 270 in block_rows(): name any -> all
+[84/135] killed   line 270 in block_rows(): comparison NotEq -> Eq
+[85/135] killed   line 272 in block_rows(): operator Sub -> Add
+[86/135] killed   line 273 in block_rows(): comparison NotEq -> Eq
+[87/135] killed   line 275 in block_rows(): operator Sub -> Add
+[88/135] killed   line 292 in counts(): constant 0 -> 1
+[89/135] killed   line 295 in counts(): constant 0 -> 1
+[90/135] killed   line 296 in counts(): constant 1 -> 2
+[91/135] killed   line 305 in analyse(): dropped Not
+[92/135] killed   line 311 in analyse(): constant 1 -> 2
+[93/135] SURVIVED line 312 in analyse(): name all -> any
+[94/135] killed   line 312 in analyse(): comparison Eq -> NotEq
+[95/135] killed   line 312 in analyse(): constant 1 -> 2
+[96/135] killed   line 313 in analyse(): constant 0 -> 1
+[97/135] killed   line 313 in analyse(): operator Add -> Sub
+[98/135] killed   line 327 in analyse(): comparison Eq -> NotEq
+[99/135] killed   line 329 in analyse(): constant 3 -> 4
+[100/135] SURVIVED line 330 in analyse(): constant 0 -> 1
+[101/135] killed   line 330 in analyse(): constant 1 -> 2
+[102/135] SURVIVED line 331 in analyse(): constant 0 -> 1
+[103/135] SURVIVED line 331 in analyse(): constant 0 -> 1
+[104/135] killed   line 333 in analyse(): constant 1 -> 2
+[105/135] killed   line 333 in analyse(): constant 0 -> 1
+[106/135] SURVIVED line 333 in analyse(): dropped Not
+[107/135] killed   line 333 in analyse(): constant 0 -> 1
+[108/135] SURVIVED line 334 in analyse(): constant 1 -> 2
+[109/135] killed   line 334 in analyse(): constant 0 -> 1
+[110/135] killed   line 334 in analyse(): dropped Not
+[111/135] SURVIVED line 334 in analyse(): constant 0 -> 1
+[112/135] killed   line 340 in analyse(): comparison Eq -> NotEq
+[113/135] killed   line 340 in analyse(): constant 1 -> 2
+[114/135] SURVIVED line 347 in _rate(): operator Div -> Mult
+[115/135] killed   line 347 in _rate(): operator Mult -> Div
+[116/135] SURVIVED line 347 in _rate(): constant 100 -> 101
+[117/135] SURVIVED line 355 in format_report(): dropped Not
+[118/135] SURVIVED line 358 in format_report(): comparison NotIn -> In
+[119/135] SURVIVED line 360 in format_report(): operator Add -> Sub
+[120/135] killed   line 362 in format_report(): operator Add -> Sub
+[121/135] killed   line 373 in format_report(): operator Add -> Sub
+[122/135] killed   line 376 in format_report(): comparison In -> NotIn
+[123/135] killed   line 384 in format_report(): operator Add -> Sub
+[124/135] killed   line 385 in format_report(): operator Add -> Sub
+[125/135] killed   line 386 in format_report(): operator Add -> Sub
+[126/135] SURVIVED line 399 in main(): constant True -> False
+[127/135] killed   line 409 in main(): operator Add -> Sub
+[128/135] SURVIVED line 409 in main(): constant 1 -> 2
+[129/135] killed   line 410 in main(): constant 0 -> 1
+[130/135] SURVIVED line 410 in main(): constant 1 -> 2
+[131/135] killed   line 416 in main(): operator Add -> Sub
+[132/135] killed   line 416 in main(): operator Add -> Sub
+[133/135] SURVIVED line 416 in main(): constant 1 -> 2
+[134/135] killed   line 417 in main(): comparison IsNot -> Is
+[135/135] killed   line 419 in main(): constant 0 -> 1
+
+113 of 135 mutants killed in 201 s; 22 survived:
+  line 83 in ratio_interval(): constant 0 -> 1
+  line 127 in rule(): comparison Gt -> GtE
+  line 130 in rule(): comparison Gt -> GtE
+  line 181 in _family(): name all -> any
+  line 204 in check_settings(): comparison Lt -> LtE
+  line 212 in _checked(): comparison In -> NotIn
+  line 312 in analyse(): name all -> any
+  line 330 in analyse(): constant 0 -> 1
+  line 331 in analyse(): constant 0 -> 1
+  line 331 in analyse(): constant 0 -> 1
+  line 333 in analyse(): dropped Not
+  line 334 in analyse(): constant 1 -> 2
+  line 334 in analyse(): constant 0 -> 1
+  line 347 in _rate(): operator Div -> Mult
+  line 347 in _rate(): constant 100 -> 101
+  line 355 in format_report(): dropped Not
+  line 358 in format_report(): comparison NotIn -> In
+  line 360 in format_report(): operator Add -> Sub
+  line 399 in main(): constant True -> False
+  line 409 in main(): constant 1 -> 2
+  line 410 in main(): constant 1 -> 2
+  line 416 in main(): constant 1 -> 2

@@ -1608,6 +1608,166 @@ with mean-pooled first-observation features, no better choice than the ticket wa
 noise is independent of the scene. U1 ran on Kaggle CPU (`kaggle_step17_u1_cpu.ipynb` at `3bc5f30`, one BLAS thread,
 31.2 min). Its point estimates match a local 3-permutation smoke run exactly.
 
+## Step 18: is it the constancy of the noise, or only lower noise diversity? (mechanism M1, draft 2026-11-24)
+
+*Fixed 2026-11-25 with 100 ids per state (the user's choice, given 45 Kaggle hours after the 2026-11-27 reset),
+before any step-18 episode. Changes after a fresh-context review are listed under "Review".*
+
+Mechanism M1 of the Stage 2 plan. Gate G1 failed at step 17, so the plan's fallback applies: a measurement paper,
+whose Discussion says that the episode, not the chunk, is the unit of control. That rests on `repeat` (one noise held
+for the whole episode) against `sampled` (steps 8 and 11) and on step 5b's prior arm (a `repeat` noise redrawn at every
+inference solved 0 of 80 episodes). A constant noise also has less diversity than sampling. A reviewer can then say
+that any lower-diversity noise would do as well, for example sampling at a lower temperature. Step 18 separates the
+two with the noise processes of `noise_processes.py` (commit `ff332d3`) on resistant states where constant noise is
+known to work. No training.
+
+**Hypothesis.** Written before any step-18 episode. On these states, success comes from holding the noise constant,
+not from lower noise diversity. Sampling at half the temperature (sigma 0.5) and a noise that drifts slowly (rho 0.9)
+both succeed less often than the constant noise (rho 1). Expected: constant noise about 6% pooled (step 8's and 16's
+rates, shrunk for selection); sigma 0.5 under 1%, near sampling; rho 0.9 under half of rho 1, since its correlation
+with the first noise falls to 0.9^10 = 0.35 after 10 of an episode's up to 52 inferences.
+
+**Conditions** (`deep_noise_search.py --family ...`; names from `noise_processes.family_label`):
+
+| Condition | What every inference gets | Role |
+|---|---|---|
+| `repeat` (rho 1) | the id's `repeat` vector, the same at every inference | reference |
+| `ar_repeat_rho0.9` | AR(1) from the id's `repeat` vector, corr 0.9 between inferences | tested |
+| `scaled_sigma0.5` | fresh full noise times 0.5 | tested |
+| `ar_repeat_rho0.5`, `ar_repeat_rho0` | AR(1) with corr 0.5, and a `repeat` vector redrawn each inference | reported |
+| `scaled_sigma1` | fresh full noise (sampling, from the id's own stream) | reported |
+| `zero` | the zero noise | reported |
+
+**States, fixed now, by a rule (`calibration/step18_states.py`, output in
+`week6/noise_reachability_step18/step18_states.txt`).** Candidates are the states of tasks 0, 4, 6 and 7 with at least
+50 committed base-policy `sampled` episodes at a pooled rate under 1%, and at least 50 committed base-policy `repeat`
+episodes on fresh ids (searched on that state, not carried from another state or replayed). The sources are steps 5a
+(Colab), 7, 8, 9's random arm, 11, 15's base search and 16's map (Kaggle T4); adapters, replays, harness reruns,
+pilots, step 9's library arm and step 17's reruns of step 16 are left out. 16 states qualify. Per task, the two with
+the highest pooled `repeat` rate are taken (ties: more episodes, then the lower state; 4/11 and 4/18 tie at 0.030
+and 4/11 has more episodes):
+
+| i | State | `repeat`, fresh ids | `sampled` |
+|---|---|---|---|
+| 0 | 0/8 | 16/120 (0.133) | 0/70 |
+| 1 | 0/6 | 12/120 (0.100) | 0/70 |
+| 2 | 4/26 | 4/100 (0.040) | 0/82 |
+| 3 | 4/11 | 6/200 (0.030) | 0/182 |
+| 4 | 6/12 | 8/200 (0.040) | 1/182 |
+| 5 | 6/8 | 15/420 (0.036) | 2/370 |
+| 6 | 7/33 | 25/150 (0.167) | 0/182 |
+| 7 | 7/47 | 6/50 (0.120) | 0/82 |
+
+These counts are the power's input only. The selection uses `repeat` outcomes, so the rates are biased upwards; step
+18 measures every condition on fresh ids. Its claim is about states where constant noise is known to work, which is
+where the mechanism is in question.
+
+**Protocol (Kaggle 2 x T4, the step-16 stack: `lerobot/smolvla_libero` at `a24f1f3804`, `n_action_steps=10`, 520
+steps, hard resets).**
+
+- *Ids.* State i (the table's i) has ids 20000 + 200i + j, j = 0-99, used by no earlier step
+  (they used ids up to 10049). Episode seed 1000 + id, as before. Each state has its own ids, so pooled episodes are
+  independent across states (step 16 showed a noise's success is shared within a task). Within a state every
+  condition uses the same ids: rho 0.9, 0.5 and 0 start from the id's `repeat` vector, so their first inference equals
+  `repeat`'s.
+- *Episodes.* `repeat`, `ar_repeat_rho0.9` and `scaled_sigma0.5`: j = 0-99 on every state (800 each). The reported
+  `ar_repeat_rho0.5`, `ar_repeat_rho0` and `scaled_sigma1`: j = 0-19 (160 each). `zero`: j = 0 and 1 (16; the zero
+  noise does not depend on the id, so the two must agree). One process runs one block of at most 10 ids of one
+  condition on one state (`task_<t>/<condition>/state<s>_block<b>/`, 296 jobs); blocks run in order, so a session stopped at
+  its deadline leaves the conditions with nearly equal counts. The rule is read only when every episode is in.
+- *Harness, first, stops the run.* Per state, one committed success and one committed failure of `repeat` on Kaggle T4,
+  rerun as `--family ar_repeat --rho 1` (the new code path, bit-identical to `repeat` by `check_noise_processes.py`):
+  0/8 ids 10000 (success, 424 steps) and 10001 (failure); 0/6 10009 (449) and 10000; 4/11 10010 (234) and 10000; 4/26
+  10033 (220) and 10000; 6/8 10037 (249) and 10000; 6/12 10018 (231) and 10000 (step 16's map); 7/33 1459 (327) and
+  1450 (step 8); 7/47 6007 (251) and 6000 (step 9). Both rows must reproduce success and steps exactly. In the first
+  session a state that differs is dropped from every condition, and fewer than 7 of 8 states reproducing stops the
+  run. Every later session reruns the 16 episodes in its own folder (`harness/session<k>/`) before any episode; a kept
+  state that no longer reproduces, or a package set other than the first session's, stops the run (16 episodes per
+  session).
+
+**Rule (`analyze_step18.rule`).** Pooled over the kept states, equal episodes per condition.
+
+- *Gate:* `repeat` succeeds at least 10 times pooled, or nothing is read.
+- *Tests:* `repeat` above `scaled_sigma0.5`, and `repeat` above `ar_repeat_rho0.9`: one-sided Fisher exact tests on
+  pooled counts, Holm over the two at 0.05. A pass is "below constant noise".
+- *Keeps half:* with rare successes and equal episodes per state, a condition's share of the pair's pooled successes is
+  Binomial(total, theta / (1 + theta)) given the total, where theta is the condition's rate over `repeat`'s on every
+  state. The two-sided 95% Clopper-Pearson interval on that share gives one on theta (approximate: exact for Poisson
+  counts). The condition "keeps half" when the interval's lower end is above 0.5.
+
+**Reading, fixed now** (`analyze_step18.overall_reading`), in this order:
+
+- *The harness stopped the run, or the gate failed:* not read.
+- *sigma 0.5 keeps half and is not below:* **lower diversity.** Sampling at half the temperature keeps at least half
+  of constant noise's rate, so "constancy" becomes "lower noise diversity" and the Discussion heading changes (the
+  plan's falsifier).
+- *sigma 0.5 is below and keeps half:* **partly lower diversity**, stated with the ratio interval.
+- *sigma 0.5 neither:* **not resolved**, with the intervals.
+- *sigma 0.5 below, rho 0.9 below and not keeping half:* **constancy.** Both lower-temperature sampling and a slowly
+  drifting noise succeed less than a constant noise.
+- *sigma 0.5 below, rho 0.9 keeps half:* **persistence.** A noise that changes slowly is enough; exact constancy is not
+  needed.
+- *sigma 0.5 below, rho 0.9 neither:* **not lower diversity**; the drifting noise is not resolved.
+
+*Reported, not part of the rule:* per state and condition, the counts with exact 95% intervals; the ratio interval of
+every condition; the paired one-sided McNemar of `repeat` against `ar_repeat_rho0.9` (shared ids and first noise) as a
+cross-check; rho 0 against `scaled_sigma1` (the redrawn `repeat` form against the redrawn full form, both at full
+temperature); success against rho over 0, 0.5, 0.9 and 1 (j = 0-19, where all four ran); and `zero`'s outcome per
+state, with whether its two episodes agree.
+
+**Power (`calibration/step18_power.py`; Monte Carlo with the rule's own code, 1,000 simulations per cell, seed 18;
+estimates, local CPU, output in `week6/noise_reachability_step18/step18_power.txt`).** Each state's `repeat` rate is its
+pooled count above times a shrink factor for the selection (1.0, 0.7 or 0.5, a guess, so a range; pooled 8.3%, 5.8%,
+4.2%). A tested condition succeeds at theta times that rate on every state. Ranges are over the other condition's
+theta. With 100 ids per state (800 per condition), at shrink 0.7: sigma 0.5 is shown below with probability 0.79-0.83
+at theta 0.5 and 0.997-1.00 at theta 0.25, and keeps half with probability 0.90-0.91 at theta 1; rho 0.9 is below with
+0.78-0.87 at theta 0.5 and keeps half with 0.89-0.91 at theta 1. At shrink 1.0 the same four figures are 0.93-0.98; at
+shrink 0.5, 0.60-0.79. With 75 ids per state at shrink 0.7 they fall to 0.65-0.81, and with 50 to 0.45-0.63. At
+theta 0.75 no setting tells the two apart well (sigma 0.5 below 0.23-0.34 and keeps half 0.35-0.38 at 100 ids and
+shrink 0.7), so a result there will often be "not resolved". Level: at equal rates "below" passes in 0.016-0.040 of
+simulations for sigma 0.5 and on average 0.032 for rho 0.9 (largest 0.056 of 45 cells; standard error about 0.007 per
+cell); at theta 0.5 "keeps half" passes in 0.003-0.025. The gate passes in at least 0.999 of simulations except at 50
+ids and shrink 0.5 (0.97). The simulation draws every condition's episodes independently. In the run, `repeat` and rho
+0.9 share ids and their first noise, so their outcomes are positively correlated; the unpaired Fisher test and the
+ratio interval then stay valid but conservative, and the paired McNemar is reported beside them. Command: `python3 -S
+noise_reachability/calibration/step18_power.py --sims 1000 --seed 18`.
+
+**What it cannot show.** One checkpoint and eight states chosen because constant noise works there, so a result is
+about those states, not about resistant states in general. sigma 0.5 lowers the temperature of the full noise, while
+the rho family keeps `repeat`'s form (one 32-vector along the chunk); rho 0 against `scaled_sigma1` is reported to show
+how much the form matters at full temperature, but there is no low-temperature `repeat`-form condition. Other
+schedules (a noise held for part of the episode, or redrawn every few inferences) are not tested.
+
+**Compute (estimate).** 2,912 episodes: 2,400 tested, 480 reported, 16 `zero`, 16 harness (plus 16 per later
+session). Most episodes on these
+states fail and run the full 520 steps, so at step 9's rate (662 episodes in 3.9 h, about 170 per hour) they take
+about 17 h on Kaggle 2 x T4, plus about 0.8 h of install and checks per session: two sessions (`STOP_AT_H` 11), the
+second resuming from the first's output.
+
+**Code.** `analyze_step18.py` (the rule, the harness gate, provenance, the report; `tests/test_analyze_step18.py`),
+`calibration/step18_states.py` (the states), `calibration/step18_power.py`, and `build_step18_notebook.py`
+(`tests/test_build_step18_notebook.py`), which writes `kaggle_step18_mechanism.ipynb` pinned to a clean commit. Before
+the run the notebook checks `check_step5a.py` and `check_noise_processes.py` on each task's real model.
+Mutation check of `analyze_step18.py` (`week6/noise_reachability_step18/`): 113 of 135 killed; tests were added for
+the survivors that could change a number or let a wrong run through, and a re-check of those functions kills 68 of 72.
+The four left (and one in `check_settings`) are listed with reasons in `mutation_survivors.md`. After the review's
+fix the changed harness and settings functions were checked again: 43 of 46 killed, the three left equivalent (same
+file).
+
+**Smoke run (local RTX 4090, 2026-11-25; `week6/noise_reachability_step18/smoke_local.txt`).** The notebook's commands
+on 4/26: `check_noise_processes.py` (all checks pass, rho 1 equals `repeat` bit for bit at three inferences), the
+harness (`--family ar_repeat --rho 1`, ids 10000 and 10033), `zero` on two ids and `scaled --sigma 0.5` on one. All ran,
+wrote their rows and provenance with the expected family, rho, sigma and ids. It checks that the code runs, not any
+rate: id 10033 failed on the 4090 where it succeeded on Kaggle T4, as outcomes differ between GPU types.
+
+**Review (fresh context, 2026-11-25), before the run.** No blocker. One major finding, fixed: the harness ran only in
+the first session, so a second session on a changed stack (for example another torch build) would have been caught
+only by the final analysis, after its episodes; every session now reruns it and is checked against the first. Minor,
+fixed: one folder per state and block (each provenance record belongs to one process); the power command is recorded
+and the script's default matches it; the independence assumption of the power is stated; tests added for a wrong
+task or state in a block folder, a wrong rho in the harness, the real parser's settings against their folders, and
+rho 0.9 both below and keeping half.
+
 ## Compute
 
 Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a month) for steps 2-4. At
@@ -1633,6 +1793,7 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
 | 12 | Kaggle 2 x T4 | done: 2,236 episodes and 9 adapters over three sessions (10.8 h, 10.8 h and 6.8 h between first and last provenance records) |
 | 16 | Kaggle 2 x T4 | done: 120 scene checks, 12 harness and 6,000 map episodes, three sessions (10.8 h, 10.8 h and 7.0 h between first and last provenance records) |
 | 17 | Kaggle 2 x T4, then Kaggle CPU | done: 124 feature episodes in one session (1.1 h between first and last provenance records); test U1 31.2 min on CPU |
+| 18 | Kaggle 2 x T4 | estimate: 2,912 episodes, about 17 h of episodes over two sessions |
 
 ## Files
 
@@ -1692,6 +1853,9 @@ Kaggle 2 x T4 (45 h a week) for base-policy evaluations, Colab A100 (50 h a mont
   features file; `kaggle_step17_features.ipynb` (built by `build_step17_notebook.py`) runs it on Kaggle;
   `step17_g1b.py`: test U1 on the features, locally; `calibration/step17_power.py`: its power, level and the choice of
   d and lambda.
+- `analyze_step18.py`: step 18's (M1) rule, harness gate and report; `kaggle_step18_mechanism.ipynb` (built by
+  `build_step18_notebook.py`) runs it on Kaggle; `calibration/step18_states.py` chooses its states from committed
+  episodes, `calibration/step18_power.py` its power.
 - `analyze_colab_t4_check.py`, `colab_t4_check.ipynb` (built by `build_colab_t4_check_notebook.py`): the Colab T4
   check (does a Colab T4 reproduce 24 Kaggle T4 episodes of step 10 exactly).
 - `analyze_step12.py`: step-12 state selection from step 10's report, harness gate (round 1's adapter against step
