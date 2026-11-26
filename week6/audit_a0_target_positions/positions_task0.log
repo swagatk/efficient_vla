@@ -1,0 +1,9 @@
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /home/swagat/miniconda3/envs/lerobot_env/lib/python3.12/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading  HuggingFaceTB/SmolVLM2-500M-Video-Instruct weights ...
+Reducing the number of VLM layers to 16 ...
+[positions] A_sampled: 20 episodes, 587 replan frames; 0-0 0.0520 1-9 0.0321 10-19 0.3102 20-29 0.5330 30-39 0.6355 40-49 0.7039
+[positions] N_repeat: 20 episodes, 566 replan frames; 0-0 0.0486 1-9 0.0464 10-19 0.3235 20-29 0.6101 30-39 0.7078 40-49 0.8311
+[positions] N_full: 9 episodes, 306 replan frames; 0-0 0.0489 1-9 0.0395 10-19 0.5134 20-29 0.9219 30-39 1.1562 40-49 1.1640
