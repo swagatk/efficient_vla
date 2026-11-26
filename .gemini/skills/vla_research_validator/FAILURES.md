@@ -56,6 +56,14 @@ This file is automatically updated by `record_failure.py`. Before modifying agen
 - **Root Cause**: When `eval_replan_each_step=False`, the model predicts a 16-step residual chunk and executes it open-loop. In a contact-rich 520-step manipulation task, compounding drift without closed-loop replanning causes failure.
 - **Resolution**: Set `--eval_replan_each_step 1` by default for closed-loop residual adjustment on every step.
 - **Mandatory Invariant**: `Residual evaluations on LIBERO must use `--eval_replan_each_step 1` unless specifically testing open-loop horizon stability.`
+- **Correction (2026-11-25)**: the 0% open-loop runs were made on 2026-10-04 (their output folders are not in the
+  repo; the commit of that day is `a0c534e`). `hybrid_diffusion/train_hybrid_diffusion.py` at that commit still
+  carries the duplicated `mujoco.mj_fullM`
+  wrapper (lines 190-244), which is FAIL-007: it gave the frozen base 0/10 on task 3 and was removed in `073841b`
+  (2026-10-11). The collapse is therefore confounded with a broken harness. It is no evidence that chunked or
+  open-loop residuals fail. The invariant stays for `train_hybrid_diffusion.py`, whose open-loop path runs 16 head
+  actions against a base that keeps its own `n_action_steps`. A residual on top of `n_action_steps=10` chunks has
+  never been tested on a working harness.
 
 ### [FAIL-006] LeRobot make_env Wrapper Degradation & Batch 2 Segfault
 

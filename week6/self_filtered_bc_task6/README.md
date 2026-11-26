@@ -67,9 +67,11 @@ Successes per init state, out of 3 (base) and 9 (method, control):
 
 - **Against the hypothesis:** no training seed reached 21/30, and pooled success (46/90) is one episode above
   the failure line. The method is indistinguishable from the base, so this is recorded as a negative result.
-- **Filtering prevents harm; it does not add skill.** Cloning as many unfiltered episodes made the policy
-  clearly worse (50% to 32%), and the method was better than the control (p = 0.0076). The control also had
-  about 1.6x the frames, mostly from failed episodes, so it is not matched on data volume.
+- **Filtering helps relative to the control; whether it adds skill is not shown.** Cloning as many unfiltered
+  episodes made the policy clearly worse (50% to 32%), and the method was better than the control (p = 0.0076).
+  The control also had about 1.6x the frames, mostly from failed episodes, so it is not matched on data volume.
+  (Originally written as "filtering prevents harm; it does not add skill"; corrected on 2026-11-25, see
+  "Review" below.)
 - **The seed spread is as large as the seed-0 gain.** Training seed 0 alone (19/30) looked like a +4 episode
   improvement; seeds 1 and 2 came in at or below the base.
 - The successful episodes only contain behaviour the base already has. Init state 8, never solved by the
@@ -77,6 +79,41 @@ Successes per init state, out of 3 (base) and 9 (method, control):
 
 Further variants of this setup (more steps, a frame-matched control) are not planned. A next idea needs a
 source of behaviour the base does not already produce, with its own hypothesis.
+
+## Review (2026-11-25)
+
+The audit of the week 5/6 baselines re-read this run's code and records. The numbers above stand: the
+per-seed exact McNemar tests recomputed from the CSVs match the committed reports, and the success filter and
+the data selection are correct. The run is **not a valid test of whether cloning the policy's own successes
+helps**, for three reasons.
+
+- **The target is mostly actions that are never executed.** Each recorded frame t is trained against the
+  executed actions `t .. t+49` (`self_filtered_bc/rollout_data.py`, `action_chunk`). At `n_action_steps=1`,
+  only position 0 is the action the policy chose at frame t. Positions 1-49 come from later replans, made from
+  other observations with fresh noise. Recomputed from `data/collection.csv`: the 30 training successes give
+  4194 frames (as in the training log) and 191,250 unpadded (frame, position) entries, so position 0 carries
+  2.19% of the loss weight and positions 0-9 carry 21.6%. This is the reason for the smoke check's 0.04 (against
+  a sampled chunk) versus 1.84 (against executed actions). The method and the control share this target, so the
+  update itself may be harmful. That would explain a control at 29/90 below the base and a method at the base's
+  level, about 19 points above the control in every training seed. It is one reading and has not been tested.
+- **Underpowered.** Method minus base per training seed is +13.3, −6.7 and −3.3 points: mean +1.1, standard
+  deviation 10.7, 95% t-interval −25.5 to +27.7 points. A gain of +15 to +20 points is not excluded. The pooled
+  base arm is the same 30 episodes for every training seed, so the per-seed tests are the valid ones.
+- **Not at the baseline setting.** The base here ran at `n_action_steps=1` (see Status in
+  `self_filtered_bc/README.md`). At `n_action_steps=10` the same code (noise_reachability step 4, arm A, task 0)
+  gained on reachable states in 2 of 3 training seeds (`week6/noise_reachability_step4_kaggle/README.md`).
+
+So this run should not be cited as evidence against self-filtered BC. A valid rerun needs:
+
+- the target masked to the executed segment (`action_is_pad[k] = k >= n − t mod n`), or the sampled chunk stored;
+- a test that SmolVLA's loss honours `action_is_pad`. lerobot 0.4.0 reads `actions_id_pad` and loses the mask;
+  the 0.6.2 that ran here is correct;
+- `n_action_steps=10` against `lerobot/smolvla_libero@a24f1f3`;
+- a frame-matched control;
+- per-seed tests as the primary analysis.
+
+Also found: `self_filtered_bc.py` raises a NameError (`data_info`) when `--wandb_project` is set. The reported
+runs did not use W&B.
 
 ## Files
 
